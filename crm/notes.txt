@@ -1,0 +1,19 @@
+Stuff potentially stored in request.session
+
+employee: person whose territory will be called up
+event: event for which territory will be called up
+
+sort_col: which column to sort territory list on
+sort_order: whether to sort ascending/descending
+
+territory_page: current page to show in list pagination
+
+ref_page: absolute or paginated - where to return after deleting record
+
+search_page: current page number for search results
+
+Search parameters:
+search_name
+search_title
+search_company
+search_date

@@ -1,0 +1,87 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}{{ person.name }} | {% endblock %}
+
+{% block content %}
+
+    <div class="person-description">
+        <h1>
+            {{ person.name }}, {{ person.title }}, {{ person.company }}
+            <a href="{% url 'crm:new_person' %}?status=copy&id={{ person.id }}&ref=absolute" class="link-icons">
+                <span title="Create New Person Based on Current" class="glyphicon glyphicon-duplicate"></span></a>
+            <a href="{% url 'crm:new_person' %}?status=new&ref=absolute" class="link-icons">
+                <span title="Create Blank New Person" class="glyphicon glyphicon-plus"></span></a>
+            <a href="{% url 'crm:delete_person' %}?id={{ person.id }}&ref=absolute" class="red-link-icons">
+                <span title="Delete Current Record" class="glyphicon glyphicon-trash"></span>
+            </a>
+        </h1>
+        {% if territory_exists %}
+            <h3>
+                <a href="{% url 'crm:add_person_to_territory' person.id %}">Add to Current Sales Territory</a>&nbsp;
+                <span class="h4">(Salesperson: {{ salesperson.get_username }} -
+                Event: {{ event.number }} - {{ event.title }})</span>
+
+            </h3><br>
+        {% endif %}
+
+    </div>
+
+    <div class="person-form-errors">
+        {% include 'crm/person_detail_form_errors.html' %}
+    </div>
+
+    <div class="person-details">
+        <form action="{% url 'crm:detail' person.id %}" method="post" name="person">
+
+            {% include 'crm/person_detail_form.html' %}
+
+        </form>
+    </div>
+
+    <div class="contact-history">
+        {% if person.contact_set %}
+        <h2>Contact History</h2>
+
+
+        <table class="table table-striped">
+            <thead class="thead-inverse">
+                <tr>
+                    <th class="col-sm-2">Date/Time</th>
+                    <th class="col-sm-1">User</th>
+                    <th class="col-sm-2">Event</th>
+                    <th class="col-sm-1">Method</th>
+                    <th class="col-sm-5">Notes</th>
+                    <th class="col-sm-1">Delete?</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for contact in person.contact_set.all|dictsortreversed:"date_of_contact" %}
+            <tr>
+                <td class="col-sm-2">{{ contact.date_of_contact }}</td>
+                <td class="col-sm-1">{{ contact.author }}</td>
+                <td class="col-sm-2">{{ contact.event }}</td>
+                <td class="col-sm-1">{{ contact.get_method_display }}</td>
+                <td class="col-sm-5">{{ contact.notes }}</td>
+                <td class="col-sm-1">{% if contact.able_to_delete %}<a href="?rm={{ contact.pk }}">Delete</a>{% endif %}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% endif %}
+    </div>
+
+    <div class="add contact">
+
+        <h2>Add Contact Info</h2>
+
+        <form action="{% url 'crm:detail' person.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="page_source" value="absolute">
+            {% include 'crm/add_contact_form.html' %}
+        </form>
+
+    </div>
+
+{% endblock %}

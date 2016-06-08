@@ -1,0 +1,329 @@
+import datetime
+import re
+
+from django.db import models
+from django.utils import timezone
+from .area_codes import ac_dict
+
+
+class Person(models.Model):
+    """
+    Basic person model
+    """
+    name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
+    company = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20, blank=True)
+    phone_main = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(blank=True)
+    do_not_email = models.BooleanField(default=False)
+    do_not_call = models.BooleanField(default=False)
+    city = models.CharField(max_length=50, blank=True)
+    dept = models.CharField(max_length=50, blank=True)  # General area of job
+    industry = models.TextField(blank=True)  # free-form descripton
+    GEO_CHOICES = (
+        ('East', 'East'),
+        ('West', 'West'),
+        ('Maritimes/East', 'Maritimes'),
+        ('USA', 'USA'),
+        ('Other', 'Other Foreign'),
+        ('Unknown', 'Unknown'),
+    )
+    geo = models.CharField(max_length=20,
+                           choices=GEO_CHOICES,
+                           default='Unknown')
+    CAT_CHOICES = (
+        ('HR', 'HR'),
+        ('FIN', 'FIN'),
+        ('Industry', 'Industry'),
+        ('Aboriginal', 'Aboriginal'),
+        ('Gov', 'Gov'),
+        ('NA', 'None')
+    )
+    main_category = models.CharField(max_length=25,
+                                     choices=CAT_CHOICES,
+                                     default='Industry')  # f1 in original db
+    main_category2 = models.CharField(max_length=15,
+                                      choices=CAT_CHOICES,
+                                      default='NA')
+    DIV_CHOICES = (
+        ('1', '1 - Misc'),
+        ('2', '2 - Misc'),
+        ('3', '3 - Misc'),
+        ('4', '4 - Misc'),
+        ('5', '5 - Misc'),
+        ('6', '6 - Misc'),
+        ('A1', '1 - Accounting'),
+        ('A2', '2 - Accounting'),
+        ('A3', '3 - Accounting'),
+        ('Aboriginal', 'Aboriginal'),
+        ('FED 1', 'FED 1'),
+        ('FED 2', 'FED 2'),
+        ('FED 3', 'FED 3'),
+        ('FED 4', 'FED 4'),
+        ('USA', 'USA'),
+        ('NA', 'Not Determined'),
+    )
+    division1 = models.CharField(max_length=20,
+                                 choices=DIV_CHOICES,
+                                 default='NA')  # for splitting leads
+    division2 = models.CharField(max_length=20,
+                                 choices=DIV_CHOICES,
+                                 default='NA',
+                                 blank=True)  # for splitting leads
+    date_created = models.DateTimeField('date created')
+    created_by = models.ForeignKey('auth.User',
+                                   default=1,
+                                   related_name='person_created_by')
+    date_modified = models.DateTimeField('date modified')
+    modified_by = models.ForeignKey('auth.User',
+                                    default=1,
+                                    related_name='person_modifed_by')
+
+    def __str__(self):
+        return self.name + ' ' + ', ' + self.company
+
+    def was_added_recently(self):
+        now = timezone.now()
+        return now - datetime.timedelta(days=14) <= self.date_created <= now
+    was_added_recently.admin_order_field = 'created_date'
+    was_added_recently.boolean = True
+    was_added_recently.short_description = 'Added recently?'
+
+    def was_modified_recently(self):
+        now = timezone.now()
+        return now - datetime.timedelta(days=14) <= self.date_modified <= now
+    was_modified_recently.admin_order_field = 'last_modified'
+    was_modified_recently.boolean = True
+    was_modified_recently.short_description = 'Modified recently?'
+
+    def state_prov(self):
+        phone_pattern = re.compile(r'(\d{3})\D*(\d{3})\D*(\d{4})\D*(\d*)$')
+        if phone_pattern.search(self.phone):
+            ac = phone_pattern.search(self.phone).groups()[0]
+            if ac in ac_dict():
+                return ac_dict()[ac]
+        return "UNKNOWN"
+
+    def has_registration_history(self):
+        return len(self.reghistory_set.all()) > 0
+    has_registration_history.boolean = True
+
+
+class Changes(models.Model):
+    """
+    Archive of changes/additions/deletions to database
+    """
+    action = models.CharField(max_length=10)
+    orig_id = models.IntegerField()
+    name = models.CharField(max_length=100, blank=True)
+    title = models.CharField(max_length=100, blank=True)
+    company = models.CharField(max_length=100, blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+    phone_main = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(blank=True)
+    do_not_email = models.BooleanField(default=False)
+    do_not_call = models.BooleanField(default=False)
+    city = models.CharField(max_length=50, blank=True)
+    dept = models.CharField(max_length=50, blank=True)
+    industry = models.TextField(blank=True)  # free-form descripton
+    geo = models.CharField(max_length=10, blank=True)
+    main_category = models.CharField(max_length=25, blank=True)
+    main_category2 = models.CharField(max_length=15, blank=True)
+    division1 = models.CharField(max_length=20, blank=True)
+    division2 = models.CharField(max_length=20, blank=True)
+    date_created = models.DateTimeField('date created')
+    created_by = models.ForeignKey('auth.User',
+                                   default=1,
+                                   related_name='orig_person_created_by')
+    date_modified = models.DateTimeField('date modified')
+    modified_by = models.ForeignKey('auth.User',
+                                    default=1,
+                                    related_name='orig_person_modifed_by')
+
+
+class Event(models.Model):
+    """
+    Events being sold/worked on
+    """
+    number = models.CharField(max_length=10, unique=True)
+    title = models.CharField(max_length=100)
+    city = models.CharField(max_length=20)
+    date_begins = models.DateField()
+
+    def __str__(self):
+        return self.number + ': ' + self.title + ', ' + self.city
+
+    def is_in_past(self):
+        return self.start_date < timezone.now().date()
+
+
+class RegHistory(models.Model):
+    """
+    Registration history - not to be altered by normal users
+    """
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event)
+    STATUS_CHOICES = (
+        ('DELEGATE', 'Paying Delegate'),
+        ('SPEAKER', 'Speaker'),
+        ('GUEST', 'Guest (non-revenue)'),
+        ('SPONSOR', 'Sponsor Representative'),
+        ('OTHER', 'Other attendee'),
+    )
+    status = models.CharField(max_length=10,
+                              choices=STATUS_CHOICES,
+                              default='DELEGATE')
+
+    def __str__(self):
+        return str(self.event) + ': ' + self.status
+
+
+class Contact(models.Model):
+    """
+    Records contact history with an individual person
+    """
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event)
+    author = models.ForeignKey('auth.User', default=1)
+    date_of_contact = models.DateTimeField('date of contact')
+    notes = models.TextField()
+    CONTACT_CHOICES = (
+        ('Pitch', 'Sales Pitch (Phone)'),
+        ('Followup', 'Follow-up Call'),
+        ('Email', 'Follow-up Email'),
+        ('Marketing', 'Marketing Email'),
+        ('Registration', 'Delegate registration'),
+        ('Speaker', 'Speaker confirmation'),
+        ('Sponsor', 'Sponsor booking'),
+        ('Research', 'PD Research Call')
+    )
+    method = models.CharField(max_length=20,
+                              choices=CONTACT_CHOICES,
+                              default='Pitch')
+
+    def __str__(self):
+        return str(self.author) + ': ' + self.method + ', ' + \
+               str(self.date_of_contact) + \
+               self.notes[:20]
+
+    def was_contacted_recently(self):
+        return self.date_of_contact >= timezone.now() - \
+                                       datetime.timedelta(days=14)
+
+    def able_to_delete(self):
+        now = timezone.now()
+        return self.date_of_contact >= now - datetime.timedelta(hours=1)
+
+
+class DeletedContact(models.Model):
+    """
+    Archives contact information for deleted persons
+    """
+    original_pk = models.IntegerField()
+    original_person_id = models.IntegerField()
+    event = models.ForeignKey(Event)
+    author = models.ForeignKey('auth.User', default=1)
+    date_of_contact = models.DateTimeField('date of contact')
+    notes = models.TextField()
+    method = models.CharField(max_length=20)
+
+
+class ListSelection(models.Model):
+    """
+    Pre-set selection criteria for sales reps etc.
+    """
+    employee = models.ForeignKey('auth.User')
+    event = models.ForeignKey(Event)
+    person = models.ForeignKey(Person, blank=True, null=True)
+    GEO_CHOICES = (
+        ('East', 'East'),
+        ('West', 'West'),
+        ('Maritimes/East', 'Maritimes'),
+        ('USA', 'USA'),
+        ('Other', 'Other Foreign'),
+        ('Unknown', 'Unknown'),
+        ('', '---'),
+    )
+    geo = models.CharField(max_length=10,
+                           choices=GEO_CHOICES,
+                           blank=True,
+                           default='')
+    CAT_CHOICES = (
+        ('HR', 'HR'),
+        ('FIN', 'FIN'),
+        ('Industry', 'Industry'),
+        ('Aboriginal', 'Aboriginal'),
+        ('Gov', 'Gov'),
+        ('NA', 'None'),
+        ('', '---'),
+    )
+    main_category = models.CharField(max_length=25,
+                                     choices=CAT_CHOICES,
+                                     blank=True,
+                                     default='')  # f1 in original db
+    main_category2 = models.CharField(max_length=15,
+                                      choices=CAT_CHOICES,
+                                      blank=True,
+                                      default='')
+    DIV_CHOICES = (
+        ('1', '1 - Misc'),
+        ('2', '2 - Misc'),
+        ('3', '3 - Misc'),
+        ('4', '4 - Misc'),
+        ('5', '5 - Misc'),
+        ('6', '6 - Misc'),
+        ('A1', '1 - Accounting'),
+        ('A2', '2 - Accounting'),
+        ('A3', '3 - Accounting'),
+        ('Aboriginal', 'Aboriginal'),
+        ('FED 1', 'FED 1'),
+        ('FED 2', 'FED 2'),
+        ('FED 3', 'FED 3'),
+        ('FED 4', 'FED 4'),
+        ('USA', 'USA'),
+        ('NA', 'Not Determined'),
+        ('', '---'),
+    )
+    division1 = models.CharField(max_length=20,
+                                 choices=DIV_CHOICES,
+                                 blank=True,
+                                 default='')  # for splitting leads
+    division2 = models.CharField(max_length=20,
+                                 choices=DIV_CHOICES,
+                                 blank=True,
+                                 default='')  # for splitting leads
+    company = models.CharField(max_length=100, blank=True)
+    industry = models.CharField(max_length=100, blank=True)
+    include_exclude = models.CharField(max_length=7,
+                                       choices=(('include', 'include'),
+                                                ('exclude', 'exclude')),
+                                       default='include')
+
+
+class PersonFlag(models.Model):
+    """
+    Flags allowing individual user to id records for followup or action
+    """
+    employee = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    FLAG_CHOICES = (
+        ('1', 'Red'),
+        ('2', 'Green'),
+        ('3', 'Blue'),
+        ('4', 'Orange'),
+        ('5', 'Yellow'),
+        ('6', 'Pink'),
+        ('7', 'Pirate'),
+        ('', '---')
+    )
+    flag = models.CharField(max_length=1,
+                            choices=FLAG_CHOICES,
+                            blank=True,
+                            default='')
+    follow_up_date = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return self.flag + ' ' + str(self.employee) + ' ' + \
+               str(self.event) + ' ' + str(self.person)

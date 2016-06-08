@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html lang="en">
+
+    <head>
+        <meta name="robots" content="NONE,NOARCHIVE" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Infonex CRM">
+        <meta name="author" content="Christopher Graham">
+
+        <link rel="icon" href={% static 'crm/images/favicon.ico' %}>
+
+        <link href='https://fonts.googleapis.com/css?family=Signika' rel='stylesheet' type='text/css'>
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="http://getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">
+        <link href="{% static 'crm/style.css' %}" rel="stylesheet" type="text/css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+        <title>Infonex Employee Portal</title>
+
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">Portal</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="http://www.infonex.com">Infonex</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a></li>
+                            <li><p class="navbar-text">Logged in as: {{ user.username }}</p></li>
+                            <li><a href="{% url 'crm:index' %}">CRM Home</a></li>
+
+                        {% else %}
+                            <li><a href="{% url 'django.contrib.auth.views.login' %}">Login</a></li>
+                        {% endif %}
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="jumbotron">
+            <div class="container">
+                <h1>
+                    <a href="{% url 'home:index' %}"><img src={% static 'crm/images/INFONEX-logo.png' %}></a>&nbsp;&nbsp;
+                    Employee Portal
+                </h1>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <h2>CRM System</h2>
+                    <p>Custom Infonex Contact Management System</p>
+                    <p>
+                        <a class="btn btn-primary" href="{% url 'crm:index' %}">Go &raquo;</a>
+                    </p>
+                </div>
+
+                <div class="col-sm-4">
+                    <h2>Infonex Home Page</h2>
+                    <p>Infonex's Public Web site</p>
+                    <p>
+                        <a class="btn btn-default" href="http://www.infonex.com">Go &raquo;</a>
+                    </p>
+
+                </div>
+
+                <div class="col-sm-4">
+                    <h2>Content to Come</h2>
+                    <p>Placeholder for future development</p>
+                </div>
+            </div>
+        </div>
+
+    </body>
+
+</html>

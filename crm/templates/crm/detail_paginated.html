@@ -1,0 +1,118 @@
+{% extends 'crm/base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}{{ person.name }} | {% endblock %}
+
+{% block content %}
+    <div class="person-description">
+        <h1>
+
+            {{ person.name }}, {{ person.title }}, {{ person.company }}
+            <a href="{% url 'crm:new_person' %}?status=copy&id={{ person.id }}&ref=paginated" class="link-icons">
+                <span title="Create New Person Based on Current" class="glyphicon glyphicon-duplicate"></span></a>
+            <a href="{% url 'crm:new_person' %}?status=new&ref=paginated" class="link-icons">
+                <span title="Create Blank New Person" class="glyphicon glyphicon-plus"></span></a>
+            <a href="{% url 'crm:delete_person' %}?id={{ person.id }}&ref=paginated" class="red-link-icons">
+                <span title="Delete Current Record" class="glyphicon glyphicon-trash"></span>
+            </a>
+        </h1>
+        <p><a href="{% url 'crm:detail' person.id %}">Permalink to record</a></p>
+
+
+        <h2>
+            <a href="{% url 'crm:territory' %}" class="normal-text">Sales Territory</a> for: {{ salesperson.get_username }} -
+            Event: {{ active_event.number }} - {{ active_event.title }}
+        </h2>
+    </div>
+
+{% include 'crm/pagination.html' %}
+
+    <div class="flag">
+        <form action="{% url 'crm:flag_record' %}" method="post" name="flag">
+            {% csrf_token %}
+            <input type="hidden" name="page_source" value="detail" />
+            <input type="hidden" value="{{ person.id }}" name="person_id"/>
+            <input type="hidden" value="{{ person_list.number }}" name="page"/>
+            <input type="hidden" value="{{ forloop.counter }}" name="page_index_num"/>
+
+            <div class="form-group row">
+                <label for="{{ flag_form.flag.id_for_label }}" class="col-sm-2 form-control-label">Flag</label>
+                <div class="col-sm-1">
+                    {% if person.flag_val == '1' %}
+                        <img src={% static 'crm/images/flag_red.png' %}>
+                    {% elif person.flag_val == '2' %}
+                        <img src={% static 'crm/images/flag_green.png' %}>
+                    {% elif person.flag_val == '3' %}
+                        <img src={% static 'crm/images/flag_blue.png' %}>
+                    {% elif person.flag_val == '4' %}
+                        <img src={% static 'crm/images/flag_orange.png' %}>
+                    {% elif person.flag_val == '5' %}
+                        <img src={% static 'crm/images/flag_yellow.png' %}>
+                    {% elif person.flag_val == '6' %}
+                        <img src={% static 'crm/images/flag_pink.png' %}>
+                    {% elif person.flag_val == '7' %}
+                        <img src={% static 'crm/images/flag_pirate.png' %}>
+                    {% else %}
+                        <img src={% static 'crm/images/flag_none.png' %}>
+                    {% endif %}
+                </div>
+                <div class="col-sm-1">{{ flag_form.flag }}</div>
+                <div class="col-sm-2"><button type="submit" class="btn btn-primary">Change</button></div>
+            </div>
+        </form>
+    </div>
+
+    <div class="person-form-errors">
+        {% include 'crm/person_detail_form_errors.html' %}
+    </div>
+
+    <div class="person-details">
+        <form action="{% url 'crm:detail_paginated' %}?pk={{ person.pk }}" method="post" name="person">
+
+            {% include 'crm/person_detail_form.html' %}
+
+        </form>
+    </div>
+
+
+    <div class="contact-history">
+        {% if person.contact_set %}
+        <h2>Contact History</h2>
+        <table class="table table-striped">
+            <thead class="thead-inverse">
+                <tr>
+                    <th class="col-sm-2">Date/Time</th>
+                    <th class="col-sm-1">User</th>
+                    <th class="col-sm-2">Event</th>
+                    <th class="col-sm-1">Method</th>
+                    <th class="col-sm-5">Notes</th>
+                    <th class="col-sm-1">Delete?</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for contact in person.contact_set.all|dictsortreversed:"date_of_contact" %}
+            <tr>
+                <td class="col-sm-2">{{ contact.date_of_contact }}</td>
+                <td class="col-sm-1">{{ contact.author }}</td>
+                <td class="col-sm-2">{{ contact.event }}</td>
+                <td class="col-sm-1">{{ contact.get_method_display }}</td>
+                <td class="col-sm-5">{{ contact.notes }}</td>
+                <td class="col-sm-1">{% if contact.able_to_delete %}<a href="?rm={{ contact.pk }}">Delete</a>{% endif %}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+
+    <div class="add contact">
+        <h2>Add Contact Info</h2>
+        <form action="{% url 'crm:detail_paginated' %}?pk={{ person.pk }}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="page_source" value="paginated">
+            {% include 'crm/add_contact_form.html' %}
+        </form>
+    </div>
+
+{% endblock %}

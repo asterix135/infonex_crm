@@ -1,0 +1,56 @@
+<div class="pagination-footer">
+    <nav>
+        <ul class="pagination">
+            {% if has_minus4 %}
+                <li><a href="?page=1" aria-label="first"><span aria-hidden="true">&laquo;&laquo;</span></a></li>
+            {% else %}
+                <li class="disabled"><a aria-label="first"><span aria-hidden="true">&laquo;&laquo;</span></a></li>
+            {% endif %}
+
+            {% if person_list.has_previous %}
+                <li><a href="?page={{ person_list.previous_page_number }}" aria-label="previous"><span aria-hidden="true">&laquo;</span></a></li>
+            {% else %}
+                <li class="disabled"><a aria-label="previous"><span aria-hidden="true">&laquo;</span></a></li>
+            {% endif %}
+
+            {% if has_minus3 %}
+                <li><a href="?page={{ minus3 }}">{{ minus3 }}</a></li>
+            {% endif %}
+
+            {% if has_minus2 %}
+                <li><a href="?page={{ minus2 }}">{{ minus2 }}</a></li>
+            {% endif %}
+
+            {% if has_minus1 %}
+                <li><a href="?page={{ minus1 }}">{{ minus1 }}</a></li>
+            {% endif %}
+
+            <li class="active"><a href="?page={{ person_list.number }}">{{ person_list.number }}</a></li>
+
+            {% if has_plus1 %}
+                <li><a href="?page={{ plus1 }}">{{ plus1 }}</a></li>
+            {% endif %}
+
+            {% if has_plus2 %}
+                <li><a href="?page={{ plus2 }}">{{ plus2 }}</a></li>
+            {% endif %}
+
+            {% if has_plus3 %}
+                <li><a href="?page={{ plus3 }}">{{ plus3 }}</a></li>
+            {% endif %}
+
+            {% if person_list.has_next %}
+                <li><a href="?page={{ person_list.next_page_number }}" aria-label="next"><span aria-hidden="true">&raquo;</span></a></li>
+            {% else %}
+                <li class="disabled"><a aria-label="next"><span aria-hidden="true">&raquo;</span></a></li>
+            {% endif %}
+
+            {% if has_plus4 %}
+                <li><a href="?page={{ person_list.paginator.num_pages }}" aria-label="last"><span aria-hidden="true">&raquo;&raquo;</span></a></li>
+            {% else %}
+                <li class="disabled"><a aria-label="last"><span aria-hidden="true">&raquo;&raquo;</span></a></li>
+            {% endif %}
+
+        </ul>
+    </nav>
+</div>

@@ -41,7 +41,8 @@
                 <th class="col-sm-3"><a href="?sort=name">Person Name</a></th>
                 <th class="col-sm-3"><a href="?sort=title">Title</a></th>
                 <th class="col-sm-3"><a href="?sort=company">Company</a></th>
-                <th class="col-sm-3"><a href="?sort=date_modified">Last Modified</a></th>
+                <th class="col-sm-2"><a href="?sort=date_modified">Last Modified</a></th>
+                <th class="col-sm-1">Customer?</th>
             </tr>
         </thead>
         <tbody>
@@ -52,6 +53,13 @@
                         <td class="col-sm-3">{{ person.title }}</td>
                         <td class="col-sm-3">{{ person.company}}</td>
                         <td class="col-sm-3">{{ person.date_modified }}</td>
+                        <td class="col-sm-1">
+                            {% if person.has_registration_history %}
+                                <span class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>
+                            {% else %}
+                                <span class="glyphicon glyphicon-remove alert-warning" aria-hidden="true"></span>
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             {% else %}

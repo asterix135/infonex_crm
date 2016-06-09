@@ -734,14 +734,16 @@ def generate_territory_list(employee, event, sort_col='date_modified',
         if started:
             sql = sql + 'OR '
         started = True
-        sql = sql + 'p.id IN (' + '%s ' * len(person_includes) + ') '
+        sql = sql + 'p.id IN (' + '%s, ' * len(person_includes)
+        sql = sql[:-2]  + ') '
         final_sql_params.extend(person_includes)
 
     if has_person_excludes:
         if started:
             sql = sql + 'AND '
         started = True
-        sql = sql + 'NOT p.id IN (' + '%s ' * len(person_excludes) + ') '
+        sql = sql + 'NOT p.id IN (' + '%s, ' * len(person_excludes)
+        sql = sql[:-2] +') '
         final_sql_params.extend(person_excludes)
 
     # If everything was blank, return empty query set

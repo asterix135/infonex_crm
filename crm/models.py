@@ -13,6 +13,7 @@ class Person(models.Model):
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100)
     company = models.CharField(max_length=100)
+    url = models.URLField(max_length=200, blank=True)
     phone = models.CharField(max_length=20, blank=True)
     phone_main = models.CharField(max_length=20, blank=True)
     email = models.EmailField(blank=True)
@@ -108,6 +109,10 @@ class Person(models.Model):
     def has_registration_history(self):
         return len(self.reghistory_set.all()) > 0
     has_registration_history.boolean = True
+
+    def show_person_url(self):
+        return '<a href="%s">%s</a>' % (self.url, self.url)
+    show_person_url.allow_tags = True
 
 
 class Changes(models.Model):

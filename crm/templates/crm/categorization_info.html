@@ -1,0 +1,42 @@
+{% csrf_token %}
+<input type="hidden" name="form" value="category"/>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Categorization Info</h3>
+    </div>
+    <div class="panel-body">
+        <div class="form-group row">
+            <label for="{{ category_form.dept.id_for_label }}" class="col-sm-2 form-control-label">Department</label>
+            <div class="col-sm-2">{{ category_form.dept }}</div>
+            <label for="{{ category_form.geo.id_for_label }}" class="col-sm-2 form-control-label">Geographic Group</label>
+            <div class="col-sm-2">{{ category_form.geo }}</div>
+        </div>
+        <div class="form-group row">
+            <label for="{{ category_form.main_category.id_for_label }}" class="col-sm-2 form-control-label">Main Category (f1)</label>
+            <div class="col-sm-2">{{ category_form.main_category }}</div>
+            <label for="{{ category_form.main_category2.id_for_label }}" class="col-sm-2 form-control-label">Main Category 2</label>
+            <div class="col-sm-2">{{ category_form.main_category2 }}</div>
+        </div>
+        <div class="form-group row">
+            <label for="{{ category_form.division1.id_for_label }}" class="col-sm-2 form-control-label">Sales Division 1</label>
+            <div class="col-sm-2">{{ category_form.division1 }}</div>
+            <label for="{{ category_form.main_division2.id_for_label }}" class="col-sm-2 form-control-label">Sales Division 2</label>
+            <div class="col-sm-2">{{ category_form.division2 }}</div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 form-control-label">Date Record Created</label>
+            <div class="col-sm-2">{{ person.date_created }}</div>
+            <label class="col-sm-2 form-control-label">Date Last Modified</label>
+            <div class="col-sm-2">{{ person.date_modified }}</div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-sm-offset-2 col-sm-2">
+            <button type="reset" class="btn btn-secondary">Reset to Original</button>
+        </div>
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-primary">Update Category Info</button>
+        </div>
+    </div>
+</div>

@@ -8,10 +8,9 @@ class PersonUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Person
-        fields = ('name', 'title', 'company', 'phone', 'phone_main',
+        fields = ('name', 'title', 'company', 'url', 'phone', 'phone_main',
                   'do_not_call', 'email', 'do_not_email', 'industry', 'dept',
-                  'city', 'geo', 'main_category',
-                  'main_category2', 'division1', 'division2',)
+                  'city',)
         widgets = {
             'name': forms.TextInput(
                 attrs={'class': 'form-control'}
@@ -20,6 +19,9 @@ class PersonUpdateForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
             'company': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'url': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
             'city': forms.TextInput(
@@ -38,6 +40,19 @@ class PersonUpdateForm(forms.ModelForm):
                 attrs={'class': 'form-control',
                        'rows': '3'}
             ),
+            'dept': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+        }
+
+
+class PersonCategoryUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = Person
+        fields = ('dept', 'geo', 'main_category', 'main_category2',
+                  'division1', 'division2',)
+        widgets = {
             'dept': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),

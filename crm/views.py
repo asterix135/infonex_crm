@@ -15,7 +15,7 @@ from .models import *
 #########################
 #  Global Variables
 #########################
-TERRITORY_RECORDS_PER_PAGE = 5
+TERRITORY_RECORDS_PER_PAGE = 50
 TERRITORY_TAGS = [('geo', False),  # T/F indicates whether loose (text) match
                   ('main_category', False),
                   ('main_category2', False),
@@ -58,15 +58,32 @@ def update_person(request, person):
     # modify live record
     person.name = request.POST['name']
     person.title = request.POST['title']
+    person.dept = request.POST['dept']
     person.company = request.POST['company']
     person.city = request.POST['city']
     person.phone = request.POST['phone']
     person.phone_main = request.POST['phone_main']
     person.email = request.POST['email']
+    person.url = request.POST['url']
     person.do_not_call = request.POST.get('do_not_call', False)
     person.do_not_email = request.POST.get('do_not_email', False)
     person.industry = request.POST['industry']
 
+    person.save()
+
+
+#################
+# HELPER FUNCTION
+#################
+def update_category_info(request, person):
+    person.modified_by = request.user
+    person.date_modified = timezone.now()
+    person.save()
+
+    # write original record to change file
+    add_change_record(person, 'update')
+
+    # modify live record
     # TODO: See if these should require permission level to modify
     person.dept = request.POST['dept']
     person.main_category = request.POST['main_category']
@@ -103,17 +120,29 @@ def detail(request, person_id):
 
     if request.method == 'POST' and request.POST['form'] == 'person':
         person_form = PersonUpdateForm(request.POST)
-        contact_form = NewContactForm(initial={'event': event})
         if person_form.is_valid():
             update_person(request, person)
+        contact_form = NewContactForm(initial={'event': event})
+        category_form = PersonCategoryUpdateForm(instance=person)
+
+    elif request.method == 'POST' and request.POST['form'] == 'category':
+        category_form = PersonCategoryUpdateForm(request.POST)
+        if category_form.is_valid():
+            update_category_info(request, person)
+        person_form = PersonUpdateForm(instance=person)
+        contact_form = NewContactForm(initial={'event': event})
+
     elif request.method == 'POST' and request.POST['form'] == 'contact':
         contact_form = NewContactForm(request.POST)
-        person_form = PersonUpdateForm(instance=person)
         if contact_form.is_valid():
             add_contact(request, person)
+        person_form = PersonUpdateForm(instance=person)
+        category_form = PersonCategoryUpdateForm(instance=person)
+
     else:
         contact_form = NewContactForm(initial={'event': event})
         person_form = PersonUpdateForm(instance=person)
+        category_form = PersonCategoryUpdateForm(instance=person)
 
     context = {
         'person': person,
@@ -122,6 +151,7 @@ def detail(request, person_id):
         'territory_exists': territory_boolean,
         'event': event,
         'salesperson': salesperson,
+        'category_form': category_form
     }
     return render(request, 'crm/detail.html', context)
 

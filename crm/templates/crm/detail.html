@@ -6,6 +6,9 @@
 
     <div class="person-description">
         <h1>
+            {% if person.has_registration_history %}
+                <span title="Past Customer" class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>
+            {% endif %}
             {{ person.name }}, {{ person.title }}, {{ person.company }}
             <a href="{% url 'crm:new_person' %}?status=copy&id={{ person.id }}&ref=absolute" class="link-icons">
                 <span title="Create New Person Based on Current" class="glyphicon glyphicon-duplicate"></span></a>
@@ -82,6 +85,12 @@
             {% include 'crm/add_contact_form.html' %}
         </form>
 
+    </div>
+
+    <div class="update category">
+        <form action="{% url 'crm:detail' person.id %}" method="post" name="category">
+            {% include 'crm/categorization_info.html' %}
+        </form>
     </div>
 
 {% endblock %}

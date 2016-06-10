@@ -7,7 +7,9 @@
 {% block content %}
     <div class="person-description">
         <h1>
-
+            {% if person.has_registration_history %}
+                <span title="Past Customer" class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>
+            {% endif %}
             {{ person.name }}, {{ person.title }}, {{ person.company }}
             <a href="{% url 'crm:new_person' %}?status=copy&id={{ person.id }}&ref=paginated" class="link-icons">
                 <span title="Create New Person Based on Current" class="glyphicon glyphicon-duplicate"></span></a>

@@ -151,7 +151,8 @@ def detail(request, person_id):
         'territory_exists': territory_boolean,
         'event': event,
         'salesperson': salesperson,
-        'category_form': category_form
+        'category_form': category_form,
+        'url_exists': len(person.url) > 0,
     }
     return render(request, 'crm/detail.html', context)
 
@@ -243,17 +244,29 @@ def detail_paginated(request):
 
     if request.method == 'POST' and request.POST['form'] == 'person':
         person_form = PersonUpdateForm(request.POST)
-        contact_form = NewContactForm(initial={'event': territory_event,})
         if person_form.is_valid():
             update_person(request, person)
+        contact_form = NewContactForm(initial={'event': territory_event,})
+        category_form = PersonCategoryUpdateForm(instance=person)
+
+    elif request.method == 'POST' and request.POST['form'] == 'category':
+        category_form = PersonCategoryUpdateForm(request.POST)
+        if category_form.is_valid():
+            update_category_info(request, person)
+        person_form = PersonUpdateForm(instance=person)
+        contact_form = NewContactForm(initial={'event': territory_event})
+
     elif request.method == 'POST' and request.POST['form'] == 'contact':
         contact_form = NewContactForm(request.POST)
-        person_form = PersonUpdateForm(instance=person)
         if contact_form.is_valid():
             add_contact(request, person)
+        person_form = PersonUpdateForm(instance=person)
+        category_form = PersonCategoryUpdateForm(instance=person)
+
     else:
         contact_form = NewContactForm(initial={'event': territory_event,})
         person_form = PersonUpdateForm(instance=person)
+        category_form = PersonCategoryUpdateForm(instance=person)
 
     context = {'person_list': person_list,
                'person_form': person_form,
@@ -262,6 +275,7 @@ def detail_paginated(request):
                'salesperson': employee,
                'active_event': territory_event,
                'flag_form': FlagForm(),
+               'category_form': category_form,
                'has_minus4': int(page) - 4 > 0,
                'has_minus3': int(page) - 3 > 0,
                'minus3': str(int(page) - 3),
@@ -276,6 +290,7 @@ def detail_paginated(request):
                'has_plus3': int(page) + 3 <= paginator.num_pages,
                'plus3': str(int(page) + 3),
                'has_plus4': int(page) + 4 <= paginator.num_pages,
+               'url_exists': len(person.url) > 0,
                }
     return render(request, 'crm/detail_paginated.html', context)
 

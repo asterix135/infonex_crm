@@ -39,7 +39,7 @@
     <div class="col-sm-2">{{ person_form.do_not_email }}</div>
 </div>
 <div class="form-group row">
-    {% if person_form.url %}
+    {% if url_exists %}
         <a href="http://{{ person.url }}" target="_blank" class="col-sm-1 form-control-label"><strong>Website</strong></a>
         <span class="glyphicon glyphicon-new-window col-sm-1" aria-hidden="true"></span>
     {% else %}

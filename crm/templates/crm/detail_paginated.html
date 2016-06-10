@@ -117,4 +117,10 @@
         </form>
     </div>
 
+    <div class="update category">
+        <form action="{% url 'crm:detail' person.id %}" method="post" name="category">
+            {% include 'crm/categorization_info.html' %}
+        </form>
+    </div>
+
 {% endblock %}

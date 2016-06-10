@@ -46,15 +46,18 @@
     </div>
 
     <div class="add contact">
-
-        <h2>Add Contact Info</h2>
-
-        <form action="{% url 'crm:detail' person.id %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="page_source" value="absolute">
-            {% include 'crm/add_contact_form.html' %}
-        </form>
-
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">Add Contact Info</h2>
+            </div>
+            <div class="panel-body">
+                <form action="{% url 'crm:detail_paginated' %}?pk={{ person.pk }}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="page_source" value="paginated">
+                    {% include 'crm/add_contact_form.html' %}
+                </form>
+            </div>
+        </div>
     </div>
 
     <div class="update category">

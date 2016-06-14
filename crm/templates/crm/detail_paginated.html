@@ -71,12 +71,13 @@
 
     <div class="person-details">
         <form action="{% url 'crm:detail_paginated' %}?pk={{ person.pk }}" method="post" name="person">
-
             {% include 'crm/person_detail_form.html' %}
-
         </form>
     </div>
 
+    {% if person.has_registration_history %}
+    {% include 'crm/reg_history_detail.html' %}
+    {% endif %}
 
     <div class="contact-history">
         {% include 'crm/contact_info_for_detail.html' %}

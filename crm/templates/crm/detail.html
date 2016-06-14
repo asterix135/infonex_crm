@@ -41,6 +41,10 @@
         </form>
     </div>
 
+    {% if person.has_registration_history %}
+    {% include 'crm/reg_history_detail.html' %}
+    {% endif %}
+
     <div class="contact-history">
         {% include 'crm/contact_info_for_detail.html' %}
     </div>

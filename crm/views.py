@@ -107,6 +107,7 @@ def detail(request, person_id):
                 contact.delete()
 
     person = get_object_or_404(Person, pk=person_id)
+    reg_history = person.reghistory_set.all()
 
     territory_boolean = territory_exists(request)
     if request.session.get('event') is not None:
@@ -153,6 +154,7 @@ def detail(request, person_id):
         'salesperson': salesperson,
         'category_form': category_form,
         'url_exists': len(person.url) > 0,
+        'reg_history': reg_history,
     }
     return render(request, 'crm/detail.html', context)
 
@@ -268,6 +270,8 @@ def detail_paginated(request):
         person_form = PersonUpdateForm(instance=person)
         category_form = PersonCategoryUpdateForm(instance=person)
 
+    reg_history = person.reghistory_set.all()
+
     context = {'person_list': person_list,
                'person_form': person_form,
                'contact_form': contact_form,
@@ -276,6 +280,7 @@ def detail_paginated(request):
                'active_event': territory_event,
                'flag_form': FlagForm(),
                'category_form': category_form,
+               'reg_history': reg_history,
                'has_minus4': int(page) - 4 > 0,
                'has_minus3': int(page) - 3 > 0,
                'minus3': str(int(page) - 3),

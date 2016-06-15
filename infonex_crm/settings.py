@@ -25,10 +25,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #         'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
 #     ) for i in range(50)])
 
-if 'APP_SECRET' in os.environ:
-    SECRET_KEY = os.environ['APP_SECRET']
-else:
-    SECRET_KEY = '4m9o2e4l#h(r^egqquih48w1f$2p9@b+q74a6#6th3upg0)#5#'
+# if 'APP_SECRET' in os.environ:
+#     SECRET_KEY = os.environ['APP_SECRET']
+# else:
+#     SECRET_KEY = '4m9o2e4l#h(r^egqquih48w1f$2p9@b+q74a6#6th3upg0)#5#'
+SECRET_KEY = os.environ['APP_SECRET']
 
 
 # SECURITY WARNING: don't run with debug turned on in production!

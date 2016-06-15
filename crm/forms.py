@@ -239,6 +239,7 @@ class TerritorySearchForm(forms.Form):
                                        ))
     state_province = forms.ChoiceField(label='State/Province',
                                        required=False,
+                                       initial='',
                                        choices=state_prov_tuple(),
                                        widget=forms.Select(
                                            attrs={'class': 'form-control'}

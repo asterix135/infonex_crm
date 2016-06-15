@@ -35,11 +35,11 @@ else:
 DEBUG = True
 
 local_ip = str(socket.gethostbyname(socket.gethostname()))
-print(local_ip)
 ALLOWED_HOSTS =[local_ip,
                 'localhost',
                 'infonex-crm.us-west-2.elasticbeanstalk.com',
-                '127.0.0.1'
+                'infonex-crm.elasticbeanstalk.com',
+                '127.0.0.1',
                 ]
 
 # Application definition

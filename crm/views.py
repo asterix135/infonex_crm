@@ -907,10 +907,14 @@ def territory_list(request):
     # Flag form
     flag_form = FlagForm()
 
+    # TODO: Make sure this should stay here
+    filter_form = TerritorySearchForm()
+
     context = {'person_list': person_list,
                'employee': employee,
                'event': territory_event,
                'flag_form': flag_form,
+               'filter_form': filter_form,
                'has_minus4': int(page) - 4 > 0,
                'has_minus3': int(page) - 3 > 0,
                'minus3': str(int(page) - 3),

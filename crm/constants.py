@@ -393,7 +393,8 @@ def ac_dict():
 
 
 def state_prov_tuple():
-    return (('AB', 'Alberta'), ('BC', 'British Columbia'), ('MB', 'Manitoba'),
+    return (('', 'N/A'),
+            ('AB', 'Alberta'), ('BC', 'British Columbia'), ('MB', 'Manitoba'),
             ('NB', 'New Brunswick'), ('NL', 'Newfoundland and Labrador'),
             ('NT', 'Northwest Territories'), ('NS', 'Nova Scotia'),
             ('NU', 'Nunavut'), ('ON', 'Ontario'),

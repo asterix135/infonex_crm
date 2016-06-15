@@ -3,7 +3,7 @@ import re
 
 from django.db import models
 from django.utils import timezone
-from .area_codes import ac_dict
+from .constants import ac_dict, flag_choices
 
 
 class Person(models.Model):
@@ -313,18 +313,9 @@ class PersonFlag(models.Model):
     employee = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    FLAG_CHOICES = (
-        ('1', 'Red'),
-        ('2', 'Green'),
-        ('3', 'Blue'),
-        ('4', 'Orange'),
-        ('5', 'Yellow'),
-        ('6', 'Pink'),
-        ('7', 'Pirate'),
-        ('', '---')
-    )
+
     flag = models.CharField(max_length=1,
-                            choices=FLAG_CHOICES,
+                            choices=flag_choices(),
                             blank=True,
                             default='')
     follow_up_date = models.DateField(blank=True, null=True)

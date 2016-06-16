@@ -993,8 +993,21 @@ def territory_list(request):
     # Flag form
     flag_form = FlagForm()
 
-    # TODO: Make sure this should stay here
-    filter_form = TerritorySearchForm()
+    filter_form_vals = {
+        'name': request.session['filter_name'] if
+            ('filter_name' in request.session) else None,
+        'title': request.session['filter_title'] if
+            ('filter_title' in request.session) else None,
+        'company': request.session['filter_company'] if
+            ('filter_company' in request.session) else None,
+        'past_customer': bool(request.session['filter_customer']) if
+            ('filter_customer' in request.session) else None,
+        'state_province': request.session['filter_state'] if
+            ('filter_state' in request.session) else None,
+        'flag': request.session['filter_flag'] if
+            ('filter_flag' in request.session) else None,
+    }
+    filter_form = TerritorySearchForm(filter_form_vals)
 
     context = {'person_list': person_list,
                'employee': employee,

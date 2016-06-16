@@ -10,6 +10,7 @@ from django.utils import timezone
 from .filters import *
 from .forms import *
 from .models import *
+from .constants import ac_dict
 
 
 #########################
@@ -845,7 +846,22 @@ def generate_territory_list(employee, event, sort_col='date_modified',
             sql += 'f.flag = %s '
             filter_params.append(request.session['filter_flag'])
 
-        # TODO: How to deal with state and customer???
+        # have to search state by area code
+        if 'filter_state' in request.session and \
+                request.session['filter_state'] is not None:
+            if filter_clause_started:
+                sql += 'AND '
+            else:
+                filter_clause_started = True
+            sql += 'p.phone REGEXP "'
+            all_area_codes = ac_dict()
+            ac_list = []
+            for area_code in all_area_codes:
+                if all_area_codes[area_code] == request.session['filter_state']:
+                    sql += '^' + area_code + '|^[(]' + area_code + '|'
+            sql = sql[:-1] + '" '
+
+        # TODO: How to deal with customer???
         sql += ') '
         final_sql_params.extend(filter_params)
 
@@ -856,6 +872,8 @@ def generate_territory_list(employee, event, sort_col='date_modified',
         prefix = 'p'
 
     sql = sql + 'ORDER BY ' + prefix + '.' + sort_col + ' ' + sort_order
+
+    print(sql)
 
     territory = Person.objects.raw(sql, final_sql_params)
     return list(territory)

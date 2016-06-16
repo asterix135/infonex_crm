@@ -703,6 +703,43 @@ def append_sql_criterion(select_criterion, param_list, current_select, started,
 def generate_territory_list(employee, event, sort_col='date_modified',
                             sort_order='DESC', filter_active=False,
                             request=None):
+    """
+    Should generate an SQL statement something like:
+
+    SELECT q.*
+    FROM(
+    SELECT p.id, p.name, p.company, p.geo, p.main_category, p.main_category2,
+        p.division1, p.division2, p.industry, p.date_modified, p.title,
+        f.id AS flag_id, f.flag AS flag_val, f.follow_up_date AS fup_date
+    FROM crm_person as p
+    LEFT JOIN (
+        SELECT id, flag, person_id, follow_up_date
+        FROM crm_personflag
+        WHERE employee_id = 2
+            AND event_id = 2) AS f
+        ON f.person_id = p.id
+    WHERE (
+        ((p.main_category = 'Aboriginal' ))
+        AND NOT ((p.company LIKE '%infonex%' ))
+        OR p.id IN (4, 39, 19)
+        ) AND (
+            p.phone REGEXP '^573|^[(]573|^816|^[(]816|^557|^[(]557'
+        )
+    ) as z
+    INNER JOIN crm_reghistory ON crm_reghistory.person_id = z.id
+    ORDER BY q.company ASC;
+
+    Args:
+        employee:
+        event:
+        sort_col:
+        sort_order:
+        filter_active:
+        request:
+
+    Returns:
+
+    """
     if request is None:
         request = {}
     # Get selection criteria for territory
@@ -890,10 +927,6 @@ def generate_territory_list(employee, event, sort_col='date_modified',
         prefix = 'p'
 
     sql = sql + 'ORDER BY ' + prefix + '.' + sort_col + ' ' + sort_order
-
-    print('\n\n=================================')
-    print(sql)
-    print('=================================\n\n')
 
     territory = Person.objects.raw(sql, final_sql_params)
     return list(territory)

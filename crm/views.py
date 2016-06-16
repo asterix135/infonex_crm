@@ -724,6 +724,7 @@ def generate_territory_list(employee, event, sort_col='date_modified',
     person_includes = []
     has_person_excludes = False
     person_excludes = []
+    has_customer_filter = False
     sql = "SELECT p.id, p.name, p.company, p.geo, p.main_category, " \
           "p.main_category2, p.division1, p.division2, p.industry, " \
           "p.date_modified, p.title, " \
@@ -862,18 +863,37 @@ def generate_territory_list(employee, event, sort_col='date_modified',
             sql = sql[:-1] + '" '
 
         # TODO: How to deal with customer???
-        sql += ') '
+
+        # flag whether we have to deal with setting up an outer join
+        if 'filter_customer' in request.session and \
+                request.session['filter_customer'] is not None:
+            has_customer_filter = True
+            sql = 'SELECT q.* FROM (' + sql
+            if filter_clause_started:
+                sql += ')'
+            else:
+                sql = sql[:-5]
+            sql += ') AS q ' \
+                   'INNER JOIN crm_reghistory ' \
+                   'ON crm_reghistory.person_id = q.id '
+
+        if not has_customer_filter:
+            sql += ') '
         final_sql_params.extend(filter_params)
 
     # Add in ordering to sql
-    if sort_col == ('flag' or 'fup_date'):
+    if has_customer_filter:
+        prefix = 'q'
+    elif sort_col == ('flag' or 'fup_date'):
         prefix = 'f'
     else:
         prefix = 'p'
 
     sql = sql + 'ORDER BY ' + prefix + '.' + sort_col + ' ' + sort_order
 
+    print('\n\n=================================')
     print(sql)
+    print('=================================\n\n')
 
     territory = Person.objects.raw(sql, final_sql_params)
     return list(territory)

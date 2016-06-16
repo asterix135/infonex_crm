@@ -677,7 +677,7 @@ def search_persons(request):
 
 
 ######################
-# Helper function for generate_territory
+# Helper function for generate_territory_list
 ######################
 def append_sql_criterion(select_criterion, param_list, current_select, started,
                          field_name, text_search=False):
@@ -696,8 +696,14 @@ def append_sql_criterion(select_criterion, param_list, current_select, started,
     return current_select, started
 
 
+######################
+# Helper function for territory_list and create_territory etc
+######################
 def generate_territory_list(employee, event, sort_col='date_modified',
-                           sort_order='DESC'):
+                            sort_order='DESC', filter_active=False,
+                            request=None):
+    if request is None:
+        request = {}
     # Get selection criteria for territory
     select_criteria = ListSelection.objects.filter(
         employee=employee
@@ -719,7 +725,7 @@ def generate_territory_list(employee, event, sort_col='date_modified',
     person_excludes = []
     sql = "SELECT p.id, p.name, p.company, p.geo, p.main_category, " \
           "p.main_category2, p.division1, p.division2, p.industry, " \
-          "p.date_modified, " \
+          "p.date_modified, p.title, " \
           "f.id AS flag_id, f.flag AS flag_val, f.follow_up_date AS fup_date " \
           "FROM crm_person as p " \
           "LEFT JOIN (" \
@@ -728,6 +734,10 @@ def generate_territory_list(employee, event, sort_col='date_modified',
           "WHERE employee_id = %s AND event_id = %s) AS f " \
           "ON f.person_id = p.id " \
           "WHERE "
+
+    # start parenthesis around criteria if filtering territory
+    if filter_active:
+        sql += '('
 
     # build various parts of WHERE clause
     for criterion in select_criteria:
@@ -799,6 +809,45 @@ def generate_territory_list(employee, event, sort_col='date_modified',
     # If everything was blank, return empty query set
     if not started:
         return Person.objects.none()
+
+    # If territory is filtered, add filter clause to WHERE clause
+    if filter_active:
+        filter_clause_started=False
+        filter_params = []
+        sql += ') AND ('
+        if 'filter_name' in request.session and \
+                request.session['filter_name'] is not None:
+            filter_clause_started = True
+            sql += 'p.name LIKE %s '
+            filter_params.append('%' + request.session['filter_name'] + '%')
+        if 'filter_title' in request.session and \
+                request.session['filter_title'] is not None:
+            if filter_clause_started:
+                sql += 'AND '
+            else:
+                filter_clause_started = True
+            sql += 'p.title LIKE %s '
+            filter_params.append('%' + request.session['filter_title'] + '%')
+        if 'filter_company' in request.session and \
+                request.session['filter_company'] is not None:
+            if filter_clause_started:
+                sql += 'AND '
+            else:
+                filter_clause_started = True
+            sql += 'p.company LIKE %s '
+            filter_params.append('%' + request.session['filter_company'] + '%')
+        if 'filter_flag' in request.session and \
+                request.session['filter_flag'] is not None:
+            if filter_clause_started:
+                sql += 'AND '
+            else:
+                filter_clause_started = True
+            sql += 'f.flag = %s '
+            filter_params.append(request.session['filter_flag'])
+
+        # TODO: How to deal with state and customer???
+        sql += ') '
+        final_sql_params.extend(filter_params)
 
     # Add in ordering to sql
     if sort_col == ('flag' or 'fup_date'):
@@ -879,12 +928,49 @@ def territory_list(request):
         # employee = User.get(pk=1)
         # territory_event = Event.get(pk=1)
 
+    # Set cookies for filter values
+    if request.method == 'POST':
+        if request.POST['option'] == 'filter':
+            request.session['filter_name'] = request.POST['name'] if \
+                len(request.POST['name']) > 0 else None
+            request.session['filter_title'] = request.POST['title'] if \
+                len(request.POST['title']) > 0 else None
+            request.session['filter_company'] = request.POST['company'] if \
+                len(request.POST['company']) > 0 else None
+            request.session['filter_state'] = request.POST['state_province'] \
+                if len(request.POST['state_province']) > 0 else None
+            request.session['filter_flag'] = request.POST['flag'] if \
+                len(request.POST['flag']) > 0 else None
+            request.session['filter_customer'] = 'True' if \
+                ('past_customer' in request.POST) else None
+        else:
+            request.session['filter_name'] = None
+            request.session['filter_title'] = None
+            request.session['filter_company'] = None
+            request.session['filter_state'] = None
+            request.session['filter_flag'] = None
+            request.session['filter_customer'] = None
+
     # Cookies exist - pull relevant records
-    else:
-        employee = User.objects.get(pk=employee)
-        territory_event = Event.objects.get(pk=territory_event)
-        territory = generate_territory_list(employee, territory_event,
-                                            sort_col, sort_order)
+    filter_active = any([
+        'filter_name' in request.session and
+            request.session['filter_name'] is not None,
+        'filter_title' in request.session and
+            request.session['filter_title'] is not None,
+        'filter_company' in request.session and
+            request.session['filter_company'] is not None,
+        'filter_state' in request.session and
+            request.session['filter_state'] is not None,
+        'filter_flag' in request.session and
+            request.session['filter_flag'] is not None,
+        'filter_customer' in request.session and
+            request.session['filter_customer'] is not None
+    ])
+
+    employee = User.objects.get(pk=employee)
+    territory_event = Event.objects.get(pk=territory_event)
+    territory = generate_territory_list(employee, territory_event, sort_col,
+                                        sort_order, filter_active, request)
 
     paginator = Paginator(territory, TERRITORY_RECORDS_PER_PAGE)
 

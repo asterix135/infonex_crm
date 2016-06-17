@@ -33,7 +33,7 @@ SECRET_KEY = os.environ['APP_SECRET']
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 local_ip = str(socket.gethostbyname(socket.gethostname()))
 ALLOWED_HOSTS =[local_ip,

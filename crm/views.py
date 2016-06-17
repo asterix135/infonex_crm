@@ -527,7 +527,12 @@ def execute_person_search(name, title, company, state_province, past_customer,
     if company:
         search_list = search_list.filter(company__icontains=company)
     if state_province:
-        pass
+        regex_val = r''
+        for area_code in AC_DICT:
+            if AC_DICT[area_code] == state_province:
+                regex_val += '^' + area_code + '|^\(' + area_code + '|'
+        regex_val = regex_val[:-1]
+        search_list = search_list.filter(phone__regex=regex_val)
     if past_customer:
         pass
     search_list = search_list.order_by(sort_col)

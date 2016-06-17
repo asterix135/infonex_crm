@@ -30,6 +30,9 @@ TERRITORY_TAGS = [('geo', False),  # T/F indicates whether loose (text) match
 def index(request):
     # land_filter = LandPageFilter
     territory_form = ListSelectForm(initial={'employee': request.user.pk})
+    territory_form.fields['event'].queryset = Event.objects.filter(
+        date_begins__gte=timezone.now()-datetime.timedelta(weeks=16)
+    ).order_by('-date_begins', 'number')
 
     # check for permission to view all records
     user = request.user

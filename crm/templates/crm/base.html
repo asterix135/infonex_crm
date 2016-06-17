@@ -62,14 +62,14 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_authenticated %}
-                            <li><a href="{% url 'admin:logout' %}">Logout</a></li>
+                            <li><a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a></li>
                             <li><p class="navbar-text">Logged in as: {{ user.username }}</p></li>
                             <li><a href="{% url 'crm:index' %}">CRM Home</a></li>
                             <li><a href="{% url 'crm:territory' %}">Current Territory</a></li>
                             <li><a href="{% url 'crm:search_persons' %}">Search page</a></li>
 
                         {% else %}
-                            <li><a href="{% url 'admin:login' %}">Login</a></li>
+                            <li><a href="{% url 'django.contrib.auth.views.login' %}">Login</a></li>
                         {% endif %}
 
                     </ul>

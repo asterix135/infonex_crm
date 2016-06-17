@@ -211,12 +211,15 @@ class SearchForm(forms.Form):
                                        widget=forms.Select(
                                            attrs={'class': 'form-control'}
                                        ))
-    past_customer = forms.BooleanField(label='Past Customer',
-                                       required=False,
-                                       initial=False,
-                                       widget=forms.CheckboxInput(
-                                           attrs={'class': 'form-control'}
-                                       ))
+    past_customer = forms.ChoiceField(label='Past Customer',
+                                      required=False,
+                                      initial='',
+                                      choices=(('', 'Any'),
+                                               (True, 'Yes'),
+                                               (False, 'No'),),
+                                      widget=forms.Select(
+                                          attrs={'class': 'form-control'}
+                                      ))
     date_modified = forms.DateField(label='Modified on or After',
                                     required=False,
                                     widget=forms.TextInput(

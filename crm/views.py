@@ -513,7 +513,7 @@ def person_list(request):
 #################
 # HELPER FUNCTION
 #################
-def execute_person_search(name, title, company, date_modified,
+def execute_person_search(name, title, company, state_province, past_customer,
                           sort_col, sort_order):
     """
     Helper function to filter records on search_person call
@@ -526,10 +526,10 @@ def execute_person_search(name, title, company, date_modified,
         search_list = search_list.filter(title__icontains=title)
     if company:
         search_list = search_list.filter(company__icontains=company)
-    if date_modified:
-        search_date = datetime.datetime.strptime(date_modified,
-                                                 '%Y-%m-%d').date()
-        search_list = search_list.filter(date_modified__gte=search_date)
+    if state_province:
+        pass
+    if past_customer:
+        pass
     search_list = search_list.order_by(sort_col)
     if sort_order == 'DESC':
         search_list = search_list.reverse()
@@ -566,7 +566,7 @@ def search_persons(request):
             if (request.POST['name']) or \
                     (request.POST['title']) or \
                     (request.POST['company']) or \
-                    (request.POST['date_modified']):
+                    (request.POST['state_province']):
                 # execute search
                 if request.POST['name']:
                     request.session['search_name'] = name = request.POST['name']
@@ -585,14 +585,22 @@ def search_persons(request):
                 else:
                     request.session['search_company'] = company = None
 
-                if request.POST['date_modified']:
-                    request.session['search_date'] = date_modified = \
-                        request.POST['date_modified']
-                else: request.session['search_date'] = date_modified = None
+                if request.POST['state_province']:
+                    request.session['search_state'] = state_province = \
+                        request.POST['state_province']
+                else:
+                    request.session['search_state'] = state_province = None
+
+                if request.POST['past_customer']:
+                    request.session['search_customer'] = past_customer = \
+                        request.POST['past_customer']
+                else:
+                    request.session['search_customer'] = past_customer = None
 
                 # sort results by sort criteria
                 search_list = execute_person_search(
-                    name, title, company, date_modified, sort_col, sort_order
+                    name, title, company, state_province, past_customer,
+                    sort_col, sort_order
                 )
 
             else:  # No search criteria = no names
@@ -600,45 +608,37 @@ def search_persons(request):
         else:
             search_list = Person.objects.none()
     else:
-        if 'search_name' in request.session:
-            name = request.session['search_name']
-        else:
-            name = None
-
-        if 'search_title' in request.session:
-            title = request.session['search_title']
-        else:
-            title = None
-
-        if 'search_company' in request.session:
-            company = request.session['search_company']
-        else:
-            company = None
-
-        if 'search_date' in request.session:
-            date_modified = request.session['search_date']
-        else:
-            date_modified = None
+        name = request.session['search_name'] if 'search_name' in \
+            request.session else None
+        title = request.session['search_title'] if 'search_title' in \
+            request.session else None
+        company = request.session['search_company'] if 'search_company' in \
+            request.session else None
+        state_province = request.session['search_state'] if 'search_state' in \
+            request.session else None
+        past_customer = request.session['search_customer'] if \
+            'search_customer' in request.session else None
 
         form = SearchForm(initial={
             'name': name,
             'title': title,
             'company': company,
-            'date_modified': date_modified,
+            'state_province': state_province,
+            'past_customer': past_customer,
         })
 
-        if name or title or company or date_modified:
+        if name or title or company or state_province:
             search_list = execute_person_search(name,
                                                 title,
                                                 company,
-                                                date_modified,
+                                                state_province,
+                                                past_customer,
                                                 sort_col,
                                                 sort_order)
         else:
             search_list = Person.objects.none()
 
     paginator = Paginator(search_list, TERRITORY_RECORDS_PER_PAGE)
-
 
     if 'page' in request.GET:
         page = request.session['search_page'] = request.GET['page']

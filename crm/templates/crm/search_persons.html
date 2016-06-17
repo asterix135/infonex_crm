@@ -4,34 +4,41 @@
 
 <h1>Search Entire Database</h1>
 
-<div class="search-form">
-    <form action="{% url 'crm:search_persons' %}" method="post">
-        {% csrf_token %}
-        <div class="form-group row">
-            <label for="{{ search_form.name.id_for_label }}" class="col-sm-1 form-control-label">Name</label>
-            <div class="col-sm-4">{{ search_form.name }}</div>
-        </div>
-        <div class="form-group row">
-            <label for="{{ search_form.title.id_for_label }}" class="col-sm-1 form-control-label">Title</label>
-            <div class="col-sm-4">{{ search_form.title }}</div>
-        </div>
-        <div class="form-group row">
-            <label for="{{ search_form.company.id_for_label }}" class="col-sm-1 form-control-label">Company</label>
-            <div class="col-sm-4">{{ search_form.company }}</div>
-        </div>
-        <div class="form-group row">
-            <label for="{{ search_form.date_modified.id_for_label }}" class="col-sm-1 form-control-label">Modified on or after</label>
-            <div class="col-sm-2">{{ search_form.date_modified }}</div>
-        </div>
-        <div class="form-group row">
-            <div class="col-sm-offset-1 col-sm-1 ">
-                <button type="submit" class="btn btn-primary">Search</button>
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h2 class="panel-title h2">Enter Search Criteria</h2>
+    </div>
+    <div class="panel-body">
+        <form action="{% url 'crm:search_persons' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group row">
+                <label for="{{ search_form.name.id_for_label }}" class="col-sm-2 form-control-label">Name</label>
+                <div class="col-sm-10">{{ search_form.name }}</div>
             </div>
-            <div class="col-sm-1">
-                <button type="reset" class="btn btn-secondary">Reset Form</button>
+            <div class="form-group row">
+                <label for="{{ search_form.title.id_for_label }}" class="col-sm-2 form-control-label">Title</label>
+                <div class="col-sm-10">{{ search_form.title }}</div>
             </div>
-        </div>
-    </form>
+            <div class="form-group row">
+                <label for="{{ search_form.company.id_for_label }}" class="col-sm-2 form-control-label">Company</label>
+                <div class="col-sm-10">{{ search_form.company }}</div>
+            </div>
+            <div class="form-group row">
+                <label for="{{ search_form.state_province.id_for_label }}" class="col-sm-2 form-control-label">State/Province</label>
+                <div class="col-sm-2">{{ search_form.state_province }}</div>
+                <label for="{{ search_form.past_customer.id_for_label }}" class="col-sm-2 form-control-label">Past Customer</label>
+                <div class="col-sm-2">{{ search_form.past_customer }}</div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-offset-2 col-sm-2 ">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+                <div class="col-sm-2">
+                    <button type="reset" class="btn btn-default">Reset Form</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div class="search-results">

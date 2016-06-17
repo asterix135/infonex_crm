@@ -3,7 +3,7 @@ import re
 
 from django.db import models
 from django.utils import timezone
-from .constants import ac_dict, flag_choices
+from .constants import AC_DICT, FLAG_CHOICES
 
 
 class Person(models.Model):
@@ -102,8 +102,8 @@ class Person(models.Model):
         phone_pattern = re.compile(r'(\d{3})\D*(\d{3})\D*(\d{4})\D*(\d*)$')
         if phone_pattern.search(self.phone):
             ac = phone_pattern.search(self.phone).groups()[0]
-            if ac in ac_dict():
-                return ac_dict()[ac]
+            if ac in AC_DICT:
+                return AC_DICT[ac]
         return "UNKNOWN"
 
     def has_registration_history(self):
@@ -315,7 +315,7 @@ class PersonFlag(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
     flag = models.CharField(max_length=1,
-                            choices=flag_choices(),
+                            choices=FLAG_CHOICES,
                             blank=True,
                             default='')
     follow_up_date = models.DateField(blank=True, null=True)

@@ -10,7 +10,7 @@ from django.utils import timezone
 from .filters import *
 from .forms import *
 from .models import *
-from .constants import ac_dict
+from .constants import AC_DICT
 
 
 #########################
@@ -892,14 +892,11 @@ def generate_territory_list(employee, event, sort_col='date_modified',
             else:
                 filter_clause_started = True
             sql += 'p.phone REGEXP "'
-            all_area_codes = ac_dict()
             ac_list = []
-            for area_code in all_area_codes:
-                if all_area_codes[area_code] == request.session['filter_state']:
+            for area_code in AC_DICT:
+                if AC_DICT[area_code] == request.session['filter_state']:
                     sql += '^' + area_code + '|^[(]' + area_code + '|'
             sql = sql[:-1] + '" '
-
-        # TODO: How to deal with customer???
 
         # flag whether we have to deal with setting up an outer join
         if 'filter_customer' in request.session and \

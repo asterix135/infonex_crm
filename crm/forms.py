@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 
 from .models import *
-from .constants import state_prov_tuple, flag_choices
+from .constants import STATE_PROV_TUPLE, FLAG_CHOICES
 
 
 class PersonUpdateForm(forms.ModelForm):
@@ -204,6 +204,19 @@ class SearchForm(forms.Form):
                               widget=forms.TextInput(
                                   attrs={'class': 'form-control'}
                               ))
+    state_province = forms.ChoiceField(label='State/Province',
+                                       required=False,
+                                       initial='',
+                                       choices=STATE_PROV_TUPLE,
+                                       widget=forms.Select(
+                                           attrs={'class': 'form-control'}
+                                       ))
+    past_customer = forms.BooleanField(label='Past Customer',
+                                       required=False,
+                                       initial=False,
+                                       widget=forms.CheckboxInput(
+                                           attrs={'class': 'form-control'}
+                                       ))
     date_modified = forms.DateField(label='Modified on or After',
                                     required=False,
                                     widget=forms.TextInput(
@@ -240,13 +253,13 @@ class TerritorySearchForm(forms.Form):
     state_province = forms.ChoiceField(label='State/Province',
                                        required=False,
                                        initial='',
-                                       choices=state_prov_tuple(),
+                                       choices=STATE_PROV_TUPLE,
                                        widget=forms.Select(
                                            attrs={'class': 'form-control'}
                                        ))
     flag = forms.ChoiceField(label='Flag Value',
                              required=False,
-                             choices=flag_choices(),
+                             choices=FLAG_CHOICES,
                              widget=forms.Select(
                                  attrs={'class': 'form-control'}
                              ))

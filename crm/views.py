@@ -519,6 +519,8 @@ def execute_person_search(name, title, company, state_province, past_customer,
     Helper function to filter records on search_person call
     returns sorted QuerySet
     """
+    past_customer = past_customer == 'True' if past_customer is not None \
+        else None
     search_list = Person.objects.all()
     if name:
         search_list = search_list.filter(name__icontains=name)
@@ -533,8 +535,9 @@ def execute_person_search(name, title, company, state_province, past_customer,
                 regex_val += '^' + area_code + '|^\(' + area_code + '|'
         regex_val = regex_val[:-1]
         search_list = search_list.filter(phone__regex=regex_val)
-    if past_customer:
-        pass
+    if past_customer is not None:
+        search_list = search_list.filter(reghistory__isnull=not past_customer)
+
     search_list = search_list.order_by(sort_col)
     if sort_order == 'DESC':
         search_list = search_list.reverse()

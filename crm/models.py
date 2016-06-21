@@ -39,7 +39,8 @@ class Person(models.Model):
         ('Industry', 'Industry'),
         ('Aboriginal', 'Aboriginal'),
         ('Gov', 'Gov'),
-        ('NA', 'None')
+        ('USA', 'USA'),
+        ('NA', 'None'),
     )
     main_category = models.CharField(max_length=25,
                                      choices=CAT_CHOICES,
@@ -174,6 +175,7 @@ class RegHistory(models.Model):
         ('SPEAKER', 'Speaker'),
         ('GUEST', 'Guest (non-revenue)'),
         ('SPONSOR', 'Sponsor Representative'),
+        ('CANCEL', 'Cancelled Delegate'),
         ('OTHER', 'Other attendee'),
     )
     status = models.CharField(max_length=10,

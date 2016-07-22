@@ -449,7 +449,6 @@ def new_person(request):
                     new_select.save()
 
             add_change_record(person, 'new')
-            print(request.GET.get('ref'))
             if request.GET.get('ref') == 'paginated':
                 redirect_url = reverse('crm:detail_paginated')
                 extra_params = '?pk=%s' % person.id

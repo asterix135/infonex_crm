@@ -55,7 +55,7 @@
                 <h2 class="panel-title">Add Contact Info</h2>
             </div>
             <div class="panel-body">
-                <form action="{% url 'crm:detail_paginated' %}?pk={{ person.pk }}" method="post">
+                <form action="{% url 'crm:detail' person.id %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="page_source" value="paginated">
                     {% include 'crm/add_contact_form.html' %}

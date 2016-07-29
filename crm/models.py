@@ -11,8 +11,8 @@ class Person(models.Model):
     Basic person model
     """
     name = models.CharField(max_length=100)
-    title = models.CharField(max_length=100)
-    company = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, blank=True)
+    company = models.CharField(max_length=100, blank=True)
     url = models.URLField(max_length=200, blank=True)
     phone = models.CharField(max_length=20, blank=True)
     phone_main = models.CharField(max_length=20, blank=True)

@@ -7,7 +7,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 
-from .filters import *
 from .forms import *
 from .models import *
 from .constants import AC_DICT
@@ -396,13 +395,8 @@ def confirm_delete(request, person_id):
     person.delete()
 
     if request.session.get('ref') == 'absolute':
-        # setup stuff for list page
-        person_filter = PersonFilter(request.GET, queryset=Person.objects.all())
-        context = {  # 'persons_all': persons_all,
-               'person_filter': person_filter,
-        }
         del request.session['ref']
-        return render(request, "crm/list.html", context)
+        return redirect(reverse('crm:search_persons'))
     else:
         del request.session['ref']
         return redirect(reverse('crm:territory'))
@@ -425,6 +419,8 @@ def new_person(request):
                 industry=request.POST['industry'],
                 dept=request.POST['dept'],
                 main_category=request.POST['main_category'],
+                main_category2=request.POST['main_category'],
+                geo=request.POST['geo'],
                 division1=request.POST['division1'],
                 division2=request.POST['division2'],
                 date_created=timezone.now(),
@@ -491,32 +487,6 @@ def add_contact(request, person):
     person.date_modified = timezone.now()
     person.modified_by = request.user
     person.save()
-
-
-@login_required
-def person_list(request):
-    # Bounce if permissions not correct
-    if not (request.user.groups.filter(name='db_admin').exists() or
-            request.user.is_superuser):
-        return redirect(reverse('crm:index'))
-
-    person_filter = PersonFilter(request.GET, queryset=Person.objects.all())
-
-    paginator = Paginator(person_filter, TERRITORY_RECORDS_PER_PAGE)
-    page = request.GET.get('page')
-    try:
-        page_person_list = paginator.page(page)
-    except PageNotAnInteger:
-        page_person_list = paginator.page(1)
-        page = 1
-    except EmptyPage:
-        page_person_list = paginator.page(paginator.num_pages)
-        page = paginator.num_pages
-
-    context = {  # 'persons_all': persons_all,
-               'person_filter': person_filter,
-               'page_person_list': page_person_list}
-    return render(request, "crm/list.html", context)
 
 
 #################

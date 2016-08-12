@@ -32,9 +32,6 @@ urlpatterns = [
     # ex: /crm/flag_record/
     url(r'^flag_record/$', views.flag_record, name='flag_record'),
 
-    # ex: /crm/list/
-    url(r'^list/$', views.person_list, name='person_list'),
-
     # ex: /crm/new_person/
     url(r'^new_person/$', views.new_person, name='new_person'),
 

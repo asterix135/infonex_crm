@@ -11,7 +11,8 @@ class PersonUpdateForm(forms.ModelForm):
         model = Person
         fields = ('name', 'title', 'company', 'url', 'phone', 'phone_main',
                   'do_not_call', 'email', 'do_not_email', 'industry', 'dept',
-                  'city',)
+                  'city', 'main_category', 'main_category2',
+                  'division1', 'division2', 'geo')
         widgets = {
             'name': forms.TextInput(
                 attrs={'class': 'form-control'}
@@ -42,6 +43,21 @@ class PersonUpdateForm(forms.ModelForm):
                        'rows': '3'}
             ),
             'dept': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'main_category': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'main_category2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'division2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'geo': forms.Select(
                 attrs={'class': 'form-control'}
             ),
         }

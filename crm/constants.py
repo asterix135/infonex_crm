@@ -395,10 +395,10 @@ STATE_PROV_TUPLE =  (
     ('', 'Any'),
     ('AB', 'Alberta'), ('BC', 'British Columbia'), ('MB', 'Manitoba'),
     ('NB', 'New Brunswick'), ('NL', 'Newfoundland and Labrador'),
-    ('NT', 'Northwest Territories'), ('NS', 'Nova Scotia'),
-    ('NU', 'Nunavut'), ('ON', 'Ontario'),
-    ('PE', 'Prince Edward Island'), ('QC', 'Quebec'),
-    ('SK', 'Saskatchewan'), ('YT', 'Yukon'),
+    ('YK/NT/NU', 'Northwest Territories'), ('NS/PEI', 'Nova Scotia'),
+    ('YK/NT/NU', 'Nunavut'), ('ON', 'Ontario'),
+    ('NS/PEI', 'Prince Edward Island'), ('QC', 'Quebec'),
+    ('SK', 'Saskatchewan'), ('YK/NT/NU', 'Yukon'),
 
     ('', '-----------'),
 

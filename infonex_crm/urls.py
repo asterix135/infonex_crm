@@ -21,6 +21,7 @@ import home.views
 
 urlpatterns = [
     url(r'^crm/', include('crm.urls')),
+    url(r'^registration/', include('registration.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/login/$', django.contrib.auth.views.login),
     url(r'^accounts/logout/$', django.contrib.auth.views.logout, {'next_page': '/'}),

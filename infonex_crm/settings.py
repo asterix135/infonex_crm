@@ -48,6 +48,7 @@ ALLOWED_HOSTS = [local_ip,
 INSTALLED_APPS = [
     'crm.apps.CrmConfig',
     'home.apps.HomeConfig',
+    'registration.apps.RegistrationConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

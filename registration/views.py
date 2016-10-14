@@ -3,4 +3,4 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse("Placeholder page for registration.")
+    return render(request, 'registration/index.html')

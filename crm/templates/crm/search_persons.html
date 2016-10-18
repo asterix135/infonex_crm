@@ -5,81 +5,94 @@
 <h1>Search Entire Database</h1>
 
 <div class="panel panel-info">
-    <div class="panel-heading">
-        <h2 class="panel-title h2">Enter Search Criteria</h2>
-    </div>
-    <div class="panel-body">
-        <form action="{% url 'crm:search_persons' %}" method="post">
-            {% csrf_token %}
-            <div class="form-group row">
-                <label for="{{ search_form.name.id_for_label }}" class="col-sm-2 form-control-label">Name</label>
-                <div class="col-sm-10">{{ search_form.name }}</div>
-            </div>
-            <div class="form-group row">
-                <label for="{{ search_form.title.id_for_label }}" class="col-sm-2 form-control-label">Title</label>
-                <div class="col-sm-10">{{ search_form.title }}</div>
-            </div>
-            <div class="form-group row">
-                <label for="{{ search_form.company.id_for_label }}" class="col-sm-2 form-control-label">Company</label>
-                <div class="col-sm-10">{{ search_form.company }}</div>
-            </div>
-            <div class="form-group row">
-                <label for="{{ search_form.state_province.id_for_label }}" class="col-sm-2 form-control-label">State/Province</label>
-                <div class="col-sm-2">{{ search_form.state_province }}</div>
-                <label for="{{ search_form.past_customer.id_for_label }}" class="col-sm-2 form-control-label">Past Customer</label>
-                <div class="col-sm-2">{{ search_form.past_customer }}</div>
-            </div>
-            <div class="form-group row">
-                <div class="col-sm-offset-2 col-sm-2 ">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </div>
-                <div class="col-sm-2">
-                    <button type="reset" class="btn btn-default">Reset Form</button>
-                </div>
-            </div>
-        </form>
-    </div>
+  <div class="panel-heading">
+    <h2 class="panel-title h2">Enter Search Criteria</h2>
+  </div>
+  <div class="panel-body">
+    <form action="{% url 'crm:search_persons' %}" method="post">
+      {% csrf_token %}
+      <div class="form-group row">
+        <label for="{{ search_form.name.id_for_label }}"
+          class="col-sm-2 form-control-label">Name</label>
+        <div class="col-sm-10">{{ search_form.name }}</div>
+      </div>
+      <div class="form-group row">
+        <label for="{{ search_form.title.id_for_label }}"
+          class="col-sm-2 form-control-label">Title</label>
+        <div class="col-sm-10">{{ search_form.title }}</div>
+      </div>
+      <div class="form-group row">
+        <label for="{{ search_form.company.id_for_label }}"
+          class="col-sm-2 form-control-label">Company</label>
+        <div class="col-sm-10">{{ search_form.company }}</div>
+      </div>
+      <div class="form-group row">
+        <label for="{{ search_form.state_province.id_for_label }}"
+          class="col-sm-2 form-control-label">State/Province</label>
+        <div class="col-sm-2">{{ search_form.state_province }}</div>
+        <label for="{{ search_form.past_customer.id_for_label }}"
+          class="col-sm-2 form-control-label">Past Customer</label>
+        <div class="col-sm-2">{{ search_form.past_customer }}</div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-offset-2 col-sm-2 ">
+          <button type="submit" class="btn btn-primary" name="option"
+            value="filter">Search</button>
+        </div>
+        <div class="col-sm-2">
+          <button type="submit" class="btn btn-default" name="option"
+            value="reset">Reset Form</button>
+        </div>
+        <div class="col-sm-2">
+          <button type="reset" class="btn btn-default">Undo Changes</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
 <div class="search-results">
-    <table class="table table-striped">
-        <thead class="thead-inverse">
-            <tr>
-                <th class="col-sm-2"><a href="?sort=name">Person Name</a></th>
-                <th class="col-sm-3"><a href="?sort=title">Title</a></th>
-                <th class="col-sm-3"><a href="?sort=company">Company</a></th>
-                <th class="col-sm-2">Phone</th>
-                <th class="col-sm-2"><a href="?sort=date_modified">Last Modified</a></th>
-                <th class="col-sm-1">Customer?</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if person_list %}
-                {% for person in person_list %}
-                    <tr>
-                        <td class="col-sm-2"><a href="{% url 'crm:detail' person.id %}">{{ person.name}}</a></td>
-                        <td class="col-sm-3">{{ person.title }}</td>
-                        <td class="col-sm-3">{{ person.company}}</td>
-                        <td class="col-sm-2">{{ person.phone }}</td>
-                        <td class="col-sm-2">{{ person.date_modified }}</td>
-                        <td class="col-sm-1">
-                            {% if person.has_registration_history %}
-                                <span class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>
-                            {% else %}
-                                <span class="glyphicon glyphicon-remove alert-warning" aria-hidden="true"></span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td class="col-sm-12" colspan="4">
-                        <h2 class="empty-list">Search Result is Empty</h2>
-                    </td>
-                </tr>
-            {% endif %}
-        </tbody>
-    </table>
+  <table class="table table-striped">
+    <thead class="thead-inverse">
+      <tr>
+        <th class="col-sm-2"><a href="?sort=name">Person Name</a></th>
+        <th class="col-sm-3"><a href="?sort=title">Title</a></th>
+        <th class="col-sm-3"><a href="?sort=company">Company</a></th>
+        <th class="col-sm-2">Phone</th>
+        <th class="col-sm-2"><a href="?sort=date_modified">Last Modified</a></th>
+        <th class="col-sm-1">Customer?</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if person_list %}
+      {% for person in person_list %}
+      <tr>
+        <td class="col-sm-2"><a href="{% url 'crm:detail' person.id %}">
+          {{ person.name}}</a></td>
+        <td class="col-sm-3">{{ person.title }}</td>
+        <td class="col-sm-3">{{ person.company}}</td>
+        <td class="col-sm-2">{{ person.phone }}</td>
+        <td class="col-sm-2">{{ person.date_modified }}</td>
+        <td class="col-sm-1">
+          {% if person.has_registration_history %}
+          <span class="glyphicon glyphicon-ok alert-success"
+            aria-hidden="true"></span>
+          {% else %}
+          <span class="glyphicon glyphicon-remove alert-warning"
+            aria-hidden="true"></span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      {% else %}
+      <tr>
+        <td class="col-sm-12" colspan="4">
+          <h2 class="empty-list">Search Result is Empty</h2>
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
 </div>
 
 <br>

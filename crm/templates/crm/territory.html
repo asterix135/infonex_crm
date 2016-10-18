@@ -9,126 +9,121 @@
 </h1>
 
 <div class="panel panel-info">
-    <div class="panel-heading">
-        <h2 class="panel-title h2">Filter Territory</h2>
-    </div>
-    <div class="panel-body">
-        <form action="" method="post">
-            {% csrf_token %}
-            <div class="form-group row">
-                <label for="{{ filter_form.name.id_for_label }}" class="col-sm-2 form-control-label">Name</label>
-                <div class="col-sm-10">{{ filter_form.name }}</div>
-            </div>
-            <div class="form-group row">
-                <label for="{{ filter_form.title.id_for_label }}" class="col-sm-2 form-control-label">Title</label>
-                <div class="col-sm-10">{{ filter_form.title }}</div>
-            </div>
-            <div class="form-group row">
-                <label for="{{ filter_form.company.id_for_label }}" class="col-sm-2 form-control-label">Company</label>
-                <div class="col-sm-10">{{ filter_form.company }}</div>
-            </div>
-            <div class="form-group row">
-                <label for="{{ filter_form.flag.id_for_label }}" class="col-sm-2 form-control-label">Flag Value</label>
-                <div class="col-sm-2">{{ filter_form.flag }}</div>
-
-                <label for="{{ filter_form.state_province.id_for_label }}" class="col-sm-2 form-control-label">State/Province</label>
-                <div class="col-sm-2">{{ filter_form.state_province }}</div>
-
-                <label for="{{ filter_form.past_customer.id_for_label }}" class="col-sm-2 form-control-label">Past Customer</label>
-                <div class="col-sm-2">{{ filter_form.past_customer }}</div>
-            </div>
-
-            <div class="form-group row">
-                <div class="col-sm-2 col-sm-offset-2">
-                    <button type="submit" name="option" value="filter" class="btn btn-primary">Filter Territory</button>
-                </div>
-                <div class="col-sm-2">
-                    <button type="submit" name="option" value="reset" class="btn btn-success">Reset (See All Records)</button>
-                </div>
-            </div>
-
-
-        </form>
-    </div>
+  <div class="panel-heading">
+    <h2 class="panel-title h2">Filter Territory</h2>
+  </div>
+  <div class="panel-body">
+    <form action="" method="post">
+      {% csrf_token %}
+      <div class="form-group row">
+        <label for="{{ filter_form.name.id_for_label }}" class="col-sm-2 form-control-label">Name</label>
+        <div class="col-sm-10">{{ filter_form.name }}</div>
+      </div>
+      <div class="form-group row">
+        <label for="{{ filter_form.title.id_for_label }}" class="col-sm-2 form-control-label">Title</label>
+        <div class="col-sm-10">{{ filter_form.title }}</div>
+      </div>
+      <div class="form-group row">
+        <label for="{{ filter_form.company.id_for_label }}" class="col-sm-2 form-control-label">Company</label>
+        <div class="col-sm-10">{{ filter_form.company }}</div>
+      </div>
+      <div class="form-group row">
+        <label for="{{ filter_form.flag.id_for_label }}" class="col-sm-2 form-control-label">Flag Value</label>
+        <div class="col-sm-2">{{ filter_form.flag }}</div>
+        <label for="{{ filter_form.state_province.id_for_label }}" class="col-sm-2 form-control-label">State/Province</label>
+        <div class="col-sm-2">{{ filter_form.state_province }}</div>
+        <label for="{{ filter_form.past_customer.id_for_label }}" class="col-sm-2 form-control-label">Past Customer</label>
+        <div class="col-sm-2">{{ filter_form.past_customer }}</div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-2 col-sm-offset-2">
+          <button type="submit" name="option" value="filter" class="btn btn-primary">Filter Territory</button>
+        </div>
+        <div class="col-sm-2">
+          <button type="submit" name="option" value="reset" class="btn btn-success">Reset (See All Records)</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
 
 <div class="territory-list">
-    <table class="table table-striped">
-        <thead class="thead-inverse">
-            <tr>
-                <th class="col-sm-2" colspan="3">Flag</th>
-                <th class="col-sm-2"><a href="?sort=name">Person Name</a></th>
-                <th class="col-sm-2"><a href="?sort=title">Title</a></th>
-                <th class="col-sm-2"><a href="?sort=company">Company</a></th>
-                <th class="col-sm-2">Phone</th>
-                <th class="col-sm-2"><a href="?sort=date_modified">Last Modified</a></th>
-                <th>Customer?</th>
-            </tr>
-        </thead>
-        {% if person_list %}
-            <tbody>
-                {% for person in person_list %}
-                    <tr>
-                        <form action="{% url 'crm:flag_record' %}" method="post" name="flag">
-                            {% csrf_token %}
-                            <input type="hidden" name="page_source" value="territory" />
-                            <input type="hidden" name="person_id" value="{{ person.id }}" />
-                            <input type="hidden" name="page" value="{{ person_list.number }}" />
-                            <input type="hidden" name="page_index_num" value="{{ forloop.counter }}" />
-                            <td>
-                                {% if person.flag_val == '1' %}
-                                    <img src={% static 'crm/images/flag_red.png' %}>
-                                {% elif person.flag_val == '2' %}
-                                    <img src={% static 'crm/images/flag_green.png' %}>
-                                {% elif person.flag_val == '3' %}
-                                    <img src={% static 'crm/images/flag_blue.png' %}>
-                                {% elif person.flag_val == '4' %}
-                                    <img src={% static 'crm/images/flag_orange.png' %}>
-                                {% elif person.flag_val == '5' %}
-                                    <img src={% static 'crm/images/flag_yellow.png' %}>
-                                {% elif person.flag_val == '6' %}
-                                    <img src={% static 'crm/images/flag_pink.png' %}>
-                                {% elif person.flag_val == '7' %}
-                                    <img src={% static 'crm/images/flag_pirate.png' %}>
-                                {% else %}
-                                    <img src={% static 'crm/images/flag_none.png' %}>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {{ flag_form.flag }}
-                            </td>
-                            <td>
-                                <button type="submit" class="btn btn-primary">Change</button>
-                            </td>
-                            <td class="col-sm-2">
-                                <a href="{% url 'crm:detail_paginated' %}?pk={{ person.pk }}">{{ person.name }}</a>
-                            </td>
-                            <td class="col-sm-2">{{ person.title }}</td>
-                            <td class="col-sm-2">{{ person.company }}</td>
-                            <td class="col-sm-2">{{ person.phone }}</td>
-                            <td class="col-sm-2">{{ person.date_modified }}</td>
-                            <td>
-                                {% if person.has_registration_history %}
-                                    <span class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>
-                                {% else %}
-                                    <span class="glyphicon glyphicon-remove alert-warning" aria-hidden="true"></span>
-                                {% endif %}
-                            </td>
-                        </form>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        {% else %}
-            <tbody>
-                <tr>
-                    <td class="col-sm-12" colspan="5">
-                        <h2 class="empty-list">Territory is Empty</h2>
-                    </td>
-                </tr>
-            </tbody>
-        {% endif %}
-    </table>
+  <table class="table table-striped">
+    <thead class="thead-inverse">
+      <tr>
+        <th class="col-sm-2" colspan="3">Flag</th>
+        <th class="col-sm-2"><a href="?sort=name">Person Name</a></th>
+        <th class="col-sm-2"><a href="?sort=title">Title</a></th>
+        <th class="col-sm-2"><a href="?sort=company">Company</a></th>
+        <th class="col-sm-2">Phone</th>
+        <th class="col-sm-2"><a href="?sort=date_modified">Last Modified</a></th>
+        <th>Customer?</th>
+      </tr>
+    </thead>
+    {% if person_list %}
+    <tbody>
+      {% for person in person_list %}
+      <tr>
+        <form action="{% url 'crm:flag_record' %}" method="post" name="flag">
+          {% csrf_token %}
+          <input type="hidden" name="page_source" value="territory" />
+          <input type="hidden" name="person_id" value="{{ person.id }}" />
+          <input type="hidden" name="page" value="{{ person_list.number }}" />
+          <input type="hidden" name="page_index_num" value="{{ forloop.counter }}" />
+          <td>
+            {% if person.flag_val == '1' %}
+            <img src={% static 'crm/images/flag_red.png' %}>
+            {% elif person.flag_val == '2' %}
+            <img src={% static 'crm/images/flag_green.png' %}>
+            {% elif person.flag_val == '3' %}
+            <img src={% static 'crm/images/flag_blue.png' %}>
+            {% elif person.flag_val == '4' %}
+            <img src={% static 'crm/images/flag_orange.png' %}>
+            {% elif person.flag_val == '5' %}
+            <img src={% static 'crm/images/flag_yellow.png' %}>
+            {% elif person.flag_val == '6' %}
+            <img src={% static 'crm/images/flag_pink.png' %}>
+            {% elif person.flag_val == '7' %}
+            <img src={% static 'crm/images/flag_pirate.png' %}>
+            {% else %}
+            <img src={% static 'crm/images/flag_none.png' %}>
+            {% endif %}
+          </td>
+          <td>
+            {{ flag_form.flag }}
+          </td>
+          <td>
+            <button type="submit" class="btn btn-primary">Change</button>
+          </td>
+          <td class="col-sm-2">
+            <a href="{% url 'crm:detail_paginated' %}?pk={{ person.pk }}">{{ person.name }}</a>
+          </td>
+          <td class="col-sm-2">{{ person.title }}</td>
+          <td class="col-sm-2">{{ person.company }}</td>
+          <td class="col-sm-2">{{ person.phone }}</td>
+          <td class="col-sm-2">{{ person.date_modified }}</td>
+          <td>
+            {% if person.has_registration_history %}
+            <span class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>
+            {% else %}
+            <span class="glyphicon glyphicon-remove alert-warning" aria-hidden="true"></span>
+            {% endif %}
+          </td>
+        </form>
+      </tr>
+      {% endfor %}
+    </tbody>
+    {% else %}
+      <tbody>
+        <tr>
+          <td class="col-sm-12" colspan="5">
+            <h2 class="empty-list">Territory is Empty</h2>
+          </td>
+        </tr>
+      </tbody>
+    {% endif %}
+  </table>
 </div>
 
 {% include 'crm/pagination.html' %}

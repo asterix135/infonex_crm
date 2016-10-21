@@ -6,4 +6,6 @@ app_name = 'registration'
 urlpatterns = [
     # ex: /registration/
     url(r'^$', views.index, name='index'),
+
+    url(r'^new/$', views.new, name='new'),
 ]

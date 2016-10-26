@@ -54,11 +54,10 @@
       <tr>
         <th class="col-sm-2" colspan="3">Flag</th>
         <th class="col-sm-2"><a href="?sort=name">Person Name</a></th>
-        <th class="col-sm-2"><a href="?sort=title">Title</a></th>
-        <th class="col-sm-2"><a href="?sort=company">Company</a></th>
+        <th class="col-sm-3"><a href="?sort=title">Title</a></th>
+        <th class="col-sm-3"><a href="?sort=company">Company</a></th>
         <th class="col-sm-2">Phone</th>
-        <th class="col-sm-2"><a href="?sort=date_modified">Last Modified</a></th>
-        <th>Customer?</th>
+                <th>Customer?</th>
       </tr>
     </thead>
     {% if person_list %}
@@ -99,10 +98,9 @@
           <td class="col-sm-2">
             <a href="{% url 'crm:detail_paginated' %}?pk={{ person.pk }}">{{ person.name }}</a>
           </td>
-          <td class="col-sm-2">{{ person.title }}</td>
-          <td class="col-sm-2">{{ person.company }}</td>
+          <td class="col-sm-3">{{ person.title }}</td>
+          <td class="col-sm-3">{{ person.company }}</td>
           <td class="col-sm-2">{{ person.phone }}</td>
-          <td class="col-sm-2">{{ person.date_modified }}</td>
           <td>
             {% if person.has_registration_history %}
             <span class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>

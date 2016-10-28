@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Signika'
+    rel='stylesheet' type='text/css'>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+    rel="stylesheet">
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+    rel="stylesheet">
+  <link href="http://getbootstrap.com/examples/dashboard/dashboard.css"
+    rel="stylesheet">
+  <link href="{% static 'crm/style.css' %}" rel="stylesheet" type="text/css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script type="text/javascript"
+    src="{% static 'crm/javascript/crm_scripts.js' %}"></script>
+</head>
+
+<body>
+  <label class="form-label-check">
+  <input class="form-check-input" id="checkAllBoxes" type="checkbox" value="" onclick="sayHello()"/>
+  <strong>Select All</strong>
+  </label>
+  <table>
+  <tr>
+    <th>Number</th>
+  </tr>
+
+  <tr>
+  <td><label><input name="reflag_{{ person.id }}" type="checkbox" />No id or valid name</label></td>
+  </tr>
+  <tr>
+  <td><label><input name="reflag_123" type="checkbox" id="personBox" />id=personBox</label></td>
+  </tr>
+  <tr>
+  <td><label><input name="reflag_234" type="checkbox" id="personBox" />id=personBox</label></td>
+  </tr>
+  <tr>
+  <td><label><input id="reflag_456" type="checkbox" name="personBox"  />name=personBox</label></td>
+  </tr>
+  </table>
+</body>
+
+</html>

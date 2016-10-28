@@ -7,7 +7,8 @@
 <h1>
     Territory for {{ employee }} - {{ event }}
 </h1>
-<!-- Search panel part of page -->
+
+<!-- Search part of page -->
 <div class="panel panel-info">
   <div class="panel-heading">
     <h2 class="panel-title h2">Filter Territory</h2>
@@ -49,20 +50,19 @@
 
 <!-- List part of page -->
 <div class="territory-list">
-  <div>
-    <label class="form-check-label">
-      <input class="form-check-input" id="checkAllBoxes" type="checkbox" value="" onclick="checkAll()" />
-      <strong>Select All</strong>
-    </label>
-  </div>
   <table class="table table-striped">
     <thead class="thead-inverse">
       <tr>
+        <th class="col-sm-1">Flag</th>
         <th class="col-sm-1">
+          <label class="form-check-label">
+            <input class="form-check-input" id="checkAllBoxes" type="checkbox" value="" />
+            <strong>Select All</strong>
+          </label>
+        </th>
+        <th>
 
         </th>
-        <th class="col-sm-1">Flag</th>
-
         <th class="col-sm-2"><a href="?sort=name">Person Name</a></th>
         <th class="col-sm-3"><a href="?sort=title">Title</a></th>
         <th class="col-sm-3"><a href="?sort=company">Company</a></th>
@@ -70,14 +70,15 @@
                 <th>Customer?</th>
       </tr>
     </thead>
-    {% if person_list %}
-    <form action="{% url 'crm:flag_record' %}" method="post" name="flag">
-      <input type="hidden" name="page_source" value="territory" />
 
-      {% csrf_token %}
-      <tbody>
+    {% if person_list %}
+    <tbody>
+      <form action="{% url 'crm:flag_record' %}" method="post" name="flag">
+
       {% for person in person_list %}
       <tr>
+          {% csrf_token %}
+          <input type="hidden" name="page_source" value="territory" />
           <input type="hidden" name="person_id" value="{{ person.id }}" />
           <input type="hidden" name="page" value="{{ person_list.number }}" />
           <input type="hidden" name="page_index_num" value="{{ forloop.counter }}" />
@@ -101,10 +102,10 @@
             {% endif %}
           </td>
           <td>
-            {{ flag_form.flag }}
+            <input name="reflag_{{ person.id }}" type="checkbox" />
           </td>
           <td>
-            <label><input name="reflag" value="{{ person_id }}" type="checkbox" /></label>
+            <button type="submit" class="btn btn-primary">Change</button>
           </td>
           <td class="col-sm-2">
             <a href="{% url 'crm:detail_paginated' %}?pk={{ person.pk }}">{{ person.name }}</a>
@@ -119,11 +120,10 @@
             <span class="glyphicon glyphicon-remove alert-warning" aria-hidden="true"></span>
             {% endif %}
           </td>
+        </form>
       </tr>
       {% endfor %}
     </tbody>
-  </form>
-
     {% else %}
       <tbody>
         <tr>

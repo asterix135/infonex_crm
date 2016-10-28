@@ -1208,3 +1208,14 @@ def flag_record(request):
         return HttpResponseRedirect(full_redirect_url)
     else:
         return HttpResponseRedirect(reverse('crm:territory'))
+
+
+@login_required
+def flag_many_records(request):
+    """
+    bulk update flags from territory listing page_source
+    """
+    pass
+
+def test(request):
+    return render(request, 'crm/test.html')

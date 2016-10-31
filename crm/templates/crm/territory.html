@@ -67,7 +67,7 @@
           </div>
           <div class="col-sm-2">
 
-            <select class="form-control col-sm-1" id="id_flag" name="flag">
+            <select class="form-control col-sm-1" id="masterFlag" name="masterFlag" onclick="toggleFlags()">
               <option value="1">Red</option>
               <option value="2">Green</option>
               <option value="3">Blue</option>
@@ -124,7 +124,7 @@
               {% else %}
               <img src={% static 'crm/images/flag_none.png' %}>
               {% endif %}
-              <select class="form-control col-sm-1" id="id_flag" name="flag">
+              <select class="form-control col-sm-1" id="id_flag" name="personFlag">
                 <option value="1">Red</option>
                 <option value="2">Green</option>
                 <option value="3">Blue</option>

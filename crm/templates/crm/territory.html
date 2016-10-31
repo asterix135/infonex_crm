@@ -48,83 +48,128 @@
 </div>
 
 <!-- List part of page -->
+{% if person_list %}
 <div class="territory-list">
-  <div>
-    <label class="form-check-label">
-      <input class="form-check-input" id="checkAllBoxes" type="checkbox" value="" onclick="checkAll()" />
-      <strong>Select All</strong>
-    </label>
-  </div>
-  <table class="table table-striped">
-    <thead class="thead-inverse">
-      <tr>
-        <th class="col-sm-1">
+  <form action="{% url 'crm:flag_record' %}" method="post" name="flag">
+    {% csrf_token %}
+    <input type="hidden" name="page" value="{{person_list.number }}" />
+    <div class="batch-change panel panel-info">
+      <div class="panel-heading">
+        <h4 class="panel-title h4">Batch update records</h4>
+      </div>
+      <div class="panel-body">
+        <div class="form-group row">
+          <div class="col-sm-2">
+            <label class="form-check-label">
+              <strong>Select all records&nbsp;</strong>
+              <input class="form-check-input" id="checkAllBoxes" type="checkbox" value="" onclick="checkAll()"  />
+            </label>
+          </div>
+          <div class="col-sm-2">
 
-        </th>
-        <th class="col-sm-1">Flag</th>
+            <select class="form-control col-sm-1" id="id_flag" name="flag">
+              <option value="1">Red</option>
+              <option value="2">Green</option>
+              <option value="3">Blue</option>
+              <option value="4">Orange</option>
+              <option value="5">Yellow</option>
+              <option value="6">Pink</option>
+              <option value="7">Pirate</option>
+              <option value="" selected="selected">---</option>
+            </select>
+          </div>
+          <div class="col-sm-2">
+            <button type="submit" class="btn btn-primary">Update flags</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        <th class="col-sm-2"><a href="?sort=name">Person Name</a></th>
-        <th class="col-sm-3"><a href="?sort=title">Title</a></th>
-        <th class="col-sm-3"><a href="?sort=company">Company</a></th>
-        <th class="col-sm-2">Phone</th>
-                <th>Customer?</th>
-      </tr>
-    </thead>
-    {% if person_list %}
-    <form action="{% url 'crm:flag_record' %}" method="post" name="flag">
-      <input type="hidden" name="page_source" value="territory" />
+    <div class="list-details">
+      <table class="table table-striped">
+        <thead class="thead-inverse">
+          <tr>
+            <th class="col-sm-1">Select?</th>
+            <th class="col-sm-1">Flag</th>
+            <th class="col-sm-2"><a href="?sort=name">Person Name</a></th>
+            <th class="col-sm-2"><a href="?sort=title">Title</a></th>
+            <th class="col-sm-3"><a href="?sort=company">Company</a></th>
+            <th class="col-sm-2">Phone</th>
+            <th class="col-sm-1">Customer?</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for person in person_list %}
+          <tr>
+            <input type="hidden" name="person_id" value={{ person.id }} />
+            <input type="hidden" name="page_index_num" value={{ forloop.counter }} />
+            <td class="col-sm-1" align="center">
+              <label><input name="reflag" value="{{ person_id }}" type="checkbox" /></label>
+            </td>
+            <td class="col-sm-1" align="center">
+              {% if person.flag_val == '1' %}
+              <img src={% static 'crm/images/flag_red.png' %}>
+              {% elif person.flag_val == '2' %}
+              <img src={% static 'crm/images/flag_green.png' %}>
+              {% elif person.flag_val == '3' %}
+              <img src={% static 'crm/images/flag_blue.png' %}>
+              {% elif person.flag_val == '4' %}
+              <img src={% static 'crm/images/flag_orange.png' %}>
+              {% elif person.flag_val == '5' %}
+              <img src={% static 'crm/images/flag_yellow.png' %}>
+              {% elif person.flag_val == '6' %}
+              <img src={% static 'crm/images/flag_pink.png' %}>
+              {% elif person.flag_val == '7' %}
+              <img src={% static 'crm/images/flag_pirate.png' %}>
+              {% else %}
+              <img src={% static 'crm/images/flag_none.png' %}>
+              {% endif %}
+              <select class="form-control col-sm-1" id="id_flag" name="flag">
+                <option value="1">Red</option>
+                <option value="2">Green</option>
+                <option value="3">Blue</option>
+                <option value="4">Orange</option>
+                <option value="5">Yellow</option>
+                <option value="6">Pink</option>
+                <option value="7">Pirate</option>
+                <option value="" selected="selected">---</option>
+              </select>
+            </td>
+            <td class="col-sm-2">
+              <a href="{% url 'crm:detail_paginated' %}?pk={{ person.pk }}">{{ person.name }}</a>
+            </td>
+            <td class="col-sm-2">{{ person.title }}</td>
+            <td class="col-sm-3">{{ person.company }}</td>
+            <td class="col-sm-2">{{ person.phone }}</td>
+            <td class="col-sm-1">
+              {% if person.has_registration_history %}
+              <span class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
-      {% csrf_token %}
-      <tbody>
-      {% for person in person_list %}
-      <tr>
-          <input type="hidden" name="person_id" value="{{ person.id }}" />
-          <input type="hidden" name="page" value="{{ person_list.number }}" />
-          <input type="hidden" name="page_index_num" value="{{ forloop.counter }}" />
-          <td>
-            {% if person.flag_val == '1' %}
-            <img src={% static 'crm/images/flag_red.png' %}>
-            {% elif person.flag_val == '2' %}
-            <img src={% static 'crm/images/flag_green.png' %}>
-            {% elif person.flag_val == '3' %}
-            <img src={% static 'crm/images/flag_blue.png' %}>
-            {% elif person.flag_val == '4' %}
-            <img src={% static 'crm/images/flag_orange.png' %}>
-            {% elif person.flag_val == '5' %}
-            <img src={% static 'crm/images/flag_yellow.png' %}>
-            {% elif person.flag_val == '6' %}
-            <img src={% static 'crm/images/flag_pink.png' %}>
-            {% elif person.flag_val == '7' %}
-            <img src={% static 'crm/images/flag_pirate.png' %}>
-            {% else %}
-            <img src={% static 'crm/images/flag_none.png' %}>
-            {% endif %}
-          </td>
-          <td>
-            {{ flag_form.flag }}
-          </td>
-          <td>
-            <label><input name="reflag" value="{{ person_id }}" type="checkbox" /></label>
-          </td>
-          <td class="col-sm-2">
-            <a href="{% url 'crm:detail_paginated' %}?pk={{ person.pk }}">{{ person.name }}</a>
-          </td>
-          <td class="col-sm-3">{{ person.title }}</td>
-          <td class="col-sm-3">{{ person.company }}</td>
-          <td class="col-sm-2">{{ person.phone }}</td>
-          <td>
-            {% if person.has_registration_history %}
-            <span class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>
-            {% else %}
-            <span class="glyphicon glyphicon-remove alert-warning" aria-hidden="true"></span>
-            {% endif %}
-          </td>
-      </tr>
-      {% endfor %}
-    </tbody>
   </form>
+</div>
 
-    {% else %}
+{% else %}
+<div class="territory-list">
+  <div class="list-details">
+    <table class="table table-striped">
+      <thead class="thead-inverse">
+        <tr>
+          <th class="col-sm-1">Select</th>
+          <th class="col-sm-1">Flag</th>
+          <th class="col-sm-2"><a href="?sort=name">Person Name</a></th>
+          <th class="col-sm-3"><a href="?sort=title">Title"</a></th>
+          <th class="col-sm-3"><a href="?sort=company">Company</a></th>
+          <th class="col-sm-2">Phone</th>
+          <th class="col-sm-1">Customer?</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="col-sm-12" colspan="5">
@@ -132,9 +177,11 @@
           </td>
         </tr>
       </tbody>
-    {% endif %}
-  </table>
+    </table>
+  </div>
 </div>
+
+{% endif %}
 
 {% include 'crm/pagination.html' %}
 

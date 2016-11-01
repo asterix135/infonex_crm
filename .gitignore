@@ -1,6 +1,7 @@
 .idea/
 secret.txt
 env/
+.DS_Store
 
 
 # Elastic Beanstalk Files

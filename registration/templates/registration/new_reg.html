@@ -5,6 +5,8 @@
 <h1>
   Create New Registration
 </h1>
+
+<!-- Search for delegate -->
 <div class="panel panel-info">
   <div class="panel-heading">
     <h2 class="panel-title h2">Select Conference and Search for Person</h2>
@@ -17,7 +19,7 @@
           class="col-sm-2 form-control-label">Select Conference</label>
         <div class="col-sm-8">{{ person_form.event }}</div>
         <div class="col-sm-2">
-          <button type="submit" class="btn btn-default" name="option"
+          <button type="button" class="btn btn-default" name="option"
             value="new_conf">Add New Conference</button>
         </div>
       </div>
@@ -45,15 +47,22 @@
             value="filter">Search</button>
         </div>
         <div class="col-sm-2">
-          <button type="submit" class="btn btn-default" name="option"
-            value="reset">Reset Form</button>
-        </div>
-        <div class="col-sm-2">
-          <button type="reset" class="btn btn-default">Undo Changes</button>
+          <button type="button" class="btn btn-default" name="option"
+            value="reset" onclick="clearSearchBoxesNewReg()">Reset Form</button>
         </div>
       </div>
     </form>
   </div>
 </div>
+
+{% if past_customer_list %}
+<!-- list of past buyers matching -->
+<h1>List of past customers</h1>
+{% endif %}
+
+{% if crm_list %}
+<!-- list of matching people from crm system -->
+<h1>List of CRM matches</h1>
+{% endif %}
 
 {% endblock %}

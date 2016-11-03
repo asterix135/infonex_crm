@@ -40,12 +40,12 @@
           rel="stylesheet">
         <link href="{% static 'crm/style.css' %}" rel="stylesheet" type="text/css">
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script src="{% static 'crm/javascript/jquery_scripts.js' %}" type="text/javascript"></script>
         <script type="text/javascript"
           src="{% static 'crm/javascript/crm_scripts.js' %}"></script>
-        {% block includes %}{% endblock %}
+        {% block script_includes %}{% endblock %}
 
         <title>{% block title %}{% endblock %}Infonex CRM</title>
     </head>

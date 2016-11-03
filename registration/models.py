@@ -16,11 +16,31 @@ class Assistant(models.Model):
     address_personal = models.CharField(max_length=255, blank=True)
 
 
+class Company(models.Model):
+    """
+    Company Details
+    """
+    name = models.CharField(max_length=255, blank=True)
+    name_for_badges = models.CharField(max_length=30, blank=True)
+    address1 = models.CharField(max_length=255, blank=True)
+    address2 = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    state_prov = models.CharField(max_length=25, blank=True)
+    postal_code = models.CharField(max_length=15, blank=True)
+    country = models.CharField(max_length=25, blank=True)
+    gst_hst_exempt = models.BooleanField(default=False)
+    qst_exempt = models.BooleanField(default=False)
+    gst_hst_exemption_number = models.CharField(max_length=25)
+    qst_exemption_number = models.CharField(max_length=25)
+
+
 class Registrants(models.Model):
     """
     Personal (not company) information for Event Attendees
     """
     crm_contact = models.ForeignKey('crm.Contact', blank=True)
+    assistant = models.ForeignKey(Assistant, blank=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     salutation = models.CharField(max_length=15, blank=True)
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100)
@@ -32,7 +52,6 @@ class Registrants(models.Model):
     contact_option = models.CharField(max_length=1,
                                choices=CONTACT_OPTIONS,
                                default='D')
-    assistant = models.ForeignKey(Assistant, blank=True)
     delegate_notes = models.TextField(blank=True)
     speaker_bio = models.TextField(blank=True)
     created_by = models.ForeignKey('auth.User',
@@ -88,21 +107,3 @@ class RegDetails(models.Model):
     modified_by = models.ForeignKey('auth.User',
                                     default=1,
                                     related_name='reg_modifed_by')
-
-
-class Company(models.Model):
-    """
-    Company Details
-    """
-    name = models.CharField(max_length=255, blank=True)
-    name_for_badges = models.CharField(max_length=30, blank=True)
-    address1 = models.CharField(max_length=255, blank=True)
-    address2 = models.CharField(max_length=255, blank=True)
-    city = models.CharField(max_length=100, blank=True)
-    state_prov = models.CharField(max_length=25, blank=True)
-    postal_code = models.CharField(max_length=15, blank=True)
-    country = models.CharField(max_length=25, blank=True)
-    gst_hst_exempt = models.BooleanField(default=False)
-    qst_exempt = models.BooleanField(default=False)
-    gst_hst_exemption_number = models.CharField(max_length=25)
-    qst_exemption_number = models.CharField(max_length=25)

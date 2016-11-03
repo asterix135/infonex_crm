@@ -10,7 +10,7 @@
         <meta name="description" content="Infonex Registration System">
         <meta name="author" content="Christopher Graham">
 
-        <link rel="icon" href={% static 'crm/images/favicon.ico' %}>
+        <link rel="icon" href={% static 'crm/images/favicons/favicon.ico' %}>
         <link rel="apple-touch-icon" href={% static 'crm/images/apple-touch-icon.png' %}>
         <link rel="apple-touch-icon" sizes="57x57" href={% static 'crm/images/favicons/apple-icon-57x57.png' %}>
         <link rel="apple-touch-icon" sizes="60x60" href={% static 'crm/images/favicons/apple-icon-60x60.png' %}>
@@ -62,13 +62,13 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_authenticated %}
-                            <li><a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a></li>
+                            <li><a href="{% url 'logout' %}?next=/">Logout</a></li>
                             <li><p class="navbar-text">Logged in as: {{ user.username }}</p></li>
                             <li><a href="{% url 'crm:index' %}">CRM Home</a></li>
                             <li><a href="{% url 'registration:index' %}">Registration Home</a></li>
 
                         {% else %}
-                            <li><a href="{% url 'django.contrib.auth.views.login' %}">Login</a></li>
+                            <li><a href="{% url 'login' %}">Login</a></li>
                         {% endif %}
 
                     </ul>

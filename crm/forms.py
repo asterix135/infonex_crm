@@ -283,3 +283,17 @@ class TerritorySearchForm(forms.Form):
                                  attrs={'class': 'form-control'}
                              ))
 
+
+class EventForm(forms.ModelForm):
+
+    class Meta:
+        model = Event
+        fields = ('number', 'title')
+        widgets = {
+            'number': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'title': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+        }

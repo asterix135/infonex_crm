@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^robots\.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /*", content_type="text/plain")),
     # currently redirects base page to crm home
     # url(r'^$', home.views.index),
+    url(r'^login/$', django.contrib.auth.views.login, name='login'),
+    url(r'^logout/$', django.contrib.auth.views.logout, name='logout'),
     url(r'^', include('home.urls')),
 
 ]

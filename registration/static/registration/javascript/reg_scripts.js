@@ -10,3 +10,18 @@ function clearSearchBoxesNewReg() {
   companyBox.value='';
   postalCodeBox.value='';
 }
+
+function showCrmProspectDetails(button_id) {
+  var thisButton = document.getElementById(button_id);
+  if (thisButton.firstChild.data == 'Show Details') {
+    thisButton.firstChild.data = "Hide Details";
+  } else {
+    thisButton.firstChild.data = "Show Details";
+  }
+  var detailsSection = document.getElementById("details".concat(button_id));
+  if (detailsSection.style.display == 'none') {
+    detailsSection.style.display = 'inline';
+  } else {
+    detailsSection.style.display = 'none';
+  }
+}

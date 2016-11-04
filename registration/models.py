@@ -7,53 +7,55 @@ class Assistant(models.Model):
     """
     Details on person/people to receive copy of invoice (cc or attn:)
     """
-    salutation = models.CharField(max_length=15, blank=True)
-    first_name = models.CharField(max_length=100, blank=True)
+    salutation = models.CharField(max_length=15, blank=True, null=True)
+    first_name = models.CharField(max_length=100, blank=True, null=True)
     last_name = models.CharField(max_length=100)
-    title = models.CharField(max_length=100, blank=True)
-    email = models.EmailField(blank=True)
-    phone = models.CharField(max_length=25, blank=True)
-    address_personal = models.CharField(max_length=255, blank=True)
+    title = models.CharField(max_length=100, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField(max_length=25, blank=True, null=True)
+    address_personal = models.CharField(max_length=255, blank=True, null=True)
 
 
 class Company(models.Model):
     """
     Company Details
     """
-    name = models.CharField(max_length=255, blank=True)
-    name_for_badges = models.CharField(max_length=30, blank=True)
-    address1 = models.CharField(max_length=255, blank=True)
-    address2 = models.CharField(max_length=255, blank=True)
-    city = models.CharField(max_length=100, blank=True)
-    state_prov = models.CharField(max_length=25, blank=True)
-    postal_code = models.CharField(max_length=15, blank=True)
-    country = models.CharField(max_length=25, blank=True)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    name_for_badges = models.CharField(max_length=30, blank=True, null=True)
+    address1 = models.CharField(max_length=255, blank=True, null=True)
+    address2 = models.CharField(max_length=255, blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    state_prov = models.CharField(max_length=25, blank=True, null=True)
+    postal_code = models.CharField(max_length=15, blank=True, null=True)
+    country = models.CharField(max_length=25, blank=True, null=True)
     gst_hst_exempt = models.BooleanField(default=False)
     qst_exempt = models.BooleanField(default=False)
-    gst_hst_exemption_number = models.CharField(max_length=25)
-    qst_exemption_number = models.CharField(max_length=25)
+    gst_hst_exemption_number = models.CharField(max_length=25,
+                                                blank=True, null=True)
+    qst_exemption_number = models.CharField(max_length=25,
+                                            blank=True, null=True)
 
 
 class Registrants(models.Model):
     """
     Personal (not company) information for Event Attendees
     """
-    crm_contact = models.ForeignKey('crm.Contact', blank=True)
-    assistant = models.ForeignKey(Assistant, blank=True)
+    crm_person = models.ForeignKey('crm.Person', blank=True, null=True)
+    assistant = models.ForeignKey(Assistant, blank=True, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    salutation = models.CharField(max_length=15, blank=True)
-    first_name = models.CharField(max_length=100, blank=True)
+    salutation = models.CharField(max_length=15, blank=True, null=True)
+    first_name = models.CharField(max_length=100, blank=True, null=True)
     last_name = models.CharField(max_length=100)
-    title = models.CharField(max_length=100, blank=True)
-    email1 = models.EmailField(blank=True)
-    email2 = models.EmailField(blank=True)
-    phone1 = models.CharField(max_length=25, blank=True)
-    phone2 = models.CharField(max_length=25, blank=True)
+    title = models.CharField(max_length=100, blank=True, null=True)
+    email1 = models.EmailField(blank=True, null=True)
+    email2 = models.EmailField(blank=True, null=True)
+    phone1 = models.CharField(max_length=25, blank=True, null=True)
+    phone2 = models.CharField(max_length=25, blank=True, null=True)
     contact_option = models.CharField(max_length=1,
                                choices=CONTACT_OPTIONS,
                                default='D')
-    delegate_notes = models.TextField(blank=True)
-    speaker_bio = models.TextField(blank=True)
+    delegate_notes = models.TextField(blank=True, null=True)
+    speaker_bio = models.TextField(blank=True, null=True)
     created_by = models.ForeignKey('auth.User',
                                    default=1,
                                    related_name='del_created_by')
@@ -78,27 +80,31 @@ class RegDetails(models.Model):
     hst_rate = models.DecimalField(max_digits=6, decimal_places=5)
     qst_rate = models.DecimalField(max_digits=6, decimal_places=5)
     pst_rate = models.DecimalField(max_digits=6, decimal_places=5)
-    payment_date = models.DateField(blank=True)
+    payment_date = models.DateField(blank=True, null=True)
     payment_method = models.CharField(max_length=1,
                                       choices=PAYMENT_METHODS,
                                       blank=True,
-                                      default=False)
-    deposit_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    deposit_date = models.DateField(blank=True)
+                                      default=False,
+                                      null=True)
+    deposit_amount = models.DecimalField(max_digits=10, decimal_places=2,
+                                         blank=True, null=True)
+    deposit_date = models.DateField(blank=True, null=True)
     depost_method = models.CharField(max_length=1,
                                      choices=PAYMENT_METHODS,
                                      blank=True,
-                                     default=False)
-    fx_conversion_rate = models.DecimalField(max_digits=10, decimal_places=6)
+                                     default=False,
+                                     null=True)
+    fx_conversion_rate = models.DecimalField(max_digits=10, decimal_places=6,
+                                             default=1.0)
     register_date = models.DateField(default=datetime.date.today)
-    cancellation_date = models.DateField(blank=True)
+    cancellation_date = models.DateField(blank=True, null=True)
     # Consider how to handle options: maybe different from current db?
     registration_status = models.CharField(max_length=2,
                                            choices=REG_STATUS_OPTIONS,
                                            default='DU')
-    invoice_notes = models.TextField(blank=True)
-    registration_notes = models.TextField(blank=True)
-    sponsorship_description = models.TextField(blank=True)
+    invoice_notes = models.TextField(blank=True, null=True)
+    registration_notes = models.TextField(blank=True, null=True)
+    sponsorship_description = models.TextField(blank=True, null=True)
     created_by = models.ForeignKey('auth.User',
                                    default=1,
                                    related_name='reg_created_by')

@@ -7,7 +7,7 @@
 </h1>
 
 <!-- Search for delegate -->
-<div class="panel panel-info">
+<div class="panel panel-primary">
   <div class="panel-heading">
     <h2 class="panel-title h2">Select Conference and Search for Person</h2>
   </div>
@@ -56,13 +56,122 @@
 </div>
 
 {% if past_customer_list %}
-<!-- list of past buyers matching -->
-<h1>List of past customers</h1>
+<!-- list of past buyers matching search criteria-->
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h2 class="panel-title h2">Matching Past Customers</h2>
+  </div>
+  <table class="table table-striped">
+    <thead class="thead-inverse">
+      <tr>
+        <th class="col-sm-3">
+          Name
+        </th>
+        <th class="col-sm-3">
+          Title
+        </th>
+        <th class="col-sm-4">
+          Company
+        </th>
+        <th class="col-sm-2">
+          Registered?
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for customer in past_customer_list %}
+      <tr>
+        <td class="col-sm-3">
+          {{ customer.first_name }}&nbsp;{{ customer.last_name }}
+        </td>
+        <td class="col-sm-3">
+          {{ customer.title }}
+        </td>
+        <td class="col-sm-4">
+          {{ customer.company.name }}
+        </td>
+        <td class="col-sm-2">
+          ¯\_(ツ)_/¯
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
 {% endif %}
 
 {% if crm_list %}
 <!-- list of matching people from crm system -->
-<h1>List of CRM matches</h1>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h2 class="panel-title h2">Matching People from CRM System</h2>
+  </div>
+  <div class="panel-body">
+    <h4>Please note:</h4>
+    <p>
+      CRM searches will match either your search criteria to
+      <span style="text-decoration: underline;">either</span>
+      the prospects's first name or last name.
+    </p>
+    <p>
+      Also, postal code criteria do not work for selecting CRM prospects.
+    </p>
+  </div>
+  <table class="table table-striped">
+    <thead class="thead-inverse">
+      <tr>
+        <th class="col-sm-2">
+          Show/Hide
+        </th>
+        </th>
+        <th class="col-sm-4">
+          Name
+        </th>
+        <th class="col-sm-3">
+          Title
+        </th>
+        <th class="col-sm-3">
+          Company
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for prospect in crm_list %}
+      <tr>
+        <td>
+          <!--
+          <input class="btn btn-default" id="{{ prospect.id }}" type="button"
+            value="Show Details" onclick="showCrmProspectDetails(this)"/>
+          -->
+          <button type="button" class="btn btn-default" id="{{ prospect.id }}"
+            name="toggle-crm-detail" value="Show Details"
+            onclick="showCrmProspectDetails(this.id)">Show Details</button>
+        </td>
+        <td>{{ prospect.name }}</td>
+        <td>{{ prospect.title }}</td>
+        <td>{{ prospect.company }}</td>
+      </tr>
+      <tr id="details{{ prospect.id }}" class="crm-reg-detail" >
+        <td class="col-sm-2">
+          <button type="button" class="btn btn-default">Register this one!</button>
+        </td>
+        <td class="col-sm-4">
+          <h5>{{ prospect.name }}</h5>
+          <p>{{ prospect.title}}</p>
+          <p>{{ prospect.company}}</p>
+          {% if prospect.city %}<p>City: {{ prospect.city }}</p>{% endif %}
+          <p>Province: {{ prospect.state_prov }}</p>
+          {% if prospect.phone %}<p>Tel: {{ prospect.phone }}</p>{% endif %}
+          {% if prospect.email %}<p>Email: {{ prospect.email }}</p>{% endif %}
+        </td>
+        <td class="col-sm-3"></td>
+        <td class="col-sm=3"></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endif %}
 
 {% endblock %}

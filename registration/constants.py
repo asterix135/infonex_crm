@@ -8,14 +8,14 @@ PAYMENT_METHODS = (('V', 'Visa'),
                    ('N', 'Credit Note'),
                    ('O', 'Other method'))
 
-REG_STATUS_OPTIONS = (('DP', 'Paid Delegate'),
-                      ('DU', 'Unpaid Delegate'),
+REG_STATUS_OPTIONS = (('DP', 'Delegate Paid'),
+                      ('DU', 'Delegate Unpaid'),
+                      ('DF', 'Delegate Free'),
                       ('K', 'Speaker'),
                       ('SP', 'Sponsor Paid'),
                       ('SU', 'Sponsor Unpaid'),
                       ('SD', 'Sponsor Deposit Paid'),
                       ('G', 'Guest'),
-                      ('C', 'Comp (free with paids)'),
                       ('DX', 'Delegate cancelled'),
                       ('SX', 'Sponsor cancelled'),
                       ('KX', 'Speaker cancelled'))

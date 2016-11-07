@@ -27,7 +27,7 @@ def new_delegate_search(request):
             Q(name__icontains=request.POST['first_name']) &
             Q(name__icontains=request.POST['last_name']),
             Q(company__icontains=request.POST['company'])
-        ).order_by('company', 'name')
+        ).order_by('company', 'name')[:100]
     else:
         person_form = NewDelegateSearchForm()
         past_customer_list = None

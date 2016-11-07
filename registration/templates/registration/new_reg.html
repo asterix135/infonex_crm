@@ -64,16 +64,19 @@
   <table class="table table-striped">
     <thead class="thead-inverse">
       <tr>
+        <th class="col-sm-2">
+          Show/Hide
+        </th>
         <th class="col-sm-3">
           Name
         </th>
         <th class="col-sm-3">
           Title
         </th>
-        <th class="col-sm-4">
+        <th class="col-sm-3">
           Company
         </th>
-        <th class="col-sm-2">
+        <th class="col-sm-1">
           Registered?
         </th>
       </tr>
@@ -81,18 +84,42 @@
     <tbody>
       {% for customer in past_customer_list %}
       <tr>
-        <td class="col-sm-3">
+        <td>
+          <a href="#details{{ customer.id }}" class="btn btn-default"
+            data-toggle="collapse" id="{{ customer.id }}"
+            onclick="toggleSearchText(this.id)">
+            Show Details
+          </a>
+        </td>
+        <td >
           {{ customer.first_name }}&nbsp;{{ customer.last_name }}
         </td>
-        <td class="col-sm-3">
+        <td>
           {{ customer.title }}
         </td>
-        <td class="col-sm-4">
+        <td>
           {{ customer.company.name }}
         </td>
-        <td class="col-sm-2">
+        <td>
           ¯\_(ツ)_/¯
         </td>
+      </tr>
+      <tr id="details{{ customer.id }}" class="collapse" >
+        <td class="col-sm-2">
+          <button type="button" class="btn btn-info">Register!</button>
+        </td>
+        <td class="col-sm-4">
+          <h4>{{ customer.first_name }}&nbsp;{{ customer.last_name }}</h4>
+          <p class="person-detail">{{ customer.title}}</p>
+          <p class="person-detail">{{ customer.company.name }}</p>
+          <p class="person-detail">{{ customer.company.city }}
+            {% if customer.company.city and customer.company.state_prov %}, {% endif %}
+            {{ customer.company.state_prov }}</p>
+          {% if customer.phone1 %}<p class="person-detail">Tel: {{ customer.phone1 }}</p>{% endif %}
+          {% if customer.email1 %}<p class="person-detail">Email: {{ customer.email1 }}</p>{% endif %}
+        </td>
+        <td class="col-sm-3"></td>
+        <td class="col-sm-3"></td>
       </tr>
       {% endfor %}
     </tbody>
@@ -110,12 +137,15 @@
   <div class="panel-body">
     <h4>Please note:</h4>
     <p>
-      CRM searches will match either your search criteria to
+      CRM searches will match either your name fields to
       <span style="text-decoration: underline;">either</span>
       the prospects's first name or last name.
     </p>
     <p>
       Also, postal code criteria do not work for selecting CRM prospects.
+    </p>
+    <p>
+      Maximum 100 names returned here.
     </p>
   </div>
   <table class="table table-striped">
@@ -140,33 +170,31 @@
       {% for prospect in crm_list %}
       <tr>
         <td>
-          <!--
-          <input class="btn btn-default" id="{{ prospect.id }}" type="button"
-            value="Show Details" onclick="showCrmProspectDetails(this)"/>
-          -->
-          <button type="button" class="btn btn-default" id="{{ prospect.id }}"
-            name="toggle-crm-detail" value="Show Details"
-            onclick="showCrmProspectDetails(this.id)">Show Details</button>
+          <a href="#details{{ prospect.id }}" class="btn btn-default"
+            data-toggle="collapse" id="{{ prospect.id }}"
+            onclick="toggleSearchText(this.id)">
+            Show Details
+          </a>
         </td>
         <td>{{ prospect.name }}</td>
         <td>{{ prospect.title }}</td>
         <td>{{ prospect.company }}</td>
       </tr>
-      <tr id="details{{ prospect.id }}" class="crm-reg-detail" >
+      <tr id="details{{ prospect.id }}" class="collapse" >
         <td class="col-sm-2">
-          <button type="button" class="btn btn-default">Register this one!</button>
+          <button type="button" class="btn btn-info">Register!</button>
         </td>
         <td class="col-sm-4">
-          <h5>{{ prospect.name }}</h5>
-          <p>{{ prospect.title}}</p>
-          <p>{{ prospect.company}}</p>
-          {% if prospect.city %}<p>City: {{ prospect.city }}</p>{% endif %}
-          <p>Province: {{ prospect.state_prov }}</p>
-          {% if prospect.phone %}<p>Tel: {{ prospect.phone }}</p>{% endif %}
-          {% if prospect.email %}<p>Email: {{ prospect.email }}</p>{% endif %}
+          <h4>{{ prospect.name }}</h4>
+          <p class="person-detail">{{ prospect.title}}</p>
+          <p class="person-detail">{{ prospect.company}}</p>
+          {% if prospect.city %}<p class="person-detail">City: {{ prospect.city }}</p>{% endif %}
+          <p class="person-detail">Province: {{ prospect.state_prov }}</p>
+          {% if prospect.phone %}<p class="person-detail">Tel: {{ prospect.phone }}</p>{% endif %}
+          {% if prospect.email %}<p class="person-detail">Email: {{ prospect.email }}</p>{% endif %}
         </td>
         <td class="col-sm-3"></td>
-        <td class="col-sm=3"></td>
+        <td class="col-sm-3"></td>
       </tr>
       {% endfor %}
     </tbody>

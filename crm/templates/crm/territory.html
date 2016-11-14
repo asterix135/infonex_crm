@@ -68,12 +68,12 @@
           <div class="col-sm-2">
             <label class="form-check-label">
               <strong>Select all records&nbsp;</strong>
-              <input class="form-check-input" id="checkAllBoxes" type="checkbox" value="" onclick="checkAll()"  />
+              <input class="form-check-input" id="checkAllBoxes" type="checkbox" value="" />
             </label>
           </div>
           <div class="col-sm-2">
 
-            <select class="form-control col-sm-1" id="masterFlag" name="masterFlag" onclick="toggleFlags()">
+            <select class="form-control col-sm-1" id="masterFlag" name="masterFlag">
               <option value="1">Red</option>
               <option value="2">Green</option>
               <option value="3">Blue</option>
@@ -130,7 +130,7 @@
               {% else %}
               <img src={% static 'crm/images/flag_none.png' %}>
               {% endif %}
-              <select class="form-control col-sm-1" id="id_flag" name="personFlag">
+              <select class="form-control col-sm-1" id="id_flag_{{ person.id }}" name="personFlag">
                 <option value="1">Red</option>
                 <option value="2">Green</option>
                 <option value="3">Blue</option>

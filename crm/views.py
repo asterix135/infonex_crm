@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.views import View
 
 from .forms import *
 from .models import *
@@ -1219,3 +1220,13 @@ def flag_many_records(request):
 
 def test(request):
     return render(request, 'crm/test.html')
+
+
+class TerritoryView(View):
+    template_name = 'territory.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        return render(request, self.template_name)

@@ -75,7 +75,15 @@
                         <a class="btn btn-primary" href="{% url 'crm:index' %}">Go &raquo;</a>
                     </p>
                 </div>
-
+                {% if reg_permission_ok %}
+                <div class="col-sm-4">
+                    <h2>Registration System</h2>
+                    <p>Registration Processing</p>
+                    <p>
+                      <a class="btn btn-primary" href="{% url 'registration:index' %}">Go &raquo;</a>
+                    </p>
+                </div>
+                {% endif %}
                 <div class="col-sm-4">
                     <h2>Infonex Home Page</h2>
                     <p>Infonex's Public Web site</p>
@@ -83,11 +91,6 @@
                         <a class="btn btn-default" href="http://www.infonex.com">Go &raquo;</a>
                     </p>
 
-                </div>
-
-                <div class="col-sm-4">
-                    <h2>Content to Come</h2>
-                    <p>Placeholder for future development</p>
                 </div>
             </div>
         </div>

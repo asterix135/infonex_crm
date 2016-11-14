@@ -6,4 +6,9 @@ from django.http import HttpResponse
 #     return HttpResponse('This is the home page for all web apps')
 
 def index(request):
-    return render(request, 'home/index.html')
+    user = request.user
+    reg_permission_ok = (user.groups.filter(name='db_admin').exists() or
+                         user.groups.filter(name='registration').exists() or
+                         user.is_superuser)
+    context = {'reg_permission_ok': reg_permission_ok}
+    return render(request, 'home/index.html', context)

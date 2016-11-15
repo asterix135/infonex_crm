@@ -3,7 +3,7 @@
 
 <html lang="en">
 
-    <head>
+  <head>
         <meta name="robots" content="NONE,NOARCHIVE" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -50,56 +50,51 @@
         <title>{% block title %}{% endblock %}Infonex CRM</title>
     </head>
 
-    <body>
-
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/">Portal</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a href="http://www.infonex.com">Infonex</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        {% if user.is_authenticated %}
-                            <li><a href="{% url 'logout' %}?next=/">Logout</a></li>
-                            <li><p class="navbar-text">Logged in as: {{ user.username }}</p></li>
-                            <li><a href="{% url 'crm:index' %}">CRM Home</a></li>
-                            <li><a href="{% url 'crm:territory' %}">Current Territory</a></li>
-                            <li><a href="{% url 'crm:search_persons' %}">Search page</a></li>
-
-                        {% else %}
-                            <li><a href="{% url 'login' %}">Login</a></li>
-                        {% endif %}
-
-                    </ul>
-                </div>
-            </div>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Portal</a>
         </div>
-
-        <div class="jumbotron">
-            <div class="container">
-                <h1>
-                    <a href="{% url 'home:index' %}"><img src={% static 'crm/images/INFONEX-logo.png' %}></a>&nbsp;&nbsp;
-                    CRM System
-                </h1>
-            </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="http://www.infonex.com">Infonex</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}?next=/">Logout</a></li>
+            <li><p class="navbar-text">Logged in as: {{ user.username }}</p></li>
+            <li><a href="{% url 'crm:index' %}">CRM Home</a></li>
+            <li><a href="{% url 'crm:territory' %}">Current Territory</a></li>
+            <li><a href="{% url 'crm:search_persons' %}">Search page</a></li>
+            {% else %}
+              <li><a href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+          </ul>
         </div>
+      </div>
+    </div>
+    <div class="jumbotron">
+      <div class="container">
+        <h1>
+          <a href="{% url 'home:index' %}"><img src={% static 'crm/images/INFONEX-logo.png' %}></a>&nbsp;&nbsp;
+          CRM System
+        </h1>
+      </div>
+    </div>
 
-        <div class="container">
-            <div class="row">
-                {% block content %}
-                {% endblock %}
-            </div>
-        </div>
-
-    </body>
+    <div class="container">
+      <div class="row">
+        {% block content %}
+        {% endblock %}
+      </div>
+    </div>
+  </body>
 
 </html>

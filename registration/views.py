@@ -30,7 +30,7 @@ def new_delegate_search(request):
                 'company__name__icontains': request.POST['company'],
                 'company__postal_code__icontains': request.POST['postal_code'],
                 # TODO: This needs to be a filter applied once the select is made
-                # 'regdetails__conference__pk': request.POST['event'],
+                'regdetails__conference__pk': request.POST['event'],
             }
             past_customer_list = Registrants.objects.filter(**filterargs)
 

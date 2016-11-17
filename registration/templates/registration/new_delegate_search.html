@@ -121,7 +121,11 @@
           {% if customer.phone1 %}<p class="person-detail">Tel: {{ customer.phone1 }}</p>{% endif %}
           {% if customer.email1 %}<p class="person-detail">Email: {{ customer.email1 }}</p>{% endif %}
         </td>
-        <td class="col-sm-3"></td>
+        <td class="col-sm-3">
+          <div id="buyer-history{{ customer.id }}">
+            foobar
+          </div>
+        </td>
         <td class="col-sm-3"></td>
       </tr>
       {% endfor %}

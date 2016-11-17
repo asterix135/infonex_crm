@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.db.models import Q
+from django.template import RequestContext
 from .forms import *
 from .models import *
 from crm.models import Person
@@ -10,6 +11,7 @@ def index(request):
     return render(request, 'registration/index.html')
 
 def new_delegate_search(request):
+    """ Renders new_delegate_search page"""
     if request.method == 'POST':
         person_form = NewDelegateSearchForm(request.POST)
         if (request.POST['first_name'] == '' and
@@ -52,3 +54,10 @@ def new_delegate_search(request):
         'search_entered': search_entered,
     }
     return render(request, 'registration/new_delegate_search.html', context)
+
+def get_registration_history(request):
+    context = RequestContext(request)
+    person_id = None
+    if request.method == 'GET':
+        person_id = request.GET['id']
+        # http://www.tangowithdjango.com/book/chapters/ajax.html

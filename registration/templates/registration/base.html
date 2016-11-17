@@ -2,100 +2,90 @@
 {% load staticfiles %}
 
 <html lang="en">
+  <head>
+    <meta name="robots" content="NONE,NOARCHIVE" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Infonex Registration System">
+    <meta name="author" content="Christopher Graham">
 
-    <head>
-        <meta name="robots" content="NONE,NOARCHIVE" />
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Infonex Registration System">
-        <meta name="author" content="Christopher Graham">
+    <link rel="icon" href={% static 'crm/images/favicons/favicon.ico' %}>
+    <link rel="apple-touch-icon" href={% static 'crm/images/apple-touch-icon.png' %}>
+    <link rel="apple-touch-icon" sizes="57x57" href={% static 'crm/images/favicons/apple-icon-57x57.png' %}>
+    <link rel="apple-touch-icon" sizes="60x60" href={% static 'crm/images/favicons/apple-icon-60x60.png' %}>
+    <link rel="apple-touch-icon" sizes="72x72" href={% static 'crm/images/favicons/apple-icon-72x72.png' %}>
+    <link rel="apple-touch-icon" sizes="76x76" href={% static 'crm/images/favicons/apple-icon-76x76.png' %}>
+    <link rel="apple-touch-icon" sizes="114x114" href={% static 'crm/images/favicons/apple-icon-114x114.png' %}>
+    <link rel="apple-touch-icon" sizes="120x120" href={% static 'crm/images/favicons/apple-icon-120x120.png' %}>
+    <link rel="apple-touch-icon" sizes="144x144" href={% static 'crm/images/favicons/apple-icon-144x144.png' %}>
+    <link rel="apple-touch-icon" sizes="152x152" href={% static 'crm/images/favicons/apple-icon-152x152.png' %}>
+    <link rel="apple-touch-icon" sizes="180x180" href={% static 'crm/images/favicons/apple-icon-180x180.png' %}>
+    <link rel="icon" type="image/png" sizes="192x192"  href={% static 'crm/images/favicons/android-icon-192x192.png' %}>
+    <link rel="icon" type="image/png" sizes="32x32" href={% static 'crm/images/favicons/favicon-32x32.png' %}>
+    <link rel="icon" type="image/png" sizes="96x96" href={% static 'crm/images/favicons/favicon-96x96.png' %}>
+    <link rel="icon" type="image/png" sizes="16x16" href={% static 'crm/images/favicons/favicon-16x16.png' %}>
+    <link rel="manifest" href={% static 'crm/images/favicons/manifest.json' %}>
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content={% static 'crm/images/favicons/ms-icon-144x144.png' %}>
+    <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href={% static 'crm/images/favicons/favicon.ico' %}>
-        <link rel="apple-touch-icon" href={% static 'crm/images/apple-touch-icon.png' %}>
-        <link rel="apple-touch-icon" sizes="57x57" href={% static 'crm/images/favicons/apple-icon-57x57.png' %}>
-        <link rel="apple-touch-icon" sizes="60x60" href={% static 'crm/images/favicons/apple-icon-60x60.png' %}>
-        <link rel="apple-touch-icon" sizes="72x72" href={% static 'crm/images/favicons/apple-icon-72x72.png' %}>
-        <link rel="apple-touch-icon" sizes="76x76" href={% static 'crm/images/favicons/apple-icon-76x76.png' %}>
-        <link rel="apple-touch-icon" sizes="114x114" href={% static 'crm/images/favicons/apple-icon-114x114.png' %}>
-        <link rel="apple-touch-icon" sizes="120x120" href={% static 'crm/images/favicons/apple-icon-120x120.png' %}>
-        <link rel="apple-touch-icon" sizes="144x144" href={% static 'crm/images/favicons/apple-icon-144x144.png' %}>
-        <link rel="apple-touch-icon" sizes="152x152" href={% static 'crm/images/favicons/apple-icon-152x152.png' %}>
-        <link rel="apple-touch-icon" sizes="180x180" href={% static 'crm/images/favicons/apple-icon-180x180.png' %}>
-        <link rel="icon" type="image/png" sizes="192x192"  href={% static 'crm/images/favicons/android-icon-192x192.png' %}>
-        <link rel="icon" type="image/png" sizes="32x32" href={% static 'crm/images/favicons/favicon-32x32.png' %}>
-        <link rel="icon" type="image/png" sizes="96x96" href={% static 'crm/images/favicons/favicon-96x96.png' %}>
-        <link rel="icon" type="image/png" sizes="16x16" href={% static 'crm/images/favicons/favicon-16x16.png' %}>
-        <link rel="manifest" href={% static 'crm/images/favicons/manifest.json' %}>
-        <meta name="msapplication-TileColor" content="#ffffff">
-        <meta name="msapplication-TileImage" content={% static 'crm/images/favicons/ms-icon-144x144.png' %}>
-        <meta name="theme-color" content="#ffffff">
+    <link href='https://fonts.googleapis.com/css?family=Signika' rel='stylesheet' type='text/css'>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">
+    <link href="{% static 'crm/style.css' %}" rel="stylesheet" type="text/css">
 
-        <link href='https://fonts.googleapis.com/css?family=Signika' rel='stylesheet' type='text/css'>
-        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
-        <link href="http://getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">
-        <link href="{% static 'crm/style.css' %}" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript"
+      src="{% static 'registration/javascript/reg_scripts.js' %}"></script>
+    <script type="text/javascript"
+      src="{% static 'registration/javascript/reg_jquery.js' %}"></script>
+    {% block script_includes %}{% endblock %}
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-        <script type="text/javascript"
-          src="{% static 'registration/javascript/reg_scripts.js' %}"></script>
-        <script type="text/javascript"
-          src="{% static 'registration/javascript/reg_jquery.js' %}"></script>
-        {% block script_includes %}{% endblock %}
+    <title>{% block title %}{% endblock %}Infonex Registration System</title>
+  </head>
 
-        <title>{% block title %}{% endblock %}Infonex Registration System</title>
-    </head>
-
-    <body>
-
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/">Portal</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a href="http://www.infonex.com">Infonex</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        {% if user.is_authenticated %}
-                            <li><a href="{% url 'logout' %}?next=/">Logout</a></li>
-                            <li><p class="navbar-text">Logged in as: {{ user.username }}</p></li>
-                            <li><a href="{% url 'crm:index' %}">CRM Home</a></li>
-                            <li><a href="{% url 'registration:index' %}">Registration Home</a></li>
-
-                        {% else %}
-                            <li><a href="{% url 'login' %}">Login</a></li>
-                        {% endif %}
-
-                    </ul>
-                </div>
-            </div>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Portal</a>
         </div>
-
-        <div class="jumbotron">
-            <div class="container">
-                <h1>
-                    <a href="{% url 'home:index' %}"><img src={% static 'crm/images/INFONEX-logo.png' %}></a>&nbsp;&nbsp;
-                    Registration System
-                </h1>
-            </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="http://www.infonex.com">Infonex</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}?next=/">Logout</a></li>
+            <li><p class="navbar-text">Logged in as: {{ user.username }}</p></li>
+            <li><a href="{% url 'crm:index' %}">CRM Home</a></li>
+            <li><a href="{% url 'registration:index' %}">Registration Home</a></li>
+            {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+          </ul>
         </div>
-
-        <div class="container">
-            <div class="row">
-                {% block content %}
-                {% endblock %}
-            </div>
-        </div>
-
-    </body>
-
+      </div>
+    </div>
+    <div class="jumbotron">
+      <div class="container">
+        <h1>
+          <a href="{% url 'home:index' %}"><img src={% static 'crm/images/INFONEX-logo.png' %}></a>&nbsp;&nbsp;
+          Registration System
+        </h1>
+      </div>
+    </div>
+    <div class="container">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </body>
 </html>

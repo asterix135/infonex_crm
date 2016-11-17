@@ -31,9 +31,9 @@ def new_delegate_search(request):
                 'last_name__icontains': request.POST['last_name'],
                 'company__name__icontains': request.POST['company'],
                 'company__postal_code__icontains': request.POST['postal_code'],
-                # TODO: This needs to be a filter applied once the select is made
-                'regdetails__conference__pk': request.POST['event'],
             }
+            if request.POST['event'] != '':
+                filterargs['regdetails__conference__pk'] = request.POST['event']
             past_customer_list = Registrants.objects.filter(**filterargs)
 
             crm_list = Person.objects.filter(
@@ -56,8 +56,21 @@ def new_delegate_search(request):
     return render(request, 'registration/new_delegate_search.html', context)
 
 def get_registration_history(request):
+    """AJAX call to get reg history for past delegate"""
+
+    # http://www.tangowithdjango.com/book/chapters/ajax.html
+
     context = RequestContext(request)
     person_id = None
+    person_regs = None
     if request.method == 'GET':
         person_id = request.GET['id']
-        # http://www.tangowithdjango.com/book/chapters/ajax.html
+    if person_id:
+        # do something
+        person = Registrants.objects.get(pk=person_id)
+        person_regs = person.regdetails_set.all()
+    return render(request, 'registration/addins/reg_history.html',
+        {'person_regs': person_regs})
+
+def add_new_delegate(request):
+    return render(request, 'registration/add_new_delegate.html')

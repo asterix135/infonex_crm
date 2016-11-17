@@ -54,3 +54,8 @@ h1, h2, h3 {
 .person-detail {
   margin-bottom: 0px;
 }
+
+.form-warning {
+  color: #963634;
+  display: none;
+}

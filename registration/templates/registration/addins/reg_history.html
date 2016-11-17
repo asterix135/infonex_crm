@@ -1,0 +1,9 @@
+{% if person_regs %}
+<ul class="list-unstyled">
+  {% for reg in person_regs %}
+  <li>
+    {{ reg.conference.number }}&nbsp;&ndash;&nbsp;{{ reg.conference.title }}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}

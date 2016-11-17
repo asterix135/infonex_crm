@@ -57,9 +57,6 @@ def new_delegate_search(request):
 
 def get_registration_history(request):
     """AJAX call to get reg history for past delegate"""
-
-    # http://www.tangowithdjango.com/book/chapters/ajax.html
-
     context = RequestContext(request)
     person_id = None
     person_regs = None
@@ -74,3 +71,7 @@ def get_registration_history(request):
 
 def add_new_delegate(request):
     return render(request, 'registration/add_new_delegate.html')
+
+
+def add_new_conference(request):
+    return render(request, 'registration/add_new_conference.html')

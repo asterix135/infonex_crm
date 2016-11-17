@@ -1,6 +1,6 @@
 import datetime
 from django.db import models
-from .constants import PAYMENT_METHODS, REG_STATUS_OPTIONS, CONTACT_OPTIONS
+from .constants import *
 
 
 class Assistant(models.Model):
@@ -113,3 +113,61 @@ class RegDetails(models.Model):
     modified_by = models.ForeignKey('auth.User',
                                     default=1,
                                     related_name='reg_modifed_by')
+
+
+class Venue(models.Model):
+    """
+    List of Venues with Details
+    """
+    name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    state_prov = models.CharField(max_length=25)
+    postal_code = models.CharField(max_length=25)
+    phone = models.CharField(max_length=25)
+    hotel_url = models.URLField()
+
+
+class EventDetails(models.Model):
+    """
+    Extends information in crm.Event with details needed to process
+    registrations and invoicing
+    """
+    event = models.ForeignKey('crm.Event')
+    hotel = models.ForeignKey(Venue, blank=True, null=True)
+    registrar = models.ForeignKey('auth.User', related_name='registrar')
+    developer = models.ForeignKey('auth.User', blank=True, null=True,
+                                  related_name='developer')
+    state_prov = models.CharField(max_length=25)
+    company_brand = models.CharField(max_length=2,
+                                     choices=COMPANY_OPTIONS,
+                                     default='IC')
+    gst_charged = models.BooleanField(default=False)
+    gst_rate = models.FloatField(default=0.05)
+    hst_charged = models.BooleanField(default=True)
+    hst_rate = models.FloatField(default=0.13)
+    qst_charged = models.BooleanField(default=False)
+    qst_rate = models.FloatField(default=0.09975)
+    pst_charged = models.BooleanField(default=False)
+    pst_rate = models.FloatField(default=0.)
+    billing_currency = models.CharField(max_length=3,
+                                        choices=BILLING_CURRENCY,
+                                        default='CAD')
+    created_by = models.ForeignKey('auth.User',
+                                   default=1,
+                                   related_name='details_created_by')
+    date_created = models.DateTimeField('date created', auto_now_add=True)
+    date_modified = models.DateTimeField('date modified', auto_now=True)
+    modified_by = models.ForeignKey('auth.User',
+                                    default=1,
+                                    related_name='details_modifed_by')
+
+
+class EventOptions(models.Model):
+    """
+    Contains details on different bookable sections of a particular event
+    """
+    event = models.ForeignKey('crm.Event')
+    name = models.CharField(max_length=255)
+    startdate = models.DateField()
+    enddate = models.DateField()

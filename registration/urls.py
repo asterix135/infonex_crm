@@ -15,4 +15,7 @@ urlpatterns = [
 
     url(r'^add_new_delegate/$', views.add_new_delegate,
         name='add_new_delegate'),
+
+    url(r'^add_new_conference/$', views.add_new_conference,
+        name='add_new_conference'),
 ]

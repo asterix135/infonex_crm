@@ -3,7 +3,9 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 from .models import *
+from .constants import COMPANY_OPTIONS, BILLING_CURRENCY
 from crm.models import Event
+from crm.constants import STATE_PROV_TUPLE
 
 
 class NewDelegateSearchForm(forms.Form):
@@ -46,3 +48,196 @@ class NewDelegateSearchForm(forms.Form):
         self.fields['event'].queryset=Event.objects.filter(
                 date_begins__gte=timezone.now()-datetime.timedelta(weeks=4)
         ).order_by('-number')
+
+
+class ConferenceEditForm(forms.Form):
+    event_number = forms.CharField(
+        label='Event Number',
+        max_length=10,
+        required=True,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    conference_title = forms.CharField(
+        label='Conference Title',
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    start_date = forms.DateField(
+        label='First Day of Event',
+        required=True,
+        widget=forms.DateInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    city = forms.CharField(
+        max_length=50,
+        required=True,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    state_prov = forms.ChoiceField(
+        label='State/Province',
+        required=True,
+        choices=STATE_PROV_TUPLE,
+        initial='ON',
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+        )
+    )
+    hotel = forms.ModelChoiceField(
+        label='hotel',
+        required=False,
+        queryset=Venue.objects.all().order_by('name'),
+        initial='',
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+        )
+    )
+    registrar = forms.ModelChoiceField(
+        required=True,
+        queryset=User.objects.filter(is_active=True).order_by('username'),
+        initial='',
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+        )
+    )
+    developer = forms.ModelChoiceField(
+        required=True,
+        queryset=User.objects.filter(is_active=True).order_by('username'),
+        initial='',
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+        )
+    )
+    company_brand = forms.ChoiceField(
+        required=True,
+        label='Corporate Brand',
+        choices=COMPANY_OPTIONS,
+        initial='IC',
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+        )
+    )
+    gst_charged = forms.BooleanField(
+        label='Charge GST?',
+        initial=False,
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    hst_charged = forms.BooleanField(
+        label='Charge HST?',
+        initial=True,
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    qst_charged = forms.BooleanField(
+        label='Charge QST?',
+        initial=False,
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    gst_rate = forms.DecimalField(
+        required=False,
+        label='GST Rate',
+        initial=0.05,
+        widget=forms.NumberInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    hst_rate = forms.DecimalField(
+        required=False,
+        label='HST Rate',
+        initial=0.13,
+        widget=forms.NumberInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    qst_rate = forms.DecimalField(
+        required=False,
+        label='QST Rate',
+        initial=0.09975,
+        widget=forms.NumberInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    billing_currency = forms.ChoiceField(
+        required=True,
+        label='Billing Currency',
+        choices=BILLING_CURRENCY,
+        initial='CAD',
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+        )
+    )
+
+    def clean(self):
+        # https://docs.djangoproject.com/en/1.10/ref/forms/validation/#cleaning-and-validating-fields-that-depend-on-each-other
+        # deal with GST/HST/QST matching fields here
+        pass
+
+
+class ConferenceOptionForm(forms.ModelForm):
+
+    class Meta:
+        model = EventOptions
+        fields = ('name', 'startdate', 'enddate',)
+        widgets = {
+            'name': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'startdate': forms.DateInput(
+                attrs={'class': 'form-control'}
+            ),
+            'enddate': forms.DateInput(
+                attrs={'class': 'form-control'}
+            )
+        }
+
+
+class VenueForm(forms.ModelForm):
+    state_prov = forms.ChoiceField(
+        label='State/Province',
+        required=True,
+        choices=STATE_PROV_TUPLE,
+        initial='ON',
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+        )
+    )
+
+    class Meta:
+        model = Venue
+        fields = {'name', 'address', 'city', 'postal_code',
+                  'phone', 'hotel_url'}
+        widgets = {
+            'name': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'address': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'city': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'postal_code': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'phone': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'hotel_url': forms.URLInput(
+                attrs={'class': 'form-control'}
+            )
+        }

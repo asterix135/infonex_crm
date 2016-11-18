@@ -154,7 +154,7 @@ class Event(models.Model):
     """
     number = models.CharField(max_length=10, unique=True)
     title = models.CharField(max_length=100)
-    city = models.CharField(max_length=20)
+    city = models.CharField(max_length=50)
     date_begins = models.DateField()
 
     def __str__(self):

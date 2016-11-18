@@ -10,6 +10,14 @@ from crm.models import Person
 def index(request):
     return render(request, 'registration/index.html')
 
+
+def search_dels(request):
+    """
+    AJAX call to get matching delegates and crm contacts for new_delegate_search
+    """
+    pass
+
+
 def new_delegate_search(request):
     """ Renders new_delegate_search page"""
     if request.method == 'POST':
@@ -73,5 +81,5 @@ def add_new_delegate(request):
     return render(request, 'registration/add_new_delegate.html')
 
 
-def add_new_conference(request):
-    return render(request, 'registration/add_new_conference.html')
+def add_conference(request):
+    return render(request, 'registration/add_conference.html')

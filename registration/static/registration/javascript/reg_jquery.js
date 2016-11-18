@@ -37,4 +37,30 @@ $(document).ready(function(){
     $('input[name=conf-id]').val(event_selected);
   });
 
+  // Used to get csrftoken in AJAX requests
+  // var csrftoken = getCookie('csrftoken');
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = jQuery.trim(cookies[i]);
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  };
+
+  // Submit post on submit
+  $('#create-new-conference').on('submit', function(event){
+    event.preventDefault();
+    console.log("form submitted!");  // sanity check
+    var csrftoken = getCookie('csrftoken');
+    create_conference();
+  });
+
 });

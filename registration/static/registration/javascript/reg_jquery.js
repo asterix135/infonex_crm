@@ -5,6 +5,7 @@ $(document).ready(function(){
 
   // Pulls registration history for delegate on new_delegate_search page
   $('.show-delegate').click(function(){
+    alert('showing delegate');
     var delegate_id;
     delegate_id = $(this).attr('id');
     $.get('/registration/get_registration_history', {id: delegate_id}, function(data){
@@ -14,6 +15,7 @@ $(document).ready(function(){
 
   // check that a conference is selected before allowing delegate registration
   $('.register-delegate').click(function(e){
+    alert('registering');
     var conf_id;
     var $event_select_box = $('#id_event');
     conf_id = $('#id_event').val();
@@ -70,26 +72,16 @@ $(document).ready(function(){
            },
       success: function(data) {
         $('#match-del-list').html(data);
-        console.log('success!!');
       }
     })
-    console.log($('#id_first_name').val())
   };
 
   // Submit search function for new_delegate_search
   $('#submit-delegate-search').on('submit', function(event){
     event.preventDefault();
-    console.log("form submitted!");  // sanity check
+    // TODO: Need to implement correct csrftoken handling
     var csrftoken = getCookie('csrftoken');
     searchDels();
-  });
-
-  // Submit post on submit DOESN'T WORK YET!!!
-  $('#create-new-conference').on('submit', function(event){
-    event.preventDefault();
-    console.log("form submitted!");  // sanity check
-    var csrftoken = getCookie('csrftoken');
-    create_conference();
   });
 
 });

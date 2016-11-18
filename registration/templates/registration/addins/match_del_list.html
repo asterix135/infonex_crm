@@ -123,7 +123,7 @@
       {% for prospect in crm_list %}
       <tr>
         <td>
-          <a href="#details{{ prospect.id }}" class="btn btn-default"
+          <a href="#crm_details{{ prospect.id }}" class="btn btn-default"
             data-toggle="collapse" id="{{ prospect.id }}"
             onclick="toggleSearchText(this.id)">
             Show Details
@@ -133,7 +133,7 @@
         <td>{{ prospect.title }}</td>
         <td>{{ prospect.company }}</td>
       </tr>
-      <tr id="details{{ prospect.id }}" class="collapse" >
+      <tr id="crm_details{{ prospect.id }}" class="collapse" >
         <td class="col-sm-2">
           <form action ="{% url 'registration:add_new_delegate' %}" method="post">
             {% csrf_token %}

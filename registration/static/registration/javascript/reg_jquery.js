@@ -55,7 +55,36 @@ $(document).ready(function(){
     return cookieValue;
   };
 
-  // Submit post on submit
+  // Main logic for form submission on new_delegate_search
+  function searchDels() {
+    var csrftoken = getCookie('csrftoken');
+    $.ajax({
+      url: '/registration/search_dels/',
+      type: 'POST',
+      data: {first_name: $('#id_first_name').val(),
+             last_name: $('#id_last_name').val(),
+             company: $('#id_company').val(),
+             postal_code: $('#id_postal_code').val(),
+             event: $('#id_event').val(),
+             csrfmiddlewaretoken: csrftoken
+           },
+      success: function(data) {
+        $('#match-del-list').html(data);
+        console.log('success!!');
+      }
+    })
+    console.log($('#id_first_name').val())
+  };
+
+  // Submit search function for new_delegate_search
+  $('#submit-delegate-search').on('submit', function(event){
+    event.preventDefault();
+    console.log("form submitted!");  // sanity check
+    var csrftoken = getCookie('csrftoken');
+    searchDels();
+  });
+
+  // Submit post on submit DOESN'T WORK YET!!!
   $('#create-new-conference').on('submit', function(event){
     event.preventDefault();
     console.log("form submitted!");  // sanity check

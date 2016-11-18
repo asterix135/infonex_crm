@@ -10,6 +10,8 @@ urlpatterns = [
     url(r'^new_delegate_search/$', views.new_delegate_search,
         name='new_delegate_search'),
 
+    url(r'^search_dels/$', views.search_dels, name='search_dels'),
+
     url(r'^get_registration_history/$', views.get_registration_history,
         name='get_registration_history'),
 

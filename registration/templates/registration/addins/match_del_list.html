@@ -1,0 +1,171 @@
+{% if search_entered %}
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h2 class="panel-title h2">Matching Past Customers</h2>
+  </div>
+  <table class="table table-striped">
+    <thead class="thead-inverse">
+      <tr>
+        <th class="col-sm-2">
+          Show/Hide
+        </th>
+        <th class="col-sm-3">
+          Name
+        </th>
+        <th class="col-sm-3">
+          Title
+        </th>
+        <th class="col-sm-3">
+          Company
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if past_customer_list %}
+      {% for customer in past_customer_list %}
+      <tr>
+        <td>
+          <a href="#details{{ customer.id }}" class="btn btn-default show-delegate"
+            data-toggle="collapse" id="{{ customer.id }}">
+            Show Details
+          </a>
+        </td>
+        <td >
+          {{ customer.first_name }}&nbsp;{{ customer.last_name }}
+        </td>
+        <td>
+          {{ customer.title }}
+        </td>
+        <td>
+          {{ customer.company.name }}
+        </td>
+
+      </tr>
+      <tr id="details{{ customer.id }}" class="collapse" >
+        <td class="col-sm-2">
+          <form action ="{% url 'registration:add_new_delegate' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="conf_id" value="" />
+            <input type="hidden" name="registrant_id" value="{{ person.id }}" />
+            <button type="submit" class="btn btn-success register-delegate">
+              Register!
+            </button>
+          </form>
+        </td>
+        <td class="col-sm-4">
+          <h4>{{ customer.first_name }}&nbsp;{{ customer.last_name }}</h4>
+          <p class="person-detail">{{ customer.title}}</p>
+          <p class="person-detail">{{ customer.company.name }}</p>
+          <p class="person-detail">{{ customer.company.city }}{% if customer.company.city and customer.company.state_prov %},
+            {% endif %}
+            {{ customer.company.state_prov }}</p>
+          {% if customer.phone1 %}<p class="person-detail">Tel: {{ customer.phone1 }}</p>{% endif %}
+          {% if customer.email1 %}<p class="person-detail">Email: {{ customer.email1 }}</p>{% endif %}
+        </td>
+        <td class="col-sm-3">
+          <h4>Past Registrations</h4>
+          <div id="buyer-history{{ customer.id }}">
+          </div>
+        </td>
+        <td class="col-sm-3"></td>
+      </tr>
+      {% endfor %}
+      {% else %}
+      <tr>
+        <td colspan="4">
+          <h3>No matching delegates</h3>
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+<!-- list of matching people from crm system -->
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h2 class="panel-title h2">Matching People from CRM System</h2>
+  </div>
+  <div class="panel-body">
+    <h4>Please note:</h4>
+    <p>
+      CRM searches will match either your name fields to
+      <span style="text-decoration: underline;">either</span>
+      the prospects's first name or last name.
+    </p>
+    <p>
+      Also, postal code criteria do not work for selecting CRM prospects.
+    </p>
+    <p>
+      Maximum 100 names returned here.
+    </p>
+  </div>
+  <table class="table table-striped">
+    <thead class="thead-inverse">
+      <tr>
+        <th class="col-sm-2">
+          Show/Hide
+        </th>
+        </th>
+        <th class="col-sm-4">
+          Name
+        </th>
+        <th class="col-sm-3">
+          Title
+        </th>
+        <th class="col-sm-3">
+          Company
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if crm_list %}
+      {% for prospect in crm_list %}
+      <tr>
+        <td>
+          <a href="#details{{ prospect.id }}" class="btn btn-default"
+            data-toggle="collapse" id="{{ prospect.id }}"
+            onclick="toggleSearchText(this.id)">
+            Show Details
+          </a>
+        </td>
+        <td>{{ prospect.name }}</td>
+        <td>{{ prospect.title }}</td>
+        <td>{{ prospect.company }}</td>
+      </tr>
+      <tr id="details{{ prospect.id }}" class="collapse" >
+        <td class="col-sm-2">
+          <form action ="{% url 'registration:add_new_delegate' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="conf_id" value="" />
+            <input type="hidden" name="registrant_id" value="" />
+            <input type="hidden" name="crm_id" value="{{ prospect.id }}" />
+            <button type="submit" class="btn btn-success register-delegate">
+              Register!
+            </button>
+          </form>
+        </td>
+        <td class="col-sm-4">
+          <h4>{{ prospect.name }}</h4>
+          <p class="person-detail">{{ prospect.title}}</p>
+          <p class="person-detail">{{ prospect.company}}</p>
+          {% if prospect.city %}<p class="person-detail">City: {{ prospect.city }}</p>{% endif %}
+          <p class="person-detail">Province: {{ prospect.state_prov }}</p>
+          {% if prospect.phone %}<p class="person-detail">Tel: {{ prospect.phone }}</p>{% endif %}
+          {% if prospect.email %}<p class="person-detail">Email: {{ prospect.email }}</p>{% endif %}
+        </td>
+        <td class="col-sm-3"></td>
+        <td class="col-sm-3"></td>
+      </tr>
+      {% endfor %}
+      {% else %}
+      <tr>
+        <td colspan="4">
+          <h3>No matching CRM propsects</h3>
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endif %}

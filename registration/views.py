@@ -15,7 +15,39 @@ def search_dels(request):
     """
     AJAX call to get matching delegates and crm contacts for new_delegate_search
     """
-    pass
+    if request.method == 'POST':
+        if (request.POST['first_name'] == '' and
+            request.POST['last_name'] == '' and
+            request.POST['company'] == '' and
+            request.POST['postal_code'] == ''):
+
+            past_customer_list = None
+            crm_list = None
+            search_entered = True
+        else:
+            filterargs = {
+                'first_name__icontains': request.POST['first_name'],
+                'last_name__icontains': request.POST['last_name'],
+                'company__name__icontains': request.POST['company'],
+                'company__postal_code__icontains': request.POST['postal_code'],
+            }
+            past_customer_list = Registrants.objects.filter(**filterargs)
+            crm_list = Person.objects.filter(
+                Q(name__icontains=request.POST['first_name']) &
+                Q(name__icontains=request.POST['last_name']),
+                Q(company__icontains=request.POST['company'])
+            ).order_by('company', 'name')[:100]
+            search_entered = True
+    else:
+        past_customer_list = None
+        crm_list = None
+        search_entered = None
+    context = {
+        'past_customer_list': past_customer_list,
+        'crm_list': crm_list,
+        'search_entered': search_entered,
+    }
+    return render(request, 'registration/addins/match_del_list.html', context)
 
 
 def new_delegate_search(request):
@@ -29,7 +61,7 @@ def new_delegate_search(request):
             # TODO: This probably should be changed until event search
             # functionality is enabled
             request.POST['event'] == ''):
-            print('empty query')
+
             past_customer_list = None
             crm_list = None
             search_entered = True

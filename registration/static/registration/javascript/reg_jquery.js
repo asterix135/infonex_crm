@@ -1,4 +1,36 @@
 $(document).ready(function(){
+  // AJAX CSRF Setup
+  // CSRF code
+  function getCookie(name) {
+    var cookieValue = null;
+    var i = 0;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (i; i < cookies.length; i++) {
+        var cookie = jQuery.trim(cookies[i]);
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  var csrftoken = getCookie('csrftoken');
+
+  function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+    crossDomain: false, // obviates need for sameOrigin test
+    beforeSend: function(xhr, settings) {
+      if (!csrfSafeMethod(settings.type)) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      }
+    }
+  });
 
 
   // Pulls registration history for delegate on new_delegate_search page
@@ -34,27 +66,10 @@ $(document).ready(function(){
     $('input[name=conf-id]').val(event_selected);
   });
 
-  // Used to get csrftoken in AJAX requests
-  // var csrftoken = getCookie('csrftoken');
-  function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      var cookies = document.cookie.split(';');
-      for (var i = 0; i < cookies.length; i++) {
-        var cookie = jQuery.trim(cookies[i]);
-        // Does this cookie string begin with the name we want?
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  };
 
   // Main logic for form submission on new_delegate_search
   function searchDels() {
-    var csrftoken = getCookie('csrftoken');
+    // var csrftoken = getCookie('csrftoken');
     $.ajax({
       url: '/registration/search_dels/',
       type: 'POST',
@@ -63,7 +78,7 @@ $(document).ready(function(){
              company: $('#id_company').val(),
              postal_code: $('#id_postal_code').val(),
              event: $('#id_event').val(),
-             csrfmiddlewaretoken: csrftoken
+            //  csrfmiddlewaretoken: csrftoken
            },
       success: function(data) {
         $('#match-del-list').html(data);

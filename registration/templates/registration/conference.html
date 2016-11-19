@@ -1,0 +1,41 @@
+{% extends 'registration/base.html' %}
+{% load staticfiles %}
+{% block title %}Conferences | {% endblock %}
+{% block script_includes %}<link href="{% static 'registration/conference.css' %}" rel="stylesheet" type="text/css">{% endblock %}
+{% block content %}
+
+<div class="container-fluid fill">
+  <div class="row fill">
+    <div class="col-sm-3 col-md-3 venue-sidebar fill">
+      <h3>Venues</h3>
+      <div class="add-venue">
+        <h5>Add venue area</h5>
+      </div>
+      <div class="venue-list fill">
+        <h5>Venue list area</h5>
+      </div>
+    </div>
+    <div class="col-sm-9 right-main-panel fill">
+      <div class="row fill">
+        <h1>Add/Edit Conference</h1>
+        <p>
+          Please select an event to edit or choose "New Event" to Create a new event.
+        </p>
+        <form action="" method="post" id="create-new-conference">
+          {% csrf_token %}
+          <input type="hidden" name="test" value="test_value" />
+          <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+
+        <h3> Main section</h3>
+        <ul class="fill">
+          <li>
+            item 1
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

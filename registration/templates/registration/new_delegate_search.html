@@ -2,73 +2,73 @@
 {% block title %}Search | {% endblock %}
 
 {% block content %}
-<div class="row">
-  <h1>
-    Create New Registration
-  </h1>
-
-  <!-- Search for delegate -->
-  <div class="panel panel-primary">
-    <div class="panel-heading">
-      <h2 class="panel-title h2">Select Conference and Search for Person</h2>
-    </div>
-    <div class="panel-body">
-      <form action="/search_dels/" method="post"
-        id="submit-delegate-search">
-        {% csrf_token %}
-        <div class="form-group row">
-          <label for="{{ event_form.title.id_for_label }}"
-            class="col-sm-2 form-control-label">Select Conference</label>
-          <div class="col-sm-8">
-            {{ person_form.event }}
-            <div class="form-warning">
-              Please select a conference to continue
+<div class="container">
+  <div class="row">
+    <h1>
+      Create New Registration
+    </h1>
+    <!-- Search for delegate -->
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="panel-title h2">Select Conference and Search for Person</h2>
+      </div>
+      <div class="panel-body">
+        <form action="/search_dels/" method="post"
+          id="submit-delegate-search">
+          {% csrf_token %}
+          <div class="form-group row">
+            <label for="{{ event_form.title.id_for_label }}"
+              class="col-sm-2 form-control-label">Select Conference</label>
+            <div class="col-sm-8">
+              {{ person_form.event }}
+              <div class="form-warning">
+                Please select a conference to continue
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <a href="/registration/add_conference" class="btn btn-default">
+                Add new Conference
+              </a>
             </div>
           </div>
-          <div class="col-sm-2">
-            <button type="button" class="btn btn-default" name="option"
-              value="new_conf">Add New Conference</button>
+          <div class="form-group row">
+            <label for="{{ person_form.first_name.id_for_label }}"
+              class="col-sm-2 form-control-label">First Name</label>
+            <div class="col-sm-4">{{ person_form.first_name }}</div>
+            <label for="{{ person_form.last_name.id_for_label }}"
+              class="col-sm-2 person-label">Last Name</label>
+            <div class="col-sm-4">{{ person_form.last_name }}</div>
           </div>
-        </div>
-        <div class="form-group row">
-          <label for="{{ person_form.first_name.id_for_label }}"
-            class="col-sm-2 form-control-label">First Name</label>
-          <div class="col-sm-4">{{ person_form.first_name }}</div>
-          <label for="{{ person_form.last_name.id_for_label }}"
-            class="col-sm-2 person-label">Last Name</label>
-          <div class="col-sm-4">{{ person_form.last_name }}</div>
-        </div>
-        <div class="form-group row">
-          <label for="{{ person_form.company.id_for_label }}"
-            class="col-sm-2 form-control-label">Company</label>
-          <div class="col-sm-10">{{ person_form.company }}</div>
-        </div>
-        <div class="form-group row">
-          <label for="{{ person_form.postal_code.id_for_label }}"
-            class="col-sm-2 form-control-label">Postal Code</label>
-          <div class="col-sm-4">{{ person_form.postal_code }}</div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-offset-2 col-sm-2 ">
-            <button type="submit" class="btn btn-primary" name="option"
-              value="filter">Search</button>
+          <div class="form-group row">
+            <label for="{{ person_form.company.id_for_label }}"
+              class="col-sm-2 form-control-label">Company</label>
+            <div class="col-sm-10">{{ person_form.company }}</div>
           </div>
-          <div class="col-sm-2">
-            <button type="button" class="btn btn-info" name="option"
-              value="reset" onclick="clearSearchBoxesNewReg()">Reset Form</button>
+          <div class="form-group row">
+            <label for="{{ person_form.postal_code.id_for_label }}"
+              class="col-sm-2 form-control-label">Postal Code</label>
+            <div class="col-sm-4">{{ person_form.postal_code }}</div>
           </div>
-          <div class="col-sm-2">
-            <button type="button" class="btn btn-info" name="create-new">
-              Create New Delegate
-            </button>
+          <div class="form-group row">
+            <div class="col-sm-offset-2 col-sm-2 ">
+              <button type="submit" class="btn btn-primary" name="option"
+                value="filter">Search</button>
+            </div>
+            <div class="col-sm-2">
+              <button type="button" class="btn btn-info" name="option"
+                value="reset" onclick="clearSearchBoxesNewReg()">Reset Form</button>
+            </div>
+            <div class="col-sm-2">
+              <button type="button" class="btn btn-info" name="create-new">
+                Create New Delegate
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
+    <!-- list of past buyers matching search criteria-->
+    <div id="match-del-list"></div>
   </div>
-
-
-  <!-- list of past buyers matching search criteria-->
-  <div id="match-del-list"></div>
 </div>
 {% endblock %}

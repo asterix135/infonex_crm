@@ -9,7 +9,7 @@ function clearSearchBoxesNewReg() {
   lastNameBox.value='';
   companyBox.value='';
   postalCodeBox.value='';
-}
+};
 
 function toggleSearchText(button_id) {
   var thisButton = document.getElementById(button_id);
@@ -18,4 +18,4 @@ function toggleSearchText(button_id) {
   } else {
     thisButton.innerHTML = "Show Details";
   }
-}
+};

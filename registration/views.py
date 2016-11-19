@@ -95,6 +95,7 @@ def new_delegate_search(request):
     }
     return render(request, 'registration/new_delegate_search.html', context)
 
+
 def get_registration_history(request):
     """AJAX call to get reg history for past delegate"""
     context = RequestContext(request)
@@ -114,4 +115,8 @@ def add_new_delegate(request):
 
 
 def add_conference(request):
-    return render(request, 'registration/add_conference.html')
+    venue_form = VenueForm()
+    context = {
+        'venue_form': venue_form,
+    }
+    return render(request, 'registration/conference.html', context)

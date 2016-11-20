@@ -1,8 +1,6 @@
 <strong>{{ venue.name }}</strong>
-<a href="#venue{{ venue.id }}" class="btn btn-success btn-xs edit-button">
+<a href="#venue{{ venue.id }}" class="btn btn-success btn-xs edit-button"
+  venue-id="{{ venue.id }}" venue-action="save">
   Save
 </a><br />
-{{ venue.address }}<br />
-{{ venue.city }}, {{ venue.state_prov }} {{ venue.postal_code }}<br />
-Tel: {{ venue.phone }}<br />
-Web Site: {{ venue.hotel_url }}
+{{ venue_form }}

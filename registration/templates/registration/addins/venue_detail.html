@@ -1,9 +1,12 @@
 <strong>{{ venue.name }}</strong>
 <a href="#venue{{ venue.id }}" class="btn btn-warning btn-xs edit-button"
-  venue-id="{{ venue.id }}">
+  venue-id="{{ venue.id }}" venue-action="edit">
   Edit
 </a><br />
 {{ venue.address }}<br />
 {{ venue.city }}, {{ venue.state_prov }} {{ venue.postal_code }}<br />
 Tel: {{ venue.phone }}<br />
-Web Site: {{ venue.hotel_url }}
+Web Site:
+{% if venue.hotel_url %}<a href="{{ venue.hotel_url }}" target="_blank">{{ venue.hotel_url }}</a>
+{% else %}{{ venue.hotel.url }}
+{% endif %}

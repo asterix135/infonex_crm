@@ -115,11 +115,14 @@ def add_new_delegate(request):
 
 
 def add_edit_conference(request):
+    """ Renders conference page """
     venue_list = Venue.objects.all().order_by('city', 'name')
     venue_form = VenueForm()
+    conference_select_form = NewDelegateSearchForm()
     context = {
         'venue_form': venue_form,
         'venue_list': venue_list,
+        'confrence_select_form': conference_select_form,
     }
     return render(request, 'registration/conference.html', context)
 
@@ -128,11 +131,25 @@ def edit_venue(request):
     """ AJAX function to edit venue information in sidebar """
     venue = None
     venue_id = None
+    template = 'registration/addins/venue_detail.html'
     if request.method == 'GET':
         venue_id = request.GET['id']
+    elif request.method == 'POST':
+        venue_id = request.POST['id']
     if venue_id:
         venue = Venue.objects.get(pk=venue_id)
-    template = 'registration/addins/venue_detail.html'
+        if request.method == 'GET':
+            venue_form = VenueForm(instance=venue)
+            template = 'registration/addins/venue_edit.html'
+        elif request.method == 'POST':
+            venue_form = VenueForm(request.POST, instance=venue)
+            if venue_form.is_valid():
+                venue_form.save()
+            else:
+                template = 'registration/addins/venue_edit.html'
+        else:
+            venue_form = VenueForm()
 
-    context = {'venue': venue}
+    context = {'venue': venue,
+               'venue_form': venue_form,}
     return render(request, template, context)

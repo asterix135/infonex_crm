@@ -1,0 +1,30 @@
+<div class="col-sm-3 col-md-3 venue-sidebar fill">
+  <h3>Venues</h3>
+  <div class="venue-list">
+    {% if venue_list %}
+    <ul class="list-group">
+      {% for venue in venue_list %}
+      <li class="list-group-item" id="list-item-{{ venue.id }}">
+        {% include 'registration/addins/venue_detail.html' %}
+      </li>
+      {% endfor %}
+    </ul>
+    <hr class="venue-hr" />
+    {% endif %}
+  </div>
+  <div class="add-venue">
+    <a href="#new_conf_entry" class="btn btn-info"
+      data-toggle="collapse">
+      Add New Venue
+    </a>
+    <div class="add-venue-form collapse" id="new_conf_entry">
+      <form action="", method="post">
+        {% csrf_token %}
+        <div>
+          {{ venue_form }}
+        </div>
+        <button type="submit" class="btn btn-primary btn-save-venue">Save</button>
+      </form>
+    </div>
+  </div>
+</div>

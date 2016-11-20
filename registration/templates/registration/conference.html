@@ -1,21 +1,58 @@
 {% extends 'registration/base.html' %}
 {% load staticfiles %}
-{% block title %}Conferences | {% endblock %}
-{% block script_includes %}<link href="{% static 'registration/conference.css' %}" rel="stylesheet" type="text/css">{% endblock %}
-{% block content %}
 
+{% block title %}Conferences | {% endblock %}
+
+{% block script_includes %}
+<link href="{% static 'registration/conference.css' %}"
+  rel="stylesheet" type="text/css">
+<script type="text/javascript"
+  src="{% static 'registration/javascript/conference.js' %}"></script>
+{% endblock %}
+
+{% block content %}
 <div class="container-fluid fill">
   <div class="row fill">
     <div class="col-sm-3 col-md-3 venue-sidebar fill">
       <h3>Venues</h3>
-      <div class="add-venue">
-        <h5>Add venue area</h5>
+      <div class="venue-list">
+        {% if venue_list %}
+        <ul class="list-group">
+          {% for venue in venue_list %}
+          <li class="list-group-item" id="list-item-{{ venue.id }}">
+            <strong>{{ venue.name }}</strong>
+            <button type="button" class="btn btn-warning btn-xs edit-button"
+              venue-id="{{ venue.id }}">
+              Edit
+            </button>
+            <br />
+            {{ venue.address }}<br />
+            {{ venue.city }}, {{ venue.state_prov }} {{ venue.postal_code }}<br />
+            Tel: {{ venue.phone }}<br />
+            Web Site: {{ venue.hotel_url }}
+          </li>
+          {% endfor %}
+        </ul>
+        <hr class="venue-hr" />
+        {% endif %}
       </div>
-      <div class="venue-list fill">
-        <h5>Venue list area</h5>
+      <div class="add-venue">
+        <a href="#new_conf_entry" class="btn btn-info"
+          data-toggle="collapse">
+          Add New Venue
+        </a>
+        <div class="add-venue-form collapse" id="new_conf_entry">
+          <form action="", method="post">
+            {% csrf_token %}
+            <div>
+              {{ venue_form }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-save-venue">Save</button>
+          </form>
+        </div>
       </div>
     </div>
-    <div class="col-sm-9 right-main-panel fill">
+    <div class="col-sm-9 right-main-panel">
       <div class="row fill">
         <h1>Add/Edit Conference</h1>
         <p>

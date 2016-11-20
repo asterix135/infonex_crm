@@ -104,19 +104,35 @@ def get_registration_history(request):
     if request.method == 'GET':
         person_id = request.GET['id']
     if person_id:
-        # do something
         person = Registrants.objects.get(pk=person_id)
         person_regs = person.regdetails_set.all()
     return render(request, 'registration/addins/reg_history.html',
         {'person_regs': person_regs})
 
+
 def add_new_delegate(request):
     return render(request, 'registration/add_new_delegate.html')
 
 
-def add_conference(request):
+def add_edit_conference(request):
+    venue_list = Venue.objects.all().order_by('city', 'name')
     venue_form = VenueForm()
     context = {
         'venue_form': venue_form,
+        'venue_list': venue_list,
     }
     return render(request, 'registration/conference.html', context)
+
+
+def edit_venue(request):
+    """ AJAX function to edit venue information in sidebar """
+    venue = None
+    venue_id = None
+    if request.method == 'GET':
+        venue_id = request.GET['id']
+    if venue_id:
+        venue = Venue.objects.get(pk=venue_id)
+    template = 'registration/addins/venue_detail.html'
+
+    context = {'venue': venue}
+    return render(request, template, context)

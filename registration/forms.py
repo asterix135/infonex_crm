@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
+
 
 from .models import *
 from .constants import COMPANY_OPTIONS, BILLING_CURRENCY
@@ -219,14 +221,15 @@ class VenueForm(forms.ModelForm):
 
     class Meta:
         model = Venue
-        fields = {'name', 'address', 'city', 'postal_code',
-                  'phone', 'hotel_url'}
+        fields = ['name', 'address', 'city', 'state_prov', 'postal_code',
+                  'phone', 'hotel_url']
         widgets = {
             'name': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
-            'address': forms.TextInput(
-                attrs={'class': 'form-control'}
+            'address': forms.Textarea(
+                attrs={'class': 'form-control',
+                       'rows': '2',}
             ),
             'city': forms.TextInput(
                 attrs={'class': 'form-control'}
@@ -240,4 +243,7 @@ class VenueForm(forms.ModelForm):
             'hotel_url': forms.URLInput(
                 attrs={'class': 'form-control'}
             )
+        }
+        labels = {
+            'name': _('Name of Venue'),
         }

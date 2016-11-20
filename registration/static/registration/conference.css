@@ -7,3 +7,20 @@ body {
 .fill {
   height: 100%;
 }
+.venue-hr {
+  border-color: #41454c;
+}
+.add-venue-form {
+  margin-top: 10px;
+}
+.btn-save-venue {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+.list-group-item {
+  background-color: #F5F5F5;
+  border-color: #999
+}
+.edit-button {
+  float: right;
+}

@@ -172,3 +172,24 @@ def edit_venue(request):
     context = {'venue': venue,
                'venue_form': venue_form,}
     return render(request, template, context)
+
+
+def add_venue(request):
+    """ AJAX Function to add new venue and refresh venue sidebar """
+    errors = False
+    # TODO: Update this when filter function implemented
+    venue_list = Venue.objects.all().order_by('city', 'name')
+    if request.method == 'POST':
+        venue_form = VenueForm(request.POST)
+        if venue_form.is_valid():
+            venue_form.save()
+            venue_form = VenueForm()
+    else:
+        venue_form = VenueForm()
+        errors = True
+    context = {
+        'venue-form': venue_form,
+        'venue_list': venue_list,
+        'errors': errors,
+    }
+    return render(request, 'registration/addins/venue_sidebar.html', context)

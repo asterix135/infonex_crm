@@ -52,6 +52,13 @@ class NewDelegateSearchForm(forms.Form):
         ).order_by('-number')
 
 
+class ConferenceEditFormNEW(forms.ModelForm):
+
+    class Meta():
+        model = Event
+        fields = ['number', 'title', 'city', 'date_begins']
+
+
 class ConferenceEditForm(forms.Form):
     event_number = forms.CharField(
         label='Event Number',

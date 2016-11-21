@@ -1,4 +1,4 @@
-<div class="col-sm-3 col-md-3 venue-sidebar fill">
+<div class="col-sm-3 col-md-3 venue-sidebar fill" id="venue-sidebar">
   <h3>Venues</h3>
   <div class="venue-list">
     {% if venue_list %}
@@ -17,14 +17,18 @@
       data-toggle="collapse">
       Add New Venue
     </a>
+    {% if errors %}
+    <div class="add-venue-form collapse in" id="new_conf_entry">
+    {% else %}
     <div class="add-venue-form collapse" id="new_conf_entry">
-      <form action="", method="post">
-        {% csrf_token %}
-        <div>
+    {% endif %}
+        <div id="add-venue-toggle">
           {{ venue_form }}
         </div>
-        <button type="submit" class="btn btn-primary btn-save-venue">Save</button>
-      </form>
+        <button type="button" class="btn btn-primary btn-save-venue"
+          id="save-new-venue">
+          Save
+        </button>
     </div>
   </div>
 </div>

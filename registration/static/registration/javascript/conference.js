@@ -33,6 +33,7 @@ $(document).ready(function() {
     })
   };
 
+  // wrapper to handle click and update venue info
   $('body').on('click', '.edit-button', function(event){
     event.preventDefault();
     var venueId = $(this).attr('venue-id');
@@ -43,4 +44,26 @@ $(document).ready(function() {
       saveVenueChanges(venueId)
     }
   });
+
+  // Save new venue and update sidebar
+  $('body').on('click', '#save-new-venue', function(){
+    $.ajax({
+      url: '/registration/add_venue/',
+      type: 'POST',
+      data {
+        name: $('#add-venue-toggle #id_name').val(),
+        address: $('#add-venue-toggle #id_address').val(),
+        city: $('#add-venue-toggle #id_city').val(),
+        state_prov: $('#add-venue-toggle #id_state_prov').val(),
+        postal_code: $('#add-venue-toggle #id_postal_code').val(),
+        phone: $('#add-venue-toggle #id_phone').val(),
+        hotel_url: $('#add-venue-toggle #id_hotel_url').val(),
+      },
+      success: function(data) {
+        $('#venue-sidebar').html(data);
+      }
+    })
+    alert('button clicked');
+  });
+
 });

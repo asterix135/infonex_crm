@@ -16,5 +16,5 @@ urlpatterns = [
     url(r'^conference/$', views.add_edit_conference,
         name='conference'),
     url(r'^edit_venue/$', views.edit_venue, name='edit_venue'),
-
+    url(r'^add_venue/$', views.add_venue, name='add_venue'),
 ]

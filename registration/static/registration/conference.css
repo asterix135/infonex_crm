@@ -24,3 +24,9 @@ body {
 .edit-button {
   float: right;
 }
+.btn-choose-venue {
+  margin-top: 10px;
+}
+.search-panel {
+  margin-top: 0;
+}

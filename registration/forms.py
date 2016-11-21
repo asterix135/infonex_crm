@@ -247,3 +247,17 @@ class VenueForm(forms.ModelForm):
         labels = {
             'name': _('Name of Venue'),
         }
+
+
+class ConferenceSelectForm(forms.Form):
+    event = forms.ModelChoiceField(
+        label='Select Conference',
+        required=False,
+        initial='',
+        queryset=Event.objects.filter(
+            date_begins__gte=timezone.now()-datetime.timedelta(weeks=4)
+        ).order_by('-number'),
+        widget=forms.Select(
+            attrs={'class': 'form-control col-sm-4'}
+        )
+    )

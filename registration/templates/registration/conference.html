@@ -16,23 +16,33 @@
     {% include 'registration/addins/venue_sidebar.html' %}
     <div class="col-sm-9 right-main-panel">
       <div class="row fill">
-        <h1>Add/Edit Conference</h1>
-        <p>
-          Please select an event to edit or choose "New Event" to Create a new event.
-        </p>
-        <form action="" method="post" id="create-new-conference">
-          {% csrf_token %}
-          <input type="hidden" name="test" value="test_value" />
-          <button type="submit" class="btn btn-success">Submit</button>
-        </form>
+        <div class="panel-body search-panel">
+          <h1>Add/Edit Conference</h1>
+          <p>
+            Please select an event to edit or choose "New Event" to Create a new event.
+          </p>
+          <form action="" method="post" id="create-new-conference">
+            {% csrf_token %}
+            <div class="form-group-row">
+            {{ conference_select_form.event }}
+            </div>
+            <div class="form-group-row">
+              <button type="submit" class="btn btn-default btn-choose-venue col-sm-2">Edit</button>
+              <button type="button" class="btn btn-success btn-choose-venue col-sm-2">New Event</button>
+            </div>
+          </form>
+        </div>
 
-        <h3> Main section</h3>
-        <ul class="fill">
-          <li>
-            item 1
-          </li>
+        <div class="panel-body edit-panel" id="conference-edit-panel">
+          <hr class="venue-hr" />
+          <h3> Main section</h3>
+          <ul class="fill">
+            <li>
+              item 1
+            </li>
+          </ul>
+        </div>
 
-        </ul>
       </div>
     </div>
   </div>

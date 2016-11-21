@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.db.models import Q
 from django.template import RequestContext
+from django.utils.datastructures import MultiValueDictKeyError
+
 from .forms import *
 from .models import *
-from crm.models import Person
+from crm.models import Person, Event
 
 
 def index(request):
@@ -116,13 +118,30 @@ def add_new_delegate(request):
 
 def add_edit_conference(request):
     """ Renders conference page """
+    edit_action = 'blank'
+    edit_venue = None
+    conference_edit_form = None
+    if request.method == 'GET':
+        edit_action = request.GET.get('action', 'blank')
+        if edit_action not in ('blank', 'new', 'edit'):
+            edit_action = 'blank'
+        if edit_action == 'edit':
+            try:
+                edit_event = Event.objects.get(pk=request.GET['id'])
+                # TODO: Fix this (fix the form?)
+                conference_edit_form = ConferenceEditForm()
+            except (Event.DoesNotExist, MultiValueDictKeyError):
+                edit_action = 'blank'
+        elif edit_action == 'new':
+            conference_edit_form = ConferenceEditForm()
+
     venue_list = Venue.objects.all().order_by('city', 'name')
     venue_form = VenueForm()
-    conference_select_form = NewDelegateSearchForm()
+    conference_select_form = ConferenceSelectForm()
     context = {
         'venue_form': venue_form,
         'venue_list': venue_list,
-        'confrence_select_form': conference_select_form,
+        'conference_select_form': conference_select_form,
     }
     return render(request, 'registration/conference.html', context)
 

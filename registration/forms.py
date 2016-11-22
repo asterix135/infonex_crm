@@ -55,7 +55,18 @@ class ConferenceEditFormNEW(forms.ModelForm):
 
     class Meta():
         model = Event
-        fields = ['number', 'title', 'city', 'date_begins']
+        fields = ['number', 'title', 'city', 'date_begins', 'state_prov',
+                  'hotel', 'registrar', 'developer', 'company_brand',
+                  'gst_charged', 'hst_charged', 'qst_charged',
+                  'gst_rate', 'hst_rate', 'qst_rate', 'billing_currency']
+        labels = {
+            'number': _('Event Number'),
+            'title': _('Event Title'),
+            'date_begins': _('First Date of Event'),
+        }
+        widgets = {
+            
+        }
 
 
 class ConferenceEditForm(forms.Form):

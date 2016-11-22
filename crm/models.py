@@ -162,7 +162,8 @@ class Event(models.Model):
     registrar = models.ForeignKey('auth.User', related_name='registrar')
     developer = models.ForeignKey('auth.User', blank=True, null=True,
                                   related_name='developer')
-    state_prov = models.CharField(max_length=25)
+    state_prov = models.CharField(max_length=25,
+                                  choices=STATE_PROV_TUPLE)
     company_brand = models.CharField(max_length=2,
                                      choices=COMPANY_OPTIONS,
                                      default='IC')

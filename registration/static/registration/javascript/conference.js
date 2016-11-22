@@ -69,13 +69,23 @@ $(document).ready(function() {
 
   // Toggle Warning and Delete current venue
   $('body').on('click', '.delete-venue-button', function(){
-    var venue_id = $(this).attr('venue-id');
-    var warning_issued = $('#delete-venue-warning' + venue_id).css('display');
-    var warning_visible = $('#delete-venue-warning' + venue_id).is(":visible");
-    alert(warning_visible);
-    if (warning_issued == 'none') {
-      $('#delete-venue-warning' + venue_id).show();
+    var venueId = $(this).attr('venue-id');
+    var warningHidden = !$('#delete-venue-warning' + venueId).is(":visible");
+    if (warningHidden) {
+      $('#delete-venue-warning' + venueId).show();
+    } else {
+      // ajax delete call
+      $.ajax({
+        url: '/registration/delete_venue/',
+        type: 'POST',
+        data: {
+          venue_id: venueId,
+        },
+        success: function(data) {
+          $('#venue-sidebar').html(data);
+        }
+      })
     }
-  })
+  });
 
 });

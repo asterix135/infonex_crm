@@ -194,3 +194,22 @@ def add_venue(request):
         'errors': errors,
     }
     return render(request, 'registration/addins/venue_sidebar.html', context)
+
+
+def delete_venue(request):
+    """ AJAX function to delete venue """
+    venue_form = VenueForm()
+    # TODO: Update this wehn filter function implemented
+    venue_list = Venue.objects.all().order_by('city', 'name')
+    if request.method == 'POST' and 'venue_id' in request.POST:
+        try:
+            venue = Venue.objects.get(id=request.POST['venue_id'])
+        except (Venue.DoesNotExist, MultiValueDictKeyError):
+            venue = None
+        if venue:
+            venue.delete()
+    context = {
+        'venue_form': venue_form,
+        'venue_list': venue_list,
+    }
+    return render(request, 'registration/addins/venue_sidebar.html', context)

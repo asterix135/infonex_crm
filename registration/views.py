@@ -120,7 +120,7 @@ def add_edit_conference(request):
     """ Renders conference page """
     edit_action = 'blank'
     edit_venue = None
-    conference_edit_form = None
+    conference_edit_form = ConferenceEditForm()
     if request.method == 'GET':
         edit_action = request.GET.get('action', 'blank')
         if edit_action not in ('blank', 'new', 'edit'):
@@ -129,7 +129,26 @@ def add_edit_conference(request):
             try:
                 edit_event = Event.objects.get(pk=request.GET['id'])
                 # TODO: Fix this (fix the form?)
-                conference_edit_form = ConferenceEditForm()
+                conference_edit_form = ConferenceEditForm(
+                    initial={
+                        'event_number': None,
+                        'conference_title': None,
+                        'start_date': None,
+                        'city': None,
+                        'state_prov': None,
+                        'hotel': None,
+                        'registrar': None,
+                        'developer': None,
+                        'company_brand': None,
+                        'gst_charged': None,
+                        'hst_charged': None,
+                        'qst_charged': None,
+                        'gst_rate': None,
+                        'hst_rate': None,
+                        'qst_rate': None,
+                        'billing_currency': None,
+                    }
+                )
             except (Event.DoesNotExist, MultiValueDictKeyError):
                 edit_action = 'blank'
         elif edit_action == 'new':

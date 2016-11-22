@@ -5,9 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 
 
 from .models import *
-from .constants import COMPANY_OPTIONS, BILLING_CURRENCY
 from crm.models import Event
-from crm.constants import STATE_PROV_TUPLE
+from crm.constants import STATE_PROV_TUPLE, COMPANY_OPTIONS, BILLING_CURRENCY
 
 
 class NewDelegateSearchForm(forms.Form):

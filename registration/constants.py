@@ -23,10 +23,3 @@ REG_STATUS_OPTIONS = (('DP', 'Delegate Paid'),
 CONTACT_OPTIONS = (('D', 'Attention: delegate'),
                    ('A', 'Attention: assistant'),
                    ('C', 'cc to Assistant'))
-
-COMPANY_OPTIONS = (('IC', 'Infonex Inc'),
-                   ('IT', 'INX-Training'),
-                   ('IU', 'Infonex (USA) Inc.'))
-
-BILLING_CURRENCY = (('CAD', 'CAD'),
-                    ('USD', 'USD'))

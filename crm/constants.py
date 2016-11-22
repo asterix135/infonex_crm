@@ -1,3 +1,10 @@
+COMPANY_OPTIONS = (('IC', 'Infonex Inc'),
+                   ('IT', 'INX-Training'),
+                   ('IU', 'Infonex (USA) Inc.'))
+
+BILLING_CURRENCY = (('CAD', 'CAD'),
+                    ('USD', 'USD'))
+
 AC_DICT = {
     '201': 'NJ',
     '202': 'DC',
@@ -390,7 +397,6 @@ AC_DICT = {
     '989': 'MI',
 }
 
-
 STATE_PROV_TUPLE =  (
     ('', 'Any'),
     ('AB', 'Alberta'), ('BC', 'British Columbia'), ('MB', 'Manitoba'),
@@ -421,7 +427,6 @@ STATE_PROV_TUPLE =  (
     ('VT', 'Vermont'), ('VA', 'Virginia'), ('WA', 'Washington'),
     ('WV', 'West Virginia'), ('WI', 'Wisconsin'), ('WY', 'Wyoming')
 )
-
 
 FLAG_CHOICES = (
     ('1', 'Red'),

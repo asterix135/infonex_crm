@@ -1,6 +1,13 @@
-<strong>{{ venue.name }}</strong>
+<strong>Editing: {{ venue.name }}</strong>
 <a href="#venue{{ venue.id }}" class="btn btn-success btn-xs edit-button"
-  venue-id="{{ venue.id }}" venue-action="save">
+  venue-id="{{ venue.id }}" venue-action="save" id="save-venue-changes">
   Save
 </a><br />
+<button type="button" class="btn btn-danger btn-xs delete-venue-button"
+  venue-id="{{ venue.id }}">
+  Delete Venue
+</button><br />
+<div class="form-warning" id="delete-venue-warning{{ venue.id }}" >
+  OMG the world is ending!
+</div>
 {{ venue_form }}

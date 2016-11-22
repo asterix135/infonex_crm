@@ -181,14 +181,15 @@ def add_venue(request):
     venue_list = Venue.objects.all().order_by('city', 'name')
     if request.method == 'POST':
         venue_form = VenueForm(request.POST)
+        errors = True
         if venue_form.is_valid():
+            errors = False
             venue_form.save()
             venue_form = VenueForm()
     else:
         venue_form = VenueForm()
-        errors = True
     context = {
-        'venue-form': venue_form,
+        'venue_form': venue_form,
         'venue_list': venue_list,
         'errors': errors,
     }

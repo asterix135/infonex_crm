@@ -89,8 +89,6 @@ $(document).ready(function(){
   // Submit search function for new_delegate_search
   $('#submit-delegate-search').on('submit', function(event){
     event.preventDefault();
-    // TODO: Need to implement correct csrftoken handling
-    // var csrftoken = getCookie('csrftoken');
     searchDels();
   });
 

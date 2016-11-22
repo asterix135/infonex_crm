@@ -133,8 +133,9 @@ class EventDetails(models.Model):
     Extends information in crm.Event with details needed to process
     registrations and invoicing
     """
-    event = models.ForeignKey('crm.Event')
-    hotel = models.ForeignKey(Venue, blank=True, null=True)
+    event = models.ForeignKey('crm.Event', on_delete=models.CASCADE)
+    hotel = models.ForeignKey(Venue, blank=True, null=True,
+                              on_delete=models.SET_NULL)
     registrar = models.ForeignKey('auth.User', related_name='registrar')
     developer = models.ForeignKey('auth.User', blank=True, null=True,
                                   related_name='developer')

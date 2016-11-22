@@ -216,15 +216,6 @@ class ConferenceOptionForm(forms.ModelForm):
 
 
 class VenueForm(forms.ModelForm):
-    state_prov = forms.ChoiceField(
-        label='State/Province',
-        required=True,
-        choices=STATE_PROV_TUPLE,
-        initial='ON',
-        widget=forms.Select(
-            attrs={'class': 'form-control'}
-        )
-    )
 
     class Meta:
         model = Venue
@@ -241,6 +232,9 @@ class VenueForm(forms.ModelForm):
             'city': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
+            'state_prov': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
             'postal_code': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
@@ -254,6 +248,16 @@ class VenueForm(forms.ModelForm):
         labels = {
             'name': _('Name of Venue'),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(VenueForm, self).__init__(*args, **kwargs)
+        self.fields['state_prov'] = forms.ChoiceField(
+            choices=STATE_PROV_TUPLE,
+            widget=forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            initial='ON',
+        )
 
 
 class ConferenceSelectForm(forms.Form):

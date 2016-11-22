@@ -50,7 +50,7 @@ $(document).ready(function() {
     $.ajax({
       url: '/registration/add_venue/',
       type: 'POST',
-      data {
+      data: {
         name: $('#add-venue-toggle #id_name').val(),
         address: $('#add-venue-toggle #id_address').val(),
         city: $('#add-venue-toggle #id_city').val(),
@@ -63,7 +63,19 @@ $(document).ready(function() {
         $('#venue-sidebar').html(data);
       }
     })
-    alert('button clicked');
   });
+
+  // Ajax call to delete venue
+
+  // Toggle Warning and Delete current venue
+  $('body').on('click', '.delete-venue-button', function(){
+    var venue_id = $(this).attr('venue-id');
+    var warning_issued = $('#delete-venue-warning' + venue_id).css('display');
+    var warning_visible = $('#delete-venue-warning' + venue_id).is(":visible");
+    alert(warning_visible);
+    if (warning_issued == 'none') {
+      $('#delete-venue-warning' + venue_id).show();
+    }
+  })
 
 });

@@ -139,3 +139,4 @@ class EventOptions(models.Model):
     name = models.CharField(max_length=255)
     startdate = models.DateField()
     enddate = models.DateField()
+    primary = models.BooleanField(default=False, blank=True)

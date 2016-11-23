@@ -3,6 +3,7 @@
   <h2>New Conference Input</h2>
   {% else %}
   <h2>Edit Conference Input</h2>
+  <input type="hidden" value="{{ event.id }}" id="edited-event-id" />
   {% endif %}
   <div class="row">
     <div class="col-sm-3">
@@ -108,11 +109,78 @@
       <h2 class="panel-title h2">Event Registration Options</h2>
     </div>
     <div class="panel-body">
-      {% for option in event_option_set %}
-      <h5>Option goes here</h5>
-      {% endfor %}
+      <table class="table table-striped">
+        <thead class="thead-inverse">
+          <tr>
+            <th class="col-sm-1">
+              Primary?
+            </th>
+            <th class="col-sm-6">
+              Description
+            </th>
+            <th class="col-sm-2">
+              Start Date
+            </th>
+            <th class="col-sm-2">
+              End Date
+            </th>
+            <th class="col-sm-1">
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <input type="checkbox" />
+            </td>
+            <td>
+              {{ option.name }}
+            </td>
+            <td>
+              {{ option.startdate }}
+            </td>
+            <td>
+              {{ option.enddate }}
+            </td>
+            <td>
+              <button type="button" class="btn btn-danger btn-xs">Delete</button>
+            </td>
+          </tr>
+          {% for option in event_option_set %}
+          <tr>
+            <td>
+              <input type="checkbox" />
+            </td>
+            <td>
+              {{ option.name }}
+            </td>
+            <td>
+              {{ option.startdate }}
+            </td>
+            <td>
+              {{ option.enddate }}
+            </td>
+            <td>
+              <button type="button" class="btn btn-danger btn-xs" id="delete-option-{{ option.id }}">
+                Delete
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <td>{{ conference_option_form.primary }}</td>
+            <td>{{ conference_option_form.name }}</td>
+            <td>{{ conference_option_form.startdate }}</td>
+            <td>{{ conference_option_form.enddate }}</td>
+            <td>
+              <button type="button" class="btn btn-success btn-xs" id="add-option-button">
+                Save
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
-
-  <!-- Need to include options form here -->
 {% endif %}

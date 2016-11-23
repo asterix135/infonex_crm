@@ -1,33 +1,33 @@
 {% if person.contact_set %}
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h2 class="panel-title">Contact History</h2>
-        </div>
-        <div class="panel-body">
-            <table class="table table-striped">
-                <thead class="thead-inverse">
-                    <tr>
-                        <th class="col-sm-2">Date/Time</th>
-                        <th class="col-sm-1">User</th>
-                        <th class="col-sm-2">Event</th>
-                        <th class="col-sm-1">Method</th>
-                        <th class="col-sm-5">Notes</th>
-                        <th class="col-sm-1">Delete?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for contact in person.contact_set.all|dictsortreversed:"date_of_contact" %}
-                <tr>
-                    <td class="col-sm-2">{{ contact.date_of_contact }}</td>
-                    <td class="col-sm-1">{{ contact.author }}</td>
-                    <td class="col-sm-2">{{ contact.event }}</td>
-                    <td class="col-sm-1">{{ contact.get_method_display }}</td>
-                    <td class="col-sm-5">{{ contact.notes }}</td>
-                    <td class="col-sm-1">{% if contact.able_to_delete %}<a href="?rm={{ contact.pk }}">Delete</a>{% endif %}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h2 class="panel-title">Contact History</h2>
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped">
+      <thead class="thead-inverse">
+        <tr>
+          <th class="col-sm-2">Date/Time</th>
+          <th class="col-sm-1">User</th>
+          <th class="col-sm-2">Event</th>
+          <th class="col-sm-1">Method</th>
+          <th class="col-sm-5">Notes</th>
+          <th class="col-sm-1">Delete?</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for contact in person.contact_set.all|dictsortreversed:"date_of_contact" %}
+      <tr>
+        <td class="col-sm-2">{{ contact.date_of_contact }}</td>
+        <td class="col-sm-1">{{ contact.author }}</td>
+        <td class="col-sm-2">{{ contact.event }}</td>
+        <td class="col-sm-1">{{ contact.get_method_display }}</td>
+        <td class="col-sm-5">{{ contact.notes }}</td>
+        <td class="col-sm-1">{% if contact.able_to_delete %}<a href="?rm={{ contact.pk }}">Delete</a>{% endif %}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endif %}

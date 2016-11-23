@@ -127,7 +127,7 @@ class ConferenceOptionForm(forms.ModelForm):
 
     class Meta:
         model = EventOptions
-        fields = ('name', 'startdate', 'enddate',)
+        fields = ('name', 'startdate', 'enddate', 'primary')
         widgets = {
             'name': forms.TextInput(
                 attrs={'class': 'form-control'}
@@ -136,6 +136,9 @@ class ConferenceOptionForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
             'enddate': forms.DateInput(
+                attrs={'class': 'form-control'}
+            ),
+            'primary': forms.CheckboxInput(
                 attrs={'class': 'form-control'}
             )
         }

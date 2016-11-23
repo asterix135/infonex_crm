@@ -127,41 +127,8 @@ class Venue(models.Model):
     phone = models.CharField(max_length=25)
     hotel_url = models.URLField()
 
-
-# class EventDetails(models.Model):
-#     """
-#     Extends information in crm.Event with details needed to process
-#     registrations and invoicing
-#     """
-#     event = models.OneToOneField('crm.Event', on_delete=models.CASCADE)
-#     hotel = models.ForeignKey(Venue, blank=True, null=True,
-#                               on_delete=models.SET_NULL)
-#     registrar = models.ForeignKey('auth.User', related_name='registrar')
-#     developer = models.ForeignKey('auth.User', blank=True, null=True,
-#                                   related_name='developer')
-#     state_prov = models.CharField(max_length=25)
-#     company_brand = models.CharField(max_length=2,
-#                                      choices=COMPANY_OPTIONS,
-#                                      default='IC')
-#     gst_charged = models.BooleanField(default=False)
-#     gst_rate = models.FloatField(default=0.05)
-#     hst_charged = models.BooleanField(default=True)
-#     hst_rate = models.FloatField(default=0.13)
-#     qst_charged = models.BooleanField(default=False)
-#     qst_rate = models.FloatField(default=0.09975)
-#     pst_charged = models.BooleanField(default=False)
-#     pst_rate = models.FloatField(default=0.)
-#     billing_currency = models.CharField(max_length=3,
-#                                         choices=BILLING_CURRENCY,
-#                                         default='CAD')
-#     created_by = models.ForeignKey('auth.User',
-#                                    default=1,
-#                                    related_name='details_created_by')
-#     date_created = models.DateTimeField('date created', auto_now_add=True)
-#     date_modified = models.DateTimeField('date modified', auto_now=True)
-#     modified_by = models.ForeignKey('auth.User',
-#                                     default=1,
-#                                     related_name='details_modifed_by')
+    def __str__(self):
+        return str(self.name) + ' (' + str(self.city) + ')'
 
 
 class EventOptions(models.Model):

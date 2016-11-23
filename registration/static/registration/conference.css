@@ -32,3 +32,11 @@ body {
 .search-panel {
   margin-top: 0;
 }
+.event-options-box {
+  margin-top: 20px;
+}
+.event-checkbox {
+  margin-top: 0px;
+  border-top: 0px;
+  padding-top: 0px;
+}

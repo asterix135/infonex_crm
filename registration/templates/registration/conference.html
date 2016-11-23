@@ -34,15 +34,10 @@
             </div>
           </form>
         </div>
-
+        <hr class="venue-hr" />
         <div class="panel-body edit-panel" id="conference-edit-panel">
-          <hr class="venue-hr" />
-          <h3> Main section</h3>
-          <ul class="fill">
-            <li>
-              item 1
-            </li>
-          </ul>
+        <!-- AJAX Insert uses above id -->
+        {% include 'registration/addins/conference_edit_panel.html' %}
         </div>
 
       </div>

@@ -121,6 +121,7 @@ def add_edit_conference(request):
     edit_action = 'blank'
     edit_venue = None
     event = None
+    event_option_set = None
     conference_edit_form = ConferenceEditForm()
     conference_option_form = ConferenceOptionForm()
     if request.method == 'GET':
@@ -130,51 +131,8 @@ def add_edit_conference(request):
         if edit_action == 'edit':
             try:
                 event = Event.objects.get(pk=request.GET['id'])
-                try:
-                    event_details = event.eventdetails_set.get(event=event)
-                    conference_edit_form = ConferenceEditForm(
-                        initial={
-                            'event_number': event.number,
-                            'conference_title': event.title,
-                            'start_date': event.date_begins,
-                            'city': event.city,
-                            'state_prov': event_details.state_prov,
-                            'hotel': event_details.hotel,
-                            'registrar': event_details.registrar,
-                            'developer': event_details.developer,
-                            'company_brand': event_details.company_brand,
-                            'gst_charged': event_details.gst_charged,
-                            'hst_charged': event_details.hst_charged,
-                            'qst_charged': event_details.qst_charged,
-                            'gst_rate': event_details.gst_rate,
-                            'hst_rate': event_details.hst_rate,
-                            'qst_rate': event_details.qst_rate,
-                            'billing_currency': event_details.billing_currency,
-                        }
-                    )
-                except EventDetails.DoesNotExist:
-                    event_details = None
-                    conference_edit_form = ConferenceEditForm(
-                        initial={
-                            'event_number': event.number,
-                            'conference_title': event.title,
-                            'start_date': event.date_begins,
-                            'city': event.city,
-                            'state_prov': None,
-                            'hotel': None,
-                            'registrar': None,
-                            'developer': None,
-                            'company_brand': None,
-                            'gst_charged': None,
-                            'hst_charged': None,
-                            'qst_charged': None,
-                            'gst_rate': None,
-                            'hst_rate': None,
-                            'qst_rate': None,
-                            'billing_currency': None,
-                        }
-                    )
-
+                conference_edit_form = ConferenceEditForm(instance=event)
+                event_option_set = event.eventoptions_set.all()
             except (Event.DoesNotExist, MultiValueDictKeyError):
                 edit_action = 'blank'
 
@@ -182,11 +140,14 @@ def add_edit_conference(request):
     venue_form = VenueForm()
     conference_select_form = ConferenceSelectForm()
     context = {
+        'edit_action': edit_action,
         'venue_form': venue_form,
         'venue_list': venue_list,
         'conference_select_form': conference_select_form,
+        'conference_edit_form': conference_edit_form,
         'conference_option_form': conference_option_form,
         'event': event,
+        'event_option_set': event_option_set,
     }
     return render(request, 'registration/conference.html', context)
 

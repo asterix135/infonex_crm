@@ -1,10 +1,22 @@
 {% if edit_action != 'blank' %}
   {% if edit_action == 'new' %}
-  <h2>New Conference Input</h2>
+  <input type="hidden" value="new" id="edited-event-id" />
+  <h2>
+    New Conference Input
   {% else %}
-  <h2>Edit Conference Input</h2>
   <input type="hidden" value="{{ event.id }}" id="edited-event-id" />
+  <h2>
+    Edit Conference Input
   {% endif %}
+    <button type="button" class="btn btn-warning btn-sm conference-change-button"
+      id="abandon-conference-changes">
+      Abandon Changes
+    </button>
+    <button type="button" class="btn btn-primary btn-sm conference-change-button"
+      id="save-conference-changes">
+      Save
+    </button>
+  </h2>
   <div class="row">
     <div class="col-sm-3">
       {{ conference_edit_form.number.errors }}

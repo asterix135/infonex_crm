@@ -116,10 +116,39 @@ def add_new_delegate(request):
     return render(request, 'registration/add_new_delegate.html')
 
 
+def select_conference_to_edit(request):
+    """ ajax call to select conference for editing """
+    event = None
+    edit_action = 'new'
+    conference_edit_form = ConferenceEditForm()
+    conference_option_form = ConferenceOptionForm()
+    event_option_set = None
+    if request.method == 'POST':
+        print(request.POST)
+        if request.POST['edit_action'] != 'edit':
+            edit_action = 'blank'
+        else:
+            try:
+                event = Event.objects.get(pk=request.POST['conf_id'])
+                edit_action = 'edit'
+                conference_edit_form = ConferenceEditForm(instance=event)
+                event_option_set = event.eventoptions_set.all()
+            except (Event.DoesNotExist, MultiValueDictKeyError):
+                edit_action = 'blank'
+    context = {
+        'edit_action': edit_action,
+        'conference_edit_form': conference_edit_form,
+        'conference_option_form': conference_option_form,
+        'event': event,
+        'event_option_set': event_option_set,
+    }
+    return render(request, 'registration/addins/conference_edit_panel.html',
+                  context)
+
+
 def add_edit_conference(request):
     """ Renders conference page """
     edit_action = 'blank'
-    edit_venue = None
     event = None
     event_option_set = None
     conference_edit_form = ConferenceEditForm()

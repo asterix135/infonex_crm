@@ -18,4 +18,6 @@ urlpatterns = [
     url(r'^edit_venue/$', views.edit_venue, name='edit_venue'),
     url(r'^add_venue/$', views.add_venue, name='add_venue'),
     url(r'^delete_venue/$', views.delete_venue, name='delete_venue'),
+    url(r'^select_conference/$', views.select_conference_to_edit,
+        name='select_conference'),
 ]

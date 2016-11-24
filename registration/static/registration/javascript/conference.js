@@ -86,9 +86,34 @@ $(document).ready(function() {
     }
   });
 
-  // Ajax call to edit conference
-  $('body').on('click', '#edit-conference-button', function(){
-    alert('should allow you to edit conference');
-  })
+  // Ajax call to edit conference or add new
+  $('body').on('click', '.btn-choose-venue', function(){
+    var confId = $('#conference-select-dropdown #id_event').val();
+    var editAction = $(this).attr('btn-action');
+    if (editAction == 'edit') {
+      if (confId == '') {
+        editAction = 'blank';
+      };
+      $.ajax({
+        url: '/registration/select_conference/',
+        type: 'POST',
+        data: {
+          conf_id: confId,
+          edit_action: editAction,
+        },
+        success: function(data) {
+          $('#conference-edit-panel').html(data);
+        }
+      })
+    } else if (editAction == 'new') {
+      $.ajax({
+        url: '/registration/select_conference/',
+        type: 'GET',
+        success: function(data) {
+          $('#conference-edit-panel').html(data);
+        }
+      })
+    }
+  });
 
 });

@@ -25,21 +25,23 @@
           </p>
           <form action="" method="post" id="create-new-conference">
             {% csrf_token %}
-            <div class="form-group-row">
+            <div class="form-group-row" id="conference-select-dropdown">
             {{ conference_select_form.event }}
             </div>
             <div class="form-group-row">
               <button type="button" class="btn btn-default btn-choose-venue col-sm-2"
-                id="edit-conference-button">
+                btn-action="edit">
                 Edit
               </button>
-              <button type="button" class="btn btn-success btn-choose-venue col-sm-2">New Event</button>
+              <button type="button" class="btn btn-success btn-choose-venue col-sm-2"
+                btn-action="new">
+                New Event
+              </button>
             </div>
           </form>
         </div>
         <hr class="venue-hr" />
         <div class="panel-body edit-panel" id="conference-edit-panel">
-        <!-- AJAX Insert uses above id -->
         {% include 'registration/addins/conference_edit_panel.html' %}
         </div>
 

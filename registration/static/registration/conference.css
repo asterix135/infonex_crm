@@ -21,7 +21,7 @@ body {
   background-color: #F5F5F5;
   border-color: #999
 }
-.edit-button, .delete-venue-button {
+.edit-button, .delete-venue-button, .conference-change-button {
   float: right;
   border-top: 5px;
   border-bottom: 5px;

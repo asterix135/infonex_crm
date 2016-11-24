@@ -65,8 +65,6 @@ $(document).ready(function() {
     })
   });
 
-  // Ajax call to delete venue
-
   // Toggle Warning and Delete current venue
   $('body').on('click', '.delete-venue-button', function(){
     var venueId = $(this).attr('venue-id');
@@ -87,5 +85,10 @@ $(document).ready(function() {
       })
     }
   });
+
+  // Ajax call to edit conference
+  $('body').on('click', '#edit-conference-button', function(){
+    alert('should allow you to edit conference');
+  })
 
 });

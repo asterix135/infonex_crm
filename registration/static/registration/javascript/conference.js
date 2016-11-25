@@ -116,4 +116,41 @@ $(document).ready(function() {
     }
   });
 
+  // Abandon conference changes
+  $('body').on('click', '#abandon-conference-changes', function(){
+    var conferenceStatus = $('#edited-event-id').val();
+    if (conferenceStatus == 'new') {
+      alert('need to implement logic to remove added options etc');
+    }
+    $('#conference-edit-panel').html('');
+  });
+
+  // Save conference changes
+  $('body').on('click', '#save-conference-changes', function(){
+    var eventId = $('#edited-event-id').val();
+    var number = $('#conference-edit-panel #id_number').val();
+    var title = $('#conference-edit-panel #id_title').val();
+    var dateBegins = $('#conference-edit-panel #id_date_begins').val();
+    var stateProv = $('#conference-edit-panel #id_state_prov').val();
+    var hotel = $('#conference-edit-panel #id_hotel').val();
+    var registrar = $('#conference-edit-panel #id_registrar').val();
+    var developer = $('#conference-edit-panel #id_developer').val();
+    var companyBrand = $('#conference-edit-panel #id_company_brand').val();
+    var gstCharged = $('#conference-edit-panel #id_gst_charged').val();
+    var hstCharged = $('#conference-edit-panel #id_hst_charged').val();
+    var qstCharged = $('#conference-edit-panel #id_qst_charged').val();
+    var gstRate = $('#conference-edit-panel #id_gst_rate').val();
+    var hstRate = $('#conference-edit-panel #id_hst_rate').val();
+    var qstRate = $('#conference-edit-panel #id_qst_rate').val();
+    var billingCurrency = $('#conference-edit-panel #id_billing_currency').val();
+    // Need to capture options info here
+
+  });
+
+  // Change options
+  $('body').on('click', '.option-manage-btn', function(){
+    // manage cases of add, delete or Change
+    alert('need to implement code for this');
+  });
+
 });

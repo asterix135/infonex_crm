@@ -1,0 +1,48 @@
+<table class="table table-striped">
+  <thead class="thead-inverse">
+    <tr>
+      <th class="col-sm-1">Primary?</th>
+      <th class="col-sm-6">Description</th>
+      <th class="col-sm-2">Start Date</th>
+      <th class="col-sm-2">End Date</th>
+      <th class="col-sm-1">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for option in event_option_set %}
+    <tr>
+      <td>
+        <input type="checkbox" value="{{ option.primary }}"
+          id="primary_{{ option.id }}"/>
+      </td>
+      <td>{{ option.name }}</td>
+      <td>{{ option.startdate }}</td>
+      <td>{{ option.enddate }}</td>
+      <td>
+        <button type="button" class="btn btn-danger btn-xs option-manage-btn"
+          id="delete-option-{{ option.id }}" name="delete-option-button"
+          option-val="{{ option.id }}">
+          Delete
+        </button>
+        <button type="button" class="btn btn-warning btn-xs option-manage-btn"
+          id="update-option-{{ option.id }}" name="save-option-button"
+          option-val="{{ option.id }}">
+          Save changes
+        </button>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td>{{ conference_option_form.primary }}</td>
+      <td>{{ conference_option_form.name }}</td>
+      <td>{{ conference_option_form.startdate }}</td>
+      <td>{{ conference_option_form.enddate }}</td>
+      <td>
+        <button type="button" class="btn btn-success btn-xs option-manage-btn" 
+          id="add-option-button">
+          Save
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

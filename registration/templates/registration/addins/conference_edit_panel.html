@@ -1,11 +1,10 @@
 {% if edit_action != 'blank' %}
   {% if edit_action == 'new' %}
-  <input type="hidden" value="new" id="edited-event-id" />
-  <input type="hidden" value="" id="new-event-id" />
+  <input type="hidden" value="new" id="edited-conference-status" />
   <h2>
     New Conference Input
   {% else %}
-  <input type="hidden" value="{{ event.id }}" id="edited-event-id" />
+  <input type="hidden" value="edit" id="edited-conference-status"  />
   <h2>
     Edit Conference Input
   {% endif %}

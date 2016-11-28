@@ -1,4 +1,5 @@
 <table class="table table-striped">
+  <input type="hidden" value="{{ event.id }}" id="edited-event-id" />
   <thead class="thead-inverse">
     <tr>
       <th class="col-sm-1">Primary?</th>
@@ -20,26 +21,26 @@
       <td>{{ option.enddate }}</td>
       <td>
         <button type="button" class="btn btn-danger btn-xs option-manage-btn"
-          id="delete-option-{{ option.id }}" name="delete-option-button"
+          id="delete-option-{{ option.id }}" name="delete"
           option-val="{{ option.id }}">
           Delete
         </button>
         <button type="button" class="btn btn-warning btn-xs option-manage-btn"
-          id="update-option-{{ option.id }}" name="save-option-button"
+          id="update-option-{{ option.id }}" name="save"
           option-val="{{ option.id }}">
           Save changes
         </button>
       </td>
     </tr>
     {% endfor %}
-    <tr>
+    <tr id="new-option-row">
       <td>{{ conference_option_form.primary }}</td>
       <td>{{ conference_option_form.name }}</td>
       <td>{{ conference_option_form.startdate }}</td>
       <td>{{ conference_option_form.enddate }}</td>
       <td>
-        <button type="button" class="btn btn-success btn-xs option-manage-btn" 
-          id="add-option-button">
+        <button type="button" class="btn btn-success btn-xs option-manage-btn"
+          id="add-option-button" name="add">
           Save
         </button>
       </td>

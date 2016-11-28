@@ -121,8 +121,9 @@ $(document).ready(function() {
     var conferenceStatus = $('#edited-event-id').val();
     if (conferenceStatus == 'new') {
       alert('need to implement logic to remove added options etc');
+    } else {
+      $('#conference-edit-panel').html('');
     }
-    $('#conference-edit-panel').html('');
   });
 
   // Save conference changes
@@ -150,7 +151,31 @@ $(document).ready(function() {
   // Change options
   $('body').on('click', '.option-manage-btn', function(){
     // manage cases of add, delete or Change
-    alert('need to implement code for this');
+    var editStatus = $('#edited-conference-status').val(); // new or existing conf
+    var editAction = $(this).attr('name'); // add delete or save
+    var eventId = $('#edited-conference-id').val();
+    var primary = $('#new-option-row #id_primary').val();
+    var name = $('#new-option-row #id_name').val();
+    var startdate = $('#new-option-row #id_startdate').val();
+    var enddate = $('#new-option-row #id_enddate').val();
+    if (editAction == 'add') {
+      $.ajax({
+        url: '/registration/add_event_option/',
+        type: 'POST',
+        data: {
+          name: name,
+          primary: primary,
+          startdate: startdate,
+          enddate: enddate,
+          event_id: eventId,
+        },
+        success: function(data) {
+          $('#event-options-panel').html(data);
+        }
+      })
+    } else { // other options
+      var
+    }
   });
 
 });

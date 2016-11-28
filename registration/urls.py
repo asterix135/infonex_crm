@@ -20,4 +20,6 @@ urlpatterns = [
     url(r'^delete_venue/$', views.delete_venue, name='delete_venue'),
     url(r'^select_conference/$', views.select_conference_to_edit,
         name='select_conference'),
+    url(r'^add_event_option/$', views.add_event_option,
+        name='add_event_option'),
 ]

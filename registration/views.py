@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.db.models import Q
 from django.template import RequestContext
+from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 
 from .forms import *
@@ -248,3 +249,56 @@ def delete_venue(request):
         'venue_list': venue_list,
     }
     return render(request, 'registration/addins/venue_sidebar.html', context)
+
+
+def add_event_option(request):
+    """ ajax call to add options to a conference """
+    conference_option_form = ConferenceOptionForm()
+    event_option_set = None
+    event = None
+    if request.method == 'POST':
+        event_id = request.POST['event_id']
+        form_data = {
+            'primary': request.POST['primary'],
+            'name': request.POST['name'],
+            'startdate': request.POST['startdate'],
+            'enddate': request.POST['enddate'],
+        }
+        conference_option_form = ConferenceOptionForm(form_data)
+        if conference_option_form.is_valid():
+            if not event_id:
+                new_event_number = '1'
+                event = Event(
+                    number=new_event_number,
+                    title='Placeholder Event',
+                    city='Placeholder City',
+                    date_begins=timezone.now(),
+                    registrar=request.user,
+                    state_prov='ON',
+                    created_by=request.user,
+                    modified_by=request.user,
+                )
+                event.save()
+            else:
+                event = Event.objects.get(pk=event_id)
+            option = EventOption(
+                event=event,
+                name=request.POST['name'],
+                startdate=requst.POST['startdate'],
+                enddate=request.POST['enddate'],
+                primary=request.POST['primary'],
+            )
+            option.save()
+            conference_option_form = ConferenceOptionForm()
+            event_option_set = event.eventoptions_set.all()
+        else:
+            if event_id:
+                event = Event.objects.get(pk=event_id)
+                event_option_set = event.eventoptions_set.all()
+    context = {
+        'conference_option_form': conference_option_form,
+        'event_option_set': event_option_set,
+        'event': event,
+    }
+    return render(request, 'registration/addins/conference_options_panel.html',
+                  context)

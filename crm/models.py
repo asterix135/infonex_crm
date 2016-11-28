@@ -180,12 +180,12 @@ class Event(models.Model):
                                         default='CAD')
     created_by = models.ForeignKey('auth.User',
                                    default=1,
-                                   related_name='details_created_by')
+                                   related_name='event_created_by')
     date_created = models.DateTimeField('date created', auto_now_add=True)
     date_modified = models.DateTimeField('date modified', auto_now=True)
     modified_by = models.ForeignKey('auth.User',
                                     default=1,
-                                    related_name='details_modifed_by')
+                                    related_name='event_modifed_by')
 
 
     def __str__(self):

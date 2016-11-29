@@ -26,4 +26,6 @@ urlpatterns = [
         name='delete_event_option'),
     url(r'^delete_temp_conf/$', views.delete_temp_conf,
         name='delete_temp_conf'),
+    url(r'^save_conference_changes/$', views.save_conference_changes,
+        name='save_conference_changes'),
 ]

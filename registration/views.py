@@ -260,6 +260,7 @@ def delete_temp_conf(request):
             event = None
         if event:
             event.delete()
+    return HttpResponse('')
 
 
 def create_temp_conf_number():
@@ -283,13 +284,13 @@ def add_event_option(request):
             event_id = request.POST['event_id']
         except MultiValueDictKeyError:
             event_id = None
-        form_data = {
-            'primary': request.POST['primary'],
-            'name': request.POST['name'],
-            'startdate': request.POST['startdate'],
-            'enddate': request.POST['enddate'],
-        }
-        conference_option_form = ConferenceOptionForm(form_data)
+        # form_data = {
+        #     'primary': request.POST['primary'],
+        #     'name': request.POST['name'],
+        #     'startdate': request.POST['startdate'],
+        #     'enddate': request.POST['enddate'],
+        # }
+        conference_option_form = ConferenceOptionForm(request.POST)
         if conference_option_form.is_valid():
             if not event_id:
                 new_event_number = create_temp_conf_number()
@@ -365,7 +366,15 @@ def save_conference_changes(request):
     event_option_set = None
     if request.method == 'POST':
         try:
-            event = Event.objects.get(pk=request.POST['event_id'])
+            event_id = request.POST['event_id']
+            if event_id != 'new':
+                event = Event.objects.get(pk=event_id)
+            conference_edit_form = ConferenceEditForm(
+                request.POST, instance=event
+            )
+            
+
+
         except (Event.DoesNotExist, MultiValueDictKeyError):
             pass
     # 1. changes to existing conference

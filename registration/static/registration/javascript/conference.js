@@ -125,7 +125,6 @@ $(document).ready(function() {
   // Abandon conference changes
   $('body').on('click', '#abandon-conference-changes', function(){
     var conferenceStatus = $('#edited-conference-status').val();
-    alert(conferenceStatus);
     if (conferenceStatus == 'new') {
       var eventId = $('#edited-event-id').val();
       if (eventId) {  // have a temp conference in database - need to delete it
@@ -157,11 +156,16 @@ $(document).ready(function() {
 
   // Save conference changes
   $('body').on('click', '#save-conference-changes', function(){
+    alert('saving changes');
     var editStatus = $('#edited-conference-status').val(); // new or edit
     var eventId = $('#edited-event-id').val();
+    if (eventId == '') {
+      eventId = 'new';
+    };
     var number = $('#conference-edit-panel #id_number').val();
     var title = $('#conference-edit-panel #id_title').val();
     var dateBegins = $('#conference-edit-panel #id_date_begins').val();
+    var city = $('#conference-edit-panel #id_city').val();
     var stateProv = $('#conference-edit-panel #id_state_prov').val();
     var hotel = $('#conference-edit-panel #id_hotel').val();
     var registrar = $('#conference-edit-panel #id_registrar').val();
@@ -175,8 +179,31 @@ $(document).ready(function() {
     var qstRate = $('#conference-edit-panel #id_qst_rate').val();
     var billingCurrency = $('#conference-edit-panel #id_billing_currency').val();
     $.ajax({
-      
-    })
+      url: '/registration/save_conference_changes/',
+      type: 'POST',
+      data: {
+        event_id: eventId,
+        number: number,
+        title: title,
+        city: city,
+        date_begins: dateBegins,
+        state_prov: stateProv,
+        hotel: hotel,
+        registrar: registrar,
+        developer: developer,
+        company_brand: companyBrand,
+        gst_charged: gstCharged,
+        hst_charged: hstCharged,
+        qst_charged: qstCharged,
+        gst_rate: gstRate,
+        hst_rate: hstRate,
+        qst_rate: qstRate,
+        billing_currency: billingCurrency,
+      },
+      success: function(data) {
+        $('#conference-edit-panel').html(data);
+      }
+    });
 
   });
 

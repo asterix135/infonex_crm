@@ -13,6 +13,7 @@ $(document).ready(function() {
     })
   };
 
+
   function saveVenueChanges(venueID) {
     $.ajax({
       url: '/registration/edit_venue/',
@@ -33,6 +34,7 @@ $(document).ready(function() {
     })
   };
 
+
   // wrapper to handle click and update venue info
   $('body').on('click', '.edit-button', function(event){
     event.preventDefault();
@@ -44,6 +46,7 @@ $(document).ready(function() {
       saveVenueChanges(venueId)
     }
   });
+
 
   // Save new venue and update sidebar
   $('body').on('click', '#save-new-venue', function(){
@@ -65,6 +68,7 @@ $(document).ready(function() {
     })
   });
 
+
   // Toggle Warning and Delete current venue
   $('body').on('click', '.delete-venue-button', function(){
     var venueId = $(this).attr('venue-id');
@@ -85,6 +89,7 @@ $(document).ready(function() {
       })
     }
   });
+
 
   // Ajax call to edit conference or add new
   $('body').on('click', '.btn-choose-venue', function(){
@@ -116,6 +121,7 @@ $(document).ready(function() {
     }
   });
 
+
   // Abandon conference changes
   $('body').on('click', '#abandon-conference-changes', function(){
     var conferenceStatus = $('#edited-event-id').val();
@@ -125,6 +131,7 @@ $(document).ready(function() {
       $('#conference-edit-panel').html('');
     }
   });
+
 
   // Save conference changes
   $('body').on('click', '#save-conference-changes', function(){
@@ -148,13 +155,14 @@ $(document).ready(function() {
 
   });
 
+
   // Change options
   $('body').on('click', '.option-manage-btn', function(){
     // manage cases of add, delete or Change
     var editStatus = $('#edited-conference-status').val(); // new or existing conf
-    var editAction = $(this).attr('name'); // add delete or save
-    var eventId = $('#edited-conference-id').val();
-    var primary = $('#new-option-row #id_primary').val();
+    var editAction = $(this).attr('name'); // add or delete or rehide
+    var eventId = $('#edited-event-id').val();
+    var primary = $('#new-option-row #id_primary').prop('checked');
     var name = $('#new-option-row #id_name').val();
     var startdate = $('#new-option-row #id_startdate').val();
     var enddate = $('#new-option-row #id_enddate').val();
@@ -170,14 +178,30 @@ $(document).ready(function() {
           event_id: eventId,
         },
         success: function(data) {
-          console.log(data);
           $('#event-options-panel').html(data);
         }
       })
-    } else if (editAction == 'save') {
-      alert('Need to write code for save');
-    } else {  // delete
-      alert("Need to write code for delete");
+    } else if (editAction == 'delete'){  // delete
+      var optionId = $(this).attr('option-val');
+      var warningHidden = !$('#delete-option-warning' + optionId).is(":visible");
+      if (warningHidden) {
+        $('#delete-option-warning' + optionId).show();
+      } else {
+        $.ajax({
+          url: '/registration/delete_event_option/',
+          type: 'POST',
+          data: {
+            option_id: optionId,
+            event_id: eventId,
+          },
+          success: function(data) {
+            $('#event-options-panel').html(data);
+          }
+        })
+      }
+    } else {  //rehide
+      var optionId = $(this).attr('option-val');
+      $('#delete-option-warning' + optionId).hide();
     }
   });
 

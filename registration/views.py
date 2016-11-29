@@ -125,7 +125,6 @@ def select_conference_to_edit(request):
     conference_option_form = ConferenceOptionForm()
     event_option_set = None
     if request.method == 'POST':
-        print(request.POST)
         if request.POST['edit_action'] != 'edit':
             edit_action = 'blank'
         else:
@@ -268,13 +267,9 @@ def add_event_option(request):
             'enddate': request.POST['enddate'],
         }
         conference_option_form = ConferenceOptionForm(form_data)
-        print('\n\n')
-        print(conference_option_form)
-        print('\n\n')
         if conference_option_form.is_valid():
-            print("form is valid")
             if not event_id:
-                new_event_number = '99'
+                new_event_number = 'TEMP'
                 event = Event(
                     number=new_event_number,
                     title='Placeholder Event',
@@ -293,16 +288,43 @@ def add_event_option(request):
                 name=request.POST['name'],
                 startdate=request.POST['startdate'],
                 enddate=request.POST['enddate'],
-                primary=request.POST['primary'],
+                primary=True if request.POST['primary'] == 'true' else False,
             )
             option.save()
             conference_option_form = ConferenceOptionForm()
             event_option_set = event.eventoptions_set.all()
         else:
-            print('form is not valid')
             if event_id:
                 event = Event.objects.get(pk=event_id)
                 event_option_set = event.eventoptions_set.all()
+    context = {
+        'conference_option_form': conference_option_form,
+        'event_option_set': event_option_set,
+        'event': event,
+    }
+    return render(request, 'registration/addins/conference_options_panel.html',
+                  context)
+
+
+def delete_event_option(request):
+    """ ajax call to delete option from a conference """
+    conference_option_form = ConferenceOptionForm()
+    event_option_set = None
+    event = None
+    if request.method == 'POST':
+        try:
+            event_id = request.POST['event_id']
+            event = Event.objects.get(pk=event_id)
+        except (MultiValueDictKeyError, Event.DoesNotExist):
+            event_id = None
+        try:
+            option_id = request.POST['option_id']
+            option = EventOptions.objects.get(pk=option_id)
+        except (EventOptions.DoesNotExist, MultiValueDictKeyError):
+            option_id = None
+        if event_id and option_id:
+            option.delete()
+            event_option_set = event.eventoptions_set.all()
     context = {
         'conference_option_form': conference_option_form,
         'event_option_set': event_option_set,

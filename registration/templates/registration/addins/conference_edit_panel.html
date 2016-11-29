@@ -119,16 +119,8 @@
   <div class="panel panel-info event-options-box">
     <div class="panel-heading">
       <h2 class="panel-title h2">Event Registration Options</h2>
-      <p>
-      {% if edit_action == 'new' %}
-        <strong>NOTE:</strong> Any changes made in this section are not saved
-          until the main conference record is saved.
-      {% else %}
-        <strong>NOTE:</strong> Changes are saved when you click the relevant button
-      {% endif %}
-      </p>
     </div>
-    <div class="panel-body event-options-panel">
+    <div class="panel-body" id="event-options-panel">
       {% include 'registration/addins/conference_options_panel.html' %}
     </div>
   </div>

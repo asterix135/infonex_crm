@@ -133,10 +133,12 @@ class ConferenceOptionForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
             'startdate': forms.DateInput(
-                attrs={'class': 'form-control'}
+                attrs={'class': 'form-control',
+                       'placeholder': 'yyyy-mm-dd'}
             ),
             'enddate': forms.DateInput(
-                attrs={'class': 'form-control'}
+                attrs={'class': 'form-control',
+                       'placeholder': 'yyyy-mm-dd'}
             ),
             'primary': forms.CheckboxInput(
                 attrs={'class': 'form-control'}

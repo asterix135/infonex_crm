@@ -11,10 +11,30 @@
   </thead>
   <tbody>
     {% for option in event_option_set %}
+    <tr class="form-warning" id="delete-option-warning{{ option.id }}">
+      <td colspan="4">
+        <p>
+          <strong>Warning! </strong>
+          Clicking "Delete" again will permanently delete the option below!!
+        </p>
+      </td>
+      <td>
+        <button type="button" class="btn btn-info btn-xs option-manage-btn unhide-btn"
+          id="unhide-option-{{ option.id }}" name="rehide"
+          option-val="{{ option.id }}">
+          Don't Delete
+        </button>
+      </td>
+    </tr>
     <tr>
       <td>
-        <input type="checkbox" value="{{ option.primary }}"
+        {% if option.primary %}
+        <input type="checkbox" checked="checked" disabled="disabled"
           id="primary_{{ option.id }}"/>
+        {% else %}
+        <input type="checkbox" disabled="disabled"
+          id="primary_{{ option.id }}" />
+        {% endif %}
       </td>
       <td>{{ option.name }}</td>
       <td>{{ option.startdate }}</td>
@@ -25,30 +45,25 @@
           option-val="{{ option.id }}">
           Delete
         </button>
-        <button type="button" class="btn btn-warning btn-xs option-manage-btn"
-          id="update-option-{{ option.id }}" name="save"
-          option-val="{{ option.id }}">
-          Save changes
-        </button>
       </td>
     </tr>
     {% endfor %}
     <tr id="new-option-row">
       <td>
-        {{ conference_option_form.primary.errors }}
         {{ conference_option_form.primary }}
+        {{ conference_option_form.primary.errors }}
       </td>
       <td>
-        {{ conference_option_form.name.errors }}
         {{ conference_option_form.name }}
+        {{ conference_option_form.name.errors }}
       </td>
       <td>
-        {{ conference_option_form.errors }}
         {{ conference_option_form.startdate }}
+        {{ conference_option_form.startdate.errors }}
       </td>
       <td>
-        {{ conference_option_form.errors }}
         {{ conference_option_form.enddate }}
+        {{ conference_option_form.startdate.errors }}
       </td>
       <td>
         <button type="button" class="btn btn-success btn-xs option-manage-btn"

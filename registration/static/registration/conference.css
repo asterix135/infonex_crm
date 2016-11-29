@@ -40,3 +40,9 @@ body {
   border-top: 0px;
   padding-top: 0px;
 }
+.errorlist {
+  color: #963634;
+}
+.unhide-btn {
+  float: right;
+}

@@ -22,4 +22,6 @@ urlpatterns = [
         name='select_conference'),
     url(r'^add_event_option/$', views.add_event_option,
         name='add_event_option'),
+    url(r'^delete_event_option/$', views.delete_event_option,
+        name='delete_event_option'),
 ]

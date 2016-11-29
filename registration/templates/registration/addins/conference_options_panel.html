@@ -34,10 +34,22 @@
     </tr>
     {% endfor %}
     <tr id="new-option-row">
-      <td>{{ conference_option_form.primary }}</td>
-      <td>{{ conference_option_form.name }}</td>
-      <td>{{ conference_option_form.startdate }}</td>
-      <td>{{ conference_option_form.enddate }}</td>
+      <td>
+        {{ conference_option_form.primary.errors }}
+        {{ conference_option_form.primary }}
+      </td>
+      <td>
+        {{ conference_option_form.name.errors }}
+        {{ conference_option_form.name }}
+      </td>
+      <td>
+        {{ conference_option_form.errors }}
+        {{ conference_option_form.startdate }}
+      </td>
+      <td>
+        {{ conference_option_form.errors }}
+        {{ conference_option_form.enddate }}
+      </td>
       <td>
         <button type="button" class="btn btn-success btn-xs option-manage-btn"
           id="add-option-button" name="add">

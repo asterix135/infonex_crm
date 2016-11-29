@@ -170,11 +170,14 @@ $(document).ready(function() {
           event_id: eventId,
         },
         success: function(data) {
+          console.log(data);
           $('#event-options-panel').html(data);
         }
       })
-    } else { // other options
-      var
+    } else if (editAction == 'save') {
+      alert('Need to write code for save');
+    } else {  // delete
+      alert("Need to write code for delete");
     }
   });
 

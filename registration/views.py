@@ -257,7 +257,10 @@ def add_event_option(request):
     event_option_set = None
     event = None
     if request.method == 'POST':
-        event_id = request.POST['event_id']
+        try:
+            event_id = request.POST['event_id']
+        except MultiValueDictKeyError:
+            event_id = None
         form_data = {
             'primary': request.POST['primary'],
             'name': request.POST['name'],
@@ -265,9 +268,13 @@ def add_event_option(request):
             'enddate': request.POST['enddate'],
         }
         conference_option_form = ConferenceOptionForm(form_data)
+        print('\n\n')
+        print(conference_option_form)
+        print('\n\n')
         if conference_option_form.is_valid():
+            print("form is valid")
             if not event_id:
-                new_event_number = '1'
+                new_event_number = '99'
                 event = Event(
                     number=new_event_number,
                     title='Placeholder Event',
@@ -281,10 +288,10 @@ def add_event_option(request):
                 event.save()
             else:
                 event = Event.objects.get(pk=event_id)
-            option = EventOption(
+            option = EventOptions(
                 event=event,
                 name=request.POST['name'],
-                startdate=requst.POST['startdate'],
+                startdate=request.POST['startdate'],
                 enddate=request.POST['enddate'],
                 primary=request.POST['primary'],
             )
@@ -292,6 +299,7 @@ def add_event_option(request):
             conference_option_form = ConferenceOptionForm()
             event_option_set = event.eventoptions_set.all()
         else:
+            print('form is not valid')
             if event_id:
                 event = Event.objects.get(pk=event_id)
                 event_option_set = event.eventoptions_set.all()

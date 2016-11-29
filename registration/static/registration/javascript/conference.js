@@ -124,17 +124,40 @@ $(document).ready(function() {
 
   // Abandon conference changes
   $('body').on('click', '#abandon-conference-changes', function(){
-    var conferenceStatus = $('#edited-event-id').val();
+    var conferenceStatus = $('#edited-conference-status').val();
+    alert(conferenceStatus);
     if (conferenceStatus == 'new') {
-      alert('need to implement logic to remove added options etc');
+      var eventId = $('#edited-event-id').val();
+      if (eventId) {  // have a temp conference in database - need to delete it
+        $.ajax({
+          url: '/registration/delete_temp_conf/',
+          type: 'POST',
+          data: {
+            event_id: eventId,
+          },
+          success: function() {
+            $('#conference-edit-panel').html('');
+          },
+          failure: function() {
+            $('#conference-edit-panel').html('');
+          }
+        })
+      }
     } else {
       $('#conference-edit-panel').html('');
     }
   });
 
 
+  // Deal with unsaved changes to new conference on page leave
+  $(window).on('beforeunload', function(){
+    console.log('bye!');
+  });
+
+
   // Save conference changes
   $('body').on('click', '#save-conference-changes', function(){
+    var editStatus = $('#edited-conference-status').val(); // new or edit
     var eventId = $('#edited-event-id').val();
     var number = $('#conference-edit-panel #id_number').val();
     var title = $('#conference-edit-panel #id_title').val();
@@ -151,7 +174,9 @@ $(document).ready(function() {
     var hstRate = $('#conference-edit-panel #id_hst_rate').val();
     var qstRate = $('#conference-edit-panel #id_qst_rate').val();
     var billingCurrency = $('#conference-edit-panel #id_billing_currency').val();
-    // Need to capture options info here
+    $.ajax({
+      
+    })
 
   });
 
@@ -159,7 +184,7 @@ $(document).ready(function() {
   // Change options
   $('body').on('click', '.option-manage-btn', function(){
     // manage cases of add, delete or Change
-    var editStatus = $('#edited-conference-status').val(); // new or existing conf
+    var editStatus = $('#edited-conference-status').val(); // new or edit
     var editAction = $(this).attr('name'); // add or delete or rehide
     var eventId = $('#edited-event-id').val();
     var primary = $('#new-option-row #id_primary').prop('checked');

@@ -250,6 +250,29 @@ def delete_venue(request):
     return render(request, 'registration/addins/venue_sidebar.html', context)
 
 
+def delete_temp_conf(request):
+    """ ajax call to delete temporary conference and options """
+    event = None
+    if request.method == 'POST':
+        try:
+            event = Event.objects.get(pk=request.POST['event_id'])
+        except (Event.DoesNotExist, MultiValueDictKeyError):
+            event = None
+        if event:
+            event.delete()
+
+
+def create_temp_conf_number():
+    """ helper function for add_event_option """
+    base_number = "TEMP"
+    counter = 0
+    while True:
+        event_number = base_number + str(counter)
+        if len(Event.objects.filter(number=event_number)) == 0:
+            return event_number
+        counter += 1
+
+
 def add_event_option(request):
     """ ajax call to add options to a conference """
     conference_option_form = ConferenceOptionForm()
@@ -269,7 +292,7 @@ def add_event_option(request):
         conference_option_form = ConferenceOptionForm(form_data)
         if conference_option_form.is_valid():
             if not event_id:
-                new_event_number = 'TEMP'
+                new_event_number = create_temp_conf_number()
                 event = Event(
                     number=new_event_number,
                     title='Placeholder Event',
@@ -331,4 +354,30 @@ def delete_event_option(request):
         'event': event,
     }
     return render(request, 'registration/addins/conference_options_panel.html',
+                  context)
+
+
+def save_conference_changes(request):
+    event = None
+    edit_action = None
+    conference_option_form = ConferenceOptionForm()
+    conference_edit_form = ConferenceEditForm()
+    event_option_set = None
+    if request.method == 'POST':
+        try:
+            event = Event.objects.get(pk=request.POST['event_id'])
+        except (Event.DoesNotExist, MultiValueDictKeyError):
+            pass
+    # 1. changes to existing conference
+    # 2. changes to new conference with temp id
+    # 3. chagnes to new conference without temp id
+    #
+    context = {
+        'edit_action': edit_action,
+        'conference_edit_form': conference_edit_form,
+        'conference_option_form': conference_option_form,
+        'event': event,
+        'event_option_set': event_option_set,
+    }
+    return render(request, 'registration/addins/conference_edit_panel.html',
                   context)

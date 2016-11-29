@@ -135,7 +135,7 @@ class EventOptions(models.Model):
     """
     Contains details on different bookable sections of a particular event
     """
-    event = models.ForeignKey('crm.Event')
+    event = models.ForeignKey('crm.Event', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     startdate = models.DateField()
     enddate = models.DateField()

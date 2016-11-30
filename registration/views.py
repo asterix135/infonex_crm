@@ -359,6 +359,7 @@ def delete_event_option(request):
 
 
 def save_conference_changes(request):
+    """ AJAX call to save changes to conference being edited """
     event = None
     edit_action = None
     conference_option_form = ConferenceOptionForm()
@@ -372,15 +373,11 @@ def save_conference_changes(request):
             conference_edit_form = ConferenceEditForm(
                 request.POST, instance=event
             )
-            
-
-
+            if conference_edit_form.is_valid():
+                event = conference_edit_form.save()
+                return HttpResponse('')
         except (Event.DoesNotExist, MultiValueDictKeyError):
-            pass
-    # 1. changes to existing conference
-    # 2. changes to new conference with temp id
-    # 3. chagnes to new conference without temp id
-    #
+            conference_edit_form = ConferenceEditForm(request.POST)
     context = {
         'edit_action': edit_action,
         'conference_edit_form': conference_edit_form,

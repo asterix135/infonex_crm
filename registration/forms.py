@@ -74,7 +74,8 @@ class ConferenceEditForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
             'date_begins': forms.DateInput(
-                attrs={'class': 'form-control'}
+                attrs={'class': 'form-control',
+                       'placeholder': 'yyyy-mm-dd'}
             ),
             'state_prov': forms.Select(
                 attrs={'class': 'form-control'}

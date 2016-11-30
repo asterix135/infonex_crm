@@ -141,6 +141,8 @@ $(document).ready(function() {
             $('#conference-edit-panel').html('');
           }
         })
+      } else {
+        $('#conference-edit-panel').html('');
       }
     } else {
       $('#conference-edit-panel').html('');
@@ -150,13 +152,25 @@ $(document).ready(function() {
 
   // Deal with unsaved changes to new conference on page leave
   $(window).on('beforeunload', function(){
-    console.log('bye!');
+    var editStatus = $('#edited-conference-status').val();
+    var eventId = $('#edited-event-id').val();
+    if (editStatus == 'new' && eventId != '') {
+      $.ajax({
+        url: '/registration/delete_temp_conf/',
+        type: 'POST',
+        data: {
+          event_id: eventId,
+        },
+        success: function() {
+          console.log('temp conference deleted');
+        },
+      })
+    }
   });
 
 
   // Save conference changes
   $('body').on('click', '#save-conference-changes', function(){
-    alert('saving changes');
     var editStatus = $('#edited-conference-status').val(); // new or edit
     var eventId = $('#edited-event-id').val();
     if (eventId == '') {

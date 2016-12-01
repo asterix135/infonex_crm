@@ -1,58 +1,58 @@
 {% extends 'crm/base.html' %}
 
 {% block content %}
-
 <div class="row">
-    <div class="col-sm-4">
-        <h2>Sales Territory</h2>
-        <p>Allows you to work with a defined sales territory for an individual conference</p>
-        <form action="{% url 'crm:set_territory' %}" method="post" name="set_territory">
-            {% csrf_token %}
-            <input type="hidden" name="page_source" value="index">
-            <fieldset class="form-group">
-                <label for="{{ territory_form.event.id_for_label }}">Select event:</label>
-                {{ territory_form.event }}
-            </fieldset>
-            <fieldset class="form-group">
-                <label for="{{ territory_form.employee.id_for_label }}">Select employee:</label>
-                {{ territory_form.employee }}
-            </fieldset>
-            <button type="reset" class="btn btn-secondary">Reset Form</button>
-            <button type="submit" class="btn btn-primary">See Territory</button>
-            {% if user_is_admin %}
-                <button type="submit" class="btn btn-secondary" name="submit_option" value="edit_territory">Create/Edit Territory</button>
-            {% endif %}
-        </form>
-    </div>
-
-    <div class="col-sm-4">
-        <h2>Search Records</h2>
-        <p>Takes you to a search form where you can look for individuals in the database</p>
-        <p>
-            <a class="btn btn-default" href="{% url 'crm:search_persons' %}">Search Database &raquo;</a>
-        </p>
-
-    </div>
-
-    {% if user_is_admin %}
-    <div class="col-sm-4">
-        <h2>Admin Functions</h2>
-        <p>Access to various database admin resources</p>
-        <p><strong>NOTE:</strong> Currently, only the following people should be able to see this</p>
-        <ul>
-            <li>Chris</li>
-            <li>Jim</li>
-            <li>Alona</li>
-        </ul>
-        <p>If you are not on this list and can see this frame, please let Chris know</p>
-        <p><strong>DO NOT PLAY WITH ANYTHING ON THE ADMIN PANEL.</strong></p>
-        <p>
-            <a class="btn btn-default" href="{% url 'admin:index' %}">Admin Panel &raquo;</a>
-        </p>
-    </div>
-    {% endif %}
+  <h1>Welcome {{ user.username }}</h1>
+  <p>
+    Stuff on sales levels and contact data will be presented here.
+  </p>
 </div>
 
-
-
+<div class="row">
+  <div class="col-sm-4">
+    <h2>Sales Territory</h2>
+    <p>Allows you to work with a defined sales territory for an individual conference</p>
+    <form action="{% url 'crm:set_territory' %}" method="post" name="set_territory">
+      {% csrf_token %}
+      <input type="hidden" name="page_source" value="index">
+      <fieldset class="form-group">
+        <label for="{{ territory_form.event.id_for_label }}">Select event:</label>
+        {{ territory_form.event }}
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="{{ territory_form.employee.id_for_label }}">Select employee:</label>
+        {{ territory_form.employee }}
+      </fieldset>
+      <button type="reset" class="btn btn-secondary">Reset Form</button>
+      <button type="submit" class="btn btn-primary">See Territory</button>
+      {% if user_is_admin %}
+        <button type="submit" class="btn btn-secondary" name="submit_option" value="edit_territory">Create/Edit Territory</button>
+      {% endif %}
+    </form>
+  </div>
+  <div class="col-sm-4">
+    <h2>Search Records</h2>
+    <p>Takes you to a search form where you can look for individuals in the database</p>
+    <p>
+      <a class="btn btn-default" href="{% url 'crm:search_persons' %}">Search Database &raquo;</a>
+    </p>
+  </div>
+  {% if user_is_admin %}
+  <div class="col-sm-4">
+    <h2>Admin Functions</h2>
+    <p>Access to various database admin resources</p>
+    <p><strong>NOTE:</strong> Currently, only the following people should be able to see this</p>
+    <ul>
+      <li>Chris</li>
+      <li>Jim</li>
+      <li>Alona</li>
+    </ul>
+    <p>If you are not on this list and can see this frame, please let Chris know</p>
+    <p><strong>DO NOT PLAY WITH ANYTHING ON THE ADMIN PANEL.</strong></p>
+    <p>
+      <a class="btn btn-default" href="{% url 'admin:index' %}">Admin Panel &raquo;</a>
+    </p>
+  </div>
+  {% endif %}
+</div>
 {% endblock %}

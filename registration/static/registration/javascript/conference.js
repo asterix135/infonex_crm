@@ -95,6 +95,13 @@ $(document).ready(function() {
   $('body').on('click', '.btn-choose-venue', function(){
     var confId = $('#conference-select-dropdown #id_event').val();
     var editAction = $(this).attr('btn-action');
+    var conferenceStatus = $('#edited-conference-status').val();
+    if (conferenceStatus == 'new') {
+      var newEventId = $('#edited-event-id').val();
+      if (newEventId.slice(0,5) == 'TEMP') {
+        abandonUnsavedNewConference(newEventId);
+      }
+    }
     if (editAction == 'edit') {
       if (confId == '') {
         editAction = 'blank';
@@ -128,43 +135,32 @@ $(document).ready(function() {
     if (conferenceStatus == 'new') {
       var eventId = $('#edited-event-id').val();
       if (eventId) {  // have a temp conference in database - need to delete it
-        $.ajax({
-          url: '/registration/delete_temp_conf/',
-          type: 'POST',
-          data: {
-            event_id: eventId,
-          },
-          success: function() {
-            $('#conference-edit-panel').html('');
-          },
-          failure: function() {
-            $('#conference-edit-panel').html('');
-          }
-        })
-      } else {
-        $('#conference-edit-panel').html('');
+        abandonUnsavedNewConference(eventId);
       }
-    } else {
-      $('#conference-edit-panel').html('');
     }
+    $('#conference-edit-panel').html('');
   });
 
+  // helper funtion to deal with unsaved changes to new conference on page
+  function abandonUnsavedNewConference(tempEventId) {
+    $.ajax({
+      url: '/registration/delete_temp_conf/',
+      type: 'POST',
+      data: {
+        event_id: tempEventId,
+      },
+      success: function() {
+        console.log('temp conference deleted');
+      }
+    })
+  }
 
   // Deal with unsaved changes to new conference on page leave
   $(window).on('beforeunload', function(){
     var editStatus = $('#edited-conference-status').val();
     var eventId = $('#edited-event-id').val();
     if (editStatus == 'new' && eventId != '') {
-      $.ajax({
-        url: '/registration/delete_temp_conf/',
-        type: 'POST',
-        data: {
-          event_id: eventId,
-        },
-        success: function() {
-          console.log('temp conference deleted');
-        },
-      })
+      abandonUnsavedNewConference(eventId);
     }
   });
 

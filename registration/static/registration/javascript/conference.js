@@ -271,4 +271,21 @@ $(document).ready(function() {
     }
   });
 
+
+  // TODO: Split this off as a function that can be called in multiple places
+  // Filter venue list as city is selected
+  $('body').on('keyup', '#conference-edit-panel #id_city', function () {
+      var cityPartial = $('#conference-edit-panel #id_city').val();
+      $.ajax({
+        url: '/registration/filter_venue/',
+        method: 'GET',
+        data: {
+          city_partial: cityPartial,
+        },
+        success: function(data) {
+          $('#venue-sidebar').html(data);
+        }
+      })
+  });
+
 });

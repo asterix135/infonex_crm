@@ -234,7 +234,7 @@ def add_venue(request):
 def delete_venue(request):
     """ AJAX function to delete venue """
     venue_form = VenueForm()
-    # TODO: Update this wehn filter function implemented
+    # TODO: Update this when filter function implemented
     venue_list = Venue.objects.all().order_by('city', 'name')
     if request.method == 'POST' and 'venue_id' in request.POST:
         try:
@@ -243,6 +243,21 @@ def delete_venue(request):
             venue = None
         if venue:
             venue.delete()
+    context = {
+        'venue_form': venue_form,
+        'venue_list': venue_list,
+    }
+    return render(request, 'registration/addins/venue_sidebar.html', context)
+
+
+def filter_venue(request):
+    venue_form = VenueForm()
+    try:
+        city_partial = request.GET['city_partial']
+    except MultiValueDictKeyError:
+        city_partial = None
+    venue_list = Venue.objects.filter(
+        city__icontains=city_partial).order_by('city', 'name')
     context = {
         'venue_form': venue_form,
         'venue_list': venue_list,

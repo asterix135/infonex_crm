@@ -29,17 +29,16 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">Portal</a>
+          <a class="navbar-brand" href="/">Home</a>
         </div>
         <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="http://www.infonex.com">Infonex</a></li>
-          </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
             <li><a href="{% url 'logout' %}">Logout</a></li>
-            <li><p class="navbar-text">Logged in as: {{ user.username }}</p></li>
-            <li><a href="{% url 'crm:index' %}">CRM Home</a></li>
+            <li><a href="{% url 'crm:index' %}">CRM</a></li>
+            {% if reg_permission_ok %}
+            <li><a href="{% url 'registration:index' %}">Registration</a></li>
+            {% endif %}
             {% else %}
             <li><a href="{% url 'login' %}">Login</a></li>
             {% endif %}
@@ -57,6 +56,12 @@
     </div>
     <div class="container">
       <div class="row">
+        <h1>Welcome {{ user.username }}</h1>
+        <p>
+          Stuff on sales levels and contact data will be presented here.
+        </p>
+      </div>
+      <!-- <div class="row">
         <div class="col-sm-4">
           <h2>CRM System</h2>
           <p>Custom Infonex Contact Management System</p>
@@ -80,7 +85,7 @@
             <a class="btn btn-default" href="http://www.infonex.com">Go &raquo;</a>
           </p>
         </div>
-      </div>
+      </div> -->
     </div>
   </body>
 </html>

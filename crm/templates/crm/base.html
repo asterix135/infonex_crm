@@ -64,17 +64,22 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="http://www.infonex.com">Infonex</a></li>
+            <li><a href="{% url 'crm:index' %}">CRM Home</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
             <li><a href="{% url 'logout' %}?next=/">Logout</a></li>
-            <li><p class="navbar-text">Logged in as: {{ user.username }}</p></li>
-            <li><a href="{% url 'crm:index' %}">CRM Home</a></li>
+            <!-- <li><p class="navbar-text">Logged in as: {{ user.username }}</p></li> -->
             <li><a href="{% url 'crm:territory' %}">Current Territory</a></li>
             <li><a href="{% url 'crm:search_persons' %}">Search page</a></li>
+            <li>
+              <a href="">SEARCH FIELD?</a>
+            </li>
+            {% if user_is_admin %}
+            <li><a href="{% url 'admin:index' %}">Admin</a></li>
+            {% endif %}
             {% else %}
-              <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
             {% endif %}
           </ul>
         </div>
@@ -88,13 +93,7 @@
         </h1>
       </div>
     </div>
-
-    <div class="container">
-      <div class="row">
-        {% block content %}
-        {% endblock %}
-      </div>
-    </div>
+    {% block content %}
+    {% endblock %}
   </body>
-
 </html>

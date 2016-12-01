@@ -1218,9 +1218,6 @@ def flag_many_records(request):
     """
     pass
 
-def test(request):
-    return render(request, 'crm/test.html')
-
 
 class TerritoryView(View):
     template_name = 'territory.html'

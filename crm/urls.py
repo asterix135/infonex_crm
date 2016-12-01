@@ -27,7 +27,6 @@ urlpatterns = [
     # ex: /crm/flag_many_records/
     url(r'^flag_many_records/$', views.flag_many_records,
         name='flag_many_records'),
-    url(r'^test/$', views.test, name='test'),
 
     # ex: /crm/new_person/
     url(r'^new_person/$', views.new_person, name='new_person'),

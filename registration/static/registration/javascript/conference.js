@@ -65,7 +65,11 @@ $(document).ready(function() {
       success: function(data) {
         $('#venue-sidebar').html(data);
       }
-    })
+    });
+    var confCity = $('#conference-edit-panel #id_city').val();
+    if (confCity) {
+      filterVenueList(confCity);
+    }
   });
 
 
@@ -86,7 +90,11 @@ $(document).ready(function() {
         success: function(data) {
           $('#venue-sidebar').html(data);
         }
-      })
+      });
+      var cityVal = $('#conference-edit-panel #id_city').val();
+      if (cityVal) {
+        filterVenueList(cityVal);
+      }
     }
   });
 
@@ -98,7 +106,7 @@ $(document).ready(function() {
     var conferenceStatus = $('#edited-conference-status').val();
     if (conferenceStatus == 'new') {
       var newEventId = $('#edited-event-id').val();
-      if (newEventId.slice(0,5) == 'TEMP') {
+      if (newEventId) {
         abandonUnsavedNewConference(newEventId);
       }
     }
@@ -115,8 +123,13 @@ $(document).ready(function() {
         },
         success: function(data) {
           $('#conference-edit-panel').html(data);
+          var $response = $(data);
+          var cityVal = $response.find('#id_city').val();
+          if (cityVal){
+            filterVenueList(cityVal);
+          }
         }
-      })
+      });
     } else if (editAction == 'new') {
       $.ajax({
         url: '/registration/select_conference/',
@@ -139,7 +152,9 @@ $(document).ready(function() {
       }
     }
     $('#conference-edit-panel').html('');
+    unfilterVenueList();
   });
+
 
   // helper funtion to deal with unsaved changes to new conference on page
   function abandonUnsavedNewConference(tempEventId) {
@@ -149,11 +164,9 @@ $(document).ready(function() {
       data: {
         event_id: tempEventId,
       },
-      success: function() {
-        console.log('temp conference deleted');
-      }
     })
   }
+
 
   // Deal with unsaved changes to new conference on page leave
   $(window).on('beforeunload', function(){
@@ -212,9 +225,9 @@ $(document).ready(function() {
       },
       success: function(data) {
         $('#conference-edit-panel').html(data);
+        unfilterVenueList();
       }
     });
-
   });
 
 
@@ -268,20 +281,37 @@ $(document).ready(function() {
   });
 
 
-  // TODO: Split this off as a function that can be called in multiple places
+  // helper function to filter Venue list to whatever the city value is
+  function filterVenueList(filterText){
+    $.ajax({
+      url: '/registration/filter_venue/',
+      method: 'GET',
+      data: {
+        city_partial: filterText,
+      },
+      success: function(data) {
+        $('#venue-sidebar').html(data);
+      }
+    })
+  };
+
+
+  // helper function to reset venue list to all venues
+  function unfilterVenueList(){
+    $.ajax({
+      url: '/registration/unfilter_venue/',
+      method: 'GET',
+      success: function(data) {
+        $('#venue-sidebar').html(data);
+      }
+    })
+  };
+
+
   // Filter venue list as city is selected
   $('body').on('keyup', '#conference-edit-panel #id_city', function () {
       var cityPartial = $('#conference-edit-panel #id_city').val();
-      $.ajax({
-        url: '/registration/filter_venue/',
-        method: 'GET',
-        data: {
-          city_partial: cityPartial,
-        },
-        success: function(data) {
-          $('#venue-sidebar').html(data);
-        }
-      })
+      filterVenueList(cityPartial);
   });
 
 });

@@ -28,5 +28,6 @@ urlpatterns = [
         name='delete_temp_conf'),
     url(r'^save_conference_changes/$', views.save_conference_changes,
         name='save_conference_changes'),
-    url(r'^filter_venue/$', views.filter_venue, name='filter_venue')
+    url(r'^filter_venue/$', views.filter_venue, name='filter_venue'),
+    url(r'^unfilter_venue/$', views.unfilter_venue, name='unfilter_venue'),
 ]

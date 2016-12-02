@@ -212,7 +212,6 @@ def edit_venue(request):
 def add_venue(request):
     """ AJAX Function to add new venue and refresh venue sidebar """
     errors = False
-    # TODO: Update this when filter function implemented
     venue_list = Venue.objects.all().order_by('city', 'name')
     if request.method == 'POST':
         venue_form = VenueForm(request.POST)
@@ -254,10 +253,21 @@ def filter_venue(request):
     venue_form = VenueForm()
     try:
         city_partial = request.GET['city_partial']
+        venue_list = Venue.objects.filter(
+            city__icontains=city_partial).order_by('city', 'name')
     except MultiValueDictKeyError:
         city_partial = None
-    venue_list = Venue.objects.filter(
-        city__icontains=city_partial).order_by('city', 'name')
+        venue_list = Venue.objects.all().order_by('city', 'name')
+    context = {
+        'venue_form': venue_form,
+        'venue_list': venue_list,
+    }
+    return render(request, 'registration/addins/venue_sidebar.html', context)
+
+
+def unfilter_venue(request):
+    venue_form = VenueForm()
+    venue_list = Venue.objects.all().order_by('city', 'name')
     context = {
         'venue_form': venue_form,
         'venue_list': venue_list,

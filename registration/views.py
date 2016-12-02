@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db.models import Q
 from django.template import RequestContext
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 
@@ -111,11 +112,6 @@ def get_registration_history(request):
         person_regs = person.regdetails_set.all()
     return render(request, 'registration/addins/reg_history.html',
         {'person_regs': person_regs})
-
-
-def add_new_delegate(request):
-    # TODO: Change to response redirect
-    return render(request, 'delegate/index.html')
 
 
 def select_conference_to_edit(request):

@@ -43,7 +43,7 @@
       </tr>
       <tr id="details{{ customer.id }}" class="collapse" >
         <td class="col-sm-2">
-          <form action ="{% url 'registration:add_new_delegate' %}" method="post">
+          <form action ="{% url 'delegate:index' %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="conf_id" value="" />
             <input type="hidden" name="registrant_id" value="{{ person.id }}" />
@@ -135,7 +135,7 @@
       </tr>
       <tr id="crm_details{{ prospect.id }}" class="collapse" >
         <td class="col-sm-2">
-          <form action ="{% url 'registration:add_new_delegate' %}" method="post">
+          <form action ="{% url 'delegate:index' %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="conf_id" value="" />
             <input type="hidden" name="registrant_id" value="" />

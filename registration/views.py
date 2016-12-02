@@ -114,7 +114,8 @@ def get_registration_history(request):
 
 
 def add_new_delegate(request):
-    return render(request, 'registration/add_new_delegate.html')
+    # TODO: Change to response redirect
+    return render(request, 'delegate/index.html')
 
 
 def select_conference_to_edit(request):

@@ -1,17 +1,35 @@
 {% extends 'registration/base.html' %}
+{% load staticfiles %}
+
+{% block title %}New Delegate | {% endblock %}
+
+{% block script_includes %}
+<link href="{% static 'delegate/delegate.css' %}"
+  rel="stylesheet" type="text/css">
+<script type="text/javascript"
+  src="{% static 'delegate/javascript/delegate.js' %}"></script>
+{% endblock %}
+
 {% block content %}
-<div class="container">
-  <div class="row">
-    <h1>Register Delegate</h1>
-  </div>
-  <div class="row">
-    <h3>Conference selection</h3>
-  </div>
-  <div class="row">
-    <h3>Delegate details</h3>
-  </div>
-  <div class="row">
-    <h3>Options and pricing</h3>
+<div class="container-fluid fill">
+  <div class="row fill">
+    <div class="col-sm-9 left-main-panel">
+      <h1>Register Delegate</h1>
+      <h3>Conference selection</h3>
+      {{ conference_select_form }}
+      <h3>Conference Option Selection (if more than one)</h3>
+      <h3>Delegate Information</h3>
+      {{ new_delegate_form }}
+      <h3>Company Information</h3>
+      {{ company_select_form }}
+      <h3>Reg details</h3>
+      <h3>Assistant Information</h3>
+    </div>
+    <div id="crm-sidebar">
+      <div class="col-sm-3 col-md-3 crm-sidebar fill">
+        <h3>Matching from CRM</h3>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

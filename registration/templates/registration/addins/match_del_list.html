@@ -46,7 +46,8 @@
           <form action ="{% url 'delegate:index' %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="conf_id" value="" />
-            <input type="hidden" name="registrant_id" value="{{ person.id }}" />
+            <input type="hidden" name="registrant_id" value="{{ customer.id }}" />
+            <input type="hidden" name="crm_id" value="" />
             <button type="submit" class="btn btn-success register-delegate">
               Register!
             </button>

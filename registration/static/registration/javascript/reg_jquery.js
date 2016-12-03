@@ -34,12 +34,16 @@ $(document).ready(function(){
 
 
   // Pulls registration history for delegate on new_delegate_search page
+  // Also inserts conference_id into hidden input field
   $('body').on('click', '.show-delegate', function(){
     var delegate_id = $(this).attr('id');
     $.get('/registration/get_registration_history',
           {id: delegate_id}, function(data){
             $('#buyer-history' + delegate_id).html(data);
           });
+    var confId = $('#id_event').val()
+    console.log('conf')
+    $('input[name=conf_id]').val(confId);
   });
 
 
@@ -63,7 +67,7 @@ $(document).ready(function(){
     var event_selected = $(this).val();
     $('#id_event').css('border-color', '');
     $('.form-warning').hide();
-    $('input[name=conf-id]').val(event_selected);
+    $('input[name=conf_id]').val(event_selected);
   });
 
 

@@ -36,8 +36,12 @@
       <h3>Assistant Information</h3>
       {{ assistant_form }}
     </div>
-    <div id="crm-sidebar">
-      {% include 'delegate/addins/crm_sidebar.html' %}
+    <div id="crm-sidebar" class="col-sm-3 col-md-3 crm-sidebar fill">
+      {% if crm_match_list %}
+      {% include 'delegate/addins/crm_sidebar_list.html' %}
+      {% else %}
+      {% include 'delegate/addins/crm_sidebar_blank.html' %}
+      {% endif %}
     </div>
   </div>
 </div>

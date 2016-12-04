@@ -1,6 +1,8 @@
 from django.shortcuts import render
+from django.db.models import Q
 
 from .forms import *
+from crm.models import Person
 from registration.models import *
 from registration.forms import ConferenceSelectForm
 
@@ -32,6 +34,16 @@ def index(request):
             assistant = registrant.assistant
             if assistant:
                 assistant_form = AssistantForm(instance=assistant)
+            if registrant.crm_person:
+                crm_match_list = Person.objects.filter(
+                    pk=registrant.crm_person.id
+                )
+            else:
+                crm_match_list = Person.objects.filter(
+                    Q(name__icontains=registrant.first_name) &
+                    Q(name__icontains=registrant.last_name),
+                    Q(company__icontains=registrant.company)
+                ).order_by('company', 'name')[:100]
 
     context = {
         'new_delegate_form': new_delegate_form,
@@ -47,3 +59,20 @@ def index(request):
         'crm_match_list': crm_match_list,
     }
     return render(request, 'delegate/index.html', context)
+
+
+def update_crm_match_list(request):
+    crm_match_list = None
+    if requst.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        company = request.POST['company']
+        crm_match_list = Person.objects.filter(
+            Q(name__icontains=first_name) &
+            Q(name__icontains=last_name),
+            Q(company__icontains-company)
+        ).order_by('company', 'name')[:100]
+    context = {
+        'crm_match_list': crm_match_list,
+    }
+    return render(request, 'delegate/addins/crm_sidebar.html', context)

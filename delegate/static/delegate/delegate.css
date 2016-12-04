@@ -20,3 +20,6 @@ body {
   overflow-y: scroll;
   height: 100%;
 }
+.crm-list-action {
+  float: right;
+}

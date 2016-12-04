@@ -1,0 +1,31 @@
+<h3>Suggested CRM Matches</h3>
+<ul class="list-group">
+  {% for match in crm_match_list %}
+  <li class="list-group-item" id="crm-{{ match.id }}">
+    <strong>{{ match.name }}</strong>
+    {% if match.id == registrant.crm_person.id %}
+    <button type="button" class="btn btn-success btn-xs crm-list-action" disabled>
+      Linked
+    </button><br />
+    {% else %}
+    <button type="button" class="btn btn-info btn-xs crm-list-action" crm-id={{ match.id }}>
+      Link record
+    </button><br />
+    {% endif %}
+    {{ match.title }}<br />
+    {{ match.company }}
+    <a href="#details-{{ match.id }}"
+      class="btn btn-default btn-xs crm-list-action" data-toggle="collapse">
+        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+    </a><br />
+
+    <div class="crm-details collapse" id="details-{{ match.id }}">
+      Tel: {{ match.phone }}<br />
+      Email: {{ match.email }}<br />
+      Location: {{ match.city }} {{ match.state_prov }}<br />
+      Last modified: {{ match.date_modified }}
+    </div>
+
+  </li>
+  {% endfor %}
+</ul>

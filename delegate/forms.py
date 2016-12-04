@@ -172,7 +172,7 @@ class AssistantForm(forms.ModelForm):
             'phone': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
-            'address': forms.Textarea(
+            'address_personal': forms.Textarea(
                 attrs={'class': 'form-control',
                        'rows': '4'}
             )

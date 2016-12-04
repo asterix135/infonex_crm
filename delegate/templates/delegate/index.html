@@ -17,18 +17,27 @@
       <h1>Register Delegate</h1>
       <h3>Conference selection</h3>
       {{ conference_select_form }}
-      <h3>Conference Option Selection (if more than one)</h3>
+      {% if conference_options %}
+      <h3>Conference Option Selection</h3>
+      <ul>
+      {% for option in conference_options %}
+        <li>
+          {{ option.name }}
+        </li>
+      {% endfor %}
+      </ul>
+      {% endif %}
       <h3>Delegate Information</h3>
       {{ new_delegate_form }}
       <h3>Company Information</h3>
       {{ company_select_form }}
       <h3>Reg details</h3>
+      {{ reg_details_form }}
       <h3>Assistant Information</h3>
+      {{ assistant_form }}
     </div>
     <div id="crm-sidebar">
-      <div class="col-sm-3 col-md-3 crm-sidebar fill">
-        <h3>Matching from CRM</h3>
-      </div>
+      {% include 'delegate/addins/crm_sidebar.html' %}
     </div>
   </div>
 </div>

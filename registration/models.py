@@ -89,7 +89,7 @@ class RegDetails(models.Model):
     deposit_amount = models.DecimalField(max_digits=10, decimal_places=2,
                                          blank=True, null=True)
     deposit_date = models.DateField(blank=True, null=True)
-    depost_method = models.CharField(max_length=1,
+    deposit_method = models.CharField(max_length=1,
                                      choices=PAYMENT_METHODS,
                                      blank=True,
                                      default=False,
@@ -140,3 +140,11 @@ class EventOptions(models.Model):
     startdate = models.DateField()
     enddate = models.DateField()
     primary = models.BooleanField(default=False, blank=True)
+
+
+class RegEventOptions(models.Model):
+    """
+    Contains details on what event options a person is registered for
+    """
+    reg = models.ForeignKey(RegDetails, on_delete=models.CASCADE)
+    option = models.ForeignKey(EventOptions, on_delete=models.CASCADE)

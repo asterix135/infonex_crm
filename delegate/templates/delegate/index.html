@@ -19,19 +19,48 @@
   {% endif %}
   <div class="row fill">
     <div class="col-sm-9 left-main-panel">
-      <h1>Register Delegate</h1>
-      <h3>Conference selection</h3>
-      {{ conference_select_form }}
-      {% if conference_options %}
-      <h3>Conference Option Selection</h3>
-      <ul>
-      {% for option in conference_options %}
-        <li>
-          {{ option.name }}
-        </li>
-      {% endfor %}
-      </ul>
+      <div id="conference-selection">
+        <input type="hidden" id="selected-conference-id" value="{{ conference.id }}" />
+        <h3>New Registration For:
+          <span class="h1" id="displayed-conf-name">
+            {{ conference }}
+          </span>
+          <a href="#conference-details"
+            class="btn btn-warning btn-sm crm-list-action" data-toggle="collapse">
+              Change Event
+          </a>
+        </h3>
+        <div class="row collapse" id="conference-details">
+          <div class="col-sm-12">
+            {{ conference_select_form.event.errors }}
+          </div>
+          <div class="col-sm-12">
+            {{ conference_select_form.event.label_tag }}
+          </div>
+          <div class="col-sm-10">
+            {{ conference_select_form.event }}
+          </div>
+          <div class="col-sm-2">
+            <button type="button" class="btn btn-primary btn-sm"
+              id="change-conference">
+              Change
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="conference-options">
+        {% if conference_options %}
+        <h1>Conference Option Selection</h1>
+        <ul>
+        {% for option in conference_options %}
+          <li>
+            {{ option.name }}
+          </li>
+        {% endfor %}
+        </ul>
       {% endif %}
+      </div>
       <div id='delegate-info'>
         <h3>Delegate Information</h3>
         {{ new_delegate_form }}

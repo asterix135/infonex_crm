@@ -1,0 +1,10 @@
+<div id="selected-crm-person-details">
+  {% include 'delegate/addins/crm_sidebar_selected.html' %}
+</div>
+<div id='crm-sidebar-details'>
+  {% if crm_match_list %}
+  {% include 'delegate/addins/crm_sidebar_list.html' %}
+  {% else %}
+  {% include 'delegate/addins/crm_sidebar_blank.html' %}
+  {% endif %}
+</div>

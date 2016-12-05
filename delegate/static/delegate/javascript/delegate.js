@@ -1,11 +1,49 @@
 $(document).ready(function(){
 
-  $('body').on('keyup', '#id_first_name,#id_last_name', function(){
-    var charsEntered = $('#id_first_name').val().length +
-      $('#id_last_name').val().length;  
-    // TODO: I think id_name might be repeated - check
-    charsEntered += $('#id_name').val().length;
-    console.log(charsEntered);
-  })
+  // update list of crm suggestion names on keyup
+  $('body').on('keyup', '#delegate-info #id_first_name,#delegate-info #id_last_name', function(){
+    var charsEntered = $('#delegate-info #id_first_name').val().length +
+      $('#delegate-info #id_last_name').val().length +
+      $('#company-info #id_name').val().length;
+    if (charsEntered > 5) {
+      var firstName = $('#delegate-info #id_first_name').val();
+      var lastName = $('#delegate-info #id_last_name').val();
+      var companyName = $('#company-info #id_name').val();
+      $.ajax({
+        url: '/delegate/update_crm_match_list/',
+        type: 'POST',
+        data: {
+          'first_name': firstName,
+          'last_name': lastName,
+          'company': companyName,
+        },
+        success: function(data){
+          $('#crm-sidebar-details').html(data);
+        }
+      })
+    }
+  });
+
+
+  // link different crm record to delegate
+  $('body').on('click', '.link-record-btn', function(){
+    var newCrmId = $(this).attr('crm-id');
+    var currentCrmId = $('#crm-match-value').val();
+    var currentDelegateId = $('#current-registrant-id').val()
+    if (currentDelegateId == '') {
+      currentDelegateId = 'new'
+    };
+    $.ajax({
+      url: '/delegate/link_new_crm_record/',
+      type: 'POST',
+      data: {
+        'crm_match_id': newCrmId,
+        'delegate_id': currentDelegateId,
+      },
+      success: function(data){
+        $('#selected-crm-person-details').html(data);
+      }
+    });
+  });
 
 });

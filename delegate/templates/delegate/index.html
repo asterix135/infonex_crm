@@ -12,6 +12,11 @@
 
 {% block content %}
 <div class="container-fluid fill">
+  {% if registrant %}
+  <input type="hidden" id="current-registrant-id" value="{{ registrant.id }}" />
+  {% else %}
+  <input type="hidden" id="current-registrant-id" value="" />
+  {% endif %}
   <div class="row fill">
     <div class="col-sm-9 left-main-panel">
       <h1>Register Delegate</h1>
@@ -27,21 +32,25 @@
       {% endfor %}
       </ul>
       {% endif %}
-      <h3>Delegate Information</h3>
-      {{ new_delegate_form }}
-      <h3>Company Information</h3>
-      {{ company_select_form }}
-      <h3>Reg details</h3>
-      {{ reg_details_form }}
-      <h3>Assistant Information</h3>
-      {{ assistant_form }}
+      <div id='delegate-info'>
+        <h3>Delegate Information</h3>
+        {{ new_delegate_form }}
+      </div>
+      <div id='company-info'>
+        <h3>Company Information</h3>
+        {{ company_select_form }}
+      </div>
+      <div id='reg-details'>
+        <h3>Reg details</h3>
+        {{ reg_details_form }}
+      </div>
+      <div id='assistant-info'>
+        <h3>Assistant Information</h3>
+        {{ assistant_form }}
+      </div>
     </div>
     <div id="crm-sidebar" class="col-sm-3 col-md-3 crm-sidebar fill">
-      {% if crm_match_list %}
-      {% include 'delegate/addins/crm_sidebar_list.html' %}
-      {% else %}
-      {% include 'delegate/addins/crm_sidebar_blank.html' %}
-      {% endif %}
+      {% include 'delegate/addins/crm_sidebar.html' %}
     </div>
   </div>
 </div>

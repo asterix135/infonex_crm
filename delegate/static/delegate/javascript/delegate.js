@@ -54,6 +54,6 @@ $(document).ready(function(){
     $('#displayed-conf-name').text(newConfName);
     $('#selected-conference-id').val(newConfId);
     $('#conference-details').hide();
-  })
+  });
 
 });

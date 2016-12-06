@@ -95,3 +95,11 @@ def link_new_crm_record(request):
         'crm_match': crm_match,
     }
     return render(request, 'delegate/addins/crm_sidebar_selected.html', context)
+
+
+def process_registration(request):
+    """ form submission """
+    # note that multi-select submits as 0+ versions of same fields
+    # eg event-option-selection: 2
+    #    event-option-selection: 12  etc
+    pass

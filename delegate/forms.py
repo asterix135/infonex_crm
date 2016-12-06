@@ -55,12 +55,56 @@ class CompanySelectForm(forms.ModelForm):
 
     class Meta():
         model = Company
-        fields = ['name']
+        fields = ['name', 'name_for_badges', 'address1', 'address2',
+                  'city', 'state_prov', 'postal_code', 'country',
+                  'gst_hst_exempt', 'qst_exempt', 'gst_hst_exemption_number',
+                  'qst_exemption_number',]
         labels = {
             'name': _('Company Name'),
+            'name_for_badges': _('Short Name (for badges)'),
+            'address1': _('Address Line 1'),
+            'address2': _('Address Line 2'),
+            'gst_hst_exempt': _('GST/HST Exempt?'),
+            'qst_exempt': _('QST Exempt?'),
+            'gst_hst_exemption_number': _('GST/HST Exemption Number'),
+            'qst_exemption_number': _('QST Exemption Number'),
         }
         widgets = {
             'name': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'name_for_badges': forms.TextInput(
+                attrs={'class': 'form-control',
+                       'maxlength': '10'}
+            ),
+            'address1': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'address2': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'city': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'state_prov': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'postal_code': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'country': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'gst_hst_exempt': forms.CheckboxInput(
+                attrs={'class': 'form-control'}
+            ),
+            'qst_exempt': forms.CheckboxInput(
+                attrs={'class': 'form-control'}
+            ),
+            'gst_hst_exemption_number': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'qst_exemption_number': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
         }

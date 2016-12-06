@@ -15,16 +15,18 @@ def index(request):
     conference_select_form = ConferenceSelectForm()
     reg_details_form = RegDetailsForm()
     conference = None
-    conference_options = None
+    conference_options = None  # Remove when form working
     registrant = None
     company = None
     assistant = None
     crm_match = None
     crm_match_list = None
+    options_form = None
     if request.method == 'POST':
         conf_id = request.POST['conf_id']
         conference = Event.objects.get(pk=conf_id)
-        conference_options = conference.eventoptions_set.all()
+        conference_options = conference.eventoptions_set.all()  # remove when form working
+        options_form = OptionsForm(conference)
         crm_id = request.POST['crm_id']
         registrant_id = request.POST['registrant_id']
         conference_select_form = ConferenceSelectForm({'event': conf_id})
@@ -51,7 +53,8 @@ def index(request):
         'conference_select_form': conference_select_form,
         'reg_details_form': reg_details_form,
         'conference': conference,
-        'conference_options': conference_options,
+        'conference_options': conference_options,  # remove when form working
+        'options_form': options_form,
         'registrant': registrant,
         'company': company,
         'assistant': assistant,

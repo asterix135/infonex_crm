@@ -179,7 +179,22 @@ class AssistantForm(forms.ModelForm):
         }
 
 
-class OptionsForm(forms.ModelForm):
+class OptionsForm(forms.Form):
+    conference_options = forms.MultipleChoiceField(
+        label='Select Registration Options',
+        widget=forms.CheckboxSelectMultiple(
+            attrs={'class': 'form-control'}
+        )
+    )
 
-    class Meta():
-        model = EventOptions
+    def __init__(self, event, *args, **kwargs):
+        super(OptionsForm, self).__init__(*args, **kwargs)
+        self.fields['conference_options'] = forms.MultipleChoiceField(
+            choices=[(option.id, str(option)) for
+                     option in EventOptions.objects.filter(event=event)],
+            widget=forms.CheckboxSelectMultiple(
+                attrs={'class': 'form-control'}
+            )
+        )
+
+# class OptionsForm(forms.ModelForm)

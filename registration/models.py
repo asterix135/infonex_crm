@@ -141,6 +141,10 @@ class EventOptions(models.Model):
     enddate = models.DateField()
     primary = models.BooleanField(default=False, blank=True)
 
+    def __str__(self):
+        return(self.name + ': ' + str(self.startdate) + ' - ' +
+               str(self.enddate))
+
 
 class RegEventOptions(models.Model):
     """

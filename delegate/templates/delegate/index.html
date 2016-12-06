@@ -94,8 +94,63 @@
 
       <div id='delegate-info'>
         <h3>Delegate Information</h3>
-        {{ new_delegate_form }}
+        <div class="row">
+          <div class="col-sm-2">
+            {{ new_delegate_form.salutation.errors }}
+            {{ new_delegate_form.salutation.label_tag }}
+            {{ new_delegate_form.salutation }}
+          </div>
+          <div class="col-sm-5">
+            {{ new_delegate_form.first_name.errors }}
+            {{ new_delegate_form.first_name.label_tag }}
+            {{ new_delegate_form.first_name }}
+          </div>
+          <div class="col-sm-5">
+            {{ new_delegate_form.last_name.errors }}
+            {{ new_delegate_form.last_name.label_tag }}
+            {{ new_delegate_form.last_name }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            {{ new_delegate_form.title.errors }}
+            {{ new_delegate_form.title.label_tag }}
+            {{ new_delegate_form.title }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            {{ new_delegate_form.email1.errors }}
+            {{ new_delegate_form.email1.label_tag }}
+            {{ new_delegate_form.email1 }}
+          </div>
+          <div class="col-sm-6">
+            {{ new_delegate_form.email2.errors }}
+            {{ new_delegate_form.email2.label_tag }}
+            {{ new_delegate_form.email2 }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            {{ new_delegate_form.phone1.errors }}
+            {{ new_delegate_form.phone1.label_tag }}
+            {{ new_delegate_form.phone1 }}
+          </div>
+          <div class="col-sm-6">
+            {{ new_delegate_form.phone2.errors }}
+            {{ new_delegate_form.phone2.label_tag }}
+            {{ new_delegate_form.phone2 }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            {{ new_delegate_form.contact_option.errors }}
+            {{ new_delegate_form.contact_option.label_tag }}
+            {{ new_delegate_form.contact_option }}
+          </div>
+        </div>
       </div>
+
       <div id='company-info'>
         <h3>Company Information</h3>
         {{ company_select_form }}

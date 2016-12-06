@@ -177,3 +177,9 @@ class AssistantForm(forms.ModelForm):
                        'rows': '4'}
             )
         }
+
+
+class OptionsForm(forms.ModelForm):
+
+    class Meta():
+        model = EventOptions

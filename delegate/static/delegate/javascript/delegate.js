@@ -50,10 +50,22 @@ $(document).ready(function(){
   // updates display of current conference & saves variable
   $('body').on('click', '#change-conference', function(){
     var newConfId = $('#id_event').val();
-    var newConfName = $('#id_event option:selected').text();
-    $('#displayed-conf-name').text(newConfName);
-    $('#selected-conference-id').val(newConfId);
-    $('#conference-details').hide();
+    if (newConfId != '') {
+      var newConfName = $('#id_event option:selected').text();
+      $('#displayed-conf-name').text(newConfName);
+      $('#selected-conference-id').val(newConfId);
+      $('#conference-details').removeClass('in');
+      $.ajax({
+        url: '/delegate/update_tax_information/',
+        type: 'POST',
+        data: {
+          'conf_id': newConfId,
+        },
+        success: function(data){
+          $('#registration-tax-information').html(data);
+        }
+      });
+    };
   });
 
 });

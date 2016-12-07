@@ -97,6 +97,21 @@ def link_new_crm_record(request):
     return render(request, 'delegate/addins/crm_sidebar_selected.html', context)
 
 
+def update_tax_information(request):
+    """
+    ajax call to update part of delegate page showing tax info
+    happens when selected conference is changed
+    """
+    conference = None
+    reg_details_form = RegDetailsForm()
+    if request.method == 'POST':
+        conference = Event.objects.get(pk=request.POST['conf_id'])
+    context = {'conference': conference,
+               'reg_details_form': reg_details_form}
+    return render(request, 'delegate/addins/delegate_tax_information.html',
+                  context)
+
+
 def process_registration(request):
     """ form submission """
     # note that multi-select submits as 0+ versions of same fields

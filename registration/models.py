@@ -74,7 +74,9 @@ class RegDetails(models.Model):
     conference = models.ForeignKey('crm.Event')
     registrant = models.ForeignKey(Registrants)
     priority_code = models.CharField(max_length=25)
-    sales_credit = models.CharField(max_length=50)
+    sales_credit = models.ForeignKey('auth.User',
+                                     related_name='sales_credit',
+                                     blank=True, null=True)
     pre_tax_price = models.DecimalField(max_digits=10, decimal_places=2)
     gst_rate = models.DecimalField(max_digits=6, decimal_places=5)
     hst_rate = models.DecimalField(max_digits=6, decimal_places=5)

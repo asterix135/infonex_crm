@@ -194,9 +194,9 @@ $(document).ready(function() {
     var registrar = $('#conference-edit-panel #id_registrar').val();
     var developer = $('#conference-edit-panel #id_developer').val();
     var companyBrand = $('#conference-edit-panel #id_company_brand').val();
-    var gstCharged = $('#conference-edit-panel #id_gst_charged').val();
-    var hstCharged = $('#conference-edit-panel #id_hst_charged').val();
-    var qstCharged = $('#conference-edit-panel #id_qst_charged').val();
+    var gstCharged = $('#conference-edit-panel #id_gst_charged').prop('checked');
+    var hstCharged = $('#conference-edit-panel #id_hst_charged').prop('checked');
+    var qstCharged = $('#conference-edit-panel #id_qst_charged').prop('checked');
     var gstRate = $('#conference-edit-panel #id_gst_rate').val();
     var hstRate = $('#conference-edit-panel #id_hst_rate').val();
     var qstRate = $('#conference-edit-panel #id_qst_rate').val();

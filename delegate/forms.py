@@ -124,7 +124,7 @@ class RegDetailsForm(forms.ModelForm):
             'priority_code': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
-            'sales_credit': forms.TextInput(
+            'sales_credit': forms.Select(
                 attrs={'class': 'form-control'}
             ),
             'pre_tax_price': forms.NumberInput(

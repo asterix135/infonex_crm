@@ -9,4 +9,6 @@ urlpatterns = [
         name='update_crm_match_list'),
     url(r'^link_new_crm_record/$', views.link_new_crm_record,
         name='link_new_crm_record'),
+    url(r'^update_tax_information/$', views.update_tax_information,
+        name='update_tax_information'),
 ]

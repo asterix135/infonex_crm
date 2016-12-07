@@ -238,10 +238,36 @@
           </div>
         </div>
       </div>
+
       <div id='reg-details'>
-        <h3>Reg details</h3>
+        <h3>Registration/Invoice details</h3>
+        <div class="row">
+          <div class="col-sm-3">
+            {{ reg_details_form.pre_tax_price.errors }}
+            {{ reg_details_form.pre_tax_price.label_tag }}
+            <div class="input-group">
+              <span class="input-group-addon">$</span>
+              <input type="number" id="id_pre_tax_price" class="form-control"
+                name="pre_tax_price" step="100" required="" />
+            </div>
+          </div>
+          <div class="col-sm-3">
+            {{ reg_details_form.priority_code.errors }}
+            {{ reg_details_form.priority_code.label_tag }}
+            {{ reg_details_form.priority_code }}
+          </div>
+          <div class="col-sm-3">
+            {{ reg_details_form.sales_credit.errors }}
+            {{ reg_details_form.sales_credit.label_tag }}
+            {{ reg_details_form.sales_credit }}
+          </div>
+        </div>
+        <div class="row" id="registration-tax-information">
+          {% include 'delegate/addins/delegate_tax_information.html' %}
+        </div>
         {{ reg_details_form }}
       </div>
+
       <div id='assistant-info'>
         <h3>Assistant Information</h3>
         {{ assistant_form }}

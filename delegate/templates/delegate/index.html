@@ -297,8 +297,51 @@
       </div>
 
       <div id='assistant-info'>
-        <h3>Assistant Information</h3>
-        {{ assistant_form }}
+        <h3>
+          Assistant Information
+          <a href="#assistant-details"
+            class="btn btn-default btn-xs crm-list-action" data-toggle="collapse">
+              <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+          </a>
+        </h3>
+        <div class="collapse" id="assistant-details">
+          <div class="row">
+            <div class="col-sm-2">
+              {{ assistant_form.salutation.errors }}
+              {{ assistant_form.salutation.label_tag }}
+              {{ assistant_form.salutation }}
+            </div>
+            <div class="col-sm-5">
+              {{ assistant_form.first_name.errors }}
+              {{ assistant_form.first_name.label_tag }}
+              {{ assistant_form.first_name }}
+            </div>
+            <div class="col-sm-5">
+              {{ assistant_form.last_name.errors }}
+              {{ assistant_form.last_name.label_tag }}
+              {{ assistant_form.last_name }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              {{ assistant_form.title.errors }}
+              {{ assistant_form.title.label_tag }}
+              {{ assistant_form.title }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              {{ assistant_form.email.errors }}
+              {{ assistant_form.email.label_tag }}
+              {{ assistant_form.email }}
+            </div>
+            <div class="col-sm-6">
+              {{ assistant_form.phone.errors }}
+              {{ assistant_form.phone.label_tag }}
+              {{ assistant_form.phone }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div id="crm-sidebar" class="col-sm-3 col-md-3 crm-sidebar fill">

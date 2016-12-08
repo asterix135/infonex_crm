@@ -251,6 +251,9 @@
                 name="pre_tax_price" step="100" required="" />
             </div>
           </div>
+          <div id="fx-details">
+            {% include 'delegate/addins/fx_details.html' %}
+          </div>
           <div class="col-sm-3">
             {{ reg_details_form.priority_code.errors }}
             {{ reg_details_form.priority_code.label_tag }}
@@ -265,7 +268,47 @@
         <div class="row" id="registration-tax-information">
           {% include 'delegate/addins/delegate_tax_information.html' %}
         </div>
-        {{ reg_details_form }}
+        <div class="row">
+          <div class="col-sm-3">
+            {{ reg_details_form.registration_status.errors }}
+            {{ reg_details_form.registration_status.label_tag }}
+            {{ reg_details_form.registration_status }}
+          </div>
+          <div id="cancellation-details">
+            {% if reg_details_form.registration_status.value in cxl_values %}
+            {% include 'delegate/addins/cancellation_details.html' %}
+            {% endif %}
+          </div>
+        </div>
+        <div class="row" id="registration-description">
+          {% if reg_details_form.registration_status.value in sponsor_values %}
+          {% include 'delegate/addins/sponsor_details.html' %}
+          {% endif %}
+        </div>
+        <div class="row" id="deposit-details">
+          {% if reg_details_form.registration_status.value in deposit_values %}
+          {% include 'delegate/addins/deposit_details.html' %}
+          {% endif %}
+        </div>
+        <div class="row" id="payment-details">
+          {% if reg_details_form.registration_status.value in paid_status_values %}
+          {% include 'delegate/addins/payment_details.html' %}
+          {% endif %}
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            {{ reg_details_form.invoice_notes.errors }}
+            {{ reg_details_form.invoice_notes.label_tag }}
+            {{ reg_details_form.invoice_notes }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            {{ reg_details_form.registration_notes.errors }}
+            {{ reg_details_form.registration_notes.label_tag }}
+            {{ reg_details_form.registration_notes }}
+          </div>
+        </div>
       </div>
 
       <div id='assistant-info'>

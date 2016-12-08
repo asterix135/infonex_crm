@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+  // TODO: Format currency to 2 decimals & fx to 3 decimals
+
   // update list of crm suggestion names on keyup
   $('body').on('keyup', '#delegate-info #id_first_name,#delegate-info #id_last_name', function(){
     var charsEntered = $('#delegate-info #id_first_name').val().length +
@@ -46,7 +48,7 @@ $(document).ready(function(){
     });
   });
 
-
+  // TODO: also need to update fx_conversion section
   // updates display of current conference & saves variable
   $('body').on('click', '#change-conference', function(){
     var newConfId = $('#id_event').val();
@@ -63,6 +65,16 @@ $(document).ready(function(){
         },
         success: function(data){
           $('#registration-tax-information').html(data);
+        }
+      });
+      $.ajax({
+        url: '/delegate/update_fx_conversion/',
+        type: 'POST',
+        data: {
+          'conf_id': newConfId,
+        },
+        success: function(data){
+          $('#fx-details').html(data);
         }
       });
     };

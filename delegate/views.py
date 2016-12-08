@@ -22,6 +22,10 @@ def index(request):
     crm_match = None
     crm_match_list = None
     options_form = None
+    paid_status_values = ['DP', 'SP', 'DX', 'SX',]
+    depost_status_values = ['SD',]
+    cxl_values = ['DX', 'SX',]
+    sponsor_values = ['SX', 'SP', 'SU']
     if request.method == 'POST':
         conf_id = request.POST['conf_id']
         conference = Event.objects.get(pk=conf_id)
@@ -60,6 +64,10 @@ def index(request):
         'assistant': assistant,
         'crm_match': crm_match,
         'crm_match_list': crm_match_list,
+        'paid_status_values': paid_status_values,
+        'deposit_values': depost_status_values,
+        'cxl_values': cxl_values,
+        'sponsor_values': sponsor_values,
     }
     return render(request, 'delegate/index.html', context)
 
@@ -110,6 +118,18 @@ def update_tax_information(request):
                'reg_details_form': reg_details_form}
     return render(request, 'delegate/addins/delegate_tax_information.html',
                   context)
+
+
+def update_fx_conversion(request):
+    """ ajax call to update fx_conversion """
+    pass
+    conference = None
+    reg_details_form = RegDetailsForm()
+    if request.method == 'POST':
+        conference = Event.objects.get(pk=request.POST['conf_id'])
+    context = {'conference': conference,
+               'reg_details_form': reg_details_form}
+    return render(request, 'delegate/addins/fx_details.html', context)
 
 
 def process_registration(request):

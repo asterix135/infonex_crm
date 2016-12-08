@@ -120,6 +120,9 @@ class RegDetailsForm(forms.ModelForm):
                   'fx_conversion_rate', 'register_date', 'cancellation_date',
                   'registration_status', 'invoice_notes', 'registration_notes',
                   'sponsorship_description']
+        labels = {
+            'invoice_notes': _('Comments to Appear on Invoice'),
+        }
         widgets = {
             'priority_code': forms.TextInput(
                 attrs={'class': 'form-control'}
@@ -163,7 +166,7 @@ class RegDetailsForm(forms.ModelForm):
             ),
             'fx_conversion_rate': forms.NumberInput(
                 attrs={'class': 'form-control',
-                         'step': '0.001'}
+                         'step': '0.001',}
             ),
             'register_date': forms.DateInput(
                 attrs={'class': 'form-control',
@@ -240,5 +243,3 @@ class OptionsForm(forms.Form):
                 attrs={'class': 'form-control'}
             )
         )
-
-# class OptionsForm(forms.ModelForm)

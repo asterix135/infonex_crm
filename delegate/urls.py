@@ -11,4 +11,6 @@ urlpatterns = [
         name='link_new_crm_record'),
     url(r'^update_tax_information/$', views.update_tax_information,
         name='update_tax_information'),
+    url(r'^update_fx_conversion/$', views.update_fx_conversion,
+        name='update_fx_conversion'),
 ]

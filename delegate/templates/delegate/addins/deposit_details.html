@@ -1,0 +1,19 @@
+<div class="col-sm-3">
+  {{ reg_details_form.deposit_amount.errors }}
+  {{ reg_details_form.deposit_amount.label_tag }}
+  <div class="input-group">
+    <span class="input-group-addon">$</span>
+    <input type="number" id="id_deposit_amount" class="form-control"
+      name="deposit_amount" step="100" />
+  </div>
+</div>
+<div class="col-sm-3">
+  {{ reg_details_form.deposit_date.errors }}
+  {{ reg_details_form.deposit_date.label_tag }}
+  {{ reg_details_form.deposit_date }}
+</div>
+<div class="col-sm-3">
+  {{ reg_details_form.deposit_method.errors }}
+  {{ reg_details_form.deposit_method.label_tag }}
+  {{ reg_details_form.deposit_method }}
+</div>

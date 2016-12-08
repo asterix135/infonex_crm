@@ -1,0 +1,46 @@
+<div class="row" id="sponsor-description">
+  {% if reg_details_form.registration_status.value in sponsor_values %}
+  <div class="col-sm-12">
+    {{ reg_details_form.sponsorship_description.errors }}
+    {{ reg_details_form.sponsorship_description.label_tag }}
+    {{ reg_details_form.sponsorship_description }}
+  </div>
+  {% endif %}
+</div>
+<div class="row" id="deposit-details">
+  {% if reg_details_form.registration_status.value in deposit_values %}
+  <div class="col-sm-3">
+    {{ reg_details_form.deposit_amount.errors }}
+    {{ reg_details_form.deposit_amount.label_tag }}
+    <div class="input-group">
+      <span class="input-group-addon">$</span>
+      <input type="number" id="id_deposit_amount" class="form-control"
+        name="deposit_amount" step="100" />
+    </div>
+  </div>
+  <div class="col-sm-3">
+    {{ reg_details_form.deposit_date.errors }}
+    {{ reg_details_form.deposit_date.label_tag }}
+    {{ reg_details_form.deposit_date }}
+  </div>
+  <div class="col-sm-3">
+    {{ reg_details_form.deposit_method.errors }}
+    {{ reg_details_form.deposit_method.label_tag }}
+    {{ reg_details_form.deposit_method }}
+  </div>
+  {% endif %}
+</div>
+<div class="row" id="payment-details">
+  {% if reg_details_form.registration_status.value in paid_status_values %}
+  <div class="col-sm-3">
+    {{ reg_details_form.payment_date.errors }}
+    {{ reg_details_form.payment_date.label_tag }}
+    {{ reg_details_form.payment_date }}
+  </div>
+  <div class="col-sm-3">
+    {{ reg_details_form.payment_method.errors }}
+    {{ reg_details_form.payment_method.label_tag }}
+    {{ reg_details_form.payment_method }}
+  </div>
+  {% endif %}
+</div>

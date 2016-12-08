@@ -48,8 +48,8 @@ $(document).ready(function(){
     });
   });
 
-  // TODO: also need to update fx_conversion section
-  // updates display of current conference & saves variable
+
+  // updates display of current conference & saves variable when new conf chosen
   $('body').on('click', '#change-conference', function(){
     var newConfId = $('#id_event').val();
     if (newConfId != '') {
@@ -78,6 +78,41 @@ $(document).ready(function(){
         }
       });
     };
+  });
+
+
+  // updates payment displays when registration status changes
+  $('body').on('change', '#id_registration_status', function(){
+    var newStatus = $(this).val();
+    var currentRegDetailId = $('#current-regdetail-id').val()
+    if (currentRegDetailId == '') {
+      currentRegDetailId = 'new'
+    };
+    $.ajax({
+      url: '/delegate/update_cxl_info/',
+      type: 'POST',
+      data: {
+        'regdetail_id': currentRegDetailId,
+        'reg_status': newStatus,
+      },
+      success: function(data){
+        $('#cancellation-details').html(data);
+        console.log('ajax1 complete');
+      }
+    });
+    $.ajax({
+      url: '/delegate/update_payment_details/',
+      type: 'POST',
+      data: {
+        'regdetail_id': currentRegDetailId,
+        'reg_status': newStatus,
+      },
+      success: function(data){
+        $('#status-based-reg-fields').html(data);
+        console.log('ajax2 complete');
+      }
+    });
+    console.log('all done');
   });
 
 });

@@ -1,0 +1,4 @@
+PAID_STATUS_VALUES = ['DP', 'SP', 'DX', 'SX',]
+DEPOSIT_STATUS_VALUES = ['SD',]
+CXL_VALUES = ['DX', 'SX',]
+SPONSOR_VALUES = ['SX', 'SP', 'SU', 'SD',]

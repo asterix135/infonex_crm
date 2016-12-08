@@ -13,4 +13,7 @@ urlpatterns = [
         name='update_tax_information'),
     url(r'^update_fx_conversion/$', views.update_fx_conversion,
         name='update_fx_conversion'),
+    url(r'^update_cxl_info/$', views.update_cxl_info, name='update_cxl_info'),
+    url(r'^update_payment_details/$', views.update_payment_details,
+        name='update_payment_details'),
 ]

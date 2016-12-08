@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.db.models import Q
+from django.utils import timezone
 
 from .forms import *
+from .constants import *
 from crm.models import Person
 from registration.models import *
 from registration.forms import ConferenceSelectForm
@@ -14,6 +16,7 @@ def index(request):
     assistant_form = AssistantForm()
     conference_select_form = ConferenceSelectForm()
     reg_details_form = RegDetailsForm()
+    current_registration = None
     conference = None
     conference_options = None  # Remove when form working
     registrant = None
@@ -22,10 +25,6 @@ def index(request):
     crm_match = None
     crm_match_list = None
     options_form = None
-    paid_status_values = ['DP', 'SP', 'DX', 'SX',]
-    depost_status_values = ['SD',]
-    cxl_values = ['DX', 'SX',]
-    sponsor_values = ['SX', 'SP', 'SU']
     if request.method == 'POST':
         conf_id = request.POST['conf_id']
         conference = Event.objects.get(pk=conf_id)
@@ -49,8 +48,8 @@ def index(request):
                 Q(name__icontains=registrant.last_name),
                 Q(company__icontains=registrant.company.name)
             ).order_by('company', 'name')[:100]
-
     context = {
+        'current_registration': current_registration,
         'new_delegate_form': new_delegate_form,
         'company_select_form': company_select_form,
         'assistant_form': assistant_form,
@@ -64,10 +63,10 @@ def index(request):
         'assistant': assistant,
         'crm_match': crm_match,
         'crm_match_list': crm_match_list,
-        'paid_status_values': paid_status_values,
-        'deposit_values': depost_status_values,
-        'cxl_values': cxl_values,
-        'sponsor_values': sponsor_values,
+        'paid_status_values': PAID_STATUS_VALUES,
+        'deposit_values': DEPOSIT_STATUS_VALUES,
+        'cxl_values': CXL_VALUES,
+        'sponsor_values': SPONSOR_VALUES,
     }
     return render(request, 'delegate/index.html', context)
 
@@ -109,6 +108,7 @@ def update_tax_information(request):
     """
     ajax call to update part of delegate page showing tax info
     happens when selected conference is changed
+    should only be called for new registration
     """
     conference = None
     reg_details_form = RegDetailsForm()
@@ -121,8 +121,11 @@ def update_tax_information(request):
 
 
 def update_fx_conversion(request):
-    """ ajax call to update fx_conversion """
-    pass
+    """
+    ajax call to update fx_conversion
+    happens when selected conference is changed
+    should only be called for new registration
+    """
     conference = None
     reg_details_form = RegDetailsForm()
     if request.method == 'POST':
@@ -130,6 +133,66 @@ def update_fx_conversion(request):
     context = {'conference': conference,
                'reg_details_form': reg_details_form}
     return render(request, 'delegate/addins/fx_details.html', context)
+
+
+def update_cxl_info(request):
+    """ ajax call to update cancellation information """
+    reg_details_form = RegDetailsForm()
+    if request.method == 'POST':
+        form_data = {'registration_status': request.POST['reg_status'],
+                     'cancellation_date': timezone.now()}
+        if request.POST['regdetail_id'] != 'new':
+            current_reg = RegDetails.objects.get(
+                pk=request.POST['regdetail_id']
+            )
+            form_data['cancellation_date'] = current_reg.cancellation_date
+            reg_details_form = RegDetailsForm(form_data, instance=current_reg)
+        else:
+            reg_details_form = RegDetailsForm(form_data)
+    context = {
+        'reg_details_form': reg_details_form,
+        'cxl_values': CXL_VALUES,
+    }
+    return render(request, 'delegate/addins/cancellation_details.html',
+                  context)
+
+
+def update_payment_details(request):
+    """ ajax call to update payment details """
+    reg_details_form = RegDetailsForm()
+    if request.method == 'POST':
+        form_data = {'registration_status': request.POST['reg_status'],
+                     'payment_method': None,
+                     'deposit_method': None}
+        if request.POST['reg_status'] in DEPOSIT_STATUS_VALUES:
+            form_data['deposit_date'] = timezone.now()
+        if request.POST['reg_status'] in PAID_STATUS_VALUES:
+            form_data['payment_date'] = timezone.now()
+        if request.POST['regdetail_id'] != 'new':
+            current_reg = RegDetails.objects.get(
+                pk=request.POST['regdetail_id']
+            )
+            form_data['sponsorship_description'] = \
+                current_reg.sponsorship_description
+            form_data['deposit_amount'] = current_reg.deposit_amount
+            form_data['deposit_date'] = current_reg.deposit_date
+            form_data['deposit_method'] = current_reg.deposit_method
+            form_data['payment_date'] = current_reg.payment_date
+            form_data['payment_method'] = current_reg.payment_method
+            print('\n\n\n')
+            print(current_reg.payment_method)
+            print('\n\n\n')
+            reg_details_from = RegDetailsForm(form_data, instance=current_reg)
+        else:
+            reg_details_form = RegDetailsForm(form_data)
+    context = {
+        'reg_details_form': reg_details_form,
+        'paid_status_values': PAID_STATUS_VALUES,
+        'deposit_values': DEPOSIT_STATUS_VALUES,
+        'sponsor_values': SPONSOR_VALUES,
+    }
+    return render(request, 'delegate/addins/status_based_reg_fields.html',
+                  context)
 
 
 def process_registration(request):

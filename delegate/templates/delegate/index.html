@@ -12,11 +12,8 @@
 
 {% block content %}
 <div class="container-fluid fill">
-  {% if registrant %}
   <input type="hidden" id="current-registrant-id" value="{{ registrant.id }}" />
-  {% else %}
-  <input type="hidden" id="current-registrant-id" value="" />
-  {% endif %}
+  <input type="hidden" id="current-regdetail-id" value="{{ current_registration.id }}" />
   <div class="row fill">
     <div class="col-sm-9 left-main-panel">
       <div id="conference-selection">
@@ -25,10 +22,12 @@
           <span class="h1" id="displayed-conf-name">
             {{ conference }}
           </span>
+          {% if not current_registration %}
           <a href="#conference-details"
             class="btn btn-warning btn-sm crm-list-action" data-toggle="collapse">
               Change Event
           </a>
+          {% endif %}
         </h3>
         <div class="row collapse" id="conference-details">
           <div class="col-sm-12">
@@ -275,25 +274,11 @@
             {{ reg_details_form.registration_status }}
           </div>
           <div id="cancellation-details">
-            {% if reg_details_form.registration_status.value in cxl_values %}
             {% include 'delegate/addins/cancellation_details.html' %}
-            {% endif %}
           </div>
         </div>
-        <div class="row" id="registration-description">
-          {% if reg_details_form.registration_status.value in sponsor_values %}
-          {% include 'delegate/addins/sponsor_details.html' %}
-          {% endif %}
-        </div>
-        <div class="row" id="deposit-details">
-          {% if reg_details_form.registration_status.value in deposit_values %}
-          {% include 'delegate/addins/deposit_details.html' %}
-          {% endif %}
-        </div>
-        <div class="row" id="payment-details">
-          {% if reg_details_form.registration_status.value in paid_status_values %}
-          {% include 'delegate/addins/payment_details.html' %}
-          {% endif %}
+        <div id="status-based-reg-fields">
+          {% include 'delegate/addins/status_based_reg_fields.html' %}
         </div>
         <div class="row">
           <div class="col-sm-12">

@@ -155,12 +155,17 @@
           Company Information
           <a href="#company-details"
             class="btn btn-default btn-xs crm-list-action" data-toggle="collapse">
-              <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            Edit Company
+            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
           </a>
         </h3>
-        {{ company_select_form.name.errors }}
-        {{ company_select_form.name.label_tag }}
-        {{ company_select_form.name }}
+        <div class="row">
+          <div class="col-sm-12">
+            {{ company_select_form.name.errors }}
+            {{ company_select_form.name.label_tag }}
+            {{ company_select_form.name }}                      
+          </div>
+        </div>
         {% if company %}
         <div class="collapse" id="company-details">
         {% else %}
@@ -301,7 +306,8 @@
           Assistant Information
           <a href="#assistant-details"
             class="btn btn-default btn-xs crm-list-action" data-toggle="collapse">
-              <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            Add/Edit
+            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
           </a>
         </h3>
         <div class="collapse" id="assistant-details">

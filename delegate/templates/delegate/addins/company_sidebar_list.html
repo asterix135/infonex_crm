@@ -1,0 +1,35 @@
+<h3>Suggested Company Matches</h3>
+<ul class="list-group">
+  {% for match in company_match_list %}
+  <li class="list-group-item" id="company-{{ match.id }}">
+    <strong>{{ match.name }}</strong>
+    {% if match.id == registrant.company.id %}
+    <button type="button" class="btn btn-success btn-xs crm-list-action" disabled>
+      Linked
+    </button><br />
+    {% else %}
+    <button type="button" class="btn btn-info btn-xs crm-list-action link-record-btn"
+      crm-id={{ match.id }}>
+      Link record
+    </button><br />
+    {% endif %}
+    {{ match.name }}<br />
+    {{ match.city }}, {{ match.state_prov }}
+    <a href="#details-{{ match.id }}"
+      class="btn btn-default btn-xs crm-list-action" data-toggle="collapse">
+        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+    </a><br />
+
+    <div class="company-details collapse" id="details-{{ match.id }}">
+      Address1: {{ match.address1 }}<br />
+      Address2: {{ match.address2 }}<br />
+      Location: {{ match.city }} {{ match.state_prov }} {{ match.postal_code }}<br />
+      {% if match.country != 'Canada' %}
+      Country: {{ match.country }}
+      {% endif %}
+      Last modified: {{ match.date_modified }}
+    </div>
+
+  </li>
+  {% endfor %}
+</ul>

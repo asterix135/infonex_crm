@@ -1,0 +1,28 @@
+{% if company_match %}
+<input type="hidden" id="company-match-value" value="{{ company_match.id }}" />
+<h3>Selected Company</h3>
+<ul class="list-group">
+  <li class="list-group-item" id="company-{{ company_match.id }}">
+    <strong>{{ company_match.name }}</strong>
+    <button type="button" class="btn btn-success btn-xs crm-list-action" disabled>
+      Linked
+    </button><br />
+    {{ company_match.city }}, {{ company_match.state_prov }}<br />
+    <a href="#matched-details"
+      class="btn btn-default btn-xs crm-list-action" data-toggle="collapse">
+        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+    </a><br />
+    <div class="crm-details collapse" id="matched-details">
+      Address1: {{ company_match.address1 }}<br />
+      Address2: {{ company_match.address2 }}<br />
+      Location: {{ company_match.city }}, {{ company_match.state_prov }}
+      {{ company_match.postal_code }}<br />
+      {% if company_match.country != 'Canada' %}
+      Country: {{ company_match.country }}
+      {% endif %}
+    </div>
+  </li>
+</ul>
+{% else %}
+<input type="hidden" id="crm-match-value" value="" />
+{% endif %}

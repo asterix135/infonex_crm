@@ -31,9 +31,9 @@ $(document).ready(function(){
   $('body').on('click', '.link-record-btn', function(){
     var newCrmId = $(this).attr('crm-id');
     var currentCrmId = $('#crm-match-value').val();
-    var currentDelegateId = $('#current-registrant-id').val()
+    var currentDelegateId = $('#current-registrant-id').val();
     if (currentDelegateId == '') {
-      currentDelegateId = 'new'
+      currentDelegateId = 'new';
     };
     $.ajax({
       url: '/delegate/link_new_crm_record/',
@@ -46,8 +46,74 @@ $(document).ready(function(){
         $('#selected-crm-person-details').html(data);
       }
     });
+    $('#crm-match-value').val(newCrmId);
   });
 
+
+  // link different company record to delegate
+  $('body').on('click', '.link-company-btn', function(){
+    var newCompanyId = $(this).attr('company-id');
+    var currentCompanyId = $('#company-match-value').val();
+    var currentDelegateId = $('#current-registrant-id').val();
+    if (currentDelegateId == '') {
+      currentDelegateId = 'new';
+    };
+    $.ajax({
+      url: '/delegate/link_new_company_record/',
+      type: 'POST',
+      data: {
+        'company_match_id': newCompanyId,
+        'delegate_id': currentDelegateId,
+      },
+      success: function(data){
+        $('#selected-company-details').html(data);
+      }
+    });
+    $('#company-match-value').val(newCompanyId);
+  })
+
+
+  // add new company and link to current delegate
+  $('body').on('click', '#save-new-company', function(){
+    var currentDelegateId = $('#current-registrant-id').val();
+    if (currentDelegateId == '') {
+      currentDelegateId = 'new';
+    };
+    var name = $('#new-company-entry #id_name').val();
+    var nameForBadges = $('#new-company-entry #id_name_for_badges').val();
+    var address1 = $('#new-company-entry #id_address1').val();
+    var address2 = $('#new-company-entry #id_address2').val();
+    var city = $('#new-company-entry #id_city').val();
+    var postalCode = $('#new-company-entry #id_city').val();
+    var country = $('#new-company-entry #id_country').val();
+    var gstHstExempt = $('#new-company-entry #id_gst_hst_exempt').prop('checked');
+    var qstExempt = $('#new-company-entry #id_qst_exempt').prop('checked');
+    var gstHstExemptionNumber = $('#new-company-entry #id_gst_hst_exemption_number').val();
+    var qstExemptionNumber = $('#new-company-entry #id_qst_examption_number').val();
+    $.ajax({
+      url: '/delegate/add_new_company/',
+      type: 'POST',
+      data: {
+        'delegate_id': currentDelegateId,
+        'name': name,
+        'name_for_badges': nameForBadges,
+        'address1': address1,
+        'address2': address2,
+        'city': city,
+        'postal_code': postalCode,
+        'country': country,
+        'gst_hst_exempt': gstHstExempt,
+        'qst_exempt': qstExempt,
+        'gst_hst_exemption_number': gstHstExemptionNumber,
+        'qst_exemption_number': qstExemptionNumber,
+      },
+      success: function(data){
+        $('#crm-sidebar').html(data);
+        var foo = $('#inserted-company-id').val();
+        console.log(foo);
+      }
+    });
+  });
 
   // updates display of current conference & saves variable when new conf chosen
   $('body').on('click', '#change-conference', function(){
@@ -97,7 +163,6 @@ $(document).ready(function(){
       },
       success: function(data){
         $('#cancellation-details').html(data);
-        console.log('ajax1 complete');
       }
     });
     $.ajax({
@@ -109,10 +174,35 @@ $(document).ready(function(){
       },
       success: function(data){
         $('#status-based-reg-fields').html(data);
-        console.log('ajax2 complete');
       }
     });
-    console.log('all done');
+  });
+
+
+  // swap content in sidebar
+  $('body').on('click', '.sidebar-button', function(){
+    var buttonAction = $(this).attr('id');
+    var currentDelegateId = $('#current-registrant-id').val()
+    if (currentDelegateId == '') {
+      currentDelegateId = 'new'
+    };
+    var firstName = $('#delegate-info #id_first_name').val();
+    var lastName = $('#delegate-info #id_last_name').val();
+    var companyName = $('#company-info #id_name').val();
+    $.ajax({
+      url: '/delegate/swap_sidebar/',
+      type: 'POST',
+      data: {
+        'button_action': buttonAction,
+        'delegate_id': currentDelegateId,
+        'first_name': firstName,
+        'last_name': lastName,
+        'company': companyName,
+      },
+      success: function(data){
+        $('#crm-sidebar').html(data);
+      }
+    })
   });
 
 });

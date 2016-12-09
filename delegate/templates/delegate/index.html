@@ -11,13 +11,17 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid fill">
+<div id="stored-variables">
   <input type="hidden" id="current-registrant-id" value="{{ registrant.id }}" />
   <input type="hidden" id="current-regdetail-id" value="{{ current_registration.id }}" />
+  <input type="hidden" id="selected-conference-id" value="{{ conference.id }}" />
+  <input type="hidden" id="crm-match-value" value="{{ crm_match.id }}" />
+  <input type="hidden" id="company-match-value" value="{{ company.id }}" />
+</div>
+<div class="container-fluid fill">
   <div class="row fill">
     <div class="col-sm-9 left-main-panel">
       <div id="conference-selection">
-        <input type="hidden" id="selected-conference-id" value="{{ conference.id }}" />
         <h3>New Registration For:
           <span class="h1" id="displayed-conf-name">
             {{ conference }}
@@ -163,7 +167,7 @@
           <div class="col-sm-12">
             {{ company_select_form.name.errors }}
             {{ company_select_form.name.label_tag }}
-            {{ company_select_form.name }}                      
+            {{ company_select_form.name }}
           </div>
         </div>
         {% if company %}
@@ -350,8 +354,11 @@
         </div>
       </div>
     </div>
-    <div id="crm-sidebar" class="col-sm-3 col-md-3 crm-sidebar fill">
-      {% include 'delegate/addins/crm_sidebar.html' %}
+    <div class="col-sm-3 col-md-3 crm-sidebar fill">
+      {% include 'delegate/addins/sidebar_navbar.html' %}
+      <div id="crm-sidebar">
+        {% include 'delegate/addins/crm_sidebar.html' %}
+      </div>
     </div>
   </div>
 </div>

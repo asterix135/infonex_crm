@@ -16,4 +16,8 @@ urlpatterns = [
     url(r'^update_cxl_info/$', views.update_cxl_info, name='update_cxl_info'),
     url(r'^update_payment_details/$', views.update_payment_details,
         name='update_payment_details'),
+    url(r'^swap_sidebar/$', views.swap_sidebar, name='swap_sidebar'),
+    url(r'^link_new_company_record/$', views.link_new_company_record,
+        name='link_new_company_record'),
+    url(r'^add_new_company/$', views.add_new_company, name='add_new_company'),
 ]

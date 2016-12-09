@@ -8,8 +8,8 @@
       Linked
     </button><br />
     {% else %}
-    <button type="button" class="btn btn-info btn-xs crm-list-action link-record-btn"
-      crm-id={{ match.id }}>
+    <button type="button" class="btn btn-info btn-xs crm-list-action link-company-btn"
+      company-id={{ match.id }}>
       Link record
     </button><br />
     {% endif %}
@@ -23,11 +23,10 @@
     <div class="company-details collapse" id="details-{{ match.id }}">
       Address1: {{ match.address1 }}<br />
       Address2: {{ match.address2 }}<br />
-      Location: {{ match.city }} {{ match.state_prov }} {{ match.postal_code }}<br />
+      Location: {{ match.city }}, {{ match.state_prov }} {{ match.postal_code }}<br />
       {% if match.country != 'Canada' %}
       Country: {{ match.country }}
       {% endif %}
-      Last modified: {{ match.date_modified }}
     </div>
 
   </li>

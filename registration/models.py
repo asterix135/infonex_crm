@@ -1,6 +1,7 @@
 import datetime
 from django.db import models
 from .constants import *
+from crm.constants import STATE_PROV_TUPLE
 
 
 class Assistant(models.Model):
@@ -25,7 +26,8 @@ class Company(models.Model):
     address1 = models.CharField(max_length=255, blank=True, null=True)
     address2 = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
-    state_prov = models.CharField(max_length=25, blank=True, null=True)
+    state_prov = models.CharField(max_length=25, blank=True, null=True,
+                                  choices=STATE_PROV_TUPLE)
     postal_code = models.CharField(max_length=15, blank=True, null=True)
     country = models.CharField(max_length=25, blank=True, null=True)
     gst_hst_exempt = models.BooleanField(default=False)

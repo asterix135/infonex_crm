@@ -104,6 +104,22 @@ def link_new_crm_record(request):
     return render(request, 'delegate/addins/crm_sidebar_selected.html', context)
 
 
+def link_new_company_record(request):
+    """ ajax call to link selected company record to delegate """
+    company_match = None
+    if request.method == 'POST':
+        company_match = Company.objects.get(pk=request.POST['company_match_id'])
+        if request.POST['delegate_id'] != 'new':
+            registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
+            registrant.company = company_match
+            registrant.save()
+    context = {
+        'company_match': company_match,
+    }
+    return render(request, 'delegate/addins/company_sidebar_selected.html',
+                  context)
+
+
 def update_tax_information(request):
     """
     ajax call to update part of delegate page showing tax info
@@ -193,6 +209,79 @@ def update_payment_details(request):
     }
     return render(request, 'delegate/addins/status_based_reg_fields.html',
                   context)
+
+
+def swap_sidebar(request):
+    """
+    ajax call to swap content of sidebar
+    """
+    crm_match = None
+    crm_match_list = None
+    company_match_list = None
+    company_match = None
+    company_select_form = CompanySelectForm()
+    button_action = None
+    if request.method == 'POST':
+        button_action = request.POST['button_action']
+        if request.POST['delegate_id'] != 'new':
+            registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
+    if button_action == 'select-crm-sidebar':
+        if registrant and registrant.crm_person:
+            crm_match = Person.objects.get(pk=registrant.crm_person.id)
+        crm_match_list = Person.objects.filter(
+            Q(name__icontains=request.POST['first_name']) &
+            Q(name__icontains=request.POST['last_name']),
+            Q(company__icontains=request.POST['company'])
+        )
+        context = {
+            'crm_match': crm_match,
+            'crm_match_list': crm_match_list,
+            'registrant': registrant,
+        }
+        return render(request, 'delegate/addins/crm_sidebar.html', context)
+    elif button_action == 'select-company-sidebar':
+        if registrant:
+            company_match = registrant.company
+            company_match_list = Company.objects.filter(
+                name__icontains=request.POST['company']
+            )
+        context = {
+            'company_match': company_match,
+            'company_match_list': company_match_list,
+            'company_select_form': company_select_form,
+            'registrant': registrant,
+        }
+        return render(request, 'delegate/addins/company_sidebar.html', context)
+    else:
+        return HttpResponse('')
+
+
+def add_new_company(request):
+    """ ajax call to add new company to database and link to current record """
+    company_match = None
+    company_match_list = None
+    registrant = None
+    company_select_form = CompanySelectForm()
+    if request.method == 'POST':
+        if request.POST['delegate_id'] != 'new':
+            registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
+        company_select_form = CompanySelectForm(request.POST)
+        if company_select_form.is_valid():
+            company_match = company_select_form.save()
+            if registrant:
+                registrant.company = company_match
+                registrant.save()
+            company_select_form = CompanySelectForm()
+        company_match_list = Company.objects.filter(
+            name__icontains=request.POST['name']
+        )
+    context = {
+        'company_match': company_match,
+        'company_match_list': company_match_list,
+        'company_select_form': company_select_form,
+        'registrant': registrant,
+    }
+    return render(request, 'delegate/addins/company_sidebar.html', context)
 
 
 def process_registration(request):

@@ -284,6 +284,11 @@ def add_new_company(request):
     return render(request, 'delegate/addins/company_sidebar.html', context)
 
 
+def save_comany_changes(request):
+    """ ajax submission to update company information when present """
+    pass
+
+
 def process_registration(request):
     """ form submission """
     # note that multi-select submits as 0+ versions of same fields

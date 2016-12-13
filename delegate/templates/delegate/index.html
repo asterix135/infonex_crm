@@ -163,6 +163,22 @@
             <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
           </a>
         </h3>
+        {% if company %}
+        <div class="row">
+          <div class="col-sm-12">
+            {{ compay_select_form.name.label_tag}}
+            {{ company.name }}
+          </div>
+        </div>
+        <div class="collapse" id="company-details">
+          <div class="row">
+            <div class="col-sm-12">
+              {{ company_select_form.name.errors }}
+              {{ company_select_form.name.label_tag }}
+              {{ company_select_form.name }}
+            </div>
+          </div>
+        {% else %}
         <div class="row">
           <div class="col-sm-12">
             {{ company_select_form.name.errors }}
@@ -170,9 +186,6 @@
             {{ company_select_form.name }}
           </div>
         </div>
-        {% if company %}
-        <div class="collapse" id="company-details">
-        {% else %}
         <div class="collapse in" id="company-details">
         {% endif %}
           <div class="row">
@@ -355,6 +368,7 @@
       </div>
     </div>
     <div class="col-sm-3 col-md-3 crm-sidebar fill">
+      <!-- TODO: Consider making both sidebars on one load toggled back & forth -->
       {% include 'delegate/addins/sidebar_navbar.html' %}
       <div id="crm-sidebar">
         {% include 'delegate/addins/crm_sidebar.html' %}

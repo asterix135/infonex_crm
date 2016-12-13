@@ -166,8 +166,9 @@
         {% if company %}
         <div class="row">
           <div class="col-sm-12">
-            {{ compay_select_form.name.label_tag}}
-            {{ company.name }}
+            {{ company_select_form.name.label_tag }}
+            <input type="text" id="static-company-name" class="form-control"
+              maxlength="255" value="{{ company.name }}" disabled="" />
           </div>
         </div>
         <div class="collapse" id="company-details">
@@ -188,6 +189,11 @@
         </div>
         <div class="collapse in" id="company-details">
         {% endif %}
+          <div class="row errorlist">
+            <div class="col-sm-12">
+              <h4>Changes here will affect all people in this company</h4>
+            </div>
+          </div>
           <div class="row">
             <div class="col-sm-12">
               {{ company_select_form.name_for_badges.errors }}

@@ -1,0 +1,40 @@
+{% if conference_options %}
+<h1>Conference Option Selection</h1>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h2 class="panel-title h2">
+      Please select which options the delegate is registering for
+    </h2>
+  </div>
+  <table class="table">
+    <thead class="thead-inverse">
+      <tr>
+        <th class="col-sm-2">Select?</th>
+        <th class="col-sm-6">Option Description</th>
+        <th class="col-sm-2">Start Date</th>
+        <th class="col-sm-2">End Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for option in conference_options %}
+      <tr>
+        {% if option.primary %}
+        <td>
+          <input type="checkbox" name="event-option-selection"
+            value="{{ option.id }}" checked="checked" />
+        </td>
+        {% else %}
+        <td>
+          <input type="checkbox" name="event-option-selection"
+            value="{{ option.id }}" />
+        </td>
+        {% endif %}
+        <td>{{ option.name }}</td>
+        <td>{{ option.startdate }}</td>
+        <td>{{ option.enddate }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}

@@ -28,7 +28,7 @@ def index(request):
     if request.method == 'POST':
         conf_id = request.POST['conf_id']
         conference = Event.objects.get(pk=conf_id)
-        conference_options = conference.eventoptions_set.all()  # remove when form working
+        conference_options = conference.eventoptions_set.all()
         options_form = OptionsForm(conference)
         crm_id = request.POST['crm_id']
         registrant_id = request.POST['registrant_id']
@@ -60,6 +60,8 @@ def index(request):
         'options_form': options_form,
         'registrant': registrant,
         'company': company,
+        'company_match': company,  # TODO: Fix this on template
+        ''
         'assistant': assistant,
         'crm_match': crm_match,
         'crm_match_list': crm_match_list,
@@ -134,6 +136,17 @@ def update_tax_information(request):
                'reg_details_form': reg_details_form}
     return render(request, 'delegate/addins/delegate_tax_information.html',
                   context)
+
+
+def update_conference_options(request):
+    """ ajax call to update conference options when event is changed """
+    conference_options = None
+    if request.method == 'POST':
+        conf_id = request.POST['conf_id']
+        conference = Event.objects.get(pk=conf_id)
+        conference_options = conference.eventoptions_set.all()
+    context = {'conference_options': conference_options}
+    return render(request, 'delegate/addins/conference_options.html', context)
 
 
 def update_fx_conversion(request):

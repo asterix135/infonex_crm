@@ -108,12 +108,13 @@ $(document).ready(function(){
         'qst_exemption_number': qstExemptionNumber,
       },
       success: function(data){
-        $('#crm-sidebar').html(data);
-        var foo = $('#inserted-company-id').val();
-        console.log(foo);
+        $('#company-sidebar-content').html(data);
+        var newCompanyId = $('#inserted-company-id').val();
+        $('#company-match-value').val(newCompanyId);
       }
     });
   });
+
 
   // updates display of current conference & saves variable when new conf chosen
   $('body').on('click', '#change-conference', function(){
@@ -141,6 +142,16 @@ $(document).ready(function(){
         },
         success: function(data){
           $('#fx-details').html(data);
+        }
+      });
+      $.ajax({
+        url: '/delegate/update_conference_options/',
+        type: 'POST',
+        data: {
+          'conf_id': newConfId,
+        },
+        success: function(data){
+          $('#conference-options').html(data);
         }
       });
     };
@@ -181,28 +192,53 @@ $(document).ready(function(){
 
   // swap content in sidebar
   $('body').on('click', '.sidebar-button', function(){
-    var buttonAction = $(this).attr('id');
-    var currentDelegateId = $('#current-registrant-id').val()
-    if (currentDelegateId == '') {
-      currentDelegateId = 'new'
+    $('#crm-sidebar-content').toggle();
+    $('#company-sidebar-content').toggle();
+    var buttonText = $('#toggle-sidebar-button').text();
+    if (buttonText == 'Switch to Company') {
+      $('#toggle-sidebar-button').text('Switch to CRM');
+    } else {
+      $('#toggle-sidebar-button').text('Switch to Company');
     };
-    var firstName = $('#delegate-info #id_first_name').val();
-    var lastName = $('#delegate-info #id_last_name').val();
-    var companyName = $('#company-info #id_name').val();
-    $.ajax({
-      url: '/delegate/swap_sidebar/',
-      type: 'POST',
-      data: {
-        'button_action': buttonAction,
-        'delegate_id': currentDelegateId,
-        'first_name': firstName,
-        'last_name': lastName,
-        'company': companyName,
-      },
-      success: function(data){
-        $('#crm-sidebar').html(data);
-      }
-    })
+    // var buttonAction = $(this).attr('id');
+    // var currentDelegateId = $('#current-registrant-id').val()
+    // if (currentDelegateId == '') {
+    //   currentDelegateId = 'new'
+    // };
+    // var firstName = $('#delegate-info #id_first_name').val();
+    // var lastName = $('#delegate-info #id_last_name').val();
+    // var companyName = $('#company-info #id_name').val();
+    // $.ajax({
+    //   url: '/delegate/swap_sidebar/',
+    //   type: 'POST',
+    //   data: {
+    //     'button_action': buttonAction,
+    //     'delegate_id': currentDelegateId,
+    //     'first_name': firstName,
+    //     'last_name': lastName,
+    //     'company': companyName,
+    //   },
+    //   success: function(data){
+    //     $('#crm-sidebar').html(data);
+    //   }
+    // })
   });
+
+
+  // update company suggestions
+  $('body').on('keyup', '#company-info #id-name', function(){
+    var charsEntered = $('#company-info #id-name').val().length
+    if (charsEntered > 1) {
+      var CompanyNamePartial = $('#company-info #id-name').val();
+    }
+  })
+
+
+  // toggles whether company name is editable
+  $('body').on('click', '#toggle-company-edit', function(){
+    $('#company-info #id_name').prop('disabled', function(i, v){
+      return !v;
+    });
+  })
 
 });

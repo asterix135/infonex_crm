@@ -53,49 +53,10 @@
       </div>
 
       <div id="conference-options">
-        {% if conference_options %}
-        <h1>Conference Option Selection</h1>
-        <div class="panel panel-info">
-          <div class="panel-heading">
-            <h2 class="panel-title h2">
-              Please select which options the delegate is registering for
-            </h2>
-          </div>
-          <table class="table">
-            <thead class="thead-inverse">
-              <tr>
-                <th class="col-sm-2">Select?</th>
-                <th class="col-sm-6">Option Description</th>
-                <th class="col-sm-2">Start Date</th>
-                <th class="col-sm-2">End Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for option in conference_options %}
-              <tr>
-                {% if option.primary %}
-                <td>
-                  <input type="checkbox" name="event-option-selection"
-                    value="{{ option.id }}" checked="checked" />
-                </td>
-                {% else %}
-                <td>
-                  <input type="checkbox" name="event-option-selection"
-                    value="{{ option.id }}" />
-                </td>
-                {% endif %}
-                <td>{{ option.name }}</td>
-                <td>{{ option.startdate }}</td>
-                <td>{{ option.enddate }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      {% endif %}
+        {% include 'delegate/addins/conference_options.html' %}
       </div>
 
-      <div id='delegate-info'>
+      <div id="delegate-info">
         <h3>Delegate Information</h3>
         <div class="row">
           <div class="col-sm-2">
@@ -154,31 +115,27 @@
         </div>
       </div>
 
-      <div id='company-info'>
+      <div id="company-info">
         <h3>
           Company Information
-          <a href="#company-details"
+          {% if company %}
+          <a href="#company-details" id="toggle-company-edit"
             class="btn btn-default btn-xs crm-list-action" data-toggle="collapse">
             Edit Company
             <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
           </a>
+          {% endif %}
         </h3>
         {% if company %}
         <div class="row">
           <div class="col-sm-12">
             {{ company_select_form.name.label_tag }}
-            <input type="text" id="static-company-name" class="form-control"
+            <input type="text" id="id_name" class="form-control"
               maxlength="255" value="{{ company.name }}" disabled="" />
           </div>
         </div>
         <div class="collapse" id="company-details">
-          <div class="row">
-            <div class="col-sm-12">
-              {{ company_select_form.name.errors }}
-              {{ company_select_form.name.label_tag }}
-              {{ company_select_form.name }}
-            </div>
-          </div>
+          {% include 'delegate/addins/company_detail_editable.html' %}
         {% else %}
         <div class="row">
           <div class="col-sm-12">
@@ -189,80 +146,6 @@
         </div>
         <div class="collapse in" id="company-details">
         {% endif %}
-          <div class="row errorlist">
-            <div class="col-sm-12">
-              <h4>Changes here will affect all people in this company</h4>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              {{ company_select_form.name_for_badges.errors }}
-              {{ company_select_form.name_for_badges.label_tag }}
-              {{ company_select_form.name_for_badges }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              {{ company_select_form.address1.errors }}
-              {{ company_select_form.address1.label_tag }}
-              {{ company_select_form.address1 }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              {{ company_select_form.address2.errors }}
-              {{ company_select_form.address2.label_tag }}
-              {{ company_select_form.address2 }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-6">
-              {{ company_select_form.city.errors }}
-              {{ company_select_form.city.label_tag }}
-              {{ company_select_form.city }}
-            </div>
-            <div class="col-sm-3">
-              {{ company_select_form.state_prov.errors }}
-              {{ company_select_form.state_prov.label_tag }}
-              {{ company_select_form.state_prov }}
-            </div>
-            <div class="col-sm-3">
-              {{ company_select_form.postal_code.errors }}
-              {{ company_select_form.postal_code.label_tag }}
-              {{ company_select_form.postal_code }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-4">
-              {{ company_select_form.country.errors }}
-              {{ company_select_form.country.label_tag }}
-              {{ company_select_form.country }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-2">
-              {{ company_select_form.gst_hst_exempt.errors }}
-              {{ company_select_form.gst_hst_exempt.label_tag }}
-              {{ company_select_form.gst_hst_exempt }}
-            </div>
-            <div class="col-sm-3">
-              {{ company_select_form.gst_hst_exemption_number.errors }}
-              {{ company_select_form.gst_hst_exemption_number.label_tag }}
-              {{ company_select_form.gst_hst_exemption_number }}
-            </div>
-            <div class="col-sm-1">
-            </div>
-            <div class="col-sm-2">
-              {{ company_select_form.qst_exempt.errors }}
-              {{ company_select_form.qst_exempt.label_tag }}
-              {{ company_select_form.qst_exempt }}
-            </div>
-            <div class="col-sm-3">
-              {{ company_select_form.qst_exemption_number.errors }}
-              {{ company_select_form.qst_exemption_number.label_tag }}
-              {{ company_select_form.qst_exemption_number }}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -374,10 +257,8 @@
       </div>
     </div>
     <div class="col-sm-3 col-md-3 crm-sidebar fill">
-      <!-- TODO: Consider making both sidebars on one load toggled back & forth -->
-      {% include 'delegate/addins/sidebar_navbar.html' %}
       <div id="crm-sidebar">
-        {% include 'delegate/addins/crm_sidebar.html' %}
+        {% include 'delegate/addins/match_sidebar.html' %}
       </div>
     </div>
   </div>

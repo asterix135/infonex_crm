@@ -13,6 +13,8 @@ def index(request):
     """ renders base delegate/index.html page """
     new_delegate_form = NewDelegateForm()
     company_select_form = CompanySelectForm()
+    new_comany_form = CompanySelectForm()
+    company_match_list = None
     assistant_form = AssistantForm()
     conference_select_form = ConferenceSelectForm()
     reg_details_form = RegDetailsForm()
@@ -48,10 +50,15 @@ def index(request):
                 Q(name__icontains=registrant.last_name),
                 Q(company__icontains=registrant.company.name)
             ).order_by('company', 'name')[:100]
+            company_match_list = Company.objects.filter(
+                name__icontains=company.name
+            )
     context = {
         'current_registration': current_registration,
         'new_delegate_form': new_delegate_form,
         'company_select_form': company_select_form,
+        'new_company_form': new_comany_form,
+        'company_match_list': company_match_list,
         'assistant_form': assistant_form,
         'conference_select_form': conference_select_form,
         'reg_details_form': reg_details_form,
@@ -60,8 +67,6 @@ def index(request):
         'options_form': options_form,
         'registrant': registrant,
         'company': company,
-        'company_match': company,  # TODO: Fix this on template
-        ''
         'assistant': assistant,
         'crm_match': crm_match,
         'crm_match_list': crm_match_list,
@@ -108,15 +113,15 @@ def link_new_crm_record(request):
 
 def link_new_company_record(request):
     """ ajax call to link selected company record to delegate """
-    company_match = None
+    company = None
     if request.method == 'POST':
-        company_match = Company.objects.get(pk=request.POST['company_match_id'])
+        company = Company.objects.get(pk=request.POST['company_match_id'])
         if request.POST['delegate_id'] != 'new':
             registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
-            registrant.company = company_match
+            registrant.company = company
             registrant.save()
     context = {
-        'company_match': company_match,
+        'company': company,
     }
     return render(request, 'delegate/addins/company_sidebar_selected.html',
                   context)
@@ -231,7 +236,7 @@ def swap_sidebar(request):
     crm_match = None
     crm_match_list = None
     company_match_list = None
-    company_match = None
+    company = None
     company_select_form = CompanySelectForm()
     button_action = None
     if request.method == 'POST':
@@ -254,12 +259,12 @@ def swap_sidebar(request):
         return render(request, 'delegate/addins/crm_sidebar.html', context)
     elif button_action == 'select-company-sidebar':
         if registrant:
-            company_match = registrant.company
+            company = registrant.company
             company_match_list = Company.objects.filter(
                 name__icontains=request.POST['company']
             )
         context = {
-            'company_match': company_match,
+            'company': company,
             'company_match_list': company_match_list,
             'company_select_form': company_select_form,
             'registrant': registrant,
@@ -271,7 +276,7 @@ def swap_sidebar(request):
 
 def add_new_company(request):
     """ ajax call to add new company to database and link to current record """
-    company_match = None
+    company = None
     company_match_list = None
     registrant = None
     company_select_form = CompanySelectForm()
@@ -280,16 +285,16 @@ def add_new_company(request):
             registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
         company_select_form = CompanySelectForm(request.POST)
         if company_select_form.is_valid():
-            company_match = company_select_form.save()
+            company = company_select_form.save()
             if registrant:
-                registrant.company = company_match
+                registrant.company = company
                 registrant.save()
             company_select_form = CompanySelectForm()
         company_match_list = Company.objects.filter(
             name__icontains=request.POST['name']
         )
     context = {
-        'company_match': company_match,
+        'company': company,
         'company_match_list': company_match_list,
         'company_select_form': company_select_form,
         'registrant': registrant,

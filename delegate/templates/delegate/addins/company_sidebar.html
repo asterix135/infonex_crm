@@ -1,5 +1,5 @@
 <div id="selected-company-details">
-  <input type="hidden" id="inserted-company-id" value="{{ company_match.id }}" />
+  <input type="hidden" id="inserted-company-id" value="{{ company.id }}" />
   {% include 'delegate/addins/company_sidebar_selected.html' %}
 </div>
 <div id='company-match-list'>
@@ -16,7 +16,7 @@
   <div class="add-company-form collapse" id="new-company-entry">
   {% endif %}
     <div id="add-company-toggle">
-      {{ company_select_form }}
+      {{ new_company_form }}
     </div>
     <br />
     <button type="button" class="btn btn-primary btn-save-venue"

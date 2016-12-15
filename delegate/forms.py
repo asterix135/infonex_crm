@@ -7,6 +7,19 @@ from registration.models import *
 from crm.models import Event
 from crm.constants import STATE_PROV_TUPLE, COMPANY_OPTIONS, BILLING_CURRENCY
 
+
+def set_field_html_name(cls, new_name):
+    """
+    This creates wrapper around the normal widget rendering,
+    allowing for a custom field name (new_name).
+    """
+    old_render = cls.widget.render
+    def _widget_render_wrapper(name, value, attrs=None):
+        return old_render(new_name, value, attrs)
+
+    cls.widget.render = _widget_render_wrapper
+
+
 class NewDelegateForm(forms.ModelForm):
 
     class Meta():
@@ -110,6 +123,29 @@ class CompanySelectForm(forms.ModelForm):
         }
 
 
+class NewCompanyForm(CompanySelectForm):
+    def __init__(self, *args, **kwargs):
+        super(NewCompanyForm, self).__init__(*args, **kwargs)
+        # TODO: Turn this into a for loop
+        set_field_html_name(self.fields['name'], 'new_company_name')
+        set_field_html_name(self.fields['name_for_badges'],
+                            'new_company_name_for_badges')
+        set_field_html_name(self.fields['address1'], 'new_company_address1')
+        set_field_html_name(self.fields['address2'], 'new_company_address2')
+        set_field_html_name(self.fields['city'], 'new_company_city')
+        set_field_html_name(self.fields['state_prov'], 'new_company_state_prov')
+        set_field_html_name(self.fields['postal_code'],
+                            'new_company_postal_code')
+        set_field_html_name(self.fields['country'], 'new_company_country')
+        set_field_html_name(self.fields['gst_hst_exempt'],
+                            'new_company_gst_hst_exempt'),
+        set_field_html_name(self.fields['qst_exempt'], 'new_company_qst_exempt')
+        set_field_html_name(self.fields['gst_hst_exemption_number'],
+                            'new_company_gst_hst_exemption_number')
+        set_field_html_name(self.fields['qst_exemption_number'],
+                            'new_company_qst_examption_number')
+
+
 class RegDetailsForm(forms.ModelForm):
 
     class Meta():
@@ -196,32 +232,51 @@ class RegDetailsForm(forms.ModelForm):
 
 class AssistantForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super(AssistantForm, self).__init__(*args, **kwargs)
+        self.fields['last_name'].required = False
+        # TODO: Turn this into a for loop
+        set_field_html_name(self.fields['salutation'], 'assistant_salutation')
+        set_field_html_name(self.fields['first_name'], 'assistant_first_name')
+        set_field_html_name(self.fields['last_name'], 'assistant_last_name')
+        set_field_html_name(self.fields['title'], 'assistant_title')
+        set_field_html_name(self.fields['email'], 'assistant_email')
+        set_field_html_name(self.fields['phone'], 'assistant_phone')
+        set_field_html_name(self.fields['address_personal'], 'assistant_address')
+
     class Meta():
         model = Assistant
         fields = ['salutation', 'first_name', 'last_name', 'title',
                   'email', 'phone', 'address_personal']
         widgets = {
             'salutation': forms.TextInput(
-                attrs={'class': 'form-control'}
+                attrs={'class': 'form-control',
+                       'id': 'assistant_salutation',}
             ),
             'first_name': forms.TextInput(
-                attrs={'class': 'form-control'}
+                attrs={'class': 'form-control',
+                       'id': 'assistant_first_name'}
             ),
             'last_name': forms.TextInput(
-                attrs={'class': 'form-control'}
+                attrs={'class': 'form-control',
+                       'id': 'assistant_last_name'}
             ),
             'title': forms.TextInput(
-                attrs={'class': 'form-control'}
+                attrs={'class': 'form-control',
+                       'id': 'assistant_title'}
             ),
             'email': forms.EmailInput(
-                attrs={'class': 'form-control'}
+                attrs={'class': 'form-control',
+                       'id': 'assistant_email'}
             ),
             'phone': forms.TextInput(
-                attrs={'class': 'form-control'}
+                attrs={'class': 'form-control',
+                       'id': 'assistant_phone'}
             ),
             'address_personal': forms.Textarea(
                 attrs={'class': 'form-control',
-                       'rows': '4'}
+                       'rows': '4',
+                       'id': 'assistant_address'}
             )
         }
 

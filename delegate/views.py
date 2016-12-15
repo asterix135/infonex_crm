@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from django.db.models import Q
 from django.utils import timezone
 
@@ -13,7 +14,7 @@ def index(request):
     """ renders base delegate/index.html page """
     new_delegate_form = NewDelegateForm()
     company_select_form = CompanySelectForm()
-    new_comany_form = CompanySelectForm()
+    new_comany_form = NewCompanyForm()
     company_match_list = None
     assistant_form = AssistantForm()
     conference_select_form = ConferenceSelectForm()
@@ -229,51 +230,6 @@ def update_payment_details(request):
                   context)
 
 
-def swap_sidebar(request):
-    """
-    ajax call to swap content of sidebar
-    """
-    crm_match = None
-    crm_match_list = None
-    company_match_list = None
-    company = None
-    company_select_form = CompanySelectForm()
-    button_action = None
-    if request.method == 'POST':
-        button_action = request.POST['button_action']
-        if request.POST['delegate_id'] != 'new':
-            registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
-    if button_action == 'select-crm-sidebar':
-        if registrant and registrant.crm_person:
-            crm_match = Person.objects.get(pk=registrant.crm_person.id)
-        crm_match_list = Person.objects.filter(
-            Q(name__icontains=request.POST['first_name']) &
-            Q(name__icontains=request.POST['last_name']),
-            Q(company__icontains=request.POST['company'])
-        )
-        context = {
-            'crm_match': crm_match,
-            'crm_match_list': crm_match_list,
-            'registrant': registrant,
-        }
-        return render(request, 'delegate/addins/crm_sidebar.html', context)
-    elif button_action == 'select-company-sidebar':
-        if registrant:
-            company = registrant.company
-            company_match_list = Company.objects.filter(
-                name__icontains=request.POST['company']
-            )
-        context = {
-            'company': company,
-            'company_match_list': company_match_list,
-            'company_select_form': company_select_form,
-            'registrant': registrant,
-        }
-        return render(request, 'delegate/addins/company_sidebar.html', context)
-    else:
-        return HttpResponse('')
-
-
 def add_new_company(request):
     """ ajax call to add new company to database and link to current record """
     company = None
@@ -312,4 +268,58 @@ def process_registration(request):
     # note that multi-select submits as 0+ versions of same fields
     # eg event-option-selection: 2
     #    event-option-selection: 12  etc
-    pass
+    """
+    Sample Sumbmission:
+    address1: 123 Main Street
+    address2: 234 Main Street
+    assistant_email:
+    assistant_first_name:
+    assistant_last_name:
+    assistant_phone:
+    assistant_salutation:
+    assistant_title:
+    city: Toronto
+    company_match_value: 3
+    contact_option: D
+    country: Canada
+    crm_match_value: 100003807
+    csrfmiddlewaretoken: jB9538fiiQC6xFo9Lt5QjfkMwRh8K96ist8LZkIsKGWWBznA7HFcwdfWFzWi6Ndl
+    current_regdetail_id:
+    current_registrant_id: 1
+    email1: george@spacely.com
+    email2:
+    event: 2
+    event-option-selection: 2
+    first_name: George
+    gst_hst_exempt: on
+    gst_hst_exemption_number: 1234566
+    gst_rate: 0.05
+    invoice_notes:
+    last_name: Jetson
+    name_for_badges: Infonex
+    new_company_address1:
+    new_company_address2:
+    new_company_city:
+    new_company_country:
+    new_company_gst_hst_exemption_number:
+    new_company_name:
+    new_company_name_for_badges:
+    new_company_postal_code:
+    new_company_qst_examption_number:
+    new_company_state_prov:
+    phone1: 575-555-1212
+    phone2:
+    postal_code: Toronto
+    pre_tax_price: 123
+    priority_code: 123
+    qst_exemption_number:
+    qst_rate: 0.09975
+    registration_notes:
+    registration_status: DU
+    sales_credit:
+    salutation: Mr.
+    selected_conference_id: 2
+    state_prov:
+    title: Chief Peon
+    """
+    return HttpResponse('<h1>Registration Processing Confirmation</h1>')

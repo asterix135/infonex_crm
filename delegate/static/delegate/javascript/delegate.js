@@ -195,34 +195,11 @@ $(document).ready(function(){
     $('#crm-sidebar-content').toggle();
     $('#company-sidebar-content').toggle();
     var buttonText = $('#toggle-sidebar-button').text().trim();
-    console.log(buttonText);
     if (buttonText == 'Switch to Company') {
       $('#toggle-sidebar-button').text('Switch to CRM');
     } else {
       $('#toggle-sidebar-button').text('Switch to Company');
     };
-    // var buttonAction = $(this).attr('id');
-    // var currentDelegateId = $('#current-registrant-id').val()
-    // if (currentDelegateId == '') {
-    //   currentDelegateId = 'new'
-    // };
-    // var firstName = $('#delegate-info #id_first_name').val();
-    // var lastName = $('#delegate-info #id_last_name').val();
-    // var companyName = $('#company-info #id_name').val();
-    // $.ajax({
-    //   url: '/delegate/swap_sidebar/',
-    //   type: 'POST',
-    //   data: {
-    //     'button_action': buttonAction,
-    //     'delegate_id': currentDelegateId,
-    //     'first_name': firstName,
-    //     'last_name': lastName,
-    //     'company': companyName,
-    //   },
-    //   success: function(data){
-    //     $('#crm-sidebar').html(data);
-    //   }
-    // })
   });
 
 

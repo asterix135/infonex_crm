@@ -11,256 +11,272 @@
 {% endblock %}
 
 {% block content %}
-<div id="stored-variables">
-  <input type="hidden" id="current-registrant-id" value="{{ registrant.id }}" />
-  <input type="hidden" id="current-regdetail-id" value="{{ current_registration.id }}" />
-  <input type="hidden" id="selected-conference-id" value="{{ conference.id }}" />
-  <input type="hidden" id="crm-match-value" value="{{ crm_match.id }}" />
-  <input type="hidden" id="company-match-value" value="{{ company.id }}" />
-</div>
-<div class="container-fluid fill">
-  <div class="row fill">
-    <div class="col-sm-9 left-main-panel">
-      <div id="conference-selection">
-        <h3>New Registration For:
-          <span class="h1" id="displayed-conf-name">
-            {{ conference }}
-          </span>
-          {% if not current_registration %}
-          <a href="#conference-details"
-            class="btn btn-warning btn-sm crm-list-action" data-toggle="collapse">
-              Change Event
-          </a>
-          {% endif %}
-        </h3>
-        <div class="row collapse" id="conference-details">
-          <div class="col-sm-12">
-            {{ conference_select_form.event.errors }}
-          </div>
-          <div class="col-sm-12">
-            {{ conference_select_form.event.label_tag }}
-          </div>
-          <div class="col-sm-10">
-            {{ conference_select_form.event }}
-          </div>
-          <div class="col-sm-2">
-            <button type="button" class="btn btn-primary btn-sm"
-              id="change-conference">
-              Change
-            </button>
-          </div>
-        </div>
-      </div>
+<form action="process_registration/" method="post">
+  <div id="stored-variables">
+    <input type="hidden" id="current-registrant-id"
+      name="current_registrant_id" value="{{ registrant.id }}" />
+    <input type="hidden" id="current-regdetail-id"
+      name="current_regdetail_id" value="{{ current_registration.id }}" />
+    <input type="hidden" id="selected-conference-id"
+      name="selected_conference_id" value="{{ conference.id }}" />
+    <input type="hidden" id="crm-match-value"
+      name="crm_match_value" value="{{ crm_match.id }}" />
+    <input type="hidden" id="company-match-value"
+      name="company_match_value" value="{{ company.id }}" />
+    {% csrf_token %}
+  </div>
+  <div class="container-fluid fill">
+    <div class="row fill">
+      <div class="col-sm-9 left-main-panel">
 
-      <div id="conference-options">
-        {% include 'delegate/addins/conference_options.html' %}
-      </div>
-
-      <div id="delegate-info">
-        <h3>Delegate Information</h3>
-        <div class="row">
-          <div class="col-sm-2">
-            {{ new_delegate_form.salutation.errors }}
-            {{ new_delegate_form.salutation.label_tag }}
-            {{ new_delegate_form.salutation }}
-          </div>
-          <div class="col-sm-5">
-            {{ new_delegate_form.first_name.errors }}
-            {{ new_delegate_form.first_name.label_tag }}
-            {{ new_delegate_form.first_name }}
-          </div>
-          <div class="col-sm-5">
-            {{ new_delegate_form.last_name.errors }}
-            {{ new_delegate_form.last_name.label_tag }}
-            {{ new_delegate_form.last_name }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-12">
-            {{ new_delegate_form.title.errors }}
-            {{ new_delegate_form.title.label_tag }}
-            {{ new_delegate_form.title }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-6">
-            {{ new_delegate_form.email1.errors }}
-            {{ new_delegate_form.email1.label_tag }}
-            {{ new_delegate_form.email1 }}
-          </div>
-          <div class="col-sm-6">
-            {{ new_delegate_form.email2.errors }}
-            {{ new_delegate_form.email2.label_tag }}
-            {{ new_delegate_form.email2 }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-6">
-            {{ new_delegate_form.phone1.errors }}
-            {{ new_delegate_form.phone1.label_tag }}
-            {{ new_delegate_form.phone1 }}
-          </div>
-          <div class="col-sm-6">
-            {{ new_delegate_form.phone2.errors }}
-            {{ new_delegate_form.phone2.label_tag }}
-            {{ new_delegate_form.phone2 }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-6">
-            {{ new_delegate_form.contact_option.errors }}
-            {{ new_delegate_form.contact_option.label_tag }}
-            {{ new_delegate_form.contact_option }}
-          </div>
-        </div>
-      </div>
-
-      <div id="company-info">
-        <h3>
-          Company Information
-          {% if company %}
-          <a href="#company-details" id="toggle-company-edit"
-            class="btn btn-default btn-xs crm-list-action" data-toggle="collapse">
-            Edit Company
-            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-          </a>
-          {% endif %}
-        </h3>
-        {% if company %}
-        <div class="row">
-          <div class="col-sm-12">
-            {{ company_select_form.name.label_tag }}
-            <input type="text" id="id_name" class="form-control"
-              maxlength="255" value="{{ company.name }}" disabled="" />
-          </div>
-        </div>
-        <div class="collapse" id="company-details">
-          {% include 'delegate/addins/company_detail_editable.html' %}
-        {% else %}
-        <div class="row">
-          <div class="col-sm-12">
-            {{ company_select_form.name.errors }}
-            {{ company_select_form.name.label_tag }}
-            {{ company_select_form.name }}
-          </div>
-        </div>
-        <div class="collapse in" id="company-details">
-        {% endif %}
-        </div>
-      </div>
-
-      <div id='reg-details'>
-        <h3>Registration/Invoice details</h3>
-        <div class="row">
-          <div class="col-sm-3">
-            {{ reg_details_form.pre_tax_price.errors }}
-            {{ reg_details_form.pre_tax_price.label_tag }}
-            <div class="input-group">
-              <span class="input-group-addon">$</span>
-              <input type="number" id="id_pre_tax_price" class="form-control"
-                name="pre_tax_price" step="100" required="" />
+        <div id="conference-selection">
+          <h3>New Registration For:
+            <span class="h1" id="displayed-conf-name">
+              {{ conference }}
+            </span>
+            {% if not current_registration %}
+            <a href="#conference-details"
+              class="btn btn-warning btn-sm crm-list-action" data-toggle="collapse">
+                Change Event
+            </a>
+            {% endif %}
+          </h3>
+          <div class="row collapse" id="conference-details">
+            <div class="col-sm-12">
+              {{ conference_select_form.event.errors }}
+            </div>
+            <div class="col-sm-12">
+              {{ conference_select_form.event.label_tag }}
+            </div>
+            <div class="col-sm-10">
+              {{ conference_select_form.event }}
+            </div>
+            <div class="col-sm-2">
+              <button type="button" class="btn btn-primary btn-sm"
+                id="change-conference">
+                Change
+              </button>
             </div>
           </div>
-          <div id="fx-details">
-            {% include 'delegate/addins/fx_details.html' %}
-          </div>
-          <div class="col-sm-3">
-            {{ reg_details_form.priority_code.errors }}
-            {{ reg_details_form.priority_code.label_tag }}
-            {{ reg_details_form.priority_code }}
-          </div>
-          <div class="col-sm-3">
-            {{ reg_details_form.sales_credit.errors }}
-            {{ reg_details_form.sales_credit.label_tag }}
-            {{ reg_details_form.sales_credit }}
-          </div>
         </div>
-        <div class="row" id="registration-tax-information">
-          {% include 'delegate/addins/delegate_tax_information.html' %}
-        </div>
-        <div class="row">
-          <div class="col-sm-3">
-            {{ reg_details_form.registration_status.errors }}
-            {{ reg_details_form.registration_status.label_tag }}
-            {{ reg_details_form.registration_status }}
-          </div>
-          <div id="cancellation-details">
-            {% include 'delegate/addins/cancellation_details.html' %}
-          </div>
-        </div>
-        <div id="status-based-reg-fields">
-          {% include 'delegate/addins/status_based_reg_fields.html' %}
-        </div>
-        <div class="row">
-          <div class="col-sm-12">
-            {{ reg_details_form.invoice_notes.errors }}
-            {{ reg_details_form.invoice_notes.label_tag }}
-            {{ reg_details_form.invoice_notes }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-12">
-            {{ reg_details_form.registration_notes.errors }}
-            {{ reg_details_form.registration_notes.label_tag }}
-            {{ reg_details_form.registration_notes }}
-          </div>
-        </div>
-      </div>
 
-      <div id='assistant-info'>
-        <h3>
-          Assistant Information
-          <a href="#assistant-details"
-            class="btn btn-default btn-xs crm-list-action" data-toggle="collapse">
-            Add/Edit
-            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-          </a>
-        </h3>
-        <div class="collapse" id="assistant-details">
+        <div id="conference-options">
+          {% include 'delegate/addins/conference_options.html' %}
+        </div>
+
+        <div id="delegate-info">
+          <h3>Delegate Information</h3>
           <div class="row">
             <div class="col-sm-2">
-              {{ assistant_form.salutation.errors }}
-              {{ assistant_form.salutation.label_tag }}
-              {{ assistant_form.salutation }}
+              {{ new_delegate_form.salutation.errors }}
+              {{ new_delegate_form.salutation.label_tag }}
+              {{ new_delegate_form.salutation }}
             </div>
             <div class="col-sm-5">
-              {{ assistant_form.first_name.errors }}
-              {{ assistant_form.first_name.label_tag }}
-              {{ assistant_form.first_name }}
+              {{ new_delegate_form.first_name.errors }}
+              {{ new_delegate_form.first_name.label_tag }}
+              {{ new_delegate_form.first_name }}
             </div>
             <div class="col-sm-5">
-              {{ assistant_form.last_name.errors }}
-              {{ assistant_form.last_name.label_tag }}
-              {{ assistant_form.last_name }}
+              {{ new_delegate_form.last_name.errors }}
+              {{ new_delegate_form.last_name.label_tag }}
+              {{ new_delegate_form.last_name }}
             </div>
           </div>
           <div class="row">
             <div class="col-sm-12">
-              {{ assistant_form.title.errors }}
-              {{ assistant_form.title.label_tag }}
-              {{ assistant_form.title }}
+              {{ new_delegate_form.title.errors }}
+              {{ new_delegate_form.title.label_tag }}
+              {{ new_delegate_form.title }}
             </div>
           </div>
           <div class="row">
             <div class="col-sm-6">
-              {{ assistant_form.email.errors }}
-              {{ assistant_form.email.label_tag }}
-              {{ assistant_form.email }}
+              {{ new_delegate_form.email1.errors }}
+              {{ new_delegate_form.email1.label_tag }}
+              {{ new_delegate_form.email1 }}
             </div>
             <div class="col-sm-6">
-              {{ assistant_form.phone.errors }}
-              {{ assistant_form.phone.label_tag }}
-              {{ assistant_form.phone }}
+              {{ new_delegate_form.email2.errors }}
+              {{ new_delegate_form.email2.label_tag }}
+              {{ new_delegate_form.email2 }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              {{ new_delegate_form.phone1.errors }}
+              {{ new_delegate_form.phone1.label_tag }}
+              {{ new_delegate_form.phone1 }}
+            </div>
+            <div class="col-sm-6">
+              {{ new_delegate_form.phone2.errors }}
+              {{ new_delegate_form.phone2.label_tag }}
+              {{ new_delegate_form.phone2 }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              {{ new_delegate_form.contact_option.errors }}
+              {{ new_delegate_form.contact_option.label_tag }}
+              {{ new_delegate_form.contact_option }}
             </div>
           </div>
         </div>
+
+        <div id="company-info">
+          <h3>
+            Company Information
+            {% if company %}
+            <a href="#company-details" id="toggle-company-edit"
+              class="btn btn-default btn-xs crm-list-action" data-toggle="collapse">
+              Edit Company
+              <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            </a>
+            {% endif %}
+          </h3>
+          {% if company %}
+          <div class="row">
+            <div class="col-sm-12">
+              {{ company_select_form.name.label_tag }}
+              <input type="text" id="id_name" class="form-control"
+                maxlength="255" value="{{ company.name }}" disabled="" />
+            </div>
+          </div>
+          <div class="collapse" id="company-details">
+            {% include 'delegate/addins/company_detail_editable.html' %}
+          {% else %}
+          <div class="row">
+            <div class="col-sm-12">
+              {{ company_select_form.name.errors }}
+              {{ company_select_form.name.label_tag }}
+              {{ company_select_form.name }}
+            </div>
+          </div>
+          <div class="collapse in" id="company-details">
+          {% endif %}
+          </div>
+        </div>
+
+        <div id="reg-details">
+          <h3>Registration/Invoice details</h3>
+          <div class="row">
+            <div class="col-sm-3">
+              {{ reg_details_form.pre_tax_price.errors }}
+              {{ reg_details_form.pre_tax_price.label_tag }}
+              <div class="input-group">
+                <span class="input-group-addon">$</span>
+                <input type="number" id="id_pre_tax_price" class="form-control"
+                  name="pre_tax_price" min="0" required="" />
+              </div>
+            </div>
+            <div id="fx-details">
+              {% include 'delegate/addins/fx_details.html' %}
+            </div>
+            <div class="col-sm-3">
+              {{ reg_details_form.priority_code.errors }}
+              {{ reg_details_form.priority_code.label_tag }}
+              {{ reg_details_form.priority_code }}
+            </div>
+            <div class="col-sm-3">
+              {{ reg_details_form.sales_credit.errors }}
+              {{ reg_details_form.sales_credit.label_tag }}
+              {{ reg_details_form.sales_credit }}
+            </div>
+          </div>
+          <div class="row" id="registration-tax-information">
+            {% include 'delegate/addins/delegate_tax_information.html' %}
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              {{ reg_details_form.registration_status.errors }}
+              {{ reg_details_form.registration_status.label_tag }}
+              {{ reg_details_form.registration_status }}
+            </div>
+            <div id="cancellation-details">
+              {% include 'delegate/addins/cancellation_details.html' %}
+            </div>
+          </div>
+          <div id="status-based-reg-fields">
+            {% include 'delegate/addins/status_based_reg_fields.html' %}
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              {{ reg_details_form.invoice_notes.errors }}
+              {{ reg_details_form.invoice_notes.label_tag }}
+              {{ reg_details_form.invoice_notes }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              {{ reg_details_form.registration_notes.errors }}
+              {{ reg_details_form.registration_notes.label_tag }}
+              {{ reg_details_form.registration_notes }}
+            </div>
+          </div>
+        </div>
+
+        <div id="assistant-info">
+          <h3>
+            Assistant Information
+            <a href="#assistant-details"
+              class="btn btn-default btn-xs crm-list-action" data-toggle="collapse">
+              Add/Edit
+              <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            </a>
+          </h3>
+          <div class="collapse" id="assistant-details">
+            <div class="row">
+              <div class="col-sm-2">
+                {{ assistant_form.salutation.errors }}
+                {{ assistant_form.salutation.label_tag }}
+                {{ assistant_form.salutation }}
+              </div>
+              <div class="col-sm-5">
+                {{ assistant_form.first_name.errors }}
+                {{ assistant_form.first_name.label_tag }}
+                {{ assistant_form.first_name }}
+              </div>
+              <div class="col-sm-5">
+                {{ assistant_form.last_name.errors }}
+                {{ assistant_form.last_name.label_tag }}
+                {{ assistant_form.last_name }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                {{ assistant_form.title.errors }}
+                {{ assistant_form.title.label_tag }}
+                {{ assistant_form.title }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                {{ assistant_form.email.errors }}
+                {{ assistant_form.email.label_tag }}
+                {{ assistant_form.email }}
+              </div>
+              <div class="col-sm-6">
+                {{ assistant_form.phone.errors }}
+                {{ assistant_form.phone.label_tag }}
+                {{ assistant_form.phone }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="process-registration-section">
+          <button type="submit" class="btn btn-success col-sm-12"
+            id="process-registration-button">
+            Process registration
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="col-sm-3 col-md-3 crm-sidebar fill">
-      <div id="crm-sidebar">
-        {% include 'delegate/addins/match_sidebar.html' %}
+      <div class="col-sm-3 col-md-3 crm-sidebar fill">
+        <div id="crm-sidebar">
+          {% include 'delegate/addins/match_sidebar.html' %}
+        </div>
       </div>
     </div>
   </div>
-</div>
+</form>
 {% endblock %}

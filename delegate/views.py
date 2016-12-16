@@ -28,6 +28,7 @@ def index(request):
     crm_match = None
     crm_match_list = None
     options_form = None
+    data_source = None
     if request.method == 'POST':
         conf_id = request.POST['conf_id']
         conference = Event.objects.get(pk=conf_id)
@@ -54,6 +55,37 @@ def index(request):
             company_match_list = Company.objects.filter(
                 name__icontains=company.name
             )
+            data_source = 'delegate'
+        else:  # No registrant, so use CRM
+            crm_match = Person.objects.get(pk=request.POST['crm_id'])
+            name_tokens = crm_match.name.split()
+            if len(name_tokens) == 1:
+                first_name_guess = ''
+                last_name_guess = name_tokens[0]
+            elif len(name_tokens) > 1:
+                first_name_guess = name_tokens[0]
+                last_name_guess = ' '.join(name_tokens[1:])
+            else:
+                first_name_guess = last_name_guess = ''
+            form_data = {'first_name': first_name_guess,
+                         'last_name': last_name_guess,
+                         'title': crm_match.title,
+                         'email1': crm_match.email,
+                         'phone1': crm_match.phone,
+                         'contact_option': 'D',
+            }
+            new_delegate_form = NewDelegateForm(form_data)
+            crm_match_list = Person.objects.filter(
+                name__icontains=crm_match.name,
+                company__icontains=crm_match.company
+            )
+            company_match_list = Company.objects.filter(
+                name__icontains=crm_match.company
+            )
+            company_select_form = CompanySelectForm(
+                {'name': crm_match.company}
+            )
+            data_source = 'crm'
     context = {
         'current_registration': current_registration,
         'new_delegate_form': new_delegate_form,
@@ -75,6 +107,7 @@ def index(request):
         'deposit_values': DEPOSIT_STATUS_VALUES,
         'cxl_values': CXL_VALUES,
         'sponsor_values': SPONSOR_VALUES,
+        'data_source': data_source,
     }
     return render(request, 'delegate/index.html', context)
 

@@ -1,9 +1,17 @@
 <div id="sidebar-header">
   {% include 'delegate/addins/sidebar_navbar.html' %}
 </div>
+{% if data_source != 'crm' %}
 <div id="crm-sidebar-content">
+{% else %}
+<div id="crm-sidebar-content" style="display:none;">
+{% endif %}
   {% include 'delegate/addins/crm_sidebar.html' %}
 </div>
+{% if data_source != 'crm' %}
+<div id="company-sidebar-content" style="display:none;">
+{% else %}
 <div id="company-sidebar-content">
+{% endif %}
   {% include 'delegate/addins/company_sidebar.html' %}
 </div>

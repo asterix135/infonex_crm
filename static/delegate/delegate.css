@@ -23,6 +23,6 @@ body {
 .crm-list-action {
   float: right;
 }
-#company-sidebar-content{
-  display: none;
+#process-registration-section {
+  padding-top: 50px;
 }

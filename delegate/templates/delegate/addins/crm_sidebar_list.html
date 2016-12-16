@@ -3,7 +3,7 @@
   {% for match in crm_match_list %}
   <li class="list-group-item" id="crm-{{ match.id }}">
     <strong>{{ match.name }}</strong>
-    {% if match.id == registrant.crm_person.id %}
+    {% if registrant and match.id == registrant.crm_person.id or not registrant and match.id == crm_match.id %}
     <button type="button" class="btn btn-success btn-xs crm-list-action" disabled>
       Linked
     </button><br />

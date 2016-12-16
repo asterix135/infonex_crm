@@ -73,7 +73,8 @@ $(document).ready(function(){
 
   // Main logic for form submission on new_delegate_search
   function searchDels() {
-    // var csrftoken = getCookie('csrftoken');
+    var eventId = $('#id_event').val();
+    console.log(eventId);
     $.ajax({
       url: '/registration/search_dels/',
       type: 'POST',

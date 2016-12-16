@@ -41,6 +41,7 @@ ALLOWED_HOSTS = [  # local_ip,
                 'infonex-crm.us-west-2.elasticbeanstalk.com',
                 'infonex-crm.elasticbeanstalk.com',
                 '127.0.0.1',
+                'ip-172-31-12-214.us-west-2.compute.internal',
                 ]
 
 # Application definition

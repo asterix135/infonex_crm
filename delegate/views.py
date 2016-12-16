@@ -322,4 +322,9 @@ def process_registration(request):
     state_prov:
     title: Chief Peon
     """
+    
+    # 1. instantiate various Nones
+    # 2. verify that it's a POST
+    # 3. verify that forms are valid
+    # 4. start processing
     return HttpResponse('<h1>Registration Processing Confirmation</h1>')

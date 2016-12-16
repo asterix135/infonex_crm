@@ -51,7 +51,6 @@ $(document).ready(function(){
   $('body').on('click', '.register-delegate', function(e){
     var $event_select_box = $('#id_event');
     var conf_id = $('#id_event').val();
-    console.log(conf_id);
     if (conf_id == ''){
       $event_select_box.css('border-color', '#963634');
       $('.form-warning').show();

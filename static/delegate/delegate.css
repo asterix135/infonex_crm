@@ -1,0 +1,28 @@
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+}
+.crm-sidebar {
+  background-color: #F5F5F5;
+  left: 0;
+  bottom: 0;
+  margin-top: -30px;
+  height: 100%;
+  min-height: 100vh;
+  overflow-y: scroll
+}
+.left-main-panel {
+  margin-top: -30px;
+  padding-left: 45px;
+  padding-right: 45px;
+  overflow-y: scroll;
+  height: 100%;
+}
+.crm-list-action {
+  float: right;
+}
+#company-sidebar-content{
+  display: none;
+}

@@ -14,7 +14,7 @@ def index(request):
     """ renders base delegate/index.html page """
     new_delegate_form = NewDelegateForm()
     company_select_form = CompanySelectForm()
-    new_comany_form = NewCompanyForm()
+    new_company_form = NewCompanyForm()
     company_match_list = None
     assistant_form = AssistantForm()
     conference_select_form = ConferenceSelectForm()
@@ -90,7 +90,7 @@ def index(request):
         'current_registration': current_registration,
         'new_delegate_form': new_delegate_form,
         'company_select_form': company_select_form,
-        'new_company_form': new_comany_form,
+        'new_company_form': new_company_form,
         'company_match_list': company_match_list,
         'assistant_form': assistant_form,
         'conference_select_form': conference_select_form,
@@ -298,65 +298,98 @@ def save_comany_changes(request):
 
 def process_registration(request):
     """ form submission """
-    # note that multi-select submits as 0+ versions of same fields
-    # eg event-option-selection: 2
-    #    event-option-selection: 12  etc
-    """
-    Sample Sumbmission:
-    address1: 123 Main Street
-    address2: 234 Main Street
-    assistant_email:
-    assistant_first_name:
-    assistant_last_name:
-    assistant_phone:
-    assistant_salutation:
-    assistant_title:
-    city: Toronto
-    company_match_value: 3
-    contact_option: D
-    country: Canada
-    crm_match_value: 100003807
-    csrfmiddlewaretoken: jB9538fiiQC6xFo9Lt5QjfkMwRh8K96ist8LZkIsKGWWBznA7HFcwdfWFzWi6Ndl
-    current_regdetail_id:
-    current_registrant_id: 1
-    email1: george@spacely.com
-    email2:
-    event: 2
-    event-option-selection: 2
-    first_name: George
-    gst_hst_exempt: on
-    gst_hst_exemption_number: 1234566
-    gst_rate: 0.05
-    invoice_notes:
-    last_name: Jetson
-    name_for_badges: Infonex
-    new_company_address1:
-    new_company_address2:
-    new_company_city:
-    new_company_country:
-    new_company_gst_hst_exemption_number:
-    new_company_name:
-    new_company_name_for_badges:
-    new_company_postal_code:
-    new_company_qst_examption_number:
-    new_company_state_prov:
-    phone1: 575-555-1212
-    phone2:
-    postal_code: Toronto
-    pre_tax_price: 123
-    priority_code: 123
-    qst_exemption_number:
-    qst_rate: 0.09975
-    registration_notes:
-    registration_status: DU
-    sales_credit:
-    salutation: Mr.
-    selected_conference_id: 2
-    state_prov:
-    title: Chief Peon
-    """
     # 1. instantiate various Nones
-    # 2. verify that it's a POST
-    # 3. verify that forms are valid
-    # 4. start processing
-    return HttpResponse('<h1>Registration Processing Confirmation</h1>')
+    current_registration = None
+    new_delegate_form = NewDelegateForm()
+    company_select_form = CompanySelectForm()
+    new_company_form = NewCompanyForm()
+    company_match_list = None
+    assistant_form = AssistantForm()
+    conference_select_form = ConferenceSelectForm()
+    reg_details_form = RegDetailsForm()
+    conference = None
+    conference_options = None
+    options_form = None
+    registrant = None
+    company = None
+    assistant = None
+    crm_match = None
+    crm_match_list = None
+    data_source = None
+
+    # 2. verify that it's a POST and define objects based on POST data
+    if request.method == 'POST':
+        new_delegate_form = NewDelegateForm(request.POST)
+        company_select_form = CompanySelectForm(request.POST)
+        assistant_data = {
+            'salutation': request.POST['assistant_salutation'],
+            'first_name': request.POST['assistant_first_name'],
+            'last_name': request.POST['assistant_last_name'],
+            'title': request.POST['assistant_title'],
+            'email': request.POST['assistant_email'],
+            'phone': request.POST['assistant_phone'],
+        }
+        assistant_form = AssistantForm(assistant_data)
+        conference_select_form = ConferenceSelectForm(request.POST)
+        reg_details_form = RegDetailsForm(request.POST)
+        if request.POST['current_regdetail_id']:
+            current_registration = RegDetails.objects.get(
+                pk=request.POST['current_regdetail_id']
+            )
+        if request.POST['event']:
+            conference = Event.objects.get(pk=request.POST['event'])
+        if request.POST['current_registrant_id']:
+            registrant = Registrants.objects.get(
+                pk=request.POST['current_registrant_id']
+            )
+        if request.POST['company_match_value']:
+            company = Company.objects.get(pk=request.POST['company_match_value'])
+        if request.POST['crm_match_value']:
+            crm_match = Person.objects.get(pk=request.POST['crm_match_value'])
+        if request.POST['assistant_match_value']:
+            assistant = Assistant.objects.get(
+                pk=request.POST['assistant_match_value']
+            )
+        if request.POST.getlist('event-option-selection'):
+            option_list = []
+            for option in request.POST.getlist('event-option-selection'):
+                option_list.append(EventOptions.objects.get(pk=option))
+        else:
+            option_list = None
+
+        # 2a. verify that forms are valid and all data is present
+        if new_delegate_form.is_valid() and company_select_form.is_valid() and \
+            assistant_form.is_valid() and reg_details_form.is_valid():
+        # 2b. start processing
+            return HttpResponse('<h1>Registration Processing Confirmation Page</h1>' \
+                                '<h2>Stuff to go here<h2>' \
+                                '<h3>Forms are valid<h3>')
+        else:
+            return HttpResponse('<h1>Registration Processing Confirmation Page</h1>' \
+                                '<h2>Stuff to go here<h2>' \
+                                '<h3>Forms are not valid<h3>')
+
+    context = {
+        'current_registration': current_registration,
+        'new_delegate_form': new_delegate_form,
+        'company_select_form': company_select_form,
+        'new_company_form': new_company_form,
+        'company_match_list': company_match_list,
+        'assistant_form': assistant_form,
+        'conference_select_form': conference_select_form,
+        'reg_details_form': reg_details_form,
+        'conference': conference,
+        'conference_options': conference_options,  # remove when form working
+        'options_form': options_form,
+        'registrant': registrant,
+        'company': company,
+        'assistant': assistant,
+        'crm_match': crm_match,
+        'crm_match_list': crm_match_list,
+        'paid_status_values': PAID_STATUS_VALUES,
+        'deposit_values': DEPOSIT_STATUS_VALUES,
+        'cxl_values': CXL_VALUES,
+        'sponsor_values': SPONSOR_VALUES,
+        'data_source': data_source,
+    }
+    return render(request, 'delegate/index.html', context)

@@ -3,7 +3,11 @@
   {% include 'delegate/addins/company_sidebar_selected.html' %}
 </div>
 <div id='company-match-list'>
+  {% if company_match_list %}
   {% include 'delegate/addins/company_sidebar_list.html' %}
+  {% else %}
+  {% include 'delegate/addins/company_sidebar_blank.html' %}
+  {% endif %}
 </div>
 <div id="new-company-section">
   <a href="#new-company-entry" class="btn btn-info"

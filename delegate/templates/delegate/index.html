@@ -23,6 +23,8 @@
       name="crm_match_value" value="{{ crm_match.id }}" />
     <input type="hidden" id="company-match-value"
       name="company_match_value" value="{{ company.id }}" />
+    <input type="hidden" id="assistant-match-value"
+      name="assistant_match_value" value="{{ assistant.id }}" />
     {% csrf_token %}
   </div>
   <div class="container-fluid fill">
@@ -224,7 +226,11 @@
               <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
             </a>
           </h3>
+          {% if assistant %}
+          <div class="collapse in" id="assistant-details">
+          {% else %}
           <div class="collapse" id="assistant-details">
+          {% endif %}
             <div class="row">
               <div class="col-sm-2">
                 {{ assistant_form.salutation.errors }}

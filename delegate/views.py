@@ -356,18 +356,28 @@ def process_registration(request):
                 option_list.append(EventOptions.objects.get(pk=option))
         else:
             option_list = None
-
+        valid_forms = "Valid Forms: "
         # 2a. verify that forms are valid and all data is present
-        if new_delegate_form.is_valid() and company_select_form.is_valid() and \
-            assistant_form.is_valid() and reg_details_form.is_valid():
-        # 2b. start processing
-            return HttpResponse('<h1>Registration Processing Confirmation Page</h1>' \
-                                '<h2>Stuff to go here<h2>' \
-                                '<h3>Forms are valid<h3>')
+        if new_delegate_form.is_valid():
+            valid_forms += '<br/>new_delegate_form'
         else:
-            return HttpResponse('<h1>Registration Processing Confirmation Page</h1>' \
+            valid_forms += '<br/>NOT new_delegate_form'
+        if company_select_form.is_valid():
+            valid_forms += '<br/>company_select_form'
+        else:
+            valid_forms += '<br/>NOT company_select_form'
+        if assistant_form.is_valid():
+            valid_forms += '<br/>assistant_form'
+        else:
+            valid_forms += '<br/>NOT assistant_form'
+        if reg_details_form.is_valid():
+            valid_forms += '<br/>reg_details_form'
+        else:
+            valid_forms += '<br/>NOT reg_details_form'
+        # 2b. start processing
+        return HttpResponse('<h1>Registration Processing Confirmation Page</h1>' \
                                 '<h2>Stuff to go here<h2>' \
-                                '<h3>Forms are not valid<h3>')
+                                '<h3>%s<h3>' % valid_forms)
 
     context = {
         'current_registration': current_registration,

@@ -45,7 +45,7 @@
         <td class="col-sm-2">
           <form action ="{% url 'delegate:index' %}" method="post">
             {% csrf_token %}
-            <input type="hidden" name="conf_id" value="" />
+            <input type="hidden" name="conf_id" value="{{ conference.id }}" />
             <input type="hidden" name="registrant_id" value="{{ customer.id }}" />
             <input type="hidden" name="crm_id" value="" />
             <button type="submit" class="btn btn-success register-delegate">
@@ -138,7 +138,7 @@
         <td class="col-sm-2">
           <form action ="{% url 'delegate:index' %}" method="post">
             {% csrf_token %}
-            <input type="hidden" name="conf_id" value="" />
+            <input type="hidden" name="conf_id" value="{{ conference.id }}" />
             <input type="hidden" name="registrant_id" value="" />
             <input type="hidden" name="crm_id" value="{{ prospect.id }}" />
             <button type="submit" class="btn btn-success register-delegate">

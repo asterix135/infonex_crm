@@ -28,6 +28,7 @@ def search_dels(request):
             past_customer_list = None
             crm_list = None
             search_entered = True
+            conference = None
         else:
             filterargs = {
                 'first_name__icontains': request.POST['first_name'],
@@ -42,14 +43,17 @@ def search_dels(request):
                 Q(company__icontains=request.POST['company'])
             ).order_by('company', 'name')[:100]
             search_entered = True
+            conference = Event.objects.get(pk=request.POST['event'])
     else:
         past_customer_list = None
         crm_list = None
         search_entered = None
+        conference = None
     context = {
         'past_customer_list': past_customer_list,
         'crm_list': crm_list,
         'search_entered': search_entered,
+        'conference': conference,
     }
     return render(request, 'registration/addins/match_del_list.html', context)
 

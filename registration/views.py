@@ -413,3 +413,10 @@ def save_conference_changes(request):
     }
     return render(request, 'registration/addins/conference_edit_panel.html',
                   context)
+
+
+def update_venue_choices(request):
+    """ ajax call to update venue selection choices dropdown when new venue added """
+    conference_edit_form = ConferenceEditForm()
+    return render(request, 'registration/addins/conference_venue_choices.html',
+                  {'conference_edit_form': conference_edit_form})

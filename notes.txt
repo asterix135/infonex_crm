@@ -3,8 +3,6 @@ See avoiding race conditions using F()
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
 TODO: 1) register.index - consider reg button beside names (not hidden)
-TODO: 2) if choose to send to assistant on delegate.index - toggle assistant selection
-TODO: 3) conf.new -> trim spaces from city when displaying venues
 TODO: 4) conf.new -> Able to select venue from sidebar
 TODO: 5) conf.new -> venue dropdown should update when venue Added
 TODO: 6) conf.new -> event dropdown should update when event added

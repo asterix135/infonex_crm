@@ -18,7 +18,7 @@ body {
   background-color: #F5F5F5;
   border-color: #999
 }
-.edit-button, .delete-venue-button, .conference-change-button {
+.delete-venue-button, .conference-change-button {
   float: right;
   border-top: 5px;
   border-bottom: 5px;
@@ -42,4 +42,11 @@ body {
 }
 .unhide-btn {
   float: right;
+}
+.float-right {
+  float: right;
+}
+.pad-small-button {
+  border-top: 5px;
+  border-bottom: 5px;
 }

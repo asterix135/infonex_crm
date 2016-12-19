@@ -1,5 +1,9 @@
 <strong>{{ venue.name }}</strong>
-<a href="#venue{{ venue.id }}" class="btn btn-warning btn-xs edit-button"
+<button type="button" class = "btn btn-success btn-xs select-venue-button float-right pad-small-button"
+  venue-id="{{ venue.id }}">
+  Select
+</button>
+<a href="#venue{{ venue.id }}" class="btn btn-warning btn-xs pad-small-button"
   venue-id="{{ venue.id }}" venue-action="edit">
   Edit
 </a><br />

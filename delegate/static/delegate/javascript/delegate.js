@@ -219,4 +219,16 @@ $(document).ready(function(){
     });
   })
 
+
+  // Toggle display of assistant panel if choose to send to assistant
+  $('body').on('change', '#id_contact_option', function(){
+    var contactOption = $('#id_contact_option').val();
+    if (contactOption == 'C' || contactOption == 'A') {
+      if (!$('#assistant-details').hasClass('collapse in')){
+        $('#assistant-details').collapse('show');
+      };
+    };
+  });
+
+
 });

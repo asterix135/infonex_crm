@@ -28,4 +28,6 @@ urlpatterns = [
         name='save_conference_changes'),
     url(r'^filter_venue/$', views.filter_venue, name='filter_venue'),
     url(r'^unfilter_venue/$', views.unfilter_venue, name='unfilter_venue'),
+    url(r'^update_venue_choices/$', views.update_venue_choices,
+        name='update_venue_choices'),
 ]

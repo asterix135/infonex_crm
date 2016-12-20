@@ -319,6 +319,7 @@ def process_registration(request):
 
     # 2. verify that it's a POST and define objects based on POST data
     if request.method == 'POST':
+        # Populate forms with appropriate data
         new_delegate_form = NewDelegateForm(request.POST)
         company_select_form = CompanySelectForm(request.POST)
         assistant_data = {
@@ -330,22 +331,56 @@ def process_registration(request):
             'phone': request.POST['assistant_phone'],
         }
         assistant_form = AssistantForm(assistant_data)
-        conference_select_form = ConferenceSelectForm(request.POST)
-        reg_details_form = RegDetailsForm(request.POST)
+        reg_details_data = {
+            'priority_code': request.POST['priority_code'],
+            'sales_credit': request.POST['sales_credit'],
+            'pre_tax_price': request.POST['pre_tax_price'],
+            'gst_rate': request.POST['gst_rate'] if 'gst_rate' in \
+                request.POST else 0,
+            'hst_rate': request.POST['hst_rate'] if 'hst_rate' in \
+                request.POST else 0,
+            'qst_rate': request.POST['qst_rate'] if 'qst_rate' in \
+                request.POST else 0,
+            'payment_date': request.POST['payment_date'] if 'payment_date' in \
+                request.POST else None,
+            'payment_method': request.POST['payment_method'] if \
+                'payment_method' in request.POST else None,
+            'deposit_amount': request.POST['deposit_amount'] if \
+                'deposit_amount' in request.POST else None,
+            'deposit_date': request.POST['deposit_date'] if 'deposit_date' in \
+                request.POST else None,
+            'deposit_method': request.POST['deposit_method'] if \
+                'deposit_method' in request.POST else None,
+            'fx_conversion_rate': request.POST['fx_conversion_rate'] if \
+                'fx_conversion_rate' in request.POST else 1,
+            'register_date': timezone.now(),
+            'cancellation_date': request.POST['cancellation_date'] if \
+                'cancellation_date' in request.POST else None,
+            'registration_status': request.POST['registration_status'],
+            'invoice_notes': request.POST['invoice_notes'],
+            'registration_notes': request.POST['registration_notes'],
+            'sponsorship_description': request.POST['sponsorship_description'] \
+                if 'sponsorship_description' in request.POST else None
+        }
+        reg_details_form = RegDetailsForm(reg_details_data)
         if request.POST['current_regdetail_id']:
             current_registration = RegDetails.objects.get(
                 pk=request.POST['current_regdetail_id']
             )
-        if request.POST['event']:
-            conference = Event.objects.get(pk=request.POST['event'])
+
+        # set up various objects if present in form
         if request.POST['current_registrant_id']:
             registrant = Registrants.objects.get(
                 pk=request.POST['current_registrant_id']
             )
-        if request.POST['company_match_value']:
-            company = Company.objects.get(pk=request.POST['company_match_value'])
         if request.POST['crm_match_value']:
             crm_match = Person.objects.get(pk=request.POST['crm_match_value'])
+        if request.POST['event']:
+            conference = Event.objects.get(pk=request.POST['event'])
+
+        # ensure that various values are correctly submitted
+        if request.POST['company_match_value']:
+            company = Company.objects.get(pk=request.POST['company_match_value'])
         if request.POST['assistant_match_value']:
             assistant = Assistant.objects.get(
                 pk=request.POST['assistant_match_value']
@@ -356,28 +391,44 @@ def process_registration(request):
                 option_list.append(EventOptions.objects.get(pk=option))
         else:
             option_list = None
-        valid_forms = "Valid Forms: "
-        # 2a. verify that forms are valid and all data is present
-        if new_delegate_form.is_valid():
-            valid_forms += '<br/>new_delegate_form'
-        else:
-            valid_forms += '<br/>NOT new_delegate_form'
-        if company_select_form.is_valid():
-            valid_forms += '<br/>company_select_form'
-        else:
-            valid_forms += '<br/>NOT company_select_form'
-        if assistant_form.is_valid():
-            valid_forms += '<br/>assistant_form'
-        else:
-            valid_forms += '<br/>NOT assistant_form'
-        if reg_details_form.is_valid():
-            valid_forms += '<br/>reg_details_form'
-        else:
-            valid_forms += '<br/>NOT reg_details_form'
-        # 2b. start processing
-        return HttpResponse('<h1>Registration Processing Confirmation Page</h1>' \
-                                '<h2>Stuff to go here<h2>' \
-                                '<h3>%s<h3>' % valid_forms)
+
+        # ensure everything is valid, then proceed or return to original form
+        if new_delegate_form.is_valid() and company_select_form.is_valid() \
+            and assistant_form.is_valid() and reg_details_form.is_valid():
+            return HttpResponse('all is valid')
+        # #####################
+        # # TESTING STUFF - delete
+        # #####################
+        # valid_forms = "Valid Forms: "
+        # # 2a. verify that forms are valid and all data is present
+        # if new_delegate_form.is_valid():
+        #     valid_forms += '<br/>new_delegate_form'
+        # else:
+        #     valid_forms += '<br/>NOT new_delegate_form'
+        #     print(new_delegate_form.errors)
+        # if company_select_form.is_valid():
+        #     valid_forms += '<br/>company_select_form'
+        # else:
+        #     valid_forms += '<br/>NOT company_select_form'
+        #     print(company_select_form.errors)
+        # if assistant_form.is_valid():
+        #     valid_forms += '<br/>assistant_form'
+        # else:
+        #     valid_forms += '<br/>NOT assistant_form'
+        #     print(assistant_form.errors)
+        # if reg_details_form.is_valid():
+        #     valid_forms += '<br/>reg_details_form'
+        # else:
+        #     valid_forms += '<br/>NOT reg_details_form'
+        #     print(reg_details_form.errors)
+        # # 2b. start processing
+        #
+        # ##############
+        # # NEED response redirect here
+        # ##############
+        # return HttpResponse('<h1>Registration Processing Confirmation Page</h1>' \
+        #                         '<h2>Stuff to go here<h2>' \
+        #                         '<h3>%s<h3>' % valid_forms)
 
     context = {
         'current_registration': current_registration,

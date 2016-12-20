@@ -30,4 +30,6 @@ urlpatterns = [
     url(r'^unfilter_venue/$', views.unfilter_venue, name='unfilter_venue'),
     url(r'^update_venue_choices/$', views.update_venue_choices,
         name='update_venue_choices'),
+    url(r'^update_conference_choices/$', views.update_conference_choices,
+        name='update_conference_choices'),
 ]

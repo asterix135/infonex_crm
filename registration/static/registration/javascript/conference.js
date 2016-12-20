@@ -235,6 +235,13 @@ $(document).ready(function() {
       success: function(data) {
         $('#conference-edit-panel').html(data);
         unfilterVenueList();
+        $.ajax({
+          url: '/registration/update_conference_choices/',
+          type: 'GET',
+          success: function(data){
+            $('#conference-select-dropdown').html(data);
+          }
+        });
       }
     });
   });

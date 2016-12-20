@@ -420,3 +420,11 @@ def update_venue_choices(request):
     conference_edit_form = ConferenceEditForm()
     return render(request, 'registration/addins/conference_venue_choices.html',
                   {'conference_edit_form': conference_edit_form})
+
+
+def update_conference_choices(request):
+    """ ajax call to update conference select dropdown on conference.html """
+    conference_select_form = ConferenceSelectForm()
+    return render(request,
+                  'registration/addins/conference_select_dropdown.html',
+                  {'conference_select_form': conference_select_form})

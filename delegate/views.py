@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.utils import timezone
 
 from .forms import *
@@ -10,6 +10,162 @@ from registration.models import *
 from registration.forms import ConferenceSelectForm
 
 
+#############################
+# HELPER FUNCTIONS
+#############################
+def process_complete_registration(request, assistant_data, company, crm_match,
+                                  current_registration, reg_details_data,
+                                  conference):
+    """
+    Helper function, called from process_registration once request data
+    has been verified
+    """
+    # 1. create database records if not present
+    # a. assistant
+    if request.POST['assistant_match_value']:
+        assistant = Assistant.objects.get(
+            pk=request.POST['assistant_match_value']
+        )
+        assistant_form = AssistantForm(assistant_data, instance=assistant)
+        assistant_form.save()
+    else:
+        # Check to make sure record not already in the database
+        assistant_db_check = Assistant.objects.filter(
+            first_name=assistant_data['first_name'],
+            last_name=assistant_data['last_name'],
+            email=assistant_data['email'],
+        )
+        if len(assistant_db_check) > 0:
+            assistant=assistant_db_check[0]
+            assistant_form = AssistantForm(assistant_data, instance=assistant)
+            assistant_form.save()
+        else:
+            assistant = AssistantForm(assistant_data).save()
+
+    # b. company - passed as param
+
+    # c. crm record
+    # TODO: decide how to check for existing CRM - done on front end??
+    if not crm_match:
+        crm_match = Person(
+            name=request.POST['first_name'] + ' ' + request.POST['last_name'],
+            title=request.POST['title'],
+            company=company.name,
+            phone=request.POST['phone1'],
+            email=request.POST['email1'],
+            city=company.city,
+            date_created=timezone.now(),
+            created_by=request.user,
+            date_modified=timezone.now(),
+            modified_by=request.user,
+        )
+        crm_match.save()
+
+    # d. registrant
+    if registrant:
+        delegate_form = NewDelegateForm(request.POST, instance=registrant)
+        delegate_form.save()
+        registrant.modified_by = request.user
+        registrant.date_modified = timezone.now()
+        registrant.save()
+    else:
+        registrant_db_check = Registrants.objects.filter(
+            company=company,
+            first_name=request.POST['first_name'],
+            last_name=request.POST['last_name'],
+            email1=request.POST['email1']
+        )
+        if len(registrant_db_check) > 0:
+            registrant = registrant_db_check[0]
+            delegate_form = NewDelegateForm(request.POST, instance=registrant)
+            delegate_form.save()
+            registrant.modified_by = request.user
+            registrant.date_modified = timezone.now()
+            registrant.save()
+        else:
+            registrant = Registrants(
+                crm_person=crm_match,
+                assistant=assistant,
+                company=company,
+                salutation=request.POST['salutation'],
+                first_name=request.POST['first_name'],
+                last_name=request.POST['last_name'],
+                title=request.POST['title'],
+                email1=request.POST['email1'],
+                email2=request.POST['email2'],
+                phone1=request.POST['phone1'],
+                phone2=request.POST['phone2'],
+                contact_option=request.POST['contact_option'],
+                delegate_notes=request.POST['delegate_notes'],
+                created_by=request.user,
+                date_created=timezone.now(),
+                modified_by=request.user,
+                date_modified=timezone.now(),
+            )
+            registrant.save()
+
+    # e. reg_details
+    if current_registration:
+        reg_details_form = RegDetailsForm(reg_details_data,
+                                          instance=current_registration)
+        reg_details_form.save()
+        current_registration.modified_by = request.user
+        current_registration.date_modified = timezone.now()
+        current_registration.save()
+    else:
+        reg_detail_db_check = RegDetails.objects.filter(
+            conference=conference,
+            registrant=registrant
+        )
+        if len(reg_detail_db_check) > 0:
+            current_registration = reg_detail_db_check[0]
+            reg_details_form = RegDetailsForm(reg_details_data,
+                                              instance=current_registration)
+            reg_details_form.save()
+            current_registration.modified_by = request.user
+            current_registration.date_modified = timezone.now()
+            current_registration.save()
+        else:
+            new_invoice_number = RegDetails.objects.all().aggregate(
+                Max('invoice_number'))['invoice_number'] + 1
+            if requst.POST['sales_credit'] is not None:
+                sales_credit = auth.User(pk=request.POST['sales_credit'])
+            else:
+                sales_credit = None
+            current_registration = RegDetails(
+                invoice_number=new_invoice_number,
+                conference=conference,
+                registrant=registrant,
+                priority_code=reg_details_data['priority_code'],
+                sales_credit=sales_credit,
+                pre_tax_price=reg_details_data['pre_tax_price'],
+                gst_rate=reg_details_data['gst_rate'],
+                hst_rate=reg_details_data['hst_rate'],
+                qst_rate=reg_details_data['qst_rate'],
+                pst_rate=0,
+                payment_date=reg_details_data['payment_date'],
+                payment_method=reg_details_data['payment_method'],
+                deposit_amount=reg_details_data['deposit_amount'],
+                deposit_date=reg_details_data['deposit_date'],
+                deposit_method=reg_details_data['deposit_method'],
+                fx_conversion_rate=reg_details_data['fx_conversion_rate'],
+                register_date=reg_details_data['register_date'],
+                cancellation_date=reg_details_data['cancellation_date'],
+                registration_status=reg_details_data['registration_status'],
+                invoice_notes=reg_details_data['invoice_notes'],
+                registration_notes=reg_details_data['registration_notes'],
+                sponsorship_description=reg_details_data['sponsorship_description'],
+                created_by=request.user,
+                date_created=timezone.now(),
+                modified_by=request.user,
+                date_modified=timezone.now(),
+            )
+            current_registration.save()
+
+
+#############################
+# VIEW FUNCTIONS
+#############################
 def index(request):
     """ renders base delegate/index.html page """
     new_delegate_form = NewDelegateForm()
@@ -316,6 +472,10 @@ def process_registration(request):
     crm_match = None
     crm_match_list = None
     data_source = None
+    company_error = None
+    assistant_missing = None
+    option_selection_needed = None
+    option_list = []
 
     # 2. verify that it's a POST and define objects based on POST data
     if request.method == 'POST':
@@ -375,60 +535,44 @@ def process_registration(request):
             )
         if request.POST['crm_match_value']:
             crm_match = Person.objects.get(pk=request.POST['crm_match_value'])
-        if request.POST['event']:
-            conference = Event.objects.get(pk=request.POST['event'])
-
-        # ensure that various values are correctly submitted
-        if request.POST['company_match_value']:
-            company = Company.objects.get(pk=request.POST['company_match_value'])
+        if request.POST['selected_conference_id']:
+            conference = Event.objects.get(
+                pk=request.POST['selected_conference_id']
+            )
         if request.POST['assistant_match_value']:
             assistant = Assistant.objects.get(
                 pk=request.POST['assistant_match_value']
             )
+
+        # ensure that various values are correctly submitted
+        if request.POST['company_match_value']:
+            company = Company.objects.get(pk=request.POST['company_match_value'])
+        else:
+            company_error = True
+        if request.POST['contact_option'] in ['A', 'C'] and not \
+            request.POST['assistant_email']:
+            assistant_missing = True
         if request.POST.getlist('event-option-selection'):
-            option_list = []
             for option in request.POST.getlist('event-option-selection'):
                 option_list.append(EventOptions.objects.get(pk=option))
-        else:
-            option_list = None
+        if len(option_list) == 0 and len(conference.eventoptions_set.all()) > 1:
+            option_selection_needed = True
+        elif len(option_list) == 0 and len(
+            conference.eventoptions_set.all()) == 1:
+            option_list.append(conference.eventoptions_set.all()[0])
 
-        # ensure everything is valid, then proceed or return to original form
+        # ensure everything is valid, then process registration
         if new_delegate_form.is_valid() and company_select_form.is_valid() \
-            and assistant_form.is_valid() and reg_details_form.is_valid():
+            and assistant_form.is_valid() and reg_details_form.is_valid() \
+            and not company_error and not assistant_missing \
+            and not option_selection_needed and conference:
+
+            process_complete_registration(request, assistant_data, company,
+                                          crm_match, current_registration,
+                                          reg_details_data, registrant,
+                                          conference)
+
             return HttpResponse('all is valid')
-        # #####################
-        # # TESTING STUFF - delete
-        # #####################
-        # valid_forms = "Valid Forms: "
-        # # 2a. verify that forms are valid and all data is present
-        # if new_delegate_form.is_valid():
-        #     valid_forms += '<br/>new_delegate_form'
-        # else:
-        #     valid_forms += '<br/>NOT new_delegate_form'
-        #     print(new_delegate_form.errors)
-        # if company_select_form.is_valid():
-        #     valid_forms += '<br/>company_select_form'
-        # else:
-        #     valid_forms += '<br/>NOT company_select_form'
-        #     print(company_select_form.errors)
-        # if assistant_form.is_valid():
-        #     valid_forms += '<br/>assistant_form'
-        # else:
-        #     valid_forms += '<br/>NOT assistant_form'
-        #     print(assistant_form.errors)
-        # if reg_details_form.is_valid():
-        #     valid_forms += '<br/>reg_details_form'
-        # else:
-        #     valid_forms += '<br/>NOT reg_details_form'
-        #     print(reg_details_form.errors)
-        # # 2b. start processing
-        #
-        # ##############
-        # # NEED response redirect here
-        # ##############
-        # return HttpResponse('<h1>Registration Processing Confirmation Page</h1>' \
-        #                         '<h2>Stuff to go here<h2>' \
-        #                         '<h3>%s<h3>' % valid_forms)
 
     context = {
         'current_registration': current_registration,
@@ -452,5 +596,8 @@ def process_registration(request):
         'cxl_values': CXL_VALUES,
         'sponsor_values': SPONSOR_VALUES,
         'data_source': data_source,
+        'company_error': company_error,
+        'assistant_missing': assistant_missing,
+        'option_selection_needed': option_selection_needed,
     }
     return render(request, 'delegate/index.html', context)

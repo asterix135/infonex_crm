@@ -118,6 +118,11 @@
           </div>
           <div class="row">
             <div class="col-sm-6">
+              {% if assistant_missing %}
+              <div class="errorlist">
+                <h3>You must fill in Assistant Contact Information with this Choice</h3>
+              </div>
+              {% endif %}
               {{ new_delegate_form.contact_option.errors }}
               {{ new_delegate_form.contact_option.label_tag }}
               {{ new_delegate_form.contact_option }}
@@ -139,6 +144,11 @@
           {% if company %}
           <div class="row">
             <div class="col-sm-12">
+              {% if company_error %}
+              <div class="errorlist">
+                <h4>You must select a company</h4>
+              </div>
+              {% endif %}
               {{ company_select_form.name.label_tag }}
               <input type="text" id="id_name" class="form-control"
                 maxlength="255" value="{{ company.name }}" disabled="" />

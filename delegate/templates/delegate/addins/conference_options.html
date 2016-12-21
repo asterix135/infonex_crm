@@ -6,6 +6,11 @@
       Please select which options the delegate is registering for
     </h2>
   </div>
+  {% if option_selection_needed %}
+  <div class="errorlist">
+    <h4>You must select one or more options</h4>
+  </div>
+  {% endif %}
   <table class="table">
     <thead class="thead-inverse">
       <tr>

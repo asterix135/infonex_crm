@@ -1,0 +1,46 @@
+{% extends 'registration/base.html' %}
+{% load staticfiles %}
+
+{% block title %}Confirmation Options | {% endblock %}
+
+{% block script_includes %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container fluid-fill" id="main">
+  <div id="stored-variables">
+    <input type="hidden" name="registrant_id" value="{{ registrant.id }}" />
+    <input type="hidden" name="current_registration_id" value="{{ current_registration.id }}" />
+    <input type="hidden" name="assistant_id" value="{{ assistant.id }}" />
+  </div>
+  <div class="row fill">
+    <div class="col-sm-12">
+      <div id="sanity-check-to-delete">
+        <h1>Registration was successful</h1>
+        <h2>Details</h2>
+        {{ current_registration }}<br />
+        {{ registrant }}<br />
+        {{ crm_match }}<br />
+        {{ assistant }}
+      </div>
+      <div id="keep-this-part">
+        <ul>
+          <li>
+            Send Email confirmation
+          </li>
+          <li>
+            Print internal record sheet
+          </li>
+          <li>
+            Save copy of invoice
+          </li>
+          <li>
+            Register another person from the same company
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

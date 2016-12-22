@@ -1,6 +1,7 @@
-from django.shortcuts import render
-from django.http import HttpResponse
 from django.db.models import Q, Max
+from django.contrib import messages
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from .forms import *
@@ -161,6 +162,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
                 date_modified=timezone.now(),
             )
             current_registration.save()
+    return current_registration, registrant, assistant
 
 
 #############################
@@ -403,9 +405,6 @@ def update_payment_details(request):
             form_data['deposit_method'] = current_reg.deposit_method
             form_data['payment_date'] = current_reg.payment_date
             form_data['payment_method'] = current_reg.payment_method
-            print('\n\n\n')
-            print(current_reg.payment_method)
-            print('\n\n\n')
             reg_details_from = RegDetailsForm(form_data, instance=current_reg)
         else:
             reg_details_form = RegDetailsForm(form_data)
@@ -454,6 +453,12 @@ def save_comany_changes(request):
 
 def process_registration(request):
     """ form submission """
+
+    request.session['current_registration'] = 1
+    request.session['registrant'] = 1
+    request.session['assistant'] = 1
+    return redirect('/delegate/confirmation_details')
+
     # 1. instantiate various Nones
     current_registration = None
     new_delegate_form = NewDelegateForm()
@@ -567,12 +572,15 @@ def process_registration(request):
             and not company_error and not assistant_missing \
             and not option_selection_needed and conference:
 
-            process_complete_registration(request, assistant_data, company,
-                                          crm_match, current_registration,
-                                          reg_details_data, registrant,
-                                          conference)
-
-            return HttpResponse('all is valid')
+            current_registration, registrant, assistant = \
+                process_complete_registration(request, assistant_data, company,
+                                              crm_match, current_registration,
+                                              reg_details_data, registrant,
+                                              conference)
+            request.session['current_registration'] = current_registration.pk
+            request.session['registrant'] = registrant.pk
+            request.session['assistant'] = assistant.pk if assistant else None
+            return redirect('/delegate/confirmation_details')
 
     context = {
         'current_registration': current_registration,
@@ -601,3 +609,26 @@ def process_registration(request):
         'option_selection_needed': option_selection_needed,
     }
     return render(request, 'delegate/index.html', context)
+
+
+def confirmation_details(request):
+    """
+    Renders confirmation_details page
+    as redirect from form submission on index
+    """
+    current_registration = RegDetails.objects.get(
+        pk=request.session.pop('current_registration')
+    )
+    registrant = Registrants.objects.get(pk=request.session.pop('registrant'))
+    if request.session['assistant']:
+        assistant = Assistant.objects.get(pk=request.session.pop('assistant'))
+    else:
+        del(request.session['assistant'])
+        assistant = None
+
+    context = {
+        'current_registration': current_registration,
+        'registrant': registrant,
+        'assistant': assistant
+    }
+    return render(request, 'delegate/confirmation_details.html', context)

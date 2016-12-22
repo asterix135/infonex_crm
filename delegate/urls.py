@@ -23,4 +23,6 @@ urlpatterns = [
     url(r'^add_new_company/$', views.add_new_company, name='add_new_company'),
     url(r'^process_registration/$', views.process_registration,
         name='process_registration'),
+    url(r'^confirmation_details/$', views.confirmation_details,
+        name='confirmation_details'),
 ]

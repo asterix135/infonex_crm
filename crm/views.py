@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views import View
@@ -1219,11 +1219,13 @@ def flag_many_records(request):
     pass
 
 
-class TerritoryView(View):
-    template_name = 'territory.html'
+##################
+# NEW AJAX CALLS ETC BELOW HERE
+##################
 
-    def get(self, request):
-        return render(request, self.template_name)
-
-    def post(self, request):
-        return render(request, self.template_name)
+@login_required
+def quick_search(request):
+    """
+    Executes quick search from sidebar - results to update main panel
+    """
+    return HttpResponse('<h1>search results go here</h1>')

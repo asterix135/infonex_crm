@@ -27,17 +27,17 @@ urlpatterns = [
     # ex: /crm/flag_many_records/
     url(r'^flag_many_records/$', views.flag_many_records,
         name='flag_many_records'),
-
     # ex: /crm/new_person/
     url(r'^new_person/$', views.new_person, name='new_person'),
-
     # ex /crm/search_persons/
     url(r'^search_persons/$', views.search_persons, name='search_persons'),
-
     # ex /crm/set_territory/
     url(r'^set_territory/$', views.set_territory_params, name='set_territory'),
-
     # ex /crm/territory/
     url(r'^territory/$', views.territory_list, name='territory'),
 
+    ################
+    # REWORKED/AJAX STUFF BELOW HERE
+    ################
+    url(r'^quick_search/$', views.quick_search, name='quick_search'),
 ]

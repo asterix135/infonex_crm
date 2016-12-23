@@ -1,72 +1,93 @@
 {% extends 'crm/base.html' %}
 {% load staticfiles %}
 
+{% block script_includes %}
+<link href="{% static 'crm/crm_style.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid fill">
-  <div class="row fill">
-    <div id="crm-sidebar" class="fill">
-      <div class="col-sm-3 col-md-2 venue-sidebar fill">
-        <h2>Sidebar content goes here</h2>
-        <ul>
-          <li>
-            Search field???
-          </li>
-          <li>
-            Recent contacts
-          </li>
-          <li>
-            Upcoming calls/appointments
-          </li>
-          <li>
-            Find people
-          </li>
-          <li>
-            Switch conference
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="col-sm-9 col-md-10 right-main-panel">
-      <div class="row">
-      <div class="col-sm-3 col-md-3">
-        <h2>Work on a Conference</h2>
-        <p>Allows you to work with a defined sales territory for an individual conference</p>
-        <form action="{% url 'crm:set_territory' %}" method="post" name="set_territory">
-          {% csrf_token %}
-          <input type="hidden" name="page_source" value="index">
-          <fieldset class="form-group">
-            <label for="{{ territory_form.event.id_for_label }}">Select event:</label>
-            {{ territory_form.event }}
-          </fieldset>
-          <button type="reset" class="btn btn-default">Reset Form</button>
-          <button type="submit" class="btn btn-primary">See Territory</button>
+  <div class="row row-offcanvas row-offcanvas-right">
+    <div class="col-xs-12 col-sm-9 col-sm-push-3">
+      <p class="pull-right visible-xs">
+        <button type="button" class="btn btn-primary btn-xs"
+          data-toggle="offcanvas" title="Toggle sidebar">
+          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        </button>
+      </p>
+      <div class="col-sm-9 col-md-10 right-main-panel" id="main-panel">
+        <div class="row">
+          <div class="col-sm-3 col-md-3">
+            <h2>Work on a Conference</h2>
+            <p>Allows you to work with a defined sales territory for an individual conference</p>
+            <form action="{% url 'crm:set_territory' %}" method="post" name="set_territory">
+              {% csrf_token %}
+              <input type="hidden" name="page_source" value="index">
+              <fieldset class="form-group">
+                <label for="{{ territory_form.event.id_for_label }}">Select event:</label>
+                {{ territory_form.event }}
+              </fieldset>
+              <button type="reset" class="btn btn-default">Reset Form</button>
+              <button type="submit" class="btn btn-primary">See Territory</button>
+              {% if user_is_admin %}
+              {% endif %}
+            </form>
+          </div>
+          <div class="col-sm-4">
+            <h2>Search Records</h2>
+            <p>Takes you to a search form where you can look for individuals in the database</p>
+            <p>
+              <a class="btn btn-default" href="{% url 'crm:search_persons' %}">Search Database &raquo;</a>
+            </p>
+          </div>
           {% if user_is_admin %}
+          <div class="col-sm-4">
+            <h2>Admin Functions</h2>
+            <p>This should take you to a page (not default admin) with options to</p>
+            <ul>
+              <li>Add a conference</li>
+              <li>Manipulate territories</li>
+              <li>Drill down on stats for individual employees</li>
+            </ul>
+            <p>
+              <button type="button" class="btn btn-default" name="submit_option" value="edit_territory">Create/Edit Territory</button>
+            </p>
+          </div>
           {% endif %}
-        </form>
+        </div>
       </div>
-      <div class="col-sm-4">
-        <h2>Search Records</h2>
-        <p>Takes you to a search form where you can look for individuals in the database</p>
-        <p>
-          <a class="btn btn-default" href="{% url 'crm:search_persons' %}">Search Database &raquo;</a>
-        </p>
-      </div>
-      {% if user_is_admin %}
-      <div class="col-sm-4">
-        <h2>Admin Functions</h2>
-        <p>This should take you to a page (not default admin) with options to</p>
-        <ul>
-          <li>Add a conference</li>
-          <li>Manipulate territories</li>
-          <li>Drill down on stats for individual employees</li>
-        </ul>
-        <p>
-          <button type="button" class="btn btn-default" name="submit_option" value="edit_territory">Create/Edit Territory</button>
-        </p>
-      </div>
-      {% endif %}
     </div>
+    <div class="col-xs-6 col-sm-3 col-sm-pull-9 sidebar-offcanvas venue-sidebar fill"
+      id="crm-sidebar">
+      <div class="list-group">
+        <h3 class="list-group-item active">Actions</h3>
+        <div class="list-group-item">
+          <div class="input-group add-on">
+            <input class="form-control" placeholder="Search" name="quick-search-term"
+              id="quick-search-term" type="text">
+            <div class="input-group-btn">
+              <button class="btn btn-default" type="button" id="quick-search">
+                <i class="glyphicon glyphicon-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="list-group-item">
+          Switch Conference
+        </div>
+        <div class="list-group-item">
+          Recently Viewed Contacts
+        </div>
+        <div class="list-group-item">
+          Upcoming calls/appointments
+        </div>
+        <button type="button" class="list-group-item">
+          Advanced Search
+        </button>
+
+      </div>
     </div>
   </div>
+
 </div>
 {% endblock %}

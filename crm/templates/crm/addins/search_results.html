@@ -1,0 +1,22 @@
+<div class="row">
+  <h1>
+    Database Search
+    <a class="btn btn-default btn-sm crm-list-action" href="#search-panel" data-toggle="collapse">
+      <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+    </a>
+</h1>
+  <div class="panel panel-info collapse" id="search-panel">
+    {% include 'crm/addins/adv_search_panel.html' %}
+  </div>
+</div>
+<div class="row">
+  <h2>Search Results Go Here</h2>
+  <h4>Results for:</h4>
+  <ul>
+    {% for term in search_terms %}
+    <li>
+      {{ term }}
+    </li>
+    {% endfor %}
+  </ul>
+</div>

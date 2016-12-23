@@ -1228,4 +1228,14 @@ def quick_search(request):
     """
     Executes quick search from sidebar - results to update main panel
     """
-    return HttpResponse('<h1>search results go here</h1>')
+    search_terms = None
+    person_list = None
+    search_form = SearchForm()
+    if request.method == 'POST':
+        search_terms = request.POST['search_terms'].split()
+        # for term in search_terms
+    context = {
+        'search_terms': search_terms,
+        'search_form': search_form,
+    }
+    return render(request, 'crm/addins/search_results.html', context)

@@ -25,16 +25,17 @@ $(document).ready(function() {
 
   // Execute quick search from sidebar
   $('body').on('click', '#quick-search', function(){
-    var searchTerms = $('#quick-search-term').val();
-    console.log(searchTerms);
-    $.ajax({
-      url: '/crm/quick_search/',
-      type: 'POST',
-      data: {'search_terms': searchTerms,},
-      success: function(data){
-        $('#main-panel').html(data);
-      }
-    })
+    var searchTerms = $('#quick-search-term').val().trim();
+    if (searchTerms.length > 0) {
+      $.ajax({
+        url: '/crm/quick_search/',
+        type: 'POST',
+        data: {'search_terms': searchTerms,},
+        success: function(data){
+          $('#main-panel').html(data);
+        }
+      });
+    };
   })
 
 

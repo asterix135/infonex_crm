@@ -10,13 +10,6 @@
   </div>
 </div>
 <div class="row">
-  <h2>Search Results Go Here</h2>
-  <h4>Results for:</h4>
-  <ul>
-    {% for term in search_terms %}
-    <li>
-      {{ term }}
-    </li>
-    {% endfor %}
-  </ul>
+  <h4>Results:</h4>
+  {% include 'crm/addins/search_results_list.html' %}
 </div>

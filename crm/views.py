@@ -2,6 +2,7 @@ import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -1231,11 +1232,19 @@ def quick_search(request):
     search_terms = None
     person_list = None
     search_form = SearchForm()
+
+    search_list = None
+
     if request.method == 'POST':
+        search_list = Person.objects.all()
         search_terms = request.POST['search_terms'].split()
-        # for term in search_terms
+        for term in search_terms:
+            search_list = search_list.filter(name__icontains=term)
+        paginator = Paginator(search_list, TERRITORY_RECORDS_PER_PAGE)
+
+
     context = {
-        'search_terms': search_terms,
         'search_form': search_form,
+        'search_list': search_list,
     }
     return render(request, 'crm/addins/search_results.html', context)

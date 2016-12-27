@@ -1,5 +1,6 @@
-from django.db.models import Q, Max
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q, Max
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
@@ -168,6 +169,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
 #############################
 # VIEW FUNCTIONS
 #############################
+@login_required
 def index(request):
     """ renders base delegate/index.html page """
     new_delegate_form = NewDelegateForm()
@@ -270,6 +272,7 @@ def index(request):
     return render(request, 'delegate/index.html', context)
 
 
+@login_required
 def update_crm_match_list(request):
     """ ajax call to update crm suggestions based on delegate info """
     crm_match_list = None
@@ -288,6 +291,7 @@ def update_crm_match_list(request):
     return render(request, 'delegate/addins/crm_sidebar_list.html', context)
 
 
+@login_required
 def link_new_crm_record(request):
     """ Ajax call to link different crm record to delegate """
     crm_match = None
@@ -303,6 +307,7 @@ def link_new_crm_record(request):
     return render(request, 'delegate/addins/crm_sidebar_selected.html', context)
 
 
+@login_required
 def link_new_company_record(request):
     """ ajax call to link selected company record to delegate """
     company = None
@@ -319,6 +324,7 @@ def link_new_company_record(request):
                   context)
 
 
+@login_required
 def update_tax_information(request):
     """
     ajax call to update part of delegate page showing tax info
@@ -335,6 +341,7 @@ def update_tax_information(request):
                   context)
 
 
+@login_required
 def update_conference_options(request):
     """ ajax call to update conference options when event is changed """
     conference_options = None
@@ -346,6 +353,7 @@ def update_conference_options(request):
     return render(request, 'delegate/addins/conference_options.html', context)
 
 
+@login_required
 def update_fx_conversion(request):
     """
     ajax call to update fx_conversion
@@ -361,6 +369,7 @@ def update_fx_conversion(request):
     return render(request, 'delegate/addins/fx_details.html', context)
 
 
+@login_required
 def update_cxl_info(request):
     """ ajax call to update cancellation information """
     reg_details_form = RegDetailsForm()
@@ -383,6 +392,7 @@ def update_cxl_info(request):
                   context)
 
 
+@login_required
 def update_payment_details(request):
     """ ajax call to update payment details """
     reg_details_form = RegDetailsForm()
@@ -418,6 +428,7 @@ def update_payment_details(request):
                   context)
 
 
+@login_required
 def add_new_company(request):
     """ ajax call to add new company to database and link to current record """
     company = None
@@ -446,11 +457,13 @@ def add_new_company(request):
     return render(request, 'delegate/addins/company_sidebar.html', context)
 
 
+@login_required
 def save_comany_changes(request):
     """ ajax submission to update company information when present """
     pass
 
 
+@login_required
 def process_registration(request):
     """ form submission """
 
@@ -611,6 +624,7 @@ def process_registration(request):
     return render(request, 'delegate/index.html', context)
 
 
+@login_required
 def confirmation_details(request):
     """
     Renders confirmation_details page

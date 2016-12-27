@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.urls import reverse
 from django.utils import timezone
@@ -10,11 +11,12 @@ from .forms import *
 from .models import *
 from crm.models import Person, Event
 
-
+@login_required
 def index(request):
     return render(request, 'registration/index.html')
 
 
+@login_required
 def search_dels(request):
     """
     AJAX call to get matching delegates and crm contacts for new_delegate_search
@@ -58,6 +60,7 @@ def search_dels(request):
     return render(request, 'registration/addins/match_del_list.html', context)
 
 
+@login_required
 def new_delegate_search(request):
     """ Renders new_delegate_search page"""
     if request.method == 'POST':
@@ -104,6 +107,7 @@ def new_delegate_search(request):
     return render(request, 'registration/new_delegate_search.html', context)
 
 
+@login_required
 def get_registration_history(request):
     """AJAX call to get reg history for past delegate"""
     context = RequestContext(request)
@@ -118,6 +122,7 @@ def get_registration_history(request):
         {'person_regs': person_regs})
 
 
+@login_required
 def select_conference_to_edit(request):
     """ ajax call to select conference for editing """
     event = None
@@ -147,6 +152,7 @@ def select_conference_to_edit(request):
                   context)
 
 
+@login_required
 def add_edit_conference(request):
     """ Renders conference page """
     edit_action = 'blank'
@@ -182,6 +188,7 @@ def add_edit_conference(request):
     return render(request, 'registration/conference.html', context)
 
 
+@login_required
 def edit_venue(request):
     """ AJAX function to edit venue information in sidebar """
     venue = None
@@ -210,6 +217,7 @@ def edit_venue(request):
     return render(request, template, context)
 
 
+@login_required
 def add_venue(request):
     """ AJAX Function to add new venue and refresh venue sidebar """
     errors = False
@@ -231,6 +239,7 @@ def add_venue(request):
     return render(request, 'registration/addins/venue_sidebar.html', context)
 
 
+@login_required
 def delete_venue(request):
     """ AJAX function to delete venue """
     venue_form = VenueForm()
@@ -250,6 +259,7 @@ def delete_venue(request):
     return render(request, 'registration/addins/venue_sidebar.html', context)
 
 
+@login_required
 def filter_venue(request):
     venue_form = VenueForm()
     try:
@@ -266,6 +276,7 @@ def filter_venue(request):
     return render(request, 'registration/addins/venue_sidebar.html', context)
 
 
+@login_required
 def unfilter_venue(request):
     venue_form = VenueForm()
     venue_list = Venue.objects.all().order_by('city', 'name')
@@ -276,6 +287,7 @@ def unfilter_venue(request):
     return render(request, 'registration/addins/venue_sidebar.html', context)
 
 
+@login_required
 def delete_temp_conf(request):
     """ ajax call to delete temporary conference and options """
     event = None
@@ -289,6 +301,7 @@ def delete_temp_conf(request):
     return HttpResponse('')
 
 
+@login_required
 def create_temp_conf_number():
     """ helper function for add_event_option """
     base_number = "TEMP"
@@ -300,6 +313,7 @@ def create_temp_conf_number():
         counter += 1
 
 
+@login_required
 def add_event_option(request):
     """ ajax call to add options to a conference """
     conference_option_form = ConferenceOptionForm()
@@ -356,6 +370,7 @@ def add_event_option(request):
                   context)
 
 
+@login_required
 def delete_event_option(request):
     """ ajax call to delete option from a conference """
     conference_option_form = ConferenceOptionForm()
@@ -384,6 +399,7 @@ def delete_event_option(request):
                   context)
 
 
+@login_required
 def save_conference_changes(request):
     """ AJAX call to save changes to conference being edited """
     event = None
@@ -415,6 +431,7 @@ def save_conference_changes(request):
                   context)
 
 
+@login_required
 def update_venue_choices(request):
     """ ajax call to update venue selection choices dropdown when new venue added """
     conference_edit_form = ConferenceEditForm()
@@ -422,6 +439,7 @@ def update_venue_choices(request):
                   {'conference_edit_form': conference_edit_form})
 
 
+@login_required
 def update_conference_choices(request):
     """ ajax call to update conference select dropdown on conference.html """
     conference_select_form = ConferenceSelectForm()

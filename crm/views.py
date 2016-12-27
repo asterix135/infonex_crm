@@ -1,11 +1,12 @@
 import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.utils import timezone
 from django.views import View
 
@@ -1232,19 +1233,55 @@ def quick_search(request):
     search_terms = None
     person_list = None
     search_form = SearchForm()
-
     search_list = None
 
     if request.method == 'POST':
-        search_list = Person.objects.all()
         search_terms = request.POST['search_terms'].split()
+        # Turn list of search terms into a list of Q objects
+        queries = []
         for term in search_terms:
-            search_list = search_list.filter(name__icontains=term)
+            queries.append(Q(name__icontains=term))
+            queries.append(Q(company__icontains=term))
+        # Take one Q object from the list
+        query = queries.pop()
+        # OR the first Q object with the remaining ones in the list
+        for item in queries:
+            query |= item
+        # Query the model
+        search_list = Person.objects.filter(query)
         paginator = Paginator(search_list, TERRITORY_RECORDS_PER_PAGE)
 
+    if 'page' in request.GET:
+        page = request.session['search_page'] = request.GET['page']
+    else:
+        page = 1
+    try:
+        person_list = paginator.page(page)
+    except PageNotAnInteger:
+        # if page not an integer, deliver first page
+        person_list = paginator.page(1)
+        page = 1
+    except EmptyPage:
+        # if page out of range, deliver last page of results
+        person_list = paginator.page(paginator.num_pages)
+        page = paginator.num_pages
 
     context = {
         'search_form': search_form,
-        'search_list': search_list,
+        'person_list': person_list,
+        'has_minus4': int(page) - 4 > 0,
+        'has_minus3': int(page) - 3 > 0,
+        'minus3': str(int(page) - 3),
+        'has_minus2': int(page) - 2 > 0,
+        'minus2': str(int(page) - 2),
+        'has_minus1': int(page) - 1 > 0,
+        'minus1': str(int(page) - 1),
+        'has_plus1': int(page) + 1 <= paginator.num_pages,
+        'plus1': str(int(page) + 1),
+        'has_plus2': int(page) + 2 <= paginator.num_pages,
+        'plus2': str(int(page) + 2),
+        'has_plus3': int(page) + 3 <= paginator.num_pages,
+        'plus3': str(int(page) + 3),
+        'has_plus4': int(page) + 4 <= paginator.num_pages,
     }
     return render(request, 'crm/addins/search_results.html', context)

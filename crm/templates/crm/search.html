@@ -5,6 +5,8 @@
 <link href="{% static 'crm/crm_style.css' %}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
+{% block title %}Search | {% endblock %}
+
 {% block content %}
 <div class="container-fluid fill">
   <div class="row row-offcanvas row-offcanvas-right">
@@ -16,7 +18,7 @@
         </button>
       </p>
       <div class="col-sm-12 col-md-12 right-main-panel" id="main-panel">
-        <h1>MAIN PANEL STUFF GOES HERE</h1>
+        {% include 'crm/addins/search_panel.html' %}
       </div>
     </div>
     {% include 'crm/addins/sidebar.html' %}

@@ -1,0 +1,9 @@
+<div class="list-group collapse in">
+  {% for contact in recent_contact_list %}
+  <div class="list-group-item">
+    <a href = "{% url 'crm:detail' contact.id %}">
+      {{ contact.name }}{% if contact.title %}, {{ contact.title }}{% endif %}{% if contact.company %}, {{ contact.company }}{% endif %}
+    </a>
+  </div>
+  {% endfor %}
+</div>

@@ -34,27 +34,43 @@ $(document).ready(function() {
     });
   }
 
-
-  // Execute quick search when search button clicked
-  $('body').on('click', '#quick-search', function(){
-    var searchTerms = $('#quick-search-term').val().trim();
-    if (searchTerms.length > 0) {
-      executeQuickSearch(searchTerms);
+  // Toggle and/or retrieve view of recently viewed contacts
+  $('body').on('click', '#toggle-recently-viewed', function(){
+    if ($('#recent-contact-list').hasClass('collapse in')){
+      $('#recent-contact-list').collapse('hide');
+    } else {
+      $('#recent-contact-list').collapse('show');
+      $.ajax({
+        url: '/crm/get_recent_contacts/',
+        type: 'GET',
+        success: function(data){
+          $('#recent-contact-list').html(data);
+        }
+      });
     };
-  })
+  });
 
 
-  // Execute quick search when enter pressed in quick search field
-  $('body').on('keyup', '#quick-search-term', function(event){
-    if (event.keyCode == 13) {
-      var searchTerms = $(this).val().trim();
-      if (searchTerms.length > 0) {
-        executeQuickSearch(searchTerms);
-      };
-    };
-  })
-
-
+  // // Execute quick search when search button clicked
+  // $('body').on('click', '#quick-search', function(){
+  //   var searchTerms = $('#quick-search-term').val().trim();
+  //   if (searchTerms.length > 0) {
+  //     executeQuickSearch(searchTerms);
+  //   };
+  // })
+  //
+  //
+  // // Execute quick search when enter pressed in quick search field
+  // $('body').on('keyup', '#quick-search-term', function(event){
+  //   if (event.keyCode == 13) {
+  //     var searchTerms = $(this).val().trim();
+  //     if (searchTerms.length > 0) {
+  //       executeQuickSearch(searchTerms);
+  //     };
+  //   };
+  // })
+  //
+  //
   // AJAX call to load person details page
   $('body').on('click', '.person-detail-link', function(){
     var personId = $(this).attr('person-id');

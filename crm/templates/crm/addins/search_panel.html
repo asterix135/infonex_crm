@@ -1,11 +1,15 @@
 <div class="row">
   <h1>
-    Database Search
+    Advanced Database Search Options
     <a class="btn btn-default btn-sm crm-list-action" href="#search-panel" data-toggle="collapse">
       <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
     </a>
 </h1>
+  {% if show_advanced %}
+  <div class="panel panel-info collapse in" id="search-panel">
+  {% else %}
   <div class="panel panel-info collapse" id="search-panel">
+  {% endif %}
     {% include 'crm/addins/adv_search_panel.html' %}
   </div>
 </div>

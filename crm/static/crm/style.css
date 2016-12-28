@@ -70,3 +70,6 @@ h1, h2, h3 {
 .errorlist{
   color: #BA2421;
 }
+.float-right {
+  float: right;
+}

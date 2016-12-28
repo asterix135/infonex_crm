@@ -4,11 +4,11 @@
     <h3 class="list-group-item active">Actions</h3>
 
     <div class="list-group-item">
-      <form action = "{{ crm:quick_search }}s" method="post">
+      <form action = "/crm/quick_search/" method="post">
         {% csrf_token %}
         <div class="input-group add-on">
-          <input class="form-control" placeholder="Search Name and/or Company" name="quick-search-term"
-            id="quick-search-term" type="text" >
+          <input class="form-control" placeholder="Search Name and/or Company" name="search_terms"
+            id="quick-search-term" type="text" value="{{ quick_search_terms }}">
           <div class="input-group-btn">
             <button class="btn btn-default" type="submit" id="quick-search">
               <i class="glyphicon glyphicon-search"></i>
@@ -23,6 +23,13 @@
     </div>
     <div class="list-group-item">
       Recently Viewed Contacts
+      <button type="button" class="btn btn-default btn-xs float-right"
+      qtitle="Toggle list" id="toggle-recently-viewed">
+        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+      </button>
+      <div id="recent-contact-list" class="collapse">
+        {% include 'crm/addins/recently_viewed.html' %}
+      </div>
     </div>
     <div class="list-group-item">
       Upcoming calls/appointments

@@ -6,7 +6,7 @@ urlpatterns = [
     # ex: /crm/
     url(r'^$', views.index, name='index'),
     # ex: /crm/1234/
-    url(r'^(?P<person_id>[0-9]+)/$', views.detail, name='detail'),
+    url(r'^(?P<person_id>[0-9]+)/$', views.detail_old, name='detail_old'),
     # ex: /crm/1234/add_person_to_territory/
     url(r'^(?P<person_id>[0-9]+)/add_person_to_territory/$',
         views.add_person_to_territory, name='add_person_to_territory'),
@@ -37,8 +37,16 @@ urlpatterns = [
     url(r'^territory/$', views.territory_list, name='territory'),
 
     ################
-    # REWORKED/AJAX STUFF BELOW HERE
+    # REWORKED STUFF BELOW HERE
     ################
     url(r'^quick_search/$', views.quick_search, name='quick_search'),
+    url(r'^get_recent_contacts/$', views.get_recent_contacts,
+        name='get_recent_contacts'),
+    # ex: /crm/1234/
+    url(r'^detail/(?P<person_id>[0-9]+)/$', views.detail, name='detail'),
+
+    ################
+    # TO BE DELETED
+    ################
     url(r'^person_detail/$', views.person_detail, name='person_detail'),
 ]

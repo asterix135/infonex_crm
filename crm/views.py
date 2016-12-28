@@ -110,7 +110,7 @@ def update_category_info(request, person):
 
 
 @login_required
-def detail(request, person_id):
+def detail_old(request, person_id):
     """
     View for detail.html
     """
@@ -171,7 +171,7 @@ def detail(request, person_id):
         'url_exists': len(person.url) > 0,
         'reg_history': reg_history,
     }
-    return render(request, 'crm/detail.html', context)
+    return render(request, 'crm/detail_old.html', context)
 
 
 @login_required
@@ -1279,6 +1279,8 @@ def quick_search(request):
         page = paginator.num_pages
 
     context = {
+        'quick_search_terms': request.POST['search_terms'],
+        'show_advanced': False,
         'search_form': search_form,
         'person_list': person_list,
         'has_minus4': int(page) - 4 > 0,
@@ -1296,18 +1298,56 @@ def quick_search(request):
         'plus3': str(int(page) + 3),
         'has_plus4': int(page) + 4 <= paginator.num_pages,
     }
-    return render(request, 'crm/addins/search_results.html', context)
+    return render(request, 'crm/search.html', context)
+
+
+@login_required
+def get_recent_contacts(request):
+    """ ajax call to populate recent contacts on sidebar """
+    if 'recent_contacts' not in request.session:
+        request.session['recent_contacts'] = []
+    recent_contact_list = []
+    for contact in request.session['recent_contacts']:
+        try:
+            recent_contact_list.append(Person.objects.get(pk=contact))
+        except (Person.DoesNotExist, MultiValueDictKeyError):
+            pass
+    context = {
+        'recent_contact_list': recent_contact_list,
+    }
+    return render(request, 'crm/addins/recently_viewed.html', context)
+
+
+@login_required
+def detail(request, person_id):
+    person = None
+
+    context = {
+        'person': person
+    }
+    return render(request, 'crm/detail.html', context)
 
 
 @login_required
 def person_detail(request):
-    """ ajax call to show detail on person """
+    """
+    DELETE THIS BUT KEEP THE recen_contacts STUFF
+    ajax call to show detail on person
+    """
     person = None
     if 'recent_contacts' not in request.session:
         request.session['recent_contacts'] = []
     if 'person_id' in request.GET:
+        person_id = request.GET['person_id']
         try:
-            person = Person.objects.get(pk=request.GET['person_id'])
+            person = Person.objects.get(pk=person_id)
+            if person_id not in request.session['recent_contacts']:
+                request.session['recent_contacts'].insert(0, person_id)
+                request.session['recent_contacts'] = \
+                    request.session['recent_contacts'][:10]
+            else:
+                request.session['recent_contacts'].remove(person_id)
+                request.session['recent_contacts'].insert(0, person_id)
         except (Person.DoesNotExist, MultiValueDictKeyError):
             pass
 

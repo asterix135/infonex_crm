@@ -1320,7 +1320,10 @@ def get_recent_contacts(request):
 
 @login_required
 def detail(request, person_id):
-    person = None
+    try:
+        person = Person.objects.get(pk=person_id)
+    except (Person.DoesNotExist, MultiValueDictKeyError):
+        person = None
 
     context = {
         'person': person

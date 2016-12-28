@@ -1,11 +1,29 @@
 <div class="row">
-  <div class="person-description">
+  <div id="person-description">
     <h1>
       {% if person.has_registration_history %}
       <span title="Past Customer" class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>
       {% endif %}
-      {{ person.name }}, {{ person.title }}, {{ person.company }}
+      {{ person.name }}{% if person.title %}, {{ person.title }}{% endif %}{% if person.company %}, {{ person.company }}{% endif %}
     </h1>
-    <a href="{% url 'crm:detail' person.id %}">Permalink to Record</a>
+    <h4>
+      Tel:
+      {% if person.phone %}
+      <a href="tel:{{ person.phone }}">{{ person.phone }}</a>
+      {% else %}
+      <span style="font-weight: 300; font-style: italic">Unknown</span>
+      {% endif %}
+    </h4>
+    <h4>
+      Email:
+      {% if person.email %}
+      <a href="mailto:{{ person.email }}">{{ person.email }}</a>
+      {% else %}
+      <span style="fornt-weight: 300; font-style: italic">Unknown</span>
+      {% endif %}
+    </h4>
+  </div>
+  <div id="person-detail-edit-panel">
+    {% include 'crm/addins/person_detail_edit_panel.html' %}
   </div>
 </div>

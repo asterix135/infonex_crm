@@ -1,5 +1,4 @@
 $(document).ready(function() {
-  // alert('hello');
 
   $("#checkAllBoxes").click(function(){
     var checked_status = this.checked;
@@ -53,6 +52,22 @@ $(document).ready(function() {
         executeQuickSearch(searchTerms);
       };
     };
+  })
+
+
+  // AJAX call to load person details page
+  $('body').on('click', '.person-detail-link', function(){
+    var personId = $(this).attr('person-id');
+    $.ajax({
+      url: '/crm/person_detail/',
+      type: 'GET',
+      data: {
+        'person_id': personId,
+      },
+      success: function(data){
+        $('#main-panel').html(data);
+      }
+    });
   })
 
 });

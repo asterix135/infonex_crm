@@ -51,3 +51,11 @@ footer {
     width: 60%; /* 6 columns */
   }
 }
+
+
+/*Specific stuff for crm part of site*/
+.person-detail-link {
+  text-decoration: underline;
+  color: blue;
+  cursor: pointer;
+}

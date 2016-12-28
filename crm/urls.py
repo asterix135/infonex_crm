@@ -40,4 +40,5 @@ urlpatterns = [
     # REWORKED/AJAX STUFF BELOW HERE
     ################
     url(r'^quick_search/$', views.quick_search, name='quick_search'),
+    url(r'^person_detail/$', views.person_detail, name='person_detail'),
 ]

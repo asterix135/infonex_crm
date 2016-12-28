@@ -1,0 +1,11 @@
+<div class="row">
+  <div class="person-description">
+    <h1>
+      {% if person.has_registration_history %}
+      <span title="Past Customer" class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>
+      {% endif %}
+      {{ person.name }}, {{ person.title }}, {{ person.company }}
+    </h1>
+    <a href="{% url 'crm:detail' person.id %}">Permalink to Record</a>
+  </div>
+</div>

@@ -8,7 +8,9 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
+
 
 from .forms import *
 from .models import *
@@ -1222,7 +1224,17 @@ def flag_many_records(request):
 
 
 ##################
-# NEW AJAX CALLS ETC BELOW HERE
+# HELPER FUNCTIONS
+##################
+
+
+##################
+# MAIN FUNCTIONS
+##################
+
+
+##################
+# AJAX CALLS
 ##################
 
 @login_required
@@ -1285,3 +1297,21 @@ def quick_search(request):
         'has_plus4': int(page) + 4 <= paginator.num_pages,
     }
     return render(request, 'crm/addins/search_results.html', context)
+
+
+@login_required
+def person_detail(request):
+    """ ajax call to show detail on person """
+    person = None
+    if 'recent_contacts' not in request.session:
+        request.session['recent_contacts'] = []
+    if 'person_id' in request.GET:
+        try:
+            person = Person.objects.get(pk=request.GET['person_id'])
+        except (Person.DoesNotExist, MultiValueDictKeyError):
+            pass
+
+    context = {
+        'person': person,
+    }
+    return render(request, 'crm/addins/person_detail.html', context)

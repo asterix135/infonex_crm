@@ -11,4 +11,8 @@ function clearTerritorySearchBoxes() {
   flagBox.value='';
   stateBox.value='';
   pastCustomerBox.checked=false;
-}
+};
+
+$(document).ready(function() {
+
+});

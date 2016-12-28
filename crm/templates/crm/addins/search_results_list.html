@@ -14,8 +14,11 @@
       {% if person_list %}
       {% for person in person_list %}
       <tr>
-        <td class="col-sm-2"><a href="{% url 'crm:detail' person.id %}">
-          {{ person.name}}</a></td>
+        <td class="col-sm-2">
+          <span class="person-detail-link" person-id="{{ person.id }}">
+            {{ person.name}}
+          </span>
+        </td>
         <td class="col-sm-3">{{ person.title }}</td>
         <td class="col-sm-3">{{ person.company}}</td>
         <td class="col-sm-2">{{ person.phone }}</td>

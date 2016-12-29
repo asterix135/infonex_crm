@@ -15,9 +15,9 @@
       {% for person in person_list %}
       <tr>
         <td class="col-sm-2">
-          <span class="person-detail-link" person-id="{{ person.id }}">
+          <a href = "{% url 'crm:detail' person.id %}">
             {{ person.name}}
-          </span>
+          </a>
         </td>
         <td class="col-sm-3">{{ person.title }}</td>
         <td class="col-sm-3">{{ person.company}}</td>

@@ -1233,14 +1233,20 @@ def add_to_recent_contacts(request, person_id):
     requires that person_id be validated before calling function
     """
     if 'recent_contacts' not in request.session:
-        request.session['recent_contacts'] = []
-    if person_id not in request.session['recent_contacts']:
-        request.session['recent_contacts'].insert(0, person_id)
-        request.session['recent_contacts'] = \
-            request.session['recent_contacts'][:10]
-    else:  # move contact to head of queue
-        request.session['recent_contacts'].remove(person_id)
-        request.session['recent_contacts'].insert(0, person_id)
+        recent_contact_list = []
+    else:
+        recent_contact_list = request.session['recent_contacts']
+    if person_id not in recent_contact_list:
+        recent_contact_list.insert(0, person_id)
+        recent_contact_list = recent_contact_list[:10]
+    else:
+        recent_contact_list.remove(person_id)
+        recent_contact_list.insert(0, person_id)
+    request.session['recent_contacts'] = recent_contact_list
+
+
+def execute_quick_search():
+    pass
 
 
 ##################
@@ -1249,18 +1255,57 @@ def add_to_recent_contacts(request, person_id):
 
 
 @login_required
-def quick_search(request):
-    """
-    Executes quick search from sidebar - returns search.html with results
-    """
-    search_terms = None
-    person_list = None
+def search(request):
+    """ renders search.html and/or executes advanced or quick search """
     search_form = SearchForm()
-    search_list = None
+    person_list = None
+    search_list = []
+    search_string = ''
+    search_terms = None
+    search_type = request.session.get('last_search_type')
 
-    if request.method == 'POST':
-        search_terms = request.POST['search_terms'].split()
-        # Turn list of search terms into a list of Q objects
+    # if new search, parse relevant variables and identify search type
+    if request.method == 'POST' and 'search_terms' in request.POST:
+        search_type = request.session['last_search_type'] = 'quick'
+        search_string = request.session['search_string'] = \
+            request.POST['search_terms']
+    elif request.method == 'POST':
+        search_form = SearchForm(request.POST)
+        search_type = request.session['last_search_type'] = 'advanced'
+        search_name = request.session['search_name'] = \
+            request.POST['name']
+        search_name = request.session['search_name'] = request.POST['name']
+        search_title = request.session['search_title'] = request.POST['title']
+        search_company = request.session['search_company'] = \
+            request.POST['company']
+        search_prov = request.session['search_prov'] = \
+            request.POST['state_province']
+        search_customer = request.session['search_customer'] = \
+            request.POST['past_customer']
+
+    # if no GET parameters, assume it's a new search and set all values to blank
+    if request.method == 'GET' and ('page' not in request.GET
+                                    and 'sort' not in request.GET):
+        search_type = request.session['last_search_type'] = 'advanced'
+        search_string = request.session['search_string'] = ''
+        search_name = request.session['search_name'] = None
+        search_title = request.session['search_title'] = None
+        search_company = request.session['search_company'] = None
+        search_prov = request.session['search_prov'] = None
+        search_customer = request.session['search_customer'] = None
+    elif request.method == 'GET':
+        if search_type == None:
+            search_type = 'advanced'
+        search_string = request.session.get('search_string')
+        search_name = request.session.get('search_name')
+        search_title = request.session.get('search_title')
+        search_company = request.session.get('search_company')
+        search_prov = request.session.get('search_prov')
+        search_customer = request.session.get('search_customer')
+
+    # execute quick search
+    if search_type == 'quick' and len(search_string.strip()) > 0 :
+        search_terms = search_string.split()
         queries = []
         for term in search_terms:
             queries.append(Q(name__icontains=term))
@@ -1272,8 +1317,17 @@ def quick_search(request):
             query |= item
         # Query the model
         search_list = Person.objects.filter(query)
-        paginator = Paginator(search_list, TERRITORY_RECORDS_PER_PAGE)
 
+    # execute advanced search
+    elif search_name or search_title or search_company or search_prov:
+        search_list = Person.objects.filter(name__icontains=search_name,
+                                            title__icontains=search_title,
+                                            company__icontains=search_company,
+                                            )
+
+
+    # paginate results
+    paginator = Paginator(search_list, TERRITORY_RECORDS_PER_PAGE)
     if 'page' in request.GET:
         page = request.session['search_page'] = request.GET['page']
     else:
@@ -1290,8 +1344,8 @@ def quick_search(request):
         page = paginator.num_pages
 
     context = {
-        'quick_search_terms': request.POST['search_terms'],
-        'show_advanced': False,
+        'quick_search_terms': search_string,
+        'show_advanced': search_type!='quick',
         'search_form': search_form,
         'person_list': person_list,
         'has_minus4': int(page) - 4 > 0,
@@ -1321,12 +1375,13 @@ def detail(request, person_id):
     except (Person.DoesNotExist, MultiValueDictKeyError):
         person = None
     person_details_form = PersonDetailsForm(instance=person)
-
+    print(request.session['recent_contacts'])
     context = {
         'person': person,
         'person_details_form': person_details_form,
     }
     return render(request, 'crm/detail.html', context)
+
 
 ##################
 # AJAX CALLS
@@ -1338,6 +1393,8 @@ def get_recent_contacts(request):
     if 'recent_contacts' not in request.session:
         request.session['recent_contacts'] = []
     recent_contact_list = []
+    print('\n\n')
+    print(request.session['recent_contacts'])
     for contact in request.session['recent_contacts']:
         try:
             recent_contact_list.append(Person.objects.get(pk=contact))
@@ -1357,6 +1414,7 @@ def save_person_details(request):
     if request.method == 'POST':
         try:
             person = Person.objects.get(pk=request.POST['person_id'])
+            add_to_recent_contacts(request, request.POST['person_id'])
             person_details_form = PersonDetailsForm(request.POST,
                                                     instance=person)
             if person_details_form.is_valid():

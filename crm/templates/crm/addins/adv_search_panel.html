@@ -2,7 +2,7 @@
   <h2 class="panel-title h2">Enter Search Criteria</h2>
 </div>
 <div class="panel-body">
-  <form action="{% url 'crm:search_persons' %}" method="post">
+  <form action="{% url 'crm:search' %}" method="post">
     {% csrf_token %}
     <div class="form-group row">
       <label for="{{ search_form.name.id_for_label }}"

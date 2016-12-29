@@ -4,7 +4,8 @@
     <h3 class="list-group-item active">Actions</h3>
 
     <div class="list-group-item">
-      <form action = "/crm/quick_search/" method="post">
+      <h5>Quick Search</h5>
+      <form action = "/crm/search/" method="post">
         {% csrf_token %}
         <div class="input-group add-on">
           <input class="form-control" placeholder="Search Name and/or Company" name="search_terms"
@@ -17,6 +18,7 @@
         </div>
       </form>
     </div>
+    <a class="list-group-item" href="/crm/search/">Advanced Search</a>
 
     <div class="list-group-item">
       Switch Conference
@@ -34,9 +36,5 @@
     <div class="list-group-item">
       Upcoming calls/appointments
     </div>
-    <button type="button" class="list-group-item">
-      Advanced Search
-    </button>
-
   </div>
 </div>

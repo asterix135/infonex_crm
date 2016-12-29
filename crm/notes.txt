@@ -1,4 +1,4 @@
-Stuff potentially stored in request.session
+Stuff stored in request.session
 
 For Working with Territory:
   employee: person whose territory will be called up
@@ -14,10 +14,14 @@ ref_page: absolute or paginated - where to return after deleting record
 search_page: current page number for search results
 
 Search parameters:
-  search_name
-  search_title
-  search_company
-  search_date
+  last_search_type: quick or advanced (or None)
+  search_string: quick search terms entered
+  search_page: pagination page
+  search_name: advanced search parameter
+  search_title: advanced search parameter
+  search_company: advanced search parameter
+  search_prov: advanced search parameter
+  search_customer: advanced search parameter
 
 General CRM
-  recent_contacts: list of 25 most recently viewed contacts in CRM
+  recent_contacts: list of 10 most recently viewed contacts in CRM

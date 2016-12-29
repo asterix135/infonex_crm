@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <div class="row">
   <div id="person-description">
     <h1>
@@ -5,11 +6,16 @@
       <span title="Past Customer" class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>
       {% endif %}
       {{ person.name }}{% if person.title %}, {{ person.title }}{% endif %}{% if person.company %}, {{ person.company }}{% endif %}
+      {% if person.linkedin %}
+      <a href="http://{{ person.linkedin }}" target="_blank">
+        <span class="float-right"><img src={% static 'crm/images/In-2C-128px-TM.png' %} style="width:32px;height:30px;"/></span>
+      </a>
+      {% endif %}
     </h1>
     <h4>
       Tel:
       {% if person.phone %}
-      <a href="tel:{{ person.phone }}">{{ person.phone }}</a>
+      {{ person.phone }}
       {% else %}
       <span style="font-weight: 300; font-style: italic">Unknown</span>
       {% endif %}

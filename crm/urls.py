@@ -39,14 +39,15 @@ urlpatterns = [
     ################
     # REWORKED STUFF BELOW HERE
     ################
-    url(r'^quick_search/$', views.quick_search, name='quick_search'),
-    url(r'^get_recent_contacts/$', views.get_recent_contacts,
-        name='get_recent_contacts'),
     # ex: /crm/1234/
     url(r'^detail/(?P<person_id>[0-9]+)/$', views.detail, name='detail'),
+    url(r'^get_recent_contacts/$', views.get_recent_contacts,
+        name='get_recent_contacts'),
+    url(r'^quick_search/$', views.quick_search, name='quick_search'),
+    url(r'^save_person_details/$', views.save_person_details,
+        name='save_person_details'),
 
     ################
     # TO BE DELETED
     ################
-    url(r'^person_detail/$', views.person_detail, name='person_detail'),
 ]

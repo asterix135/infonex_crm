@@ -1,11 +1,145 @@
 <div class="panel panel-info">
   <div class="panel-heading">
     <h2 class="panel-title">
-      Edit Contact Details
-      \\Chevron button\\
+      Edit Contact Details&nbsp;&nbsp;&nbsp;
+      <a class="btn btn-default btn-sm crm-list-action" href="#person-edit-form-fields" data-toggle="collapse">
+        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+      </a>
     </h2>
   </div>
-  <div class="panel-body collapse in">
-    Edit form fields go here
+  <div class="panel-body collapse" id="person-edit-form-fields">
+    <div class="form-group row">
+      <div class="col-sm-1">
+        {{ person_details_form.name.label_tag }}
+      </div>
+      <div class="col-sm-11">
+        {{ person_details_form.name.errors }}
+        {{ person_details_form.name }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-1">
+        {{ person_details_form.title.label_tag }}
+      </div>
+      <div class="col-sm-11">
+        {{ person_details_form.title.errors }}
+        {{ person_details_form.title }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-1">
+        {{ person_details_form.dept.label_tag }}
+      </div>
+      <div class="col-sm-11">
+        {{ person_details_form.dept.errors }}
+        {{ person_details_form.dept }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-1">
+        {{ person_details_form.company.label_tag }}
+      </div>
+      <div class="col-sm-11">
+        {{ person_details_form.company.errors }}
+        {{ person_details_form.company }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-1">
+        {{ person_details_form.city.label_tag }}
+      </div>
+      <div class="col-sm-7">
+        {{ person_details_form.city.errors }}
+        {{ person_details_form.city }}
+      </div>
+      <div class="col-sm-1">
+        <label>State/Prov</label>
+      </div>
+      <div class="col-sm-3">
+        {{ person.state_prov }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-1">
+        {{ person_details_form.phone.label_tag }}
+      </div>
+      <div class="col-sm-7">
+        {{ person_details_form.phone.errors }}
+        {{ person_details_form.phone }}
+      </div>
+      <div class="col-sm-1">
+        {{ person_details_form.do_not_call.label_tag }}
+      </div>
+      <div class="col-sm-3">
+        {{ person_details_form.do_not_call.errors}}
+        {{ person_details_form.do_not_call }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-1">
+        {{ person_details_form.phone_main.label_tag }}
+      </div>
+      <div class="col-sm-7">
+        {{ person_details_form.phone_main.errors }}
+        {{ person_details_form.phone_main }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-1">
+        {{ person_details_form.email.label_tag }}
+      </div>
+      <div class="col-sm-7">
+        {{ person_details_form.email.errors }}
+        {{ person_details_form.email }}
+      </div>
+      <div class="col-sm-1">
+        {{ person_details_form.do_not_email.label_tag }}
+      </div>
+      <div class="col-sm-3">
+        {{ person_details_form.do_not_email.errors }}
+        {{ person_details_form.do_not_email }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-1">
+        {{ person_details_form.url.label_tag }}
+      </div>
+      <div class="col-sm-11">
+        {{ person_details_form.url.errors }}
+        {% if person.url %}
+        <div class="input-group">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button" id="open-contact-website">
+              <i class="glyphicon glyphicon-new-window"></i>
+            </button>
+          </span>
+          {{ person_details_form.url }}
+        </div>
+        {% else %}
+        {{ person_details_form.url }}
+        {% endif %}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-1">
+        {{ person_details_form.industry.label_tag }}
+      </div>
+      <div class="col-sm-11">
+        {{ person_details_form.industry.errors }}
+        {{ person_details_form.industry }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-offset-1 col-sm-2">
+        <button type="reset" class="btn btn-secondary" id="reset-person-details-form">
+          Reset to Original
+        </button>
+      </div>
+      <div class="col-sm-2">
+        <button type="button" class="btn btn-primary" id="save-person-details-form">
+          Save Changes
+        </button>
+      </div>
+    </div>
   </div>
 </div>

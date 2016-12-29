@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 
 from .models import *
 from .constants import STATE_PROV_TUPLE, FLAG_CHOICES
@@ -294,6 +295,55 @@ class EventForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
             'title': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+        }
+
+
+#################
+# ADDED FOR OVERHAUL
+#################
+
+class PersonDetailsForm(forms.ModelForm):
+
+    class Meta:
+        model = Person
+        fields = ('name', 'title', 'company', 'url', 'phone', 'phone_main',
+                  'do_not_call', 'email', 'do_not_email', 'industry', 'dept',
+                  'city',)
+        labels = {
+            'url': _('Website'),
+        }
+        widgets = {
+            'name': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'title': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'company': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'url': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'city': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'phone': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'phone_main': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'email': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'industry': forms.Textarea(
+                attrs={'class': 'form-control',
+                       'rows': '3'}
+            ),
+            'dept': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
         }

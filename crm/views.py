@@ -1227,20 +1227,31 @@ def flag_many_records(request):
 # HELPER FUNCTIONS
 ##################
 
+def add_to_recent_contacts(request, person_id):
+    """
+    adds person to a user's recent contact list
+    requires that person_id be validated before calling function
+    """
+    if 'recent_contacts' not in request.session:
+        request.session['recent_contacts'] = []
+    if person_id not in request.session['recent_contacts']:
+        request.session['recent_contacts'].insert(0, person_id)
+        request.session['recent_contacts'] = \
+            request.session['recent_contacts'][:10]
+    else:  # move contact to head of queue
+        request.session['recent_contacts'].remove(person_id)
+        request.session['recent_contacts'].insert(0, person_id)
+
 
 ##################
 # MAIN FUNCTIONS
 ##################
 
 
-##################
-# AJAX CALLS
-##################
-
 @login_required
 def quick_search(request):
     """
-    Executes quick search from sidebar - results to update main panel
+    Executes quick search from sidebar - returns search.html with results
     """
     search_terms = None
     person_list = None
@@ -1302,6 +1313,26 @@ def quick_search(request):
 
 
 @login_required
+def detail(request, person_id):
+    """ loads main person page """
+    try:
+        person = Person.objects.get(pk=person_id)
+        add_to_recent_contacts(request, person_id)
+    except (Person.DoesNotExist, MultiValueDictKeyError):
+        person = None
+    person_details_form = PersonDetailsForm(instance=person)
+
+    context = {
+        'person': person,
+        'person_details_form': person_details_form,
+    }
+    return render(request, 'crm/detail.html', context)
+
+##################
+# AJAX CALLS
+##################
+
+@login_required
 def get_recent_contacts(request):
     """ ajax call to populate recent contacts on sidebar """
     if 'recent_contacts' not in request.session:
@@ -1319,42 +1350,22 @@ def get_recent_contacts(request):
 
 
 @login_required
-def detail(request, person_id):
-    try:
-        person = Person.objects.get(pk=person_id)
-    except (Person.DoesNotExist, MultiValueDictKeyError):
-        person = None
-
-    context = {
-        'person': person
-    }
-    return render(request, 'crm/detail.html', context)
-
-
-@login_required
-def person_detail(request):
-    """
-    DELETE THIS BUT KEEP THE recen_contacts STUFF
-    ajax call to show detail on person
-    """
+def save_person_details(request):
+    """ ajax call to save person details and update that section of page """
     person = None
-    if 'recent_contacts' not in request.session:
-        request.session['recent_contacts'] = []
-    if 'person_id' in request.GET:
-        person_id = request.GET['person_id']
+    person_details_form = PersonDetailsForm()
+    if request.method == 'POST':
         try:
-            person = Person.objects.get(pk=person_id)
-            if person_id not in request.session['recent_contacts']:
-                request.session['recent_contacts'].insert(0, person_id)
-                request.session['recent_contacts'] = \
-                    request.session['recent_contacts'][:10]
-            else:
-                request.session['recent_contacts'].remove(person_id)
-                request.session['recent_contacts'].insert(0, person_id)
+            person = Person.objects.get(pk=request.POST['person_id'])
+            person_details_form = PersonDetailsForm(request.POST,
+                                                    instance=person)
+            if person_details_form.is_valid():
+                person_details_form.save()
         except (Person.DoesNotExist, MultiValueDictKeyError):
             pass
 
     context = {
         'person': person,
+        'person_details_form': person_details_form,
     }
     return render(request, 'crm/addins/person_detail.html', context)

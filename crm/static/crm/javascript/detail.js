@@ -82,4 +82,19 @@ $(document).ready(function() {
     })
   });
 
+  // Toggle Add Contact Pane
+  $('body').on('click', '#add-contact-history', function(){
+    if ($('#add-contact-history-form').hasClass('collapse in')){
+      $('#add-contact-history').removeClass('glyphicon-chevron-up');
+      $('#add-contact-history').addClass('glyphicon-plus');
+      $('#add-contact-history-form').collapse('hide');
+      console.log('hiding?')
+    } else {
+      $('#add-contact-history').removeClass('glyphicon-plus');
+      $('#add-contact-history').addClass('glyphicon-chevron-up');
+      $('#add-contact-history-form').collapse('show');
+      console.log('showing?');
+    };
+  });
+
 });

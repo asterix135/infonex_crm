@@ -1070,14 +1070,9 @@ def add_to_recent_contacts(request, person_id):
     request.session['recent_contacts'] = recent_contact_list
 
 
-def execute_quick_search():
-    pass
-
-
 ##################
 # MAIN FUNCTIONS
 ##################
-
 
 @login_required
 def search(request):
@@ -1228,6 +1223,7 @@ def search(request):
 @login_required
 def detail(request, person_id):
     """ loads main person page """
+    new_contact_form = NewContactForm()
     try:
         person = Person.objects.get(pk=person_id)
         add_to_recent_contacts(request, person_id)
@@ -1238,6 +1234,7 @@ def detail(request, person_id):
     context = {
         'person': person,
         'person_details_form': person_details_form,
+        'new_contact_form': new_contact_form,
     }
     return render(request, 'crm/detail.html', context)
 

@@ -1,0 +1,83 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h2 class="panel-title">
+      Contact History
+      <div id="add-contact-history" class="float-right glyphicon glyphicon-plus" style="cursor:pointer">
+
+      </div>
+    </h2>
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped">
+      <thead class="thead-inverse">
+        <tr>
+          <th class="col-sm-2">Date/Time</th>
+          <th class="col-sm-1">User</th>
+          <th class="col-sm-2">Event</th>
+          <th class="col-sm-1">Method</th>
+          <th class="col-sm-5">Notes</th>
+          <th class="col-sm-1">Delete?</th>
+        </tr>
+      </thead>
+      <div id="add-contact-history-form" class="collapse">
+        <div class="form-group row">
+          <h4 class="col-sm-12">Add Contact History</h4>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-1">
+            {{ new_contact_form.event.label_tag }}
+          </div>
+          <div class="col-sm-5">
+            {{ new_contact_form.event.errors }}
+            {{ new_contact_form.event }}
+          </div>
+          <div class="col-sm-1">
+            {{ new_contact_form.method.label_tag }}
+          </div>
+          <div class="col-sm-5">
+            {{ new_contact_form.method.errors }}
+            {{ new_contact_form.method }}
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-1">
+            {{ new_contact_form.notes.label_tag }}
+          </div>
+          <div class="col-sm-11">
+            {{ new_contact_form.notes.errors }}
+            {{ new_contact_form.notes }}
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-offset-1 col-sm-2">
+            <button type="reset" class="btn btn-secondary" id="reset-contact-history-form">
+              Reset
+            </button>
+          </div>
+          <div class="col-sm-2">
+            <button type="button" class="btn btn-primary" id="save-contact-history-form">
+              Save
+            </button>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-12">
+            <hr class="style-one" />
+          </div>
+        </div>
+      </div>
+      <tbody>
+      {% for contact in person.contact_set.all|dictsortreversed:"date_of_contact" %}
+      <tr>
+        <td class="col-sm-2">{{ contact.date_of_contact }}</td>
+        <td class="col-sm-1">{{ contact.author }}</td>
+        <td class="col-sm-2">{{ contact.event }}</td>
+        <td class="col-sm-1">{{ contact.get_method_display }}</td>
+        <td class="col-sm-5">{{ contact.notes }}</td>
+        <td class="col-sm-1">{% if contact.able_to_delete %}<a href="?rm={{ contact.pk }}">Delete</a>{% endif %}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -9,7 +9,6 @@ $(document).ready(function(){
             $('#buyer-history' + delegate_id).html(data);
           });
     var confId = $('#id_event').val()
-    console.log('conf')
     $('input[name=conf_id]').val(confId);
   });
 
@@ -41,7 +40,6 @@ $(document).ready(function(){
   // Main logic for form submission on new_delegate_search
   function searchDels() {
     var eventId = $('#id_event').val();
-    console.log(eventId);
     $.ajax({
       url: '/registration/search_dels/',
       type: 'POST',

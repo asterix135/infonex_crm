@@ -23,7 +23,7 @@ $(document).ready(function() {
 
 
   // Toggle and/or retrieve view of recently viewed contacts
-  $('body').on('click', '#toggle-recently-viewed', function(){
+  $('body').on('click', '#icon-toggle-recent-viewed', function(){
     if ($('#recent-contact-list').hasClass('collapse in')){
       $('#recent-contact-list').collapse('hide');
       $('#icon-toggle-recent-viewed').removeClass('glyphicon-chevron-up');

@@ -101,6 +101,19 @@ $(document).ready(function() {
   });
 
 
+  // Toggle Edit Person Details panel
+  $('body').on('click', '#btn-toggle-edit-person', function(){
+    if ($(this).hasClass('glyphicon-chevron-down')){
+      $(this).removeClass('glyphicon-chevron-down');
+      $(this).addClass('glyphicon-chevron-up');
+      $('#person-edit-form-fields').collapse('show');
+    } else {
+      $(this).removeClass('glpyhicon-chevron-up');
+      $(this).addClass('glyphicon-chevron-down');
+      $('#person-edit-form-fields').collapse('hide');
+    };
+  });
+
   // reset Contact History Form Values
   $('body').on('click', '#reset-contact-history-form', function(){
     $('#id_event').val(originalContactEvent);
@@ -111,7 +124,6 @@ $(document).ready(function() {
 
   // submit new contact history and update contact history panel
   $('body').on('click', '#save-contact-history-form', function(){
-    console.log('saving, hopefully....')
     var personId = $('#person_id').val();
     var contactEvent = $('#id_event').val();
     var contactMethod = $('#id_method').val();
@@ -131,7 +143,6 @@ $(document).ready(function() {
       success: function(data){
         $('#person-contact-history-panel').html(data);
         var foo = $(data).find('#id_event').val();
-        console.log(foo);
       }
     });
   });

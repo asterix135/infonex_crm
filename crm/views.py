@@ -1283,3 +1283,37 @@ def save_person_details(request):
         'person_details_form': person_details_form,
     }
     return render(request, 'crm/addins/person_detail.html', context)
+
+@login_required
+def add_contact_history(request):
+    person = None
+    new_contact_form = NewContactForm()
+    if request.method == 'POST':
+        new_contact_form = NewContactForm(request.POST)
+        try:
+            person = Person.objects.get(pk=request.POST['person_id'])
+            add_to_recent_contacts(request, request.POST['person_id'])
+            if new_contact_form.is_valid():
+                event = Event.objects.get(pk=request.POST['event'])
+                print('\n\nForm is Valid\n\n')
+                new_contact = Contact(
+                    person=person,
+                    event=event,
+                    date_of_contact=timezone.now(),
+                    notes=request.POST['notes'],
+                    method=request.POST['method'],
+                    author=request.user,
+                )
+                new_contact.save()
+                person.date_modified = timezone.now()
+                person.modified_by = request.user
+                person.save()
+            else:
+                print('\n\nForm is Not Valid\n\n')
+        except (Person.DoesNotExist, MultiValueDictKeyError):
+            pass
+    context = {
+        'person': person,
+        'new_contact_form': new_contact_form,
+    }
+    return render(request, 'crm/addins/person_contact_history.html', context)

@@ -16,14 +16,20 @@
       Tel:
       {% if person.phone %}
       {{ person.phone }}
+      {% if person.do_not_call %}
+      <span style="color:red;">(Do not call)</span>
+      {% endif %}
       {% else %}
       <span style="font-weight: 300; font-style: italic">Unknown</span>
       {% endif %}
     </h4>
     <h4>
       Email:
-      {% if person.email %}
+      {% if person.email and not person.do_not_email %}
       <a href="mailto:{{ person.email }}">{{ person.email }}</a>
+      {% elif person.email %}
+      {{ person.email }}
+      <span style="color:red;">(Do not email)</span>
       {% else %}
       <span style="fornt-weight: 300; font-style: italic">Unknown</span>
       {% endif %}

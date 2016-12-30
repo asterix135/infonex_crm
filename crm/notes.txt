@@ -4,9 +4,6 @@ For Working with Territory:
   employee: person whose territory will be called up
   event: event for which territory will be called up
 
-sort_col: which column to sort territory list on
-sort_order: whether to sort ascending/descending
-
 territory_page: current page to show in list pagination
 
 ref_page: absolute or paginated - where to return after deleting record
@@ -22,6 +19,14 @@ Search parameters:
   search_company: advanced search parameter
   search_prov: advanced search parameter
   search_customer: advanced search parameter
+  page: current pagination location
+  sort_col: for list sortation
+  sort_order: for list sortation
 
 General CRM
   recent_contacts: list of 10 most recently viewed contacts in CRM
+
+Delegate processing (see delegate.views.py)
+  current_registration: ??
+  registrant:
+  assistant:

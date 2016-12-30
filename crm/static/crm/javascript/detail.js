@@ -14,6 +14,10 @@ $(document).ready(function() {
   var originalDoNotEmail = $('#id_do_not_email').prop('checked');
   var originalUrl = $('#id_url').val();
   var originalIndustry = $('id_industry').val();
+  // for contact history form
+  var originalContactEvent = '';
+  var originalContactMethod = 'Pitch';
+  var originalContactNotes = '';
 
 
   // open person's website in new page
@@ -82,19 +86,68 @@ $(document).ready(function() {
     })
   });
 
+
   // Toggle Add Contact Pane
   $('body').on('click', '#add-contact-history', function(){
     if ($('#add-contact-history-form').hasClass('collapse in')){
       $('#add-contact-history').removeClass('glyphicon-chevron-up');
       $('#add-contact-history').addClass('glyphicon-plus');
       $('#add-contact-history-form').collapse('hide');
-      console.log('hiding?')
     } else {
       $('#add-contact-history').removeClass('glyphicon-plus');
       $('#add-contact-history').addClass('glyphicon-chevron-up');
       $('#add-contact-history-form').collapse('show');
-      console.log('showing?');
     };
+  });
+
+
+  // reset Contact History Form Values
+  $('body').on('click', '#reset-contact-history-form', function(){
+    $('#id_event').val(originalContactEvent);
+    $('#id_method').val(originalContactMethod);
+    $('#id_notes').val(originalContactNotes);
+  });
+
+
+  // submit new contact history and update contact history panel
+  $('body').on('click', '#save-contact-history-form', function(){
+    console.log('saving, hopefully....')
+    var personId = $('#person_id').val();
+    var contactEvent = $('#id_event').val();
+    var contactMethod = $('#id_method').val();
+    var contactNotes = $('#id_notes').val();
+    originalContactEvent = contactEvent;
+    originalContactMethod = contactMethod;
+    originalContactNotes = contactNotes;
+    $.ajax({
+      url: '/crm/add_contact_history/',
+      type: 'POST',
+      data: {
+        'person_id': personId,
+        'event': contactEvent,
+        'method': contactMethod,
+        'notes': contactNotes,
+      },
+      success: function(data){
+        $('#person-contact-history-panel').html(data);
+        var foo = $(data).find('#id_event').val();
+        console.log(foo);
+      }
+    });
+  });
+
+  // Toggle display of more than 5 contact history entries
+  $('body').on('click', '#show-entire-contact-history', function(){
+    var buttonText = $(this).text().trim();
+    if (buttonText == 'Show All'){
+      $(this).text('Show 5');
+      $('#contact-history-panel-text').text('Contact History (All)');
+    } else {
+      var contactCount = $('.contact-history-entry').length;
+      $(this).text('Show All');
+      $('#contact-history-panel-text').text('Contact History (5 of ' + contactCount + ')');
+    };
+    $('.overflow-contact').toggle();
   });
 
 });

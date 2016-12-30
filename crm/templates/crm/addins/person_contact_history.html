@@ -1,10 +1,19 @@
 <div class="panel panel-primary">
   <div class="panel-heading">
     <h2 class="panel-title">
-      Contact History
-      <div id="add-contact-history" class="float-right glyphicon glyphicon-plus" style="cursor:pointer">
-
-      </div>
+      <span id="contact-history-panel-text">
+        Contact History
+        {% if person.contact_set.all|length < 6 %}
+        (all)
+        {% else %}
+        (Last 5 of {{ person.contact_set.all|length }})
+        {% endif %}
+      </span>
+      {% if new_contact_form.errors %}
+      <div id="add-contact-history" class="float-right glyphicon glyphicon-chevron-up" style="cursor:pointer"></div>
+      {% else %}
+      <div id="add-contact-history" class="float-right glyphicon glyphicon-plus" style="cursor:pointer"></div>
+      {% endif %}
     </h2>
   </div>
   <div class="panel-body">
@@ -19,7 +28,11 @@
           <th class="col-sm-1">Delete?</th>
         </tr>
       </thead>
+      {% if new_contact_form.errors %}
+      <div id="add-contact-history-form" class="collapse in">
+      {% else %}
       <div id="add-contact-history-form" class="collapse">
+      {% endif %}
         <div class="form-group row">
           <h4 class="col-sm-12">Add Contact History</h4>
         </div>
@@ -68,15 +81,26 @@
       </div>
       <tbody>
       {% for contact in person.contact_set.all|dictsortreversed:"date_of_contact" %}
-      <tr>
-        <td class="col-sm-2">{{ contact.date_of_contact }}</td>
-        <td class="col-sm-1">{{ contact.author }}</td>
-        <td class="col-sm-2">{{ contact.event }}</td>
-        <td class="col-sm-1">{{ contact.get_method_display }}</td>
-        <td class="col-sm-5">{{ contact.notes }}</td>
-        <td class="col-sm-1">{% if contact.able_to_delete %}<a href="?rm={{ contact.pk }}">Delete</a>{% endif %}</td>
+      {% if forloop.counter > 5 %}
+      <tr class="overflow-contact contact-history-entry" >
+      {% else %}
+      <tr class="contact-history-entry">
+      {% endif %}
+        <td>{{ contact.date_of_contact }}</td>
+        <td>{{ contact.author }}</td>
+        <td>{{ contact.event }}</td>
+        <td>{{ contact.get_method_display }}</td>
+        <td>{{ contact.notes }}</td>
+        <td>{% if contact.able_to_delete %}<a href="?rm={{ contact.pk }}">Delete</a>{% endif %}</td>
       </tr>
       {% endfor %}
+      {% if person.contact_set.all|length > 5 %}
+      <tr>
+        <td colspan="6">
+          <button type="button" class="btn btn-default" id="show-entire-contact-history">Show All</button>
+        </td>
+      </tr>
+      {% endif %}
       </tbody>
     </table>
   </div>

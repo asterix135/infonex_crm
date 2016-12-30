@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from .models import *
@@ -109,6 +110,12 @@ class NewContactForm(forms.ModelForm):
                        'rows': '3'}
             ),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(NewContactForm, self).__init__(*args, **kwargs)
+        self.fields['event'].queryset=Event.objects.filter(
+                date_begins__gte=timezone.now()-datetime.timedelta(weeks=4)
+        ).order_by('-number')
 
 
 class PersonChangesForm(forms.ModelForm):

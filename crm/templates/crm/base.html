@@ -72,10 +72,7 @@
             <li><a href="{% url 'logout' %}?next=/">Logout</a></li>
             <!-- <li><p class="navbar-text">Logged in as: {{ user.username }}</p></li> -->
             <li><a href="{% url 'crm:territory' %}">Current Territory</a></li>
-            <li><a href="{% url 'crm:search_persons' %}">Search page</a></li>
-            <li>
-              <a href="">SEARCH FIELD?</a>
-            </li>
+
             {% if user_is_admin %}
             <li><a href="{% url 'admin:index' %}">Admin</a></li>
             {% endif %}

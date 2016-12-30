@@ -494,181 +494,6 @@ def add_contact(request, person):
     person.save()
 
 
-#################
-# HELPER FUNCTION
-#################
-def execute_person_search(name, title, company, state_province, past_customer,
-                          sort_col, sort_order):
-    """
-    Helper function to filter records on search_person call
-    returns sorted QuerySet
-    """
-    past_customer = past_customer == 'True' if past_customer is not None \
-        else None
-    search_list = Person.objects.all()
-    if name:
-        search_list = search_list.filter(name__icontains=name)
-    if title:
-        search_list = search_list.filter(title__icontains=title)
-    if company:
-        search_list = search_list.filter(company__icontains=company)
-    if state_province:
-        regex_val = r''
-        for area_code in AC_DICT:
-            if AC_DICT[area_code] == state_province:
-                regex_val += '^' + area_code + '|^\(' + area_code + '|'
-        regex_val = regex_val[:-1]
-        search_list = search_list.filter(phone__regex=regex_val)
-    if past_customer is not None:
-        search_list = search_list.filter(reghistory__isnull=not past_customer)
-
-    search_list = search_list.order_by(sort_col)
-    if sort_order == 'DESC':
-        search_list = search_list.reverse()
-    return search_list
-
-
-@login_required
-def search_persons(request):
-    # Set sort criteria
-    if 'sort' not in request.GET:
-        sort_col = request.session.get('sort_col')
-    else:
-        if request.GET['sort'] == request.session.get('sort_col'):
-            request.session['sort_order'] = 'ASC' if \
-                request.session['sort_order'] == 'DESC' else 'DESC'
-        else:
-            request.session['sort_order'] = 'ASC'
-            request.session['sort_col'] = request.GET['sort']
-        sort_col = request.session['sort_col']
-    sort_order = request.session.get('sort_order')
-
-    # If no sort order, set to ascending by company name & set cookies
-    if not sort_col:
-        sort_col = 'company'
-        request.session['sort_col'] = sort_col
-    if not sort_order:
-        sort_order = 'ASC'
-        request.session['sort_order'] = sort_order
-
-    if request.method == 'POST':
-        form = SearchForm(request.POST)
-        if form.is_valid():
-            # make sure search criteria exist
-            if (request.POST['name']) or \
-                    (request.POST['title']) or \
-                    (request.POST['company']) or \
-                    (request.POST['state_province']):
-                # execute search
-                if request.POST['name']:
-                    request.session['search_name'] = name = request.POST['name']
-                else:
-                    request.session['search_name'] = name = None
-
-                if request.POST['title']:
-                    request.session['search_title'] = \
-                        title = request.POST['title']
-                else:
-                    request.session['search_title'] = title = None
-
-                if request.POST['company']:
-                    request.session['search_company'] = company = \
-                        request.POST['company']
-                else:
-                    request.session['search_company'] = company = None
-
-                if request.POST['state_province']:
-                    request.session['search_state'] = state_province = \
-                        request.POST['state_province']
-                else:
-                    request.session['search_state'] = state_province = None
-
-                if request.POST['past_customer']:
-                    request.session['search_customer'] = past_customer = \
-                        request.POST['past_customer']
-                else:
-                    request.session['search_customer'] = past_customer = None
-
-                # sort results by sort criteria
-                search_list = execute_person_search(
-                    name, title, company, state_province, past_customer,
-                    sort_col, sort_order
-                )
-
-            else:  # No search criteria = no names
-                search_list = Person.objects.none()
-        else:
-            search_list = Person.objects.none()
-    else:
-        name = request.session['search_name'] if 'search_name' in \
-            request.session else None
-        title = request.session['search_title'] if 'search_title' in \
-            request.session else None
-        company = request.session['search_company'] if 'search_company' in \
-            request.session else None
-        state_province = request.session['search_state'] if 'search_state' in \
-            request.session else None
-        past_customer = request.session['search_customer'] if \
-            'search_customer' in request.session else None
-
-        form = SearchForm(initial={
-            'name': name,
-            'title': title,
-            'company': company,
-            'state_province': state_province,
-            'past_customer': past_customer,
-        })
-
-        if name or title or company or state_province:
-            search_list = execute_person_search(name,
-                                                title,
-                                                company,
-                                                state_province,
-                                                past_customer,
-                                                sort_col,
-                                                sort_order)
-        else:
-            search_list = Person.objects.none()
-
-    paginator = Paginator(search_list, TERRITORY_RECORDS_PER_PAGE)
-
-    if 'page' in request.GET:
-        page = request.session['search_page'] = request.GET['page']
-    else:
-        page = request.session.get('search_page')
-
-    try:
-        person_list = paginator.page(page)
-    except PageNotAnInteger:
-        # if page not an integer, deliver first page
-        person_list = paginator.page(1)
-        page = 1
-    except EmptyPage:
-        # if page out of range, deliver last page of results
-        person_list = paginator.page(paginator.num_pages)
-        page = paginator.num_pages
-
-    context = {
-        'search_form': form,
-        'person_list': person_list,
-        'has_minus4': int(page) - 4 > 0,
-        'has_minus3': int(page) - 3 > 0,
-        'minus3': str(int(page) - 3),
-        'has_minus2': int(page) - 2 > 0,
-        'minus2': str(int(page) - 2),
-        'has_minus1': int(page) - 1 > 0,
-        'minus1': str(int(page) - 1),
-        'has_plus1': int(page) + 1 <= paginator.num_pages,
-        'plus1': str(int(page) + 1),
-        'has_plus2': int(page) + 2 <= paginator.num_pages,
-        'plus2': str(int(page) + 2),
-        'has_plus3': int(page) + 3 <= paginator.num_pages,
-        'plus3': str(int(page) + 3),
-        'has_plus4': int(page) + 4 <= paginator.num_pages,
-    }
-    return render(request, 'crm/search_persons.html', context=context)
-
-
 ######################
 # Helper function for generate_territory_list
 ######################
@@ -1335,15 +1160,37 @@ def search(request):
             search_list = search_list.filter(
                 reghistory__isnull=not search_customer)
 
-    # Set up list order and order search_list
-
+    # Figure out sort order
+    if 'sort' not in request.GET:
+        sort_col = request.session.get('sort_col')
+    else:
+        if request.GET['sort'] == request.session.get('sort_col'):
+            request.session['sort_order'] = 'ASC' if \
+                request.session['sort_order'] == 'DESC' else 'DESC'
+        else:
+            request.session['sort_order'] = 'ASC'
+            request.session['sort_col'] = request.GET['sort']
+        sort_col = request.session['sort_col']
+    sort_order = request.session.get('sort_order')
+    # If sort order not set, set to ascending by company name & set cookies
+    if not sort_col:
+        sort_col = 'company'
+        request.session['sort_col'] = sort_col
+    if not sort_order:
+        sort_order = 'ASC'
+        request.session['sort_order'] = sort_order
+    # sort search results
+    if search_list != []:
+        search_list = search_list.order_by(sort_col)
+        if sort_order == 'DESC':
+            search_list = search_list.reverse()
 
     # paginate results
     paginator = Paginator(search_list, TERRITORY_RECORDS_PER_PAGE)
     if 'page' in request.GET:
         page = request.session['search_page'] = request.GET['page']
     else:
-        page = 1
+        page = request.session['search_page'] = 1
     try:
         person_list = paginator.page(page)
     except PageNotAnInteger:

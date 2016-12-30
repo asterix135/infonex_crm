@@ -1283,7 +1283,7 @@ def search(request):
         search_customer = request.session['search_customer'] = \
             request.POST['past_customer']
 
-    # if no GET parameters, assume it's a new search and set all values to blank
+    # if no GET parameters, assume it's a new search and set all values to None
     if request.method == 'GET' and ('page' not in request.GET
                                     and 'sort' not in request.GET):
         search_type = request.session['last_search_type'] = 'advanced'
@@ -1324,6 +1324,18 @@ def search(request):
                                             title__icontains=search_title,
                                             company__icontains=search_company,
                                             )
+        if search_prov:
+            regex_val = r''
+            for area_code in AC_DICT:
+                if AC_DICT[area_code] == search_prov:
+                    regex_val += '^' + area_code + '|^\(' + area_code + '|'
+            regex_val = regex_val[:-1]
+            search_list = search_list.filter(phone__regex=regex_val)
+        if search_customer is not None:
+            search_list = search_list.filter(
+                reghistory__isnull=not search_customer)
+
+    # Set up list order and order search_list
 
 
     # paginate results

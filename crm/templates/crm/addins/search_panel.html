@@ -1,8 +1,12 @@
 <div class="row">
   <h1>
     Advanced Database Search Options
-    <a class="btn btn-default btn-sm crm-list-action" href="#search-panel" data-toggle="collapse">
-      <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+    <a class="btn btn-default btn-sm crm-list-action" href="#search-panel" data-toggle="collapse" id="btn-toggle-adv-search">
+      {% if show_advanced %}
+      <span class="glyphicon glyphicon-chevron-up" aria-hidden="true" id="icon-toggle-adv-search"></span>
+      {% else %}
+      <span class="glyphicon glyphicon-chevron-down" aria-hidden="true" id="icon-toggle-adv-search"></span>
+      {% endif %}
     </a>
 </h1>
   {% if show_advanced %}

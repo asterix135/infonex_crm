@@ -26,7 +26,11 @@ $(document).ready(function() {
   $('body').on('click', '#toggle-recently-viewed', function(){
     if ($('#recent-contact-list').hasClass('collapse in')){
       $('#recent-contact-list').collapse('hide');
+      $('#icon-toggle-recent-viewed').removeClass('glyphicon-chevron-up');
+      $('#icon-toggle-recent-viewed').addClass('glyphicon-chevron-down');
     } else {
+      $('#icon-toggle-recent-viewed').removeClass('glyphicon-chevron-down');
+      $('#icon-toggle-recent-viewed').addClass('glyphicon-chevron-up');
       $('#recent-contact-list').collapse('show');
       $.ajax({
         url: '/crm/get_recent_contacts/',

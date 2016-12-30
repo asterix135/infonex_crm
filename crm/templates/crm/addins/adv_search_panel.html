@@ -1,7 +1,19 @@
 <div class="panel-heading">
-  <h2 class="panel-title h2">Enter Search Criteria</h2>
+  <h2 class="panel-title">
+    Advanced Search Criteria
+    {% if show_advanced %}
+    <div id="btn-toggle-adv-search" class="float-right glyphicon glyphicon-chevron-up glyph-button"></div>
+    {% else %}
+    <div id="btn-toggle-adv-search" class="float-right glyphicon glyphicon-chevron-down glyph-button"></div>
+    {% endif %}
+  </h2>
+
 </div>
-<div class="panel-body">
+{% if show_advanced %}
+<div class="panel-body collapse in" id="search-panel">
+{% else %}
+<div class="panel-body collapse" id="search-panel">
+{% endif %}
   <form action="{% url 'crm:search' %}" method="post">
     {% csrf_token %}
     <div class="form-group row">

@@ -90,7 +90,7 @@ def update_person(request, person):
 #################
 # HELPER FUNCTION
 #################
-def update_category_info(request, person):
+def update_category_info_old(request, person):
     person.modified_by = request.user
     person.date_modified = timezone.now()
     person.save()
@@ -144,7 +144,7 @@ def detail_old(request, person_id):
     elif request.method == 'POST' and request.POST['form'] == 'category':
         category_form = PersonCategoryUpdateForm(request.POST)
         if category_form.is_valid():
-            update_category_info(request, person)
+            update_category_info_old(request, person)
         person_form = PersonUpdateForm(instance=person)
         contact_form = NewContactForm(initial={'event': event})
 
@@ -269,7 +269,7 @@ def detail_paginated(request):
     elif request.method == 'POST' and request.POST['form'] == 'category':
         category_form = PersonCategoryUpdateForm(request.POST)
         if category_form.is_valid():
-            update_category_info(request, person)
+            update_category_info_old(request, person)
         person_form = PersonUpdateForm(instance=person)
         contact_form = NewContactForm(initial={'event': territory_event})
 
@@ -1222,7 +1222,7 @@ def search(request):
 
 @login_required
 def detail(request, person_id):
-    """ loads main person page """
+    """ loads main person page (detail.html) """
     new_contact_form = NewContactForm()
     try:
         person = Person.objects.get(pk=person_id)
@@ -1230,11 +1230,12 @@ def detail(request, person_id):
     except (Person.DoesNotExist, MultiValueDictKeyError):
         person = None
     person_details_form = PersonDetailsForm(instance=person)
-    print(request.session['recent_contacts'])
+    category_form = PersonCategoryUpdateForm(instance=person)
     context = {
         'person': person,
         'person_details_form': person_details_form,
         'new_contact_form': new_contact_form,
+        'category_form': category_form,
     }
     return render(request, 'crm/detail.html', context)
 
@@ -1265,6 +1266,7 @@ def get_recent_contacts(request):
 @login_required
 def save_person_details(request):
     """ ajax call to save person details and update that section of page """
+    updated_details_success = None
     person = None
     person_details_form = PersonDetailsForm()
     if request.method == 'POST':
@@ -1275,14 +1277,17 @@ def save_person_details(request):
                                                     instance=person)
             if person_details_form.is_valid():
                 person_details_form.save()
+                updated_details_success = True
         except (Person.DoesNotExist, MultiValueDictKeyError):
             pass
 
     context = {
         'person': person,
         'person_details_form': person_details_form,
+        'updated_details_success': updated_details_success
     }
     return render(request, 'crm/addins/person_detail.html', context)
+
 
 @login_required
 def add_contact_history(request):
@@ -1316,4 +1321,26 @@ def add_contact_history(request):
         'person': person,
         'new_contact_form': new_contact_form,
     }
-    return render(request, 'crm/addins/person_contact_history.html', context)
+    return render(request, 'crm/addins/detail_contact_history.html', context)
+
+
+@login_required
+def save_category_changes(request):
+    updated_category_success = None
+    category_form = PersonCategoryUpdateForm
+    if request.method == 'POST':
+        try:
+            person = Person.objects.get(pk=request.POST['person_id'])
+            add_to_recent_contacts(request, request.POST['person_id'])
+            category_form = PersonCategoryUpdateForm(request.POST,
+                                                     instance=person)
+            if category_form.is_valid():
+                category_form.save()
+                updated_category_success = True
+        except (Person.DoesNotExist, MultiValueDictKeyError):
+            pass
+    context = {
+        'updated_category_success': updated_category_success,
+        'category_form': category_form,
+    }
+    return render(request, 'crm/addins/detail_categorize.html', context)

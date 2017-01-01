@@ -1,6 +1,11 @@
 {% load staticfiles %}
 <div class="row">
   <div id="person-description">
+    {% if updated_details_success %}
+    <input type="hidden" name="updated-details-success" id="updated-details-success" value="True" />
+    {% else %}
+    <input type="hidden" name="updated-details-success" id="updated-details-success" value="False" />
+    {% endif %}
     <h1>
       {% if person.has_registration_history %}
       <span title="Past Customer" class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>
@@ -39,6 +44,12 @@
     {% include 'crm/addins/person_detail_edit_panel.html' %}
   </div>
   <div id="person-contact-history-panel">
-    {% include 'crm/addins/person_contact_history.html' %}
+    {% include 'crm/addins/detail_contact_history.html' %}
+  </div>
+  <div id="person-reg-history-panel">
+    {% include 'crm/addins/detail_reg_history.html' %}
+  </div>
+  <div id="person-category-panel">
+    {% include 'crm/addins/detail_categorize.html' %}
   </div>
 </div>

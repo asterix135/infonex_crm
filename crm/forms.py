@@ -65,59 +65,6 @@ class PersonUpdateForm(forms.ModelForm):
         }
 
 
-class PersonCategoryUpdateForm(forms.ModelForm):
-
-    class Meta:
-        model = Person
-        fields = ('dept', 'geo', 'main_category', 'main_category2',
-                  'division1', 'division2',)
-        widgets = {
-            'dept': forms.TextInput(
-                attrs={'class': 'form-control'}
-            ),
-            'geo': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
-            'main_category': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
-            'main_category2': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
-            'division1': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
-            'division2': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
-        }
-
-
-class NewContactForm(forms.ModelForm):
-
-    class Meta:
-        model = Contact
-        fields = ('event', 'method', 'notes')
-        widgets = {
-            'event': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
-            'method': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
-            'notes': forms.Textarea(
-                attrs={'class': 'form-control',
-                       'rows': '3'}
-            ),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super(NewContactForm, self).__init__(*args, **kwargs)
-        self.fields['event'].queryset=Event.objects.filter(
-                date_begins__gte=timezone.now()-datetime.timedelta(weeks=4)
-        ).order_by('-number')
-
-
 class PersonChangesForm(forms.ModelForm):
 
     class Meta:
@@ -209,49 +156,6 @@ class FlagForm(forms.ModelForm):
         }
 
 
-class SearchForm(forms.Form):
-    name = forms.CharField(label='Name',
-                           max_length=100,
-                           required=False,
-                           widget=forms.TextInput(
-                               attrs={'class': 'form-control'}
-                           ))
-    title = forms.CharField(label="Title",
-                            max_length=100,
-                            required=False,
-                            widget=forms.TextInput(
-                                attrs={'class': 'form-control'}
-                            ))
-    company = forms.CharField(label='Company',
-                              max_length=100,
-                              required=False,
-                              widget=forms.TextInput(
-                                  attrs={'class': 'form-control'}
-                              ))
-    state_province = forms.ChoiceField(label='State/Province',
-                                       required=False,
-                                       initial='',
-                                       choices=STATE_PROV_TUPLE,
-                                       widget=forms.Select(
-                                           attrs={'class': 'form-control'}
-                                       ))
-    past_customer = forms.ChoiceField(label='Past Customer',
-                                      required=False,
-                                      initial='',
-                                      choices=(('', 'Any'),
-                                               (True, 'Yes'),
-                                               (False, 'No'),),
-                                      widget=forms.Select(
-                                          attrs={'class': 'form-control'}
-                                      ))
-    date_modified = forms.DateField(label='Modified on or After',
-                                    required=False,
-                                    widget=forms.TextInput(
-                                        attrs={'class': 'form-control',
-                                               'placeholder': 'yyyy-mm-dd'}
-                                    ))
-
-
 class TerritorySearchForm(forms.Form):
     name = forms.CharField(label='Name',
                            max_length=100,
@@ -308,8 +212,33 @@ class EventForm(forms.ModelForm):
 
 
 #################
-# ADDED FOR OVERHAUL
+# ADDED/OKd FOR USE IN OVERHAUL
 #################
+
+class NewContactForm(forms.ModelForm):
+
+    class Meta:
+        model = Contact
+        fields = ('event', 'method', 'notes')
+        widgets = {
+            'event': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'method': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'notes': forms.Textarea(
+                attrs={'class': 'form-control',
+                       'rows': '3'}
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(NewContactForm, self).__init__(*args, **kwargs)
+        self.fields['event'].queryset=Event.objects.filter(
+                date_begins__gte=timezone.now()-datetime.timedelta(weeks=4)
+        ).order_by('-number')
+
 
 class PersonDetailsForm(forms.ModelForm):
 
@@ -354,3 +283,82 @@ class PersonDetailsForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
         }
+
+
+class PersonCategoryUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = Person
+        fields = ('dept', 'geo', 'main_category', 'main_category2',
+                  'division1', 'division2',)
+        labels = {
+            'dept': _('Department'),
+            'geo': _('Geographic Group'),
+            'main_category': _('Main Category (F1)'),
+            'main_category2': _('Secondary Category'),
+            'division1': _('Main Sales Division'),
+            'division2': _('Secondary Sales Division'),
+        }
+        widgets = {
+            'dept': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'geo': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'main_category': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'main_category2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'division2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+        }
+
+
+class SearchForm(forms.Form):
+    name = forms.CharField(label='Name',
+                           max_length=100,
+                           required=False,
+                           widget=forms.TextInput(
+                               attrs={'class': 'form-control'}
+                           ))
+    title = forms.CharField(label="Title",
+                            max_length=100,
+                            required=False,
+                            widget=forms.TextInput(
+                                attrs={'class': 'form-control'}
+                            ))
+    company = forms.CharField(label='Company',
+                              max_length=100,
+                              required=False,
+                              widget=forms.TextInput(
+                                  attrs={'class': 'form-control'}
+                              ))
+    state_province = forms.ChoiceField(label='State/Province',
+                                       required=False,
+                                       initial='',
+                                       choices=STATE_PROV_TUPLE,
+                                       widget=forms.Select(
+                                           attrs={'class': 'form-control'}
+                                       ))
+    past_customer = forms.ChoiceField(label='Past Customer',
+                                      required=False,
+                                      initial='',
+                                      choices=(('', 'Any'),
+                                               (True, 'Yes'),
+                                               (False, 'No'),),
+                                      widget=forms.Select(
+                                          attrs={'class': 'form-control'}
+                                      ))
+    date_modified = forms.DateField(label='Modified on or After',
+                                    required=False,
+                                    widget=forms.TextInput(
+                                        attrs={'class': 'form-control',
+                                               'placeholder': 'yyyy-mm-dd'}
+                                    ))

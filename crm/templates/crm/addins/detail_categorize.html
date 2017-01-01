@@ -1,0 +1,80 @@
+<div class="panel panel-warning">
+  {% if updated_category_success %}
+  <input type="hidden" name="updated-category-success" id="updated-category-success" value="True" />
+  {% else %}
+  <input type="hidden" name="updated-category-success" id="updated-category-success" value="False" />
+  {% endif %}
+  <div class="panel-heading">
+    <h2 class="panel-title">
+      Categorization Details
+      <span id="btn-toggle-category" class="glyphicon glyphicon-chevron-down float-right glyph-button"></span>
+    </h2>
+  </div>
+  <div class="panel-body collapse" id="person-category-form-fields">
+    <div class="form-group row">
+      <div class="col-sm-12 errorlist">
+        Please do not change these values unless you know what you are doing
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-2">
+        {{ category_form.dept.label_tag }}
+      </div>
+      <div class="col-sm-4">
+        {{ category_form.dept.errors }}
+        {{ category_form.dept }}
+      </div>
+      <div class="col-sm-2">
+        {{ category_form.geo.label_tag }}
+      </div>
+      <div class="col-sm-4">
+        {{ category_form.geo.errors }}
+        {{ category_form.geo }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-2">
+        {{ category_form.main_category.label_tag }}
+      </div>
+      <div class="col-sm-4">
+        {{ category_form.main_category.errors }}
+        {{ category_form.main_category }}
+      </div>
+      <div class="col-sm-2">
+        {{ category_form.main_category2.label_tag }}
+      </div>
+      <div class="col-sm-4">
+        {{ category_form.main_category2.errors }}
+        {{ category_form.main_category2 }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-2">
+        {{ category_form.division1.label_tag }}
+      </div>
+      <div class="col-sm-4">
+        {{ category_form.division1.errors }}
+        {{ category_form.division1 }}
+      </div>
+      <div class="col-sm-2">
+        {{ category_form.division2.label_tag }}
+      </div>
+      <div class="col-sm-4">
+        {{ category_form.division2.errors }}
+        {{ category_form.division2 }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-offset-2 col-sm-2">
+        <button type="button" class="btn btn-primary" id="save-person-categories">
+          Save Changes
+        </button>
+      </div>
+      <div class="col-sm-2 col-sm-offset-2">
+        <button type="button" class="btn btn-secondary" id="reset-person-categories">
+          Reset to Original
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

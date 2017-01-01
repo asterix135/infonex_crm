@@ -19,10 +19,6 @@
       </form>
     </div>
     <a class="list-group-item" href="/crm/search/">Advanced Search</a>
-
-    <div class="list-group-item">
-      Switch Conference
-    </div>
     <div class="list-group-item">
       Recently Viewed Contacts
       <span class="glyphicon glyphicon-chevron-down float-right glyph-button" id="icon-toggle-recent-viewed"></span>
@@ -34,6 +30,14 @@
       <div id="recent-contact-list" class="collapse">
         {% include 'crm/addins/recently_viewed.html' %}
       </div>
+    </div>
+
+    <div id="add-new-contact-button" class="list-group-item">
+      Add new contact
+    </div>
+    <!-- TODO: Implement stuff below here -->
+    <div class="list-group-item">
+      Switch Conference
     </div>
     <div class="list-group-item">
       Upcoming calls/appointments

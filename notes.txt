@@ -2,13 +2,14 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
-TODO: 1) detail.js - need to update variables after ajax submission
 
 TODO: 2) Look at how to deal with duplicates in delegate.views.process_complete_registration
 TODO: 3) Implement new table for invoices
-TODO: 5) Implement new person functionality on search page
+TODO: 5) Implement new person functionality on search page (sidebar?)
+
 TODO: 6) Update how past customer information is determined
 TODO: 7) Figure out best option for including customer history on CRM detail page
+
 TODO: 8) (BIG) rework territory stuff
 TODO: 9) Play with pdf maker (ReportLab) and create new invoice & reg note
 TODO: 10) Post-registration processing page

@@ -3,19 +3,29 @@ See avoiding race conditions using F()
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
 
-TODO: 2) Look at how to deal with duplicates in delegate.views.process_complete_registration
-TODO: 3) Implement new table for invoices
-TODO: 5) Implement new person functionality on search page (sidebar?)
+TODO: 1) Look at how to deal with duplicates in delegate.views.process_complete_registration
+  (need to put in a pop-up confirming no CRM match - how to deal with categories???)
 
-TODO: 6) Update how past customer information is determined
-TODO: 7) Figure out best option for including customer history on CRM detail page
+TODO: 2) Implement new table for invoices
+
+TODO: 3) Implement new person functionality on search page (sidebar?)
 
 TODO: 8) (BIG) rework territory stuff
+
 TODO: 9) Play with pdf maker (ReportLab) and create new invoice & reg note
 TODO: 10) Post-registration processing page
+TODO: 19) How to send email confirmations?
 TODO: 11) Search and update registration information
 TODO: 12) Report generation
+
+TODO: 20) Charts & data on welcome page
+
 TODO: 13) Upload and download information from filemaker
+TODO: 14) Admin interface to review changes - esp to category info
+TODO: 15) Access to add conference outside of reg process
+TODO: 16) Submit registration from person page in CRM
+TODO: 17) Open web site link to have web form registrations enter into the d/b
+TODO: 18) Data Export for David
 
 Long-term/iffy stuff:
 1) register.index - consider reg button beside names (not hidden) - unsure

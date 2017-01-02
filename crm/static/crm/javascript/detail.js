@@ -133,6 +133,20 @@ $(document).ready(function() {
   });
 
 
+  // Toggle Reg History Panel
+  $('body').on('click', '#hide-reg-history', function(){
+    if ($(this).hasClass('glyphicon-chevron-down')){
+      $(this).removeClass('glyphicon-chevron-down');
+      $(this).addClass('glyphicon-chevron-up');
+      $('#reg-history-detail').collapse('show');
+    } else {
+      $(this).removeClass('glyphicon-chevron-up');
+      $(this).addClass('glyphicon-chevron-down');
+      $('#reg-history-detail').collapse('hide');
+    };
+  });
+
+
   // Toggle Category panel
   $('body').on('click', '#btn-toggle-category', function(){
     if ($(this).hasClass('glyphicon-chevron-down')){
@@ -172,7 +186,6 @@ $(document).ready(function() {
       },
       success: function(data){
         $('#person-contact-history-panel').html(data);
-        }
       }
     });
   });

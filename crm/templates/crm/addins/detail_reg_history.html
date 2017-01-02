@@ -1,9 +1,13 @@
-<!-- Use same logic & structure as detail_contact_history -->
+{% if reg_list %}
 <div class="panel panel-primary">
   <div class="panel-heading">
-    <h2 class="panel-title">Registration History</h2>
+    <h2 class="panel-title">
+      Registration History
+      <div id="hide-reg-history" class="float-right glyphicon glyphicon-chevron-up glyph-button"></div>
+
+    </h2>
   </div>
-  <div class="panel-body">
+  <div class="panel-body collapse in" id="reg-history-detail">
     <table class="table table-striped">
       <thead class="thead-inverse">
         <tr>
@@ -12,18 +16,20 @@
         </tr>
       </thead>
       <tbody>
-      {% for registration in person.reghistory_set.all|dictsortreversed:"event" %}
+      {% for registration in reg_list %}
       <tr>
-        <td class="col-sm-2">{{ registration.get_status_display }}</td>
-        <td class="col-sm-10">{{ registration.event }}</td>
+        <td class="col-sm-2">{{ registration.registration_status }}</td>
+        <td class="col-sm-10">{{ registration.conference }}</td>
       </tr>
       {% endfor %}
-      <tr>
-        <td colspan="2">
-          Reg History to go Here
-        </td>
-      </tr>
       </tbody>
     </table>
   </div>
 </div>
+{% else %}
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h2 class="panel-title">No Registration History</h2>
+  </div>
+</div>
+{% endif %}

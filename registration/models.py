@@ -67,12 +67,26 @@ class Registrants(models.Model):
                                     default=1,
                                     related_name='del_modifed_by')
 
+    def __str__(self):
+        return(self.first_name + ' ' + self.last_name + ', ' + self.company.name)
+
+
+class Invoice(models.Model):
+    """
+    contains invoicing info
+    Invoice number is invoice.id (auto-generated)
+    id start point needs to be set in database engine
+    """
+    invoice_date = models.DateField(default=datetime.date.today)
+
+
 
 class RegDetails(models.Model):
     """
     contains details on booking for invoicing & event management
     """
     invoice_number = models.IntegerField(unique=True)
+    # invoice = models.ForeignKey(Invoice, blank=True, null=True)
     conference = models.ForeignKey('crm.Event')
     registrant = models.ForeignKey(Registrants)
     priority_code = models.CharField(max_length=25)

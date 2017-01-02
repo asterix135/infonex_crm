@@ -1224,9 +1224,24 @@ def search(request):
 def detail(request, person_id):
     """ loads main person page (detail.html) """
     new_contact_form = NewContactForm()
+    reg_list = None
     try:
         person = Person.objects.get(pk=person_id)
         add_to_recent_contacts(request, person_id)
+        if person.registrants_set.exists():
+            for registrant in person.registrants_set.all():
+                # reg_list = registrant.regdetails_set.all()
+                if not reg_list:
+                    reg_list = registrant.regdetails_set.all()
+                else:
+                    reg_list = reg_list | registrant.regdetails.set.all()
+            print('\n\n')
+            print(reg_list)
+            print('\n\n')
+            if len(reg_list) == 0:
+                reg_list = None
+            else:
+                reg_list = reg_list.order_by(-'conference.date_begins')
     except (Person.DoesNotExist, MultiValueDictKeyError):
         person = None
     person_details_form = PersonDetailsForm(instance=person)
@@ -1236,6 +1251,7 @@ def detail(request, person_id):
         'person_details_form': person_details_form,
         'new_contact_form': new_contact_form,
         'category_form': category_form,
+        'reg_list': reg_list,
     }
     return render(request, 'crm/detail.html', context)
 

@@ -9,6 +9,7 @@ TODO: 1) Look at how to deal with duplicates in delegate.views.process_complete_
 TODO: 2) Implement new table for invoices
 
 TODO: 3) Implement new person functionality on search page (sidebar?)
+  Need to think about UX issues - where else other than sidebar??
 
 TODO: 8) (BIG) rework territory stuff
 

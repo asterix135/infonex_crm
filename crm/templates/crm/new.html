@@ -1,0 +1,32 @@
+<!-- Add new contact page -->
+{% extends 'crm/base.html' %}
+{% load staticfiles %}
+
+{% block script_includes %}
+<link href="{% static 'crm/crm_style.css' %}" rel="stylesheet" type="text/css" />
+<script src="{% static 'crm/javascript/new.js' %}" type="text/javascript"></script>
+{% endblock %}
+
+{% block title %}Add Person | {% endblock %}
+
+{% block content %}
+<div class="container-fluid fill">
+  <div class="row row-offcanvas row-offcanvas-right">
+    <div class="col-xs-12 col-sm-9 col-sm-push-3">
+      <p class="pull-right visible-xs">
+        <button type="button" class="btn btn-primary btn-xs"
+          data-toggle="offcanvas" title="Toggle sidebar">
+          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        </button>
+      </p>
+      <div class="col-sm-12 col-md-12 right-main-panel" id="main-panel">
+        <div id="person-detail-section">
+          {% include 'crm/addins/new_person.html' %}
+        </div>
+      </div>
+    </div>
+    {% include 'crm/addins/sidebar.html' %}
+  </div>
+
+</div>
+{% endblock %}

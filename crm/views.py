@@ -1256,6 +1256,11 @@ def detail(request, person_id):
     return render(request, 'crm/detail.html', context)
 
 
+@login_required
+def new(request):
+    return render(request, 'crm/new.html')
+
+
 ##################
 # AJAX CALLS
 ##################

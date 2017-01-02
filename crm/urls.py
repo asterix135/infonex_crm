@@ -43,6 +43,7 @@ urlpatterns = [
         name='add_contact_history'),
     url(r'^get_recent_contacts/$', views.get_recent_contacts,
         name='get_recent_contacts'),
+    url(r'^new/$', views.new, name='new'),
     url(r'^save_category_changes/$', views.save_category_changes,
         name='save_category_changes'),
     url(r'^save_person_details/$', views.save_person_details,

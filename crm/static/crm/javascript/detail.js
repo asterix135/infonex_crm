@@ -12,6 +12,7 @@ $(document).ready(function() {
   var originalDoNotCall = $('#id_do_not_call').prop('checked');
   var originalEmail = $('#id_email').val();
   var originalDoNotEmail = $('#id_do_not_email').prop('checked');
+  var originalLinkedIn = $('#id_linkedin').val();
   var originalUrl = $('#id_url').val();
   var originalIndustry = $('id_industry').val();
   // for category form
@@ -45,6 +46,7 @@ $(document).ready(function() {
     $('#id_do_not_call').prop('checked', originalDoNotCall);
     $('#id_email').val(originalEmail);
     $('#id_do_not_email').prop('checked', originalDoNotEmail);
+    $('#id_linkedin').val(originalLinkedIn);
     $('#id_url').val(originalUrl);
     $('#id_industry').val(originalIndustry);
   });
@@ -63,6 +65,7 @@ $(document).ready(function() {
     var doNotCall = $('#id_do_not_call').prop('checked');
     var email = $('#id_email').val();
     var doNotEmail = $('#id_do_not_email').prop('checked');
+    var linkedIn = $('#id_linkedin').val();
     var url = $('#id_url').val();
     var industry = $('#id_industry').val();
     $.ajax({
@@ -80,6 +83,7 @@ $(document).ready(function() {
         'do_not_call': doNotCall,
         'email': email,
         'do_not_email': doNotEmail,
+        'linkedin': linkedIn,
         'url': url,
         'industry': industry,
       },
@@ -97,9 +101,10 @@ $(document).ready(function() {
           originalDoNotCall = $('#id_do_not_call', data).prop('checked');
           originalEmail = $('#id_email', data).val();
           originalDoNotEmail = $('#id_do_not_email', data).prop('checked');
+          originalLinkedIn = $('#id_linkedin', data).val();
           originalUrl = $('#id_url', data).val();
           originalIndustry = $('id_industry', data).val();
-        }
+        };
       }
     });
   });

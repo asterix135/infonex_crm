@@ -86,7 +86,7 @@ class RegDetails(models.Model):
     contains details on booking for invoicing & event management
     """
     invoice_number = models.IntegerField(unique=True)
-    # invoice = models.ForeignKey(Invoice, blank=True, null=True)
+    invoice = models.ForeignKey(Invoice, blank=True, null=True)
     conference = models.ForeignKey('crm.Event')
     registrant = models.ForeignKey(Registrants)
     priority_code = models.CharField(max_length=25)

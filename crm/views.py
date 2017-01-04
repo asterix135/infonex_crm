@@ -4,7 +4,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -1050,6 +1050,10 @@ def flag_many_records(request):
 
 
 ##################
+# NEW/OVERHAULED STUFF GOES BELOW HERE
+##################
+
+##################
 # HELPER FUNCTIONS
 ##################
 
@@ -1259,6 +1263,9 @@ def detail(request, person_id):
 
 @login_required
 def new(request):
+    """
+    Renders new.html form to add a new contact
+    """
     new_person_form = NewPersonForm()
     context = {
         'new_person_form': new_person_form
@@ -1374,21 +1381,21 @@ def save_category_changes(request):
 
 @login_required
 def suggest_company(request):
-    if request.is_ajax():
-        query_term = request.GET.get('term', '')
-        companies = Person.objects.filter(
-            company__icontains=query_term
-        ).distinct().order_by('company')[:20]
-        results = []
-        id_counter = 0
-        for company in companies:
-            company_json = {}
-            company_json['id'] = id_counter
-            company_json['label'] = company.company
-            company_json['value'] = company.company
-            results.append(company_json)
-        data = json.dumps(results)
-    else:
-        data = 'fail'
+    """
+    Ajax call - returns json of top 25 companies (by number in db) matching
+    entered string
+    """
+    query_term = request.GET.get('q', '')
+    companies = Person.objects.filter(company__icontains=query_term) \
+        .values('company').annotate(total=Count('name')) \
+        .order_by('-total')[:25]
+    results = []
+    id_counter = 0
+    for company in companies:
+        company_json = {}
+        company_json['identifier'] = company['company']
+        results.append(company_json)
+    data = json.dumps(results)
     mimetype = 'applications/json'
+    print(data)
     return HttpResponse(data, mimetype)

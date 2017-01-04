@@ -32,9 +32,7 @@
       </div>
     </div>
     {% if request.path|slice:"5:11" == 'detail' or request.path|slice:"5:11" == 'search' %}
-    <div id="add-new-contact-button" class="list-group-item">
-      Add new contact
-    </div>
+    <a class="list-group-item" href="/crm/new/">Add new contact</a>
     {% endif %}
     <!-- TODO: Implement stuff below here -->
     <div class="list-group-item">

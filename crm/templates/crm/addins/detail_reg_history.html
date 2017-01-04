@@ -11,6 +11,7 @@
     <table class="table table-striped">
       <thead class="thead-inverse">
         <tr>
+          <th class="col-sm-2">Date Registered</th>
           <th class="col-sm-2">Reg Status</th>
           <th class="col-sm-10">Event</th>
         </tr>
@@ -18,8 +19,9 @@
       <tbody>
       {% for registration in reg_list %}
       <tr>
-        <td class="col-sm-2">{{ registration.registration_status }}</td>
-        <td class="col-sm-10">{{ registration.conference }}</td>
+        <td>{{ registration.register_date }}</td>
+        <td>{{ registration.get_registration_status_display }}</td>
+        <td>{{ registration.conference }}</td>
       </tr>
       {% endfor %}
       </tbody>

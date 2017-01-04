@@ -1242,7 +1242,7 @@ def detail(request, person_id):
             if len(reg_list) == 0:
                 reg_list = None
             else:
-                reg_list = reg_list.order_by(-'conference.date_begins')
+                reg_list = reg_list.order_by('-register_date')
     except (Person.DoesNotExist, MultiValueDictKeyError):
         person = None
     person_details_form = PersonDetailsForm(instance=person)

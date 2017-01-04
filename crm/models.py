@@ -21,7 +21,7 @@ class Person(models.Model):
     do_not_email = models.BooleanField(default=False)
     do_not_call = models.BooleanField(default=False)
     city = models.CharField(max_length=50, blank=True)
-    dept = models.CharField(max_length=50, blank=True)  # General area of job
+    dept = models.CharField(max_length=50, blank=True, null=True)  # General area of job
     industry = models.TextField(blank=True)  # free-form descripton
     GEO_CHOICES = (
         ('East', 'East'),

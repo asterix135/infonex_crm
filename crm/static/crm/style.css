@@ -76,3 +76,7 @@ h1, h2, h3 {
 .glyph-button {
   cursor: pointer;
 }
+.required-label {
+  color: #BA2421;
+  font: bold;
+}

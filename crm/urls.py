@@ -5,8 +5,6 @@ app_name = 'crm'
 urlpatterns = [
     # ex: /crm/
     url(r'^$', views.index, name='index'),
-    # ex: /crm/1234/
-    url(r'^(?P<person_id>[0-9]+)/$', views.detail_old, name='detail_old'),
     # ex: /crm/1234/add_person_to_territory/
     url(r'^(?P<person_id>[0-9]+)/add_person_to_territory/$',
         views.add_person_to_territory, name='add_person_to_territory'),
@@ -37,22 +35,32 @@ urlpatterns = [
     ################
     # REWORKED STUFF BELOW HERE
     ################
+
+    ################
+    # MAIN PAGES
+    ################
     # ex: /crm/detail/1234/
     url(r'^detail/(?P<person_id>[0-9]+)/$', views.detail, name='detail'),
+    url(r'^new/$', views.new, name='new'),
+    url(r'^search/$', views.search, name='search'),
+
+    ################
+    # AJAX CALLS
+    ################
     url(r'^add_contact_history/$', views.add_contact_history,
         name='add_contact_history'),
     url(r'^get_recent_contacts/$', views.get_recent_contacts,
         name='get_recent_contacts'),
-    url(r'^new/$', views.new, name='new'),
     url(r'^save_category_changes/$', views.save_category_changes,
         name='save_category_changes'),
     url(r'^save_person_details/$', views.save_person_details,
         name='save_person_details'),
-    url(r'^search/$', views.search, name='search'),
+    url(r'^suggest_company/$', views.suggest_company, name='suggest_company'),
 
     ################
     # TO BE DELETED
     ################
-
+    # ex: /crm/1234/
+    url(r'^(?P<person_id>[0-9]+)/$', views.detail_old, name='detail_old'),
 
 ]

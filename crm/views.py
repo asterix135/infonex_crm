@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -1258,7 +1259,11 @@ def detail(request, person_id):
 
 @login_required
 def new(request):
-    return render(request, 'crm/new.html')
+    new_person_form = NewPersonForm()
+    context = {
+        'new_person_form': new_person_form
+    }
+    return render(request, 'crm/new.html', context)
 
 
 ##################
@@ -1365,3 +1370,25 @@ def save_category_changes(request):
         'category_form': category_form,
     }
     return render(request, 'crm/addins/detail_categorize.html', context)
+
+
+@login_required
+def suggest_company(request):
+    if request.is_ajax():
+        query_term = request.GET.get('term', '')
+        companies = Person.objects.filter(
+            company__icontains=query_term
+        ).distinct().order_by('company')[:20]
+        results = []
+        id_counter = 0
+        for company in companies:
+            company_json = {}
+            company_json['id'] = id_counter
+            company_json['label'] = company.company
+            company_json['value'] = company.company
+            results.append(company_json)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'applications/json'
+    return HttpResponse(data, mimetype)

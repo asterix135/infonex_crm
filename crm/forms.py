@@ -215,6 +215,88 @@ class EventForm(forms.ModelForm):
 # ADDED/OKd FOR USE IN OVERHAUL
 #################
 
+class NewPersonForm(forms.ModelForm):
+
+    class Meta:
+        model = Person
+        fields = ('name', 'title', 'company', 'url', 'linkedin', 'phone',
+                  'phone_main', 'email', 'do_not_call', 'do_not_email',
+                  'city', 'dept', 'industry', 'geo', 'main_category',
+                  'main_category2', 'division1', 'division2')
+        labels = {
+            'url': _('Website'),
+            'linkedin': _('LinkedIn Profile'),
+            'industry': _('Industry Description'),
+            'dept': _('Department'),
+            'geo': _('Geographic Group'),
+            'main_category': _('Main Category (F1)'),
+            'main_category2': _('Secondary Category'),
+            'division1': _('Main Sales Division'),
+            'division2': _('Secondary Sales Division'),
+        }
+        widgets = {
+            'name': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'title': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'company': forms.TextInput(
+                attrs={'class': 'form-control',
+                       'data-provide': 'typeahead',
+                       'autocomplete': 'off',}
+            ),
+            'url': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'linkedin': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'phone': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'phone_main': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'email': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'do_not_call': forms.CheckboxInput(
+                attrs={'class': 'form-control'}
+            ),
+            'do_not_email': forms.CheckboxInput(
+                attrs={'class': 'form-control'}
+            ),
+            'city': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'dept': forms.TextInput(
+                attrs={'class': 'form-control',
+                       'placeholder': "OK to leave blank"}
+            ),
+            'industry': forms.Textarea(
+                attrs={'class': 'form-control',
+                       'rows': '3'}
+            ),
+            'geo': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'main_category': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'main_category2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'division2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+        }
+
+
+
 class NewContactForm(forms.ModelForm):
 
     class Meta:
@@ -245,10 +327,12 @@ class PersonDetailsForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = ('name', 'title', 'company', 'url', 'phone', 'phone_main',
-                  'do_not_call', 'email', 'do_not_email', 'industry', 'dept',
-                  'city',)
+                  'do_not_call', 'email', 'do_not_email', 'industry',
+                  'city', 'linkedin',)
         labels = {
             'url': _('Website'),
+            'linkedin': _('LinkedIn Profile'),
+            'industry': _('Industry Description'),
         }
         widgets = {
             'name': forms.TextInput(
@@ -279,7 +363,7 @@ class PersonDetailsForm(forms.ModelForm):
                 attrs={'class': 'form-control',
                        'rows': '3'}
             ),
-            'dept': forms.TextInput(
+            'linkedin': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
         }

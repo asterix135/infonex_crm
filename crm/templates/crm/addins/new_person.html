@@ -1,1 +1,181 @@
-<h1>New Person page goes here</h1>
+<div class="form-group row">
+  <h1 class="col-sm-12">Add New Person</h1>
+</div>
+<div class="form-group row">
+  <div class="col-sm-2">
+    {{ new_person_form.name.label_tag }}
+  </div>
+  <div class="col-sm-10">
+    {{ new_person_form.name.errors }}
+    {{ new_person_form.name }}
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-sm-2">
+    {{ new_person_form.title.label_tag }}
+  </div>
+  <div class="col-sm-10">
+    {{ new_person_form.title.errors }}
+    {{ new_person_form.title }}
+  </div>
+</div>
+
+<div class="form-group row">
+  <div class="col-sm-2">
+    {{ new_person_form.company.label_tag }}
+  </div>
+  <div class="col-sm-10">
+    {{ new_person_form.company.errors }}
+    {{ new_person_form.company }}
+  </div>
+</div>
+
+<div class="form-group row">
+  <div class="col-sm-2">
+    {{ new_person_form.city.label_tag }}
+  </div>
+  <div class="col-sm-10">
+    {{ new_person_form.city.errors }}
+    {{ new_person_form.city }}
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-sm-2">
+    {{ new_person_form.url.label_tag }}
+  </div>
+  <div class="col-sm-10">
+    {{ new_person_form.url.errors }}
+    {{ new_person_form.url }}
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-sm-2">
+    {{ new_person_form.phone.label_tag }}
+  </div>
+  <div class="col-sm-6">
+    {{ new_person_form.phone.errors }}
+    {{ new_person_form.phone }}
+  </div>
+  <div class="col-sm-2">
+    {{ new_person_form.do_not_call.label_tag }}
+  </div>
+  <div class="col-sm-2">
+    {{ new_person_form.do_not_call.errors }}
+    {{ new_person_form.do_not_call }}
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-sm-2">
+    {{ new_person_form.phone_main.label_tag }}
+  </div>
+  <div class="col-sm-6">
+    {{ new_person_form.phone_main.errors }}
+    {{ new_person_form.phone_main }}
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-sm-2">
+    {{ new_person_form.email.label_tag }}
+  </div>
+  <div class="col-sm-6">
+    {{ new_person_form.email.errors }}
+    {{ new_person_form.email }}
+  </div>
+  <div class="col-sm-2">
+    {{ new_person_form.do_not_email.label_tag }}
+  </div>
+  <div class="col-sm-2">
+    {{ new_person_form.do_not_email.errors }}
+    {{ new_person_form.do_not_email }}
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-sm-2">
+    {{ new_person_form.linkedin.label_tag }}
+  </div>
+  <div class="col-sm-10">
+    {{ new_person_form.linkedin.errors }}
+    {{ new_person_form.linkedin }}
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-sm-2">
+    {{ new_person_form.industry.label_tag }}
+  </div>
+  <div class="col-sm-10">
+    {{ new_person_form.industry.errors }}
+    {{ new_person_form.industry }}
+  </div>
+</div>
+<div class="panel panel-warning">
+  <div class="panel-heading">
+    <h2 class="panel-title">Categorization Information</h2>
+  </div>
+  <div class="panel-body">
+    <div class="form-group row">
+      <div class="col-sm-12 errorlist">
+        If you are unsure about any of these, please leave the default values
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-2">
+        {{ new_person_form.dept.label_tag }}
+      </div>
+      <div class="col-sm-4">
+        {{ new_person_form.dept.errors }}
+        {{ new_person_form.dept }}
+      </div>
+      <div class="col-sm-2">
+        {{ new_person_form.geo.label_tag }}
+      </div>
+      <div class="col-sm-4">
+        {{ new_person_form.geo.errors }}
+        {{ new_person_form.geo }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-2">
+        {{ new_person_form.main_category.label_tag }}
+      </div>
+      <div class="col-sm-4">
+        {{ new_person_form.main_category.errors }}
+        {{ new_person_form.main_category }}
+      </div>
+      <div class="col-sm-2">
+        {{ new_person_form.main_category2.label_tag }}
+      </div>
+      <div class="col-sm-4">
+        {{ new_person_form.main_category2.errors }}
+        {{ new_person_form.main_category2 }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-2">
+        {{ new_person_form.division1.label_tag }}
+      </div>
+      <div class="col-sm-4">
+        {{ new_person_form.division1.errors }}
+        {{ new_person_form.division1 }}
+      </div>
+      <div class="col-sm-2">
+        {{ new_person_form.division2.label_tag }}
+      </div>
+      <div class="col-sm-4">
+        {{ new_person_form.division2.errors }}
+        {{ new_person_form.division2 }}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-sm-offset-2 col-sm-2">
+    <button type="button" class="btn btn-primary" id="save-new">
+      Save Changes
+    </button>
+  </div>
+  <div class="col-sm-2 col-sm-offset-2">
+    <button type="button" class="btn btn-secondary" id="reset-new">
+      Reset Form
+    </button>
+  </div>
+</div>

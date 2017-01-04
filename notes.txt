@@ -13,6 +13,8 @@ TODO: 3) Implement new person functionality
 
 TODO: 21) Implement delete crm.person functionality
 
+TODO: 22) Update crm.models.py/Person.has_registration_history()
+
 TODO: 8) (BIG) rework territory stuff
 
 TODO: 9) Play with pdf maker (ReportLab) and create new invoice & reg note

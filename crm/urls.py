@@ -39,7 +39,6 @@ urlpatterns = [
     ################
     # MAIN PAGES
     ################
-    # ex: /crm/detail/1234/
     url(r'^detail/(?P<person_id>[0-9]+)/$', views.detail, name='detail'),
     url(r'^new/$', views.new, name='new'),
     url(r'^search/$', views.search, name='search'),
@@ -49,6 +48,7 @@ urlpatterns = [
     ################
     url(r'^add_contact_history/$', views.add_contact_history,
         name='add_contact_history'),
+    url(r'^check_for_dupes/$', views.check_for_dupes, name='check_for_dupes'),
     url(r'^get_recent_contacts/$', views.get_recent_contacts,
         name='get_recent_contacts'),
     url(r'^save_category_changes/$', views.save_category_changes,

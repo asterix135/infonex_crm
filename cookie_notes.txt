@@ -8,7 +8,8 @@ territory_page: current page to show in list pagination
 
 ref_page: absolute or paginated - where to return after deleting record
 
-search_page: current page number for search results
+For adding people to CRM system:
+  possible_dupe: id of person added - where it's a possible dupe of someone in db
 
 Search parameters:
   last_search_type: quick or advanced (or None)

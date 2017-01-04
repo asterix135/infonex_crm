@@ -13,7 +13,7 @@
         {{ person.name }}, {{ person.title }}, {{ person.company }}
         <a href="{% url 'crm:new_person' %}?status=copy&id={{ person.id }}&ref=absolute" class="link-icons">
           <span title="Create New Person Based on Current" class="glyphicon glyphicon-duplicate"></span></a>
-        <a href="{% url 'crm:new_person' %}?status=new&ref=absolute" class="link-icons">
+        <a href="{% url 'crm:new' %}?status=new&ref=absolute" class="link-icons">
           <span title="Create Blank New Person" class="glyphicon glyphicon-plus"></span></a>
         <a href="{% url 'crm:delete_person' %}?id={{ person.id }}&ref=absolute" class="red-link-icons">
           <span title="Delete Current Record" class="glyphicon glyphicon-trash"></span>

@@ -408,6 +408,7 @@ def confirm_delete(request, person_id):
         return redirect(reverse('crm:territory'))
 
 
+# Need to remove
 @login_required
 def new_person(request):
     if request.method == 'POST':
@@ -1266,12 +1267,55 @@ def new(request):
     """
     Renders new.html form to add a new contact
     """
-    new_person_form = NewPersonForm()
-    context = {
-        'new_person_form': new_person_form
-    }
-    return render(request, 'crm/new.html', context)
+    if request.method != 'POST':
+        new_person_form = NewPersonForm()
+        context = {
+            'new_person_form': new_person_form
+        }
+        return render(request, 'crm/new.html', context)
 
+    new_person_form = NewPersonForm(request.POST)
+    if not new_person_form.is_valid():
+        context = {
+            'new_person_form': new_person_form
+        }
+        return render(request, 'crm/new.html', context)
+    if len(Person.objects.filter(name=request.POST['name'],
+                                 company=request.POST['company'])) > 0:
+        possible_dupe = True
+    else:
+        possible_dupe = False
+    person = Person(
+        name=request.POST['name'],
+        title=request.POST['title'],
+        company=request.POST['company'],
+        city=request.POST['city'],
+        url=request.POST['url'],
+        phone=request.POST['phone'],
+        phone_main=request.POST['phone_main'],
+        do_not_call=request.POST.get('do_not_call', False),
+        email=request.POST['email'],
+        do_not_email=request.POST.get('do_not_email', False),
+        linkedin=request.POST['linkedin'],
+        industry=request.POST['industry'],
+        dept=request.POST['dept'],
+        geo=request.POST['geo'],
+        main_category=request.POST['main_category'],
+        main_category2=request.POST['main_category2'],
+        division1=request.POST['division1'],
+        division2=request.POST['division2'],
+        date_created=timezone.now(),
+        date_modified=timezone.now(),
+        created_by=request.user,
+        modified_by=request.user,
+    )
+    person.save()
+    if possible_dupe:
+        request.session['possible_dupe'] = person.pk
+        # REDIRECT TO DUPE VERIFICATION PAGE
+        # CURRENTLY THROWS ERROR PAGE RESPONSE
+    else:
+        return HttpResponseRedirect(reverse('crm:detail', args=(person.id,)))
 
 ##################
 # AJAX CALLS
@@ -1382,8 +1426,8 @@ def save_category_changes(request):
 @login_required
 def suggest_company(request):
     """
-    Ajax call - returns json of top 25 companies (by number in db) matching
-    entered string
+    Ajax call (I think?) - returns json of top 25 companies (by number in db)
+    that match entered string
     """
     query_term = request.GET.get('q', '')
     companies = Person.objects.filter(company__icontains=query_term) \
@@ -1399,3 +1443,12 @@ def suggest_company(request):
     mimetype = 'applications/json'
     print(data)
     return HttpResponse(data, mimetype)
+
+
+@login_required
+def check_for_dupes(request):
+    """
+    AJAX call to check for possible duplicate entry when entering a new person
+    called from new.html
+    """
+    pass

@@ -9,7 +9,8 @@ TODO: 1) Look at how to deal with duplicates in delegate.views.process_complete_
 TODO: 2) Implement new table for invoices
 
 TODO: 3) Implement new person functionality
-  Need to think about UX issues - where else other than sidebar??
+TODO: 23) If territory exists: new person should pre-populate categorization with relevant details
+          (This means updating crm.new.py)
 
 TODO: 21) Implement delete crm.person functionality
 
@@ -34,3 +35,4 @@ TODO: 18) Data Export for David
 
 Long-term/iffy stuff:
 1) register.index - consider reg button beside names (not hidden) - unsure
+2) UX issues for new person = currently only on sidebar

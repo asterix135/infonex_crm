@@ -4,6 +4,7 @@ $(document).ready(function() {
   // Add * to indicate required fields
   $('input,textarea,select').filter('[required]').parent().parent().find("label").append('<span class="required-label"> *</span>');
 
+
   // typeahead autocomplete for company field
   var my_Suggestion_class = new Bloodhound({
       limit: 10,
@@ -22,7 +23,6 @@ $(document).ready(function() {
       }
   });
   my_Suggestion_class.initialize();
-
   $('#id_company').typeahead({
       hint: true,
       highlight: true,
@@ -40,5 +40,10 @@ $(document).ready(function() {
           ].join('\n')
       }
   });
+
+
+  $('body').on('click', '#save-new', function(){
+    
+  })
 
 });

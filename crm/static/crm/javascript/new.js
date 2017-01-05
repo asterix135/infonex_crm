@@ -42,8 +42,38 @@ $(document).ready(function() {
   });
 
 
+  // Check for dupes on new record and either display modal or proceed
   $('body').on('click', '#save-new', function(){
-    
-  })
+    var name = $('#id_name').val();
+    var title = $('#id_title').val();
+    var company = $('#id_company').val();
+    var city = $('#id_city').val();
+    var phone = $('#id_phone').val();
+    var email = $('#id_email').val();
+    // 1. hit d/b to check if the new record is a potential dupe
+    $.ajax({
+      url: '/crm/check_for_dupes/',
+      type: 'POST',
+      data: {
+        'name': name,
+        'title': title,
+        'company': company,
+        'city': city,
+        'phone': phone,
+        'email': email,
+      },
+      success: function(data){
+        var dupeListExists = $('#dupe-list-exists', data).val();
+        // 2. if dupe - pull up modal with warning and dupes listed
+        if (dupeListExists == 'True') {
+          $('#dupe-modal-content').html(data);
+          $('#possibleDuplicateModal').modal('show');
+        } else {
+          // 3. else - allow submission to proceed
+          $('#new-person-form').submit();
+        }
+      }
+    });
+  });
 
 });

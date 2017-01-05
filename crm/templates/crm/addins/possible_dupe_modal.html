@@ -1,0 +1,60 @@
+<div class="modal fade" id="possibleDuplicateModal" tabindex="-1" role="dialog" aria-labelledby="possibleDuplicateLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" id="possibleDuplicateLabel">Hold On a Sec...</h3>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid bd-example-row">
+          <div class="row">
+            <div class="col-sm-12">
+              <h4>It looks like the person you're adding might already be in the database</h4>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <p>
+                Please review the listings below.  If your entry is actually new,
+                hit the "Create New Record" button to save it to the database.
+              </p>
+              <p>
+                Otherwise, please select the record you'd like to work with to
+                be taken to that person's page.
+              </p>
+            </div>
+          </div>
+          {% if dupe_list %}
+          <input type="hidden" id="dupe-list-exists" name="dupe-list-exists" value="True" />
+          <div class="row">
+            <div class="col-sm-12">
+              You've entered:
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              Possible duplicates in database:
+            </div>
+          </div>
+          {% for dupe in dupe_list %}
+          <div class="row">
+
+          </div>
+          {% endfor %}
+          {% else %}
+          <input type="hidden" id="dupe-list-exists" name="dupe-list-exists" value="False" />
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Create New Record</button>
+      </div>
+    </div>
+  </div>
+</div>

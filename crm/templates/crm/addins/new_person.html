@@ -1,4 +1,4 @@
-<form method="post" class="post-form" action="">
+<form method="post" class="post-form" action="" id="new-person-form">
   {% csrf_token %}
   <div class="form-group row">
     <h1 class="col-sm-12">Add New Person</h1>
@@ -169,7 +169,7 @@
   </div>
   <div class="form-group row">
     <div class="col-sm-offset-2 col-sm-2">
-      <button type="submit" class="btn btn-primary" id="save-new">
+      <button type="button" class="btn btn-primary" id="save-new">
         Save Changes
       </button>
     </div>

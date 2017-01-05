@@ -1280,11 +1280,6 @@ def new(request):
             'new_person_form': new_person_form
         }
         return render(request, 'crm/new.html', context)
-    if len(Person.objects.filter(name=request.POST['name'],
-                                 company=request.POST['company'])) > 0:
-        possible_dupe = True
-    else:
-        possible_dupe = False
     person = Person(
         name=request.POST['name'],
         title=request.POST['title'],
@@ -1310,12 +1305,7 @@ def new(request):
         modified_by=request.user,
     )
     person.save()
-    if possible_dupe:
-        request.session['possible_dupe'] = person.pk
-        # REDIRECT TO DUPE VERIFICATION PAGE
-        # CURRENTLY THROWS ERROR PAGE RESPONSE
-    else:
-        return HttpResponseRedirect(reverse('crm:detail', args=(person.id,)))
+    return HttpResponseRedirect(reverse('crm:detail', args=(person.id,)))
 
 ##################
 # AJAX CALLS
@@ -1441,7 +1431,6 @@ def suggest_company(request):
         results.append(company_json)
     data = json.dumps(results)
     mimetype = 'applications/json'
-    print(data)
     return HttpResponse(data, mimetype)
 
 
@@ -1451,14 +1440,29 @@ def check_for_dupes(request):
     AJAX call to check for possible duplicate entry when entering a new person
     called from new.html
     """
-    name = request.GET.get('name', None)
-    company = request.GET.get('company', None)
-    if name and company:
-        dupe_list = Person.objects.filter(name__iexact=name,
-                                          company__iexact=company)
-        if len(dupe_list) > 0:
-            context = {
-                'dupe_list': dupe_list
-            }
-            return render(request, 'crm/addins/possible_dupe.html', context)
-    return HttpResponse('<div class="foo">bar</div>')
+    name = title = company = city = phone = email = dupe_list = None
+    if request.method == 'POST':
+        name = request.POST['name']
+        company = request.POST['company']
+        email = request.POST['email']
+
+        if name != '' and company != '':
+            dupe_list = Person.objects.filter(name__iexact=name,
+                                              company__iexact=company)
+        if email != '':
+            if dupe_list:
+                dupe_list = dupe_list | Person.objects.filter(email=email)
+            else:
+                dupe_list = Person.objects.filter(email=email)
+        if dupe_list and (len(dupe_list) == 0):
+            dupe_list = None
+    context = {
+        'name': name,
+        'title': request.POST['title'],
+        'company': request.POST['company'],
+        'city': request.POST['city'],
+        'phone': request.POST['phone'],
+        'email': email,
+        'dupe_list': dupe_list
+    }
+    return render(request, 'crm/addins/possible_dupe_modal.html', context)

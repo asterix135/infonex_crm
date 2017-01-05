@@ -11,6 +11,9 @@
 {% block title %}Add Person | {% endblock %}
 
 {% block content %}
+<div id="dupe-modal-content">
+  {% include 'crm/addins/possible_dupe_modal.html' %}
+</div>
 <div class="container-fluid fill">
   <div class="row row-offcanvas row-offcanvas-right">
     <div class="col-xs-12 col-sm-9 col-sm-push-3">

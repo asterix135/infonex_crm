@@ -12,6 +12,76 @@
 <div id="saved-variables">
   <input type="hidden" name="person_id" id="person_id" value={{ person.id }} />
 </div>
+
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title errorlist" id="deleteConfirmLabel">Are You Sure?</h3>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid bd-example-row">
+          <div class="row">
+            <div class="col-sm-12 errorlist">
+              <h4>If you proceed, you will delete this person from the database</h4>
+            </div>
+          </div>
+          <div class="row">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <strong>{{ person.name }}</strong><br />
+                {% if person.title %}{{ person.title }}<br />{% endif %}
+                {% if person.company %}{{ person.company }}<br />{% endif %}
+                {% if person.city %}City: {{ person.city }}<br />{% endif %}
+                {% if person.phone %}Tel: {{ person.phone }}<br />{% endif %}
+                {% if person.email %}Email: {{ person.email }}<br />{% endif %}
+              </li>
+            </ul>
+          </div>
+          {% if person.contact_set.all|length > 0 %}
+          <div class="row">
+            <div class="col-sm-12">
+              <h4>You will be deleting the following contact history:</h4>
+            </div>
+          </div>
+          <div class="row">
+            <table class="table table-condensed">
+              <thead class="thead-inverse">
+                <tr>
+                  <th>Date/Time</th>
+                  <th>User</th>
+                  <th>Event</th>
+                  <th>Method</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for contact in person.contact_set.all|dictsortreversed:"date_of_contact" %}
+                <tr>
+                  <td>{{ contact.date_of_contact }}</td>
+                  <td>{{ contact.author }}</td>
+                  <td>{{ contact.event }}</td>
+                  <td>{{ contact.get_method_display }}</td>
+                  <td>{{ contact.notes }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" id="save-after-dupe-check">Yes, Delete this record</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container-fluid fill">
   <div class="row row-offcanvas row-offcanvas-right">
     <div class="col-xs-12 col-sm-9 col-sm-push-3">

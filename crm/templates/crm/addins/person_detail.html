@@ -7,10 +7,12 @@
     <input type="hidden" name="updated-details-success" id="updated-details-success" value="False" />
     {% endif %}
     <h1>
-      {% if person.has_registration_history %}
-      <span title="Past Customer" class="glyphicon glyphicon-ok alert-success" aria-hidden="true"></span>
-      {% endif %}
       {{ person.name }}{% if person.title %}, {{ person.title }}{% endif %}{% if person.company %}, {{ person.company }}{% endif %}
+      <span class="float-right">
+        <span id="delete-person-btn" class="glyphicon glyphicon-trash errorlist glyph-button"></span>
+      </span>
+
+
       <span id="linkedin-link" class="float-right">
         {% if person.linkedin %}
         <a href="http://{{ person.linkedin }}" target="_blank">

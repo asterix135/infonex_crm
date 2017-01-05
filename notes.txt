@@ -3,17 +3,18 @@ See avoiding race conditions using F()
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
 
-TODO: 2) Implement new table for invoices
-
-TODO: 3) Implement new person functionality
-TODO: 23) If territory exists: new person should pre-populate categorization with relevant details
-          (This means updating crm.new.py)
-
-TODO: 21) Implement delete crm.person functionality
+TODO: 21) Implement delete crm.person functionality - need to fix stuff in views.py
 
 TODO: 22) Update crm.models.py/Person.has_registration_history()
 
 TODO: 8) (BIG) rework territory stuff
+
+TODO: 2) Implement new table for invoices
+
+TODO: 23) If territory exists: new person should pre-populate categorization with relevant details
+          (This means updating crm.new.py)
+
+TODO: 26) Date picker widget
 
 TODO: 9) Play with pdf maker (ReportLab) and create new invoice & reg note
 TODO: 10) Post-registration processing page
@@ -30,6 +31,11 @@ TODO: 16) Submit registration from person page in CRM
 TODO: 17) Open web site link to have web form registrations enter into the d/b
 TODO: 18) Data Export for David
 
+TODO: 24) Tag system for CRM records
+
+TODO: 25) Booking system for upcoming appointments
+
 Long-term/iffy stuff:
 1) register.index - consider reg button beside names (not hidden) - unsure
 2) UX issues for new person = currently only on sidebar
+3) Personal notes??  I think everything should be open

@@ -257,4 +257,14 @@ $(document).ready(function() {
     });
   });
 
+  // Trigger delete confirm modal
+  $('body').on('click', '#delete-person-btn', function(){
+    $('#deleteConfirmModal').modal('show');
+  })
+
+  // Delete record on user confirmation
+  $('body').on('click', '#save-after-dupe-check', function(){
+    $(location).attr('href', 'http://www.google.ca');
+  })
+
 });

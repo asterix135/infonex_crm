@@ -1451,4 +1451,14 @@ def check_for_dupes(request):
     AJAX call to check for possible duplicate entry when entering a new person
     called from new.html
     """
-    pass
+    name = request.GET.get('name', None)
+    company = request.GET.get('company', None)
+    if name and company:
+        dupe_list = Person.objects.filter(name__iexact=name,
+                                          company__iexact=company)
+        if len(dupe_list) > 0:
+            context = {
+                'dupe_list': dupe_list
+            }
+            return render(request, 'crm/addins/possible_dupe.html', context)
+    return HttpResponse('<div class="foo">bar</div>')

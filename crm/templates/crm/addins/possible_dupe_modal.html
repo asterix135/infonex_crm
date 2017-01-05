@@ -22,8 +22,11 @@
                 hit the "Create New Record" button to save it to the database.
               </p>
               <p>
-                Otherwise, please select the record you'd like to work with to
-                be taken to that person's page.
+                Otherwise, please click on the record you'd like to work with.
+                You will be taken to that person's page.
+              </p>
+              <p>
+                Or, click the Close button to continue editing the record.
               </p>
             </div>
           </div>
@@ -31,20 +34,44 @@
           <input type="hidden" id="dupe-list-exists" name="dupe-list-exists" value="True" />
           <div class="row">
             <div class="col-sm-12">
-              You've entered:
+              <h4>Here's what you've entered:</h4>
             </div>
+          </div>
+          <div class="row">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <strong>{{ name }}</strong><br />
+                {% if title %}{{ title }}<br />{% endif %}
+                {% if company %}{{ company }}<br />{% endif %}
+                {% if city %}City: {{ city }}<br />{% endif %}
+                {% if phone %}Tel: {{ phone }}<br />{% endif %}
+                {% if email %}Email: {{ email }}<br />{% endif %}
+              </li>
+            </ul>
           </div>
 
           <div class="row">
             <div class="col-sm-12">
-              Possible duplicates in database:
+              <h4>Possible duplicates in database:</h4>
             </div>
           </div>
-          {% for dupe in dupe_list %}
+          <div class="row">
+            <ul class="list-group">
+              {% for dupe in dupe_list %}
+              <a href="{% url 'crm:detail' dupe.id %}" class="list-group-item">
+                <strong>{{ dupe.name }}</strong><br />
+                {% if dupe.title %}{{ dupe.title }}<br />{% endif %}
+                {% if dupe.company %}{{ dupe.company }}<br />{% endif %}
+                {% if dupe.city %}City: {{ dupe.city }}<br />{% endif %}
+                {% if dupe.phone %}Tel: {{ dupe.phone }}<br />{% endif %}
+                {% if dupe.email %}Email: {{ dupe.email }}<br />{% endif %}
+              </a>
+              {% endfor %}
+            </ul>
+          </div>
           <div class="row">
 
           </div>
-          {% endfor %}
           {% else %}
           <input type="hidden" id="dupe-list-exists" name="dupe-list-exists" value="False" />
           {% endif %}
@@ -53,7 +80,7 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Create New Record</button>
+        <button type="button" class="btn btn-primary" id="save-after-dupe-check">Create New Record</button>
       </div>
     </div>
   </div>

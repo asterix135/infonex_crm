@@ -76,4 +76,11 @@ $(document).ready(function() {
     });
   });
 
+
+  // After duplicates have been checked, creates new record with user ok
+  $('body').on('click', '#save-after-dupe-check', function(){
+    $('#possibleDuplicateModal').modal('hide');
+    $('#new-person-form').submit();
+  });
+
 });

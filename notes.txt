@@ -3,9 +3,6 @@ See avoiding race conditions using F()
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
 
-TODO: 1) Look at how to deal with duplicates in delegate.views.process_complete_registration
-  (need to put in a pop-up confirming no CRM match - how to deal with categories???)
-
 TODO: 2) Implement new table for invoices
 
 TODO: 3) Implement new person functionality

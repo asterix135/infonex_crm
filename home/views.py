@@ -11,6 +11,7 @@ def index(request):
     user = request.user
     reg_permission_ok = (user.groups.filter(name='db_admin').exists() or
                          user.groups.filter(name='registration').exists() or
+                         user.groups.filter(name='management').exists() or
                          user.is_superuser)
     context = {'reg_permission_ok': reg_permission_ok}
     return render(request, 'home/index.html', context)

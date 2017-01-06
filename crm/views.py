@@ -1121,9 +1121,6 @@ def detail(request, person_id):
                     reg_list = registrant.regdetails_set.all()
                 else:
                     reg_list = reg_list | registrant.regdetails.set.all()
-            print('\n\n')
-            print(reg_list)
-            print('\n\n')
             if len(reg_list) == 0:
                 reg_list = None
             else:
@@ -1373,8 +1370,8 @@ def save_person_details(request):
                 person_details_form.save()
                 updated_details_success = True
         except (Person.DoesNotExist, MultiValueDictKeyError):
-            pass
-
+            raise Http404('Sorry, this person seems to have been deleted ' \
+                          'from the database')
     context = {
         'person': person,
         'person_details_form': person_details_form,
@@ -1410,7 +1407,8 @@ def add_contact_history(request):
             else:
                 print('\n\nForm is Not Valid\n\n')
         except (Person.DoesNotExist, MultiValueDictKeyError):
-            pass
+            raise Http404('Sorry, this person seems to have been deleted ' \
+                          'from the database.')
     context = {
         'person': person,
         'new_contact_form': new_contact_form,
@@ -1432,7 +1430,8 @@ def save_category_changes(request):
                 category_form.save()
                 updated_category_success = True
         except (Person.DoesNotExist, MultiValueDictKeyError):
-            pass
+            raise Http404('Sorry, this person seems to have been deleted ' \
+                          'from the database.')
     context = {
         'updated_category_success': updated_category_success,
         'category_form': category_form,

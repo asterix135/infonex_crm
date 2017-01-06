@@ -2,17 +2,15 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
-
-TODO: 21) Implement delete crm.person functionality - need to fix stuff in views.py
-
-TODO: 22) Update crm.models.py/Person.has_registration_history()
+TODO: 29) Check how the delete recently added contact history works: probably need to ajax-ify
 
 TODO: 8) (BIG) rework territory stuff
-
-TODO: 2) Implement new table for invoices
+         - Best Idea is to make templates dynamic with cookie determining what's shown
 
 TODO: 23) If territory exists: new person should pre-populate categorization with relevant details
           (This means updating crm.new.py)
+
+TODO: 2) Implement new table for invoices
 
 TODO: 26) Date picker widget
 
@@ -34,6 +32,9 @@ TODO: 18) Data Export for David
 TODO: 24) Tag system for CRM records
 
 TODO: 25) Booking system for upcoming appointments
+          - Try to replicate the way Day One tags work
+
+TODO: 28) if no admin access, set error page for accessing admin page
 
 Long-term/iffy stuff:
 1) register.index - consider reg button beside names (not hidden) - unsure

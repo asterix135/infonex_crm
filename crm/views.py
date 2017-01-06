@@ -1391,7 +1391,6 @@ def add_contact_history(request):
             add_to_recent_contacts(request, request.POST['person_id'])
             if new_contact_form.is_valid():
                 event = Event.objects.get(pk=request.POST['event'])
-                print('\n\nForm is Valid\n\n')
                 new_contact = Contact(
                     person=person,
                     event=event,
@@ -1404,11 +1403,24 @@ def add_contact_history(request):
                 person.date_modified = timezone.now()
                 person.modified_by = request.user
                 person.save()
-            else:
-                print('\n\nForm is Not Valid\n\n')
         except (Person.DoesNotExist, MultiValueDictKeyError):
             raise Http404('Sorry, this person seems to have been deleted ' \
                           'from the database.')
+    context = {
+        'person': person,
+        'new_contact_form': new_contact_form,
+    }
+    return render(request, 'crm/addins/detail_contact_history.html', context)
+
+
+@login_required
+def delete_contact_history(request):
+    person = None
+    new_contact_form = NewContactForm()
+    if request.method == 'POST':
+        person = Person.objects.get(pk=request.POST['person_id'])
+        delete_contact = Contact.objects.get(pk=request.POST['contact_id'])
+        delete_contact.delete()
     context = {
         'person': person,
         'new_contact_form': new_contact_form,

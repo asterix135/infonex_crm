@@ -50,6 +50,8 @@ urlpatterns = [
     url(r'^add_contact_history/$', views.add_contact_history,
         name='add_contact_history'),
     url(r'^check_for_dupes/$', views.check_for_dupes, name='check_for_dupes'),
+    url(r'^delete_contact_history/$', views.delete_contact_history,
+        name='delete_contact_history'),
     url(r'^get_recent_contacts/$', views.get_recent_contacts,
         name='get_recent_contacts'),
     url(r'^save_category_changes/$', views.save_category_changes,

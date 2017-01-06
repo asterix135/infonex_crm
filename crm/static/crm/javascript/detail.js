@@ -196,6 +196,24 @@ $(document).ready(function() {
   });
 
 
+  // delete contact history entry
+  $('body').on('click', '.delete-contact-history', function(){
+    var personId = $('#person_id').val();
+    var contactId = $(this).attr('contact-id');
+    $.ajax({
+      url: '/crm/delete_contact_history/',
+      type: 'POST',
+      data: {
+        'person_id': personId,
+        'contact_id': contactId,
+      },
+      success: function(data){
+        $('#person-contact-history-panel').html(data);
+      }
+    });
+  });
+
+
   // Toggle display of more than 5 contact history entries
   $('body').on('click', '#show-entire-contact-history', function(){
     var buttonText = $(this).text().trim();

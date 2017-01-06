@@ -2,8 +2,6 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
-TODO: 29) Check how the delete recently added contact history works: probably need to ajax-ify
-
 TODO: 8) (BIG) rework territory stuff
          - Best Idea is to make templates dynamic with cookie determining what's shown
 

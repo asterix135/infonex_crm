@@ -92,7 +92,7 @@
         <td>{{ contact.event }}</td>
         <td>{{ contact.get_method_display }}</td>
         <td>{{ contact.notes }}</td>
-        <td>{% if contact.able_to_delete %}<a href="?rm={{ contact.pk }}">Delete</a>{% endif %}</td>
+        <td>{% if contact.able_to_delete %}<span class="glyph-button errorlist delete-contact-history" contact-id="{{ contact.id }}">Delete</span>{% endif %}</td>
       </tr>
       {% endfor %}
       {% if person.contact_set.all|length > 5 %}

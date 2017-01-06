@@ -5,13 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q, Count
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
-
 
 from .forms import *
 from .models import *
@@ -319,41 +318,6 @@ def detail_paginated(request):
 #################
 # HELPER FUNCTION
 #################
-def add_change_record(person, change_action):
-    """
-    Called from updates/changes/deletes
-    Records information in changes d/b for review and recovery
-    Needs to be called before modification for
-    :param person: Instance of Person Model pre-modification
-    :param change_action: string indicating change (add/delete/update)
-    """
-    change = Changes(
-        action=change_action,
-        orig_id=person.pk,
-        name=person.name,
-        title=person.title,
-        company=person.company,
-        phone=person.phone,
-        phone_main=person.phone_main,
-        email=person.email,
-        do_not_email=person.do_not_email,
-        do_not_call=person.do_not_call,
-        city=person.city,
-        dept=person.dept,
-        industry=person.industry,
-        geo=person.geo,
-        main_category=person.main_category,
-        main_category2=person.main_category2,
-        division1=person.division1,
-        division2=person.division2,
-        date_created=person.date_created,
-        created_by=person.created_by,
-        date_modified=timezone.now(),
-        modified_by=person.created_by,
-    )
-    change.save()
-
-
 #################
 # HELPER FUNCTION
 #################
@@ -369,6 +333,7 @@ def territory_exists(request):
         return False
 
 
+# Can delete thi
 @login_required
 def delete_person(request):
     """
@@ -381,6 +346,7 @@ def delete_person(request):
     return render(request, 'crm/delete_person.html', context)
 
 
+# Can delete this
 @login_required
 def confirm_delete(request, person_id):
     person = get_object_or_404(Person, pk=person_id)
@@ -1058,6 +1024,41 @@ def flag_many_records(request):
 # HELPER FUNCTIONS
 ##################
 
+def add_change_record(person, change_action):
+    """
+    Called from updates/changes/deletes
+    Records information in changes d/b for review and recovery
+    Needs to be called before modification
+    :param person: Instance of Person Model pre-modification
+    :param change_action: string indicating change (add/delete/update)
+    """
+    change = Changes(
+        action=change_action,
+        orig_id=person.pk,
+        name=person.name,
+        title=person.title,
+        company=person.company,
+        phone=person.phone,
+        phone_main=person.phone_main,
+        email=person.email,
+        do_not_email=person.do_not_email,
+        do_not_call=person.do_not_call,
+        city=person.city,
+        dept=person.dept,
+        industry=person.industry,
+        geo=person.geo,
+        main_category=person.main_category,
+        main_category2=person.main_category2,
+        division1=person.division1,
+        division2=person.division2,
+        date_created=person.date_created,
+        created_by=person.created_by,
+        date_modified=timezone.now(),
+        modified_by=person.created_by,
+    )
+    change.save()
+
+
 def add_to_recent_contacts(request, person_id):
     """
     adds person to a user's recent contact list
@@ -1079,6 +1080,113 @@ def add_to_recent_contacts(request, person_id):
 ##################
 # MAIN FUNCTIONS
 ##################
+
+@login_required
+def delete(request):
+    if request.method != 'POST':
+        return HttpResponseRedirect('/crm/search/')
+    try:
+        person = Person.objects.get(pk=request.POST['person_id'])
+    except (Person.DoesNotExist, MultiValueDictKeyError):
+        raise Http404('Person has already been deleted')
+
+    # copy contact data to DeletedConcact
+    for contact in person.contact_set.all():
+        del_contact = DeletedContact(
+            original_pk=contact.pk,
+            original_person_id=contact.author.pk,
+            event=contact.event,
+            date_of_contact=contact.date_of_contact,
+            notes=contact.notes,
+            method=contact.notes,
+        )
+        del_contact.save()
+    add_change_record(person, 'delete')
+    person.delete()
+    return HttpResponseRedirect('/crm/search/')
+
+
+@login_required
+def detail(request, person_id):
+    """ loads main person page (detail.html) """
+    new_contact_form = NewContactForm()
+    reg_list = None
+    try:
+        person = Person.objects.get(pk=person_id)
+        add_to_recent_contacts(request, person_id)
+        if person.registrants_set.exists():
+            for registrant in person.registrants_set.all():
+                # reg_list = registrant.regdetails_set.all()
+                if not reg_list:
+                    reg_list = registrant.regdetails_set.all()
+                else:
+                    reg_list = reg_list | registrant.regdetails.set.all()
+            print('\n\n')
+            print(reg_list)
+            print('\n\n')
+            if len(reg_list) == 0:
+                reg_list = None
+            else:
+                reg_list = reg_list.order_by('-register_date')
+    except (Person.DoesNotExist, MultiValueDictKeyError):
+        person = None
+    person_details_form = PersonDetailsForm(instance=person)
+    category_form = PersonCategoryUpdateForm(instance=person)
+    context = {
+        'person': person,
+        'person_details_form': person_details_form,
+        'new_contact_form': new_contact_form,
+        'category_form': category_form,
+        'reg_list': reg_list,
+    }
+    return render(request, 'crm/detail.html', context)
+
+
+@login_required
+def new(request):
+    """
+    Renders new.html form to add a new contact
+    """
+    if request.method != 'POST':
+        new_person_form = NewPersonForm()
+        context = {
+            'new_person_form': new_person_form
+        }
+        return render(request, 'crm/new.html', context)
+
+    new_person_form = NewPersonForm(request.POST)
+    if not new_person_form.is_valid():
+        context = {
+            'new_person_form': new_person_form
+        }
+        return render(request, 'crm/new.html', context)
+    person = Person(
+        name=request.POST['name'],
+        title=request.POST['title'],
+        company=request.POST['company'],
+        city=request.POST['city'],
+        url=request.POST['url'],
+        phone=request.POST['phone'],
+        phone_main=request.POST['phone_main'],
+        do_not_call=request.POST.get('do_not_call', False),
+        email=request.POST['email'],
+        do_not_email=request.POST.get('do_not_email', False),
+        linkedin=request.POST['linkedin'],
+        industry=request.POST['industry'],
+        dept=request.POST['dept'],
+        geo=request.POST['geo'],
+        main_category=request.POST['main_category'],
+        main_category2=request.POST['main_category2'],
+        division1=request.POST['division1'],
+        division2=request.POST['division2'],
+        date_created=timezone.now(),
+        date_modified=timezone.now(),
+        created_by=request.user,
+        modified_by=request.user,
+    )
+    person.save()
+    return HttpResponseRedirect(reverse('crm:detail', args=(person.id,)))
+
 
 @login_required
 def search(request):
@@ -1225,87 +1333,6 @@ def search(request):
     }
     return render(request, 'crm/search.html', context)
 
-
-@login_required
-def detail(request, person_id):
-    """ loads main person page (detail.html) """
-    new_contact_form = NewContactForm()
-    reg_list = None
-    try:
-        person = Person.objects.get(pk=person_id)
-        add_to_recent_contacts(request, person_id)
-        if person.registrants_set.exists():
-            for registrant in person.registrants_set.all():
-                # reg_list = registrant.regdetails_set.all()
-                if not reg_list:
-                    reg_list = registrant.regdetails_set.all()
-                else:
-                    reg_list = reg_list | registrant.regdetails.set.all()
-            print('\n\n')
-            print(reg_list)
-            print('\n\n')
-            if len(reg_list) == 0:
-                reg_list = None
-            else:
-                reg_list = reg_list.order_by('-register_date')
-    except (Person.DoesNotExist, MultiValueDictKeyError):
-        person = None
-    person_details_form = PersonDetailsForm(instance=person)
-    category_form = PersonCategoryUpdateForm(instance=person)
-    context = {
-        'person': person,
-        'person_details_form': person_details_form,
-        'new_contact_form': new_contact_form,
-        'category_form': category_form,
-        'reg_list': reg_list,
-    }
-    return render(request, 'crm/detail.html', context)
-
-
-@login_required
-def new(request):
-    """
-    Renders new.html form to add a new contact
-    """
-    if request.method != 'POST':
-        new_person_form = NewPersonForm()
-        context = {
-            'new_person_form': new_person_form
-        }
-        return render(request, 'crm/new.html', context)
-
-    new_person_form = NewPersonForm(request.POST)
-    if not new_person_form.is_valid():
-        context = {
-            'new_person_form': new_person_form
-        }
-        return render(request, 'crm/new.html', context)
-    person = Person(
-        name=request.POST['name'],
-        title=request.POST['title'],
-        company=request.POST['company'],
-        city=request.POST['city'],
-        url=request.POST['url'],
-        phone=request.POST['phone'],
-        phone_main=request.POST['phone_main'],
-        do_not_call=request.POST.get('do_not_call', False),
-        email=request.POST['email'],
-        do_not_email=request.POST.get('do_not_email', False),
-        linkedin=request.POST['linkedin'],
-        industry=request.POST['industry'],
-        dept=request.POST['dept'],
-        geo=request.POST['geo'],
-        main_category=request.POST['main_category'],
-        main_category2=request.POST['main_category2'],
-        division1=request.POST['division1'],
-        division2=request.POST['division2'],
-        date_created=timezone.now(),
-        date_modified=timezone.now(),
-        created_by=request.user,
-        modified_by=request.user,
-    )
-    person.save()
-    return HttpResponseRedirect(reverse('crm:detail', args=(person.id,)))
 
 ##################
 # AJAX CALLS

@@ -39,6 +39,7 @@ urlpatterns = [
     ################
     # MAIN PAGES
     ################
+    url(r'^delete/$', views.delete, name='delete'),
     url(r'^detail/(?P<person_id>[0-9]+)/$', views.detail, name='detail'),
     url(r'^new/$', views.new, name='new'),
     url(r'^search/$', views.search, name='search'),

@@ -257,14 +257,20 @@ $(document).ready(function() {
     });
   });
 
-  // Trigger delete confirm modal
+  // Trigger delete confirm modal and add delete form content
   $('body').on('click', '#delete-person-btn', function(){
     $('#deleteConfirmModal').modal('show');
-  })
+    $('#delete-person-form').attr('action', '/crm/delete/');
+    var personId = $('#person_id').val();
+    $('#delete-form-content').html(
+      '<input type="hidden" name="person_id" value="' + personId + '"/>'
+    )
+  });
 
   // Delete record on user confirmation
   $('body').on('click', '#save-after-dupe-check', function(){
-    $(location).attr('href', 'http://www.google.ca');
+    // $(location).attr('href', 'http://www.infonex.ca');
+    $('#delete-person-form').submit();
   })
 
 });

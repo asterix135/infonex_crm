@@ -1,9 +1,0 @@
-Require the following admin categories:
-
-1) conference_developer: tbd permissions
-2) db_admin: full access
-3) management: full access??
-4) marketing: tbd permissions
-5) registration: tbd permissions
-6) sales: tbd permissions
-7) sponsorship: tbc permissions

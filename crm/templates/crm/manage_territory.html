@@ -1,0 +1,44 @@
+{% extends 'crm/base.html' %}
+{% load staticfiles %}
+
+{% block script_includes %}
+<link href="{% static 'crm/crm_style.css' %}" rel="stylesheet" type="text/css" />
+<script src="{% static 'crm/javascript/manage_territory.js' %}" type="text/javascript"></script>
+{% endblock %}
+
+{% block title %}Manage Territories | {% endblock %}
+
+{% block content %}
+<div class="container-fluid fill">
+  <div class="row">
+    <div class="col-sm-offset-2 col-sm-10">
+      <h1>
+        Manage Sales Territories and Prospect Lists
+      </h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-offset-2 col-sm-10">
+      {{ conference_select_form.event.label_tag }}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-offset-2 col-sm-6">
+      {{ conference_select_form.event.errors }}
+      {{ conference_select_form.event }}
+    </div>
+    <div class="col-sm-2">
+      <button type="button" class="btn btn-primary btn-space" id="select-conference">
+        Select
+      </button>
+      <button type="button" class="btn btn-default" id="add-new-conference">
+        Add New Event
+      </button>
+    </div>
+  </div>
+  <div class="row col-sm-12" id="selection-widget">
+
+  </div>
+</div>
+
+{% endblock %}

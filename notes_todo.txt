@@ -1,0 +1,49 @@
+See avoiding race conditions using F()
+    might be an issue with some records and should be implemented
+    https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
+
+TODO: 30) Add autocomplete to industry for crm/new.html and crm/detail.html
+
+TODO: 8) (BIG) rework territory stuff
+         - Best Idea is to make templates dynamic with cookie determining what's shown
+         a) Need to update sidebar to dynamically reflect whether working on a conference - STARTED
+         b) Need to (re)-create page showing all people in territory - territory.html - STARTED
+         c) Need to update detail.html to show dynamic content based on whether working a conference
+         d) Need to create a page for db admin to add a conference (recycle existing?)
+         e) Need to create a page for db admin to add people to a conference - manage_territory.html - STARTED
+         f) Need to (re)-create a page to create territory based on set criteria - manage_territory.html - STARTED
+
+TODO: 31) Add New Person link to top bar (dynamically)
+
+TODO: 23) If territory exists: new person should pre-populate categorization with relevant details
+          (This means updating crm.new.py)
+
+TODO: 2) Implement new table for invoices
+
+TODO: 26) Date picker widget
+
+TODO: 9) Play with pdf maker (ReportLab) and create new invoice & reg note
+TODO: 10) Post-registration processing page
+TODO: 19) How to send email confirmations?
+TODO: 11) Search and update registration information
+TODO: 12) Report generation
+
+TODO: 20) Charts & data on welcome page
+
+TODO: 13) Upload and download information from filemaker
+TODO: 14) Admin interface to review changes - esp to category info
+TODO: 16) Submit registration from person page in CRM
+TODO: 29) Marketing (aka Peter) interface w/ d-b - Excel-esque
+TODO: 17) Open web site link to have web form registrations enter into the d/b
+TODO: 18) Data Export for David
+
+TODO: 24) Tag system to classify/sort CRM records
+          - Try to replicate the way Day One tags work
+
+TODO: 25) Booking system for upcoming appointments
+
+TODO: 28) if no admin access, set error page for accessing admin page
+
+Long-term/iffy stuff:
+1) register.index - consider reg button beside names (not hidden) - unsure
+3) Personal notes??  I think everything should be open

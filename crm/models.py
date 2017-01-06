@@ -6,6 +6,7 @@ from django.utils import timezone
 from .constants import *
 
 
+# OK PER OVERHAUL
 class Person(models.Model):
     """
     Basic person model
@@ -128,6 +129,7 @@ class Person(models.Model):
     show_person_url.allow_tags = True
 
 
+# OK PER OVERHAUL
 class Changes(models.Model):
     """
     Archive of changes/additions/deletions to database
@@ -160,6 +162,7 @@ class Changes(models.Model):
                                     related_name='orig_person_modifed_by')
 
 
+# OK PER OVERHAUL
 class Event(models.Model):
     """
     Events being sold/worked on
@@ -207,6 +210,16 @@ class Event(models.Model):
         return self.start_date < timezone.now().date()
 
 
+# OK PER OVERHAUL
+class EventAssignment(models.Model):
+    user = models.ForeignKey('auth.User')
+    event = models.ForeignKey(Event)
+    role = models.CharField(max_length=2,
+                            choices=EVENT_ROLES,
+                            default='SA')
+
+
+# DELETE THIS WHEN OLD FORMS REMOVED
 class RegHistory(models.Model):
     """
     Registration history - not to be altered by normal users
@@ -229,6 +242,7 @@ class RegHistory(models.Model):
         return str(self.event) + ': ' + self.status
 
 
+# OK PER OVERHAUL
 class Contact(models.Model):
     """
     Records contact history with an individual person
@@ -266,6 +280,7 @@ class Contact(models.Model):
         return self.date_of_contact >= now - datetime.timedelta(hours=1)
 
 
+# OK PER OVERHAUL
 class DeletedContact(models.Model):
     """
     Archives contact information for deleted persons
@@ -279,6 +294,7 @@ class DeletedContact(models.Model):
     method = models.CharField(max_length=20)
 
 
+# PROBABLY DELETE WHEN TERRITORY IS OVERHAULED
 class ListSelection(models.Model):
     """
     Pre-set selection criteria for sales reps etc.
@@ -351,6 +367,77 @@ class ListSelection(models.Model):
                                        default='include')
 
 
+# Under construction for overhaul
+class TerritorySelects(models.Model):
+    event_assignment = models.ForeignKey(EventAssignment)
+    include_exclude = models.CharField(max_length=7,
+                                       choices=(('include', 'include'),
+                                                 ('exclude', 'exclude')),
+                                       default='include')
+    person = models.ForeignKey(Person, blank=True, null=True)
+    GEO_CHOICES = (
+        ('East', 'East'),
+        ('West', 'West'),
+        ('Maritimes/East', 'Maritimes'),
+        ('USA', 'USA'),
+        ('Other', 'Other Foreign'),
+        ('Unknown', 'Unknown'),
+        ('', '---'),
+    )
+    geo = models.CharField(max_length=10,
+                           choices=GEO_CHOICES,
+                           blank=True,
+                           default='')
+    CAT_CHOICES = (
+        ('HR', 'HR'),
+        ('FIN', 'FIN'),
+        ('Industry', 'Industry'),
+        ('Aboriginal', 'Aboriginal'),
+        ('Gov', 'Gov'),
+        ('NA', 'None'),
+        ('', '---'),
+    )
+    main_category = models.CharField(max_length=25,
+                                     choices=CAT_CHOICES,
+                                     blank=True,
+                                     default='')  # f1 in original db
+    main_category2 = models.CharField(max_length=15,
+                                      choices=CAT_CHOICES,
+                                      blank=True,
+                                      default='')
+    DIV_CHOICES = (
+        ('1', '1 - Misc'),
+        ('2', '2 - Misc'),
+        ('3', '3 - Misc'),
+        ('4', '4 - Misc'),
+        ('5', '5 - Misc'),
+        ('6', '6 - Misc'),
+        ('A1', '1 - Accounting'),
+        ('A2', '2 - Accounting'),
+        ('A3', '3 - Accounting'),
+        ('Aboriginal', 'Aboriginal'),
+        ('FED 1', 'FED 1'),
+        ('FED 2', 'FED 2'),
+        ('FED 3', 'FED 3'),
+        ('FED 4', 'FED 4'),
+        ('USA', 'USA'),
+        ('NA', 'Not Determined'),
+        ('', '---'),
+    )
+    division1 = models.CharField(max_length=20,
+                                 choices=DIV_CHOICES,
+                                 blank=True,
+                                 default='')  # for splitting leads
+    division2 = models.CharField(max_length=20,
+                                 choices=DIV_CHOICES,
+                                 blank=True,
+                                 default='')  # for splitting leads
+    company = models.CharField(max_length=100, blank=True)
+    industry = models.CharField(max_length=100, blank=True)
+
+
+
+# THINK ABOUT THIS
 class PersonFlag(models.Model):
     """
     Flags allowing individual user to id records for followup or action

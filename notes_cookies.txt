@@ -1,0 +1,42 @@
+Stuff stored in request.session
+
+################
+# Good on rework
+################
+For Working with Territory:
+  assignment_id: active Event Assignment record
+  conference_description: str() of Active conference
+
+Search parameters:
+  last_search_type: quick or advanced (or None)
+  search_string: quick search terms entered
+  search_page: pagination page
+  search_name: advanced search parameter
+  search_title: advanced search parameter
+  search_company: advanced search parameter
+  search_prov: advanced search parameter
+  search_customer: advanced search parameter
+  page: current pagination location
+  sort_col: for list sortation
+  sort_order: for list sortation
+
+General CRM
+  recent_contacts: list of 10 most recently viewed contacts in CRM
+
+Delegate processing (see delegate.views.py)
+  current_registration: ??
+  registrant:
+  assistant:
+
+################
+# Review and/or delete
+################
+
+For Working with Territory
+  -- following are probably redundant --
+  employee: person whose territory will be called up
+  event: event for which territory will be called up
+
+territory_page: current page to show in list pagination
+
+ref_page: absolute or paginated - where to return after deleting record

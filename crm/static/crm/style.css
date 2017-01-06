@@ -80,3 +80,6 @@ h1, h2, h3 {
   color: #BA2421;
   font: bold;
 }
+.btn-space {
+  margin-right: 5px;
+}

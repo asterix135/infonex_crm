@@ -296,7 +296,6 @@ class NewPersonForm(forms.ModelForm):
         }
 
 
-
 class NewContactForm(forms.ModelForm):
 
     class Meta:

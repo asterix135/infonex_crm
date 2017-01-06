@@ -4,6 +4,22 @@
     <h3 class="list-group-item active">Actions</h3>
 
     <div class="list-group-item">
+      <h4>
+        Active Conference
+        <span class="float-right">
+          <button type="button" class="btn btn-xs btn-success">Change</button>
+        </span>
+      </h4>
+      <p>
+        {% if not request.session.conference_description or request.session.conference_description == '' %}
+        None selected
+        {% else %}
+        {{ request.session.conference_description }}
+        {% endif %}
+      </p>
+    </div>
+
+    <div class="list-group-item">
       <h5>Quick Search</h5>
       <form action = "/crm/search/" method="post">
         {% csrf_token %}
@@ -35,9 +51,6 @@
     <a class="list-group-item" href="/crm/new/">Add new contact</a>
     {% endif %}
     <!-- TODO: Implement stuff below here -->
-    <div class="list-group-item">
-      Switch Conference
-    </div>
     <div class="list-group-item">
       Upcoming calls/appointments
     </div>

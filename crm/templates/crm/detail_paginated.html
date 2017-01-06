@@ -23,7 +23,7 @@
       </h1>
       <p><a href="{% url 'crm:detail' person.id %}">Permalink to record</a></p>
       <h2>
-        <a href="{% url 'crm:territory' %}" class="normal-text">Sales Territory</a> for: {{ salesperson.get_username }} -
+        <a href="{% url 'crm:territory_list' %}" class="normal-text">Sales Territory</a> for: {{ salesperson.get_username }} -
         Event: {{ active_event.number }} - {{ active_event.title }}
       </h2>
     </div>

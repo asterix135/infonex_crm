@@ -1,7 +1,7 @@
 import datetime
 import json
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q, Count
@@ -15,6 +15,7 @@ from django.views import View
 from .forms import *
 from .models import *
 from .constants import AC_DICT
+from registration.forms import ConferenceSelectForm
 
 
 #########################
@@ -315,9 +316,6 @@ def detail_paginated(request):
     return render(request, 'crm/detail_paginated.html', context)
 
 
-#################
-# HELPER FUNCTION
-#################
 #################
 # HELPER FUNCTION
 #################
@@ -882,10 +880,10 @@ def territory_list(request):
                'plus3': str(int(page) + 3),
                'has_plus4': int(page) + 4 <= paginator.num_pages,
                }
-    return render(request, 'crm/territory.html', context)
+    return render(request, 'crm/territory_old.html', context)
 
 
-# TODO: probably should require permission level - how to do that??
+# TODO: cannibalize and delete
 @login_required
 def create_territory(request):
     """
@@ -1077,6 +1075,19 @@ def add_to_recent_contacts(request, person_id):
     request.session['recent_contacts'] = recent_contact_list
 
 
+def management_permission(user):
+    """
+    To be called by textdecorator @user_passes_test
+    """
+    if user.groups.filter(name='db_admin').exists():
+        return True
+    if user.groups.filter(name='management').exists():
+        return True
+    if user.is_superuser:
+        return True
+    return False
+
+
 ##################
 # MAIN FUNCTIONS
 ##################
@@ -1139,6 +1150,17 @@ def detail(request, person_id):
     return render(request, 'crm/detail.html', context)
 
 
+@user_passes_test(management_permission, login_url='/crm/',
+                  redirect_field_name=None)
+def manage_territory(request):
+    conference_select_form = ConferenceSelectForm()
+
+    context = {
+        'conference_select_form': conference_select_form,
+    }
+    return render(request, 'crm/manage_territory.html', context)
+
+
 @login_required
 def new(request):
     """
@@ -1182,6 +1204,7 @@ def new(request):
         modified_by=request.user,
     )
     person.save()
+    add_to_recent_contacts(request, person.pk)
     return HttpResponseRedirect(reverse('crm:detail', args=(person.id,)))
 
 
@@ -1331,54 +1354,14 @@ def search(request):
     return render(request, 'crm/search.html', context)
 
 
+@login_required
+def territory(request):
+    return render(request, 'crm/territory.html')
+
+
 ##################
 # AJAX CALLS
 ##################
-
-@login_required
-def get_recent_contacts(request):
-    """ ajax call to populate recent contacts on sidebar """
-    if 'recent_contacts' not in request.session:
-        request.session['recent_contacts'] = []
-    recent_contact_list = []
-    print('\n\n')
-    print(request.session['recent_contacts'])
-    for contact in request.session['recent_contacts']:
-        try:
-            recent_contact_list.append(Person.objects.get(pk=contact))
-        except (Person.DoesNotExist, MultiValueDictKeyError):
-            pass
-    context = {
-        'recent_contact_list': recent_contact_list,
-    }
-    return render(request, 'crm/addins/recently_viewed.html', context)
-
-
-@login_required
-def save_person_details(request):
-    """ ajax call to save person details and update that section of page """
-    updated_details_success = None
-    person = None
-    person_details_form = PersonDetailsForm()
-    if request.method == 'POST':
-        try:
-            person = Person.objects.get(pk=request.POST['person_id'])
-            add_to_recent_contacts(request, request.POST['person_id'])
-            person_details_form = PersonDetailsForm(request.POST,
-                                                    instance=person)
-            if person_details_form.is_valid():
-                person_details_form.save()
-                updated_details_success = True
-        except (Person.DoesNotExist, MultiValueDictKeyError):
-            raise Http404('Sorry, this person seems to have been deleted ' \
-                          'from the database')
-    context = {
-        'person': person,
-        'person_details_form': person_details_form,
-        'updated_details_success': updated_details_success
-    }
-    return render(request, 'crm/addins/person_detail.html', context)
-
 
 @login_required
 def add_contact_history(request):
@@ -1414,65 +1397,6 @@ def add_contact_history(request):
 
 
 @login_required
-def delete_contact_history(request):
-    person = None
-    new_contact_form = NewContactForm()
-    if request.method == 'POST':
-        person = Person.objects.get(pk=request.POST['person_id'])
-        delete_contact = Contact.objects.get(pk=request.POST['contact_id'])
-        delete_contact.delete()
-    context = {
-        'person': person,
-        'new_contact_form': new_contact_form,
-    }
-    return render(request, 'crm/addins/detail_contact_history.html', context)
-
-
-@login_required
-def save_category_changes(request):
-    updated_category_success = None
-    category_form = PersonCategoryUpdateForm
-    if request.method == 'POST':
-        try:
-            person = Person.objects.get(pk=request.POST['person_id'])
-            add_to_recent_contacts(request, request.POST['person_id'])
-            category_form = PersonCategoryUpdateForm(request.POST,
-                                                     instance=person)
-            if category_form.is_valid():
-                category_form.save()
-                updated_category_success = True
-        except (Person.DoesNotExist, MultiValueDictKeyError):
-            raise Http404('Sorry, this person seems to have been deleted ' \
-                          'from the database.')
-    context = {
-        'updated_category_success': updated_category_success,
-        'category_form': category_form,
-    }
-    return render(request, 'crm/addins/detail_categorize.html', context)
-
-
-@login_required
-def suggest_company(request):
-    """
-    Ajax call (I think?) - returns json of top 25 companies (by number in db)
-    that match entered string
-    """
-    query_term = request.GET.get('q', '')
-    companies = Person.objects.filter(company__icontains=query_term) \
-        .values('company').annotate(total=Count('name')) \
-        .order_by('-total')[:25]
-    results = []
-    id_counter = 0
-    for company in companies:
-        company_json = {}
-        company_json['identifier'] = company['company']
-        results.append(company_json)
-    data = json.dumps(results)
-    mimetype = 'applications/json'
-    return HttpResponse(data, mimetype)
-
-
-@login_required
 def check_for_dupes(request):
     """
     AJAX call to check for possible duplicate entry when entering a new person
@@ -1504,3 +1428,112 @@ def check_for_dupes(request):
         'dupe_list': dupe_list
     }
     return render(request, 'crm/addins/possible_dupe_modal.html', context)
+
+
+@login_required
+def delete_contact_history(request):
+    person = None
+    new_contact_form = NewContactForm()
+    if request.method == 'POST':
+        person = Person.objects.get(pk=request.POST['person_id'])
+        add_to_recent_contacts(request, request.POST['person_id'])
+        delete_contact = Contact.objects.get(pk=request.POST['contact_id'])
+        delete_contact.delete()
+    context = {
+        'person': person,
+        'new_contact_form': new_contact_form,
+    }
+    return render(request, 'crm/addins/detail_contact_history.html', context)
+
+
+@login_required
+def get_recent_contacts(request):
+    """ ajax call to populate recent contacts on sidebar """
+    if 'recent_contacts' not in request.session:
+        request.session['recent_contacts'] = []
+    recent_contact_list = []
+    print('\n\n')
+    print(request.session['recent_contacts'])
+    for contact in request.session['recent_contacts']:
+        try:
+            recent_contact_list.append(Person.objects.get(pk=contact))
+        except (Person.DoesNotExist, MultiValueDictKeyError):
+            pass
+    context = {
+        'recent_contact_list': recent_contact_list,
+    }
+    return render(request, 'crm/addins/recently_viewed.html', context)
+
+@user_passes_test(management_permission, login_url='/crm/',
+                  redirect_field_name=None)
+def create_selection_widget(request):
+    return render(request, 'crm/territory_addins/territory_builder.html')
+
+@login_required
+def save_category_changes(request):
+    updated_category_success = None
+    category_form = PersonCategoryUpdateForm
+    if request.method == 'POST':
+        try:
+            person = Person.objects.get(pk=request.POST['person_id'])
+            add_to_recent_contacts(request, request.POST['person_id'])
+            category_form = PersonCategoryUpdateForm(request.POST,
+                                                     instance=person)
+            if category_form.is_valid():
+                category_form.save()
+                updated_category_success = True
+        except (Person.DoesNotExist, MultiValueDictKeyError):
+            raise Http404('Sorry, this person seems to have been deleted ' \
+                          'from the database.')
+    context = {
+        'updated_category_success': updated_category_success,
+        'category_form': category_form,
+    }
+    return render(request, 'crm/addins/detail_categorize.html', context)
+
+
+@login_required
+def save_person_details(request):
+    """ ajax call to save person details and update that section of page """
+    updated_details_success = None
+    person = None
+    person_details_form = PersonDetailsForm()
+    if request.method == 'POST':
+        try:
+            person = Person.objects.get(pk=request.POST['person_id'])
+            add_to_recent_contacts(request, request.POST['person_id'])
+            person_details_form = PersonDetailsForm(request.POST,
+                                                    instance=person)
+            if person_details_form.is_valid():
+                person_details_form.save()
+                updated_details_success = True
+        except (Person.DoesNotExist, MultiValueDictKeyError):
+            raise Http404('Sorry, this person seems to have been deleted ' \
+                          'from the database')
+    context = {
+        'person': person,
+        'person_details_form': person_details_form,
+        'updated_details_success': updated_details_success
+    }
+    return render(request, 'crm/addins/person_detail.html', context)
+
+
+@login_required
+def suggest_company(request):
+    """
+    Ajax call (I think?) - returns json of top 25 companies (by number in db)
+    that match entered string
+    """
+    query_term = request.GET.get('q', '')
+    companies = Person.objects.filter(company__icontains=query_term) \
+        .values('company').annotate(total=Count('name')) \
+        .order_by('-total')[:25]
+    results = []
+    id_counter = 0
+    for company in companies:
+        company_json = {}
+        company_json['identifier'] = company['company']
+        results.append(company_json)
+    data = json.dumps(results)
+    mimetype = 'applications/json'
+    return HttpResponse(data, mimetype)

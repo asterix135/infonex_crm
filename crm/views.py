@@ -1129,7 +1129,7 @@ def detail(request, person_id):
             else:
                 reg_list = reg_list.order_by('-register_date')
     except (Person.DoesNotExist, MultiValueDictKeyError):
-        person = None
+        raise Http404('Person is not in the Database')
     person_details_form = PersonDetailsForm(instance=person)
     category_form = PersonCategoryUpdateForm(instance=person)
     context = {

@@ -1,14 +1,82 @@
-<h1>This is the territory builder</h1>
-<p>
-  This should be a set of 2 or 3 tabs: 1 for drag and drop names;
-  1 for building territory (selects overall)
-  1 for individual person groupings???
-</p>
-<ul>
-  <li>
-    <a href="http://getbootstrap.com/javascript/#tabs" target="_blank">http://getbootstrap.com/javascript/#tabs</a>
-  </li>
-  <li>
-    <a href="http://getbootstrap.com/components/#nav" target="_blank">http://getbootstrap.com/components/#nav</a>
-  </li>
-</ul>
+<!-- See if this can be enclosed in a box -->
+<div class="col-sm-12">
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#team" aria-controls="team" role="tab" data-toggle="tab">Select Team Members</a></li>
+    <li role="presentation"><a href="#master" aria-controls="master" role="tab" data-toggle="tab">Select Master List</a></li>
+    <li role="presentation" class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+        Personalize Selections <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li>
+          <a href="#sales" data-toggle="tab">Sales Staff</a>
+        </li>
+        <li>
+          <a href="#sponsorship" data-toggle="tab">Sponsorship</a>
+        </li>
+        <li>
+          <a href="#pd" data-toggle="tab">PD Staff</a>
+        </li>
+      </ul>
+    </li>
+
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active fade in" id="team">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="row">
+            Box for sales staff
+          </div>
+          <div class="row">
+            Box for Sponsorship staff
+          </div>
+          <div class="row">
+            Box for PD staff
+          </div>
+        </div>
+        <div class="col-sm-6">
+          {% for user in userlist %}
+          <div class="well well-sm">
+            {{ user.username }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div role="tabpanel" class="tab-pane fade" id="master">
+      <p>
+        Widget to select overall list criteria
+      </p>
+    </div>
+    <div role="tabpanel" class="tab-pane fade" id="sales">
+      <p>
+        widget to select sales staff territories
+      </p>
+      <p>
+        Consider making these tabs dynamic based on assigned staff
+      </p>
+    </div>
+    <div role="tabpanel" class="tab-pane fade" id="sponsorship">
+      <p>
+        widget to select sponsorship territory
+      </p>
+      <p>
+        Consider making these tabs dynamic based on assigned staff
+      </p>
+    </div>
+    <div role="tabpanel" class="tab-pane fade" id="pd">
+      <p>
+        widget to select pd territory
+      </p>
+      <p>
+        Consider making these tabs dynamic based on assigned staff
+      </p>
+    </div>
+  </div>
+
+</div>

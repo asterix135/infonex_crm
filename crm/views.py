@@ -1464,10 +1464,29 @@ def get_recent_contacts(request):
     }
     return render(request, 'crm/addins/recently_viewed.html', context)
 
+
 @user_passes_test(management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def create_selection_widget(request):
-    return render(request, 'crm/territory_addins/territory_builder.html')
+    """
+    Adds territory builder to manage_territory.html
+    """
+    if request.method != 'POST':
+        return HttpResponse('')
+    try:
+        event = Event.objects.get(pk=request.POST['conf_id'])
+    except (Event.DoesNotExist, MultiValueDictKeyError):
+        raise Http404('Something is wrong - that event does not exist')
+    userlist = User.objects.filter(is_active=True)
+    event_assignment = EventAssignment.objects.filter(event=event)
+    context = {
+        'event': event,
+        'userlist': userlist,
+        'event_assignment': event_assignment,
+    }
+    return render(request, 'crm/territory_addins/territory_builder.html',
+                  context)
+
 
 @login_required
 def save_category_changes(request):

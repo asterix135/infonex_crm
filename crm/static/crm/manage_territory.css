@@ -1,18 +1,25 @@
-body.dragging, body.dragging * {
-  cursor: move !important;
-}
+/*From jqueryui*/
 
-.dragged {
-  position: absolute;
-  opacity: 0.5;
-  z-index: 2000;
+.ui-draggable, .ui-droppable {
+  background-position: center top;
 }
-
-ol.example li.placeholder {
-  position: relative;
-  /** More li styles **/
+.sort-box {
+  border: 1px solid #eee;
+  width: 500px;
+  min-height: 20px;
+  list-style-type: none;
+  margin: 0;
+  padding: 5px 0 0 0;
+  float: left;
+  margin-right: 10px;
 }
-ol.example li.placeholder:before {
-  position: absolute;
-  /** Define arrowhead **/
+.ui-state-default {
+  margin: 0 5px 5px 5px;
+  padding: 5px;
+  font-size: 1.2em;
+  width: 300px;
+  background: #f6f6f6 none repeat scroll 0 0;
+  border: 1px solid #c5c5c5;
+  color: #454545;
+  font-weight: normal;
 }

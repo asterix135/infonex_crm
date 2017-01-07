@@ -30,21 +30,34 @@
       <div class="row">
         <div class="col-sm-6">
           <div class="row">
-            Box for sales staff
+            <ul id="sales-staff" class="connectedSortable sort-box">
+              <li class="ui-state-default staff-entry" id="foo">Sales Staff Member 1</li>
+              <li class="ui-state-default staff-entry">Sales Staff Member 2</li>
+            </ul>
           </div>
           <div class="row">
-            Box for Sponsorship staff
+            <ul id="sponsorship-staff" class="connectedSortable sort-box">
+              <li class="ui-state-default staff-entry">Sponsorship Staff Member 1</li>
+              <li class="ui-state-default staff-entry">Sponsorship Staff Member 2</li>
+            </ul>
           </div>
           <div class="row">
-            Box for PD staff
+            <ul id="pd-staff" class="connectedSortable sort-box">
+              <li class="ui-state-default staff-entry">PD Staff Member 2</li>
+              <li class="ui-state-default staff-entry">PD Staff Member 2</li>
+            </ul>
           </div>
         </div>
         <div class="col-sm-6">
-          {% for user in userlist %}
+          <ul id="all-staff" class="connectedSortable sort-box">
+            <li class="ui-state-default staff-entry">Unassigned Staff Member 2</li>
+            <li class="ui-state-default staff-entry">Unassigned Staff Member 2</li>
+          </ul>
+          <!-- {% for user in userlist %}
           <div class="well well-sm">
             {{ user.username }}
           </div>
-          {% endfor %}
+          {% endfor %} -->
         </div>
       </div>
     </div>

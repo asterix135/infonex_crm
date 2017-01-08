@@ -1477,12 +1477,21 @@ def create_selection_widget(request):
         event = Event.objects.get(pk=request.POST['conf_id'])
     except (Event.DoesNotExist, MultiValueDictKeyError):
         raise Http404('Something is wrong - that event does not exist')
-    userlist = User.objects.filter(is_active=True)
-    event_assignment = EventAssignment.objects.filter(event=event)
+    sales_assigned = User.objects.filter(eventassignment__event=event,
+                                         eventassignment__role='SA')
+    sponsorship_assigned = User.objects.filter(eventassignment__event=event,
+                                               eventassignment__role='SP')
+    pd_assigned = User.objects.filter(eventassignment__event=event,
+                                      eventassignment__role="SP")
+    userlist = User.objects.filter(is_active=True) \
+        .exclude(id__in=sales_assigned).exclude(id__in=sponsorship_assigned) \
+        .exclude(id__in=pd_assigned)
     context = {
         'event': event,
         'userlist': userlist,
-        'event_assignment': event_assignment,
+        'sales_assigned': sales_assigned,
+        'sponsorship_assigned': sponsorship_assigned,
+        'pd_assigned': pd_assigned,
     }
     return render(request, 'crm/territory_addins/territory_builder.html',
                   context)
@@ -1556,3 +1565,33 @@ def suggest_company(request):
     data = json.dumps(results)
     mimetype = 'applications/json'
     return HttpResponse(data, mimetype)
+
+
+@user_passes_test(management_permission, login_url='/crm/',
+                  redirect_field_name=None)
+def update_user_assignments(request):
+    """
+    ajax call to update d/b when a user is moved to a new category
+    called from manage_territory.html -> territory_builder.html
+    """
+    status_map_dict = {
+        'sales-staff': 'SA',
+        'sponsorship-staff': 'SP',
+        'pd-staff': 'PD',
+        'unassigned-staff': None,
+    }
+    if request.method != 'POST':
+        return HttpResponse('')
+    try:
+        event = Event.objects.get(pk=request.POST['conf_id'])
+        user = User.objets.get(pk=request.POST['user_id'])
+    except (Event.DoesNotExist, MultiValueDictKeyError):
+        raise Http404('Something is wrong - that event does not exist')
+    except User.DoesNotExist:
+        raise Http404("Something is wrong - that user does not exist")
+    if len(EventAssignment.objects.filter(event=event, user=user)) > 0:
+        pass
+    # check if user is in EventAssignmet for conference
+    # If there, update record: delete if removed or update category
+    # If not there, add record
+    # return ??? nothing really needed - empty HttpResponse is probably ok

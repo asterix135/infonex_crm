@@ -4,9 +4,9 @@
   background-position: center top;
 }
 .sort-box {
-  border: 1px solid #eee;
+  border: 1px solid darkgrey;
   width: 500px;
-  min-height: 20px;
+  min-height: 50px;
   list-style-type: none;
   margin: 0;
   padding: 5px 0 0 0;

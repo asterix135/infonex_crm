@@ -30,34 +30,45 @@
       <div class="row">
         <div class="col-sm-6">
           <div class="row">
+            <label>Sales Staff Assignments</label>
             <ul id="sales-staff" class="connectedSortable sort-box">
-              <li class="ui-state-default staff-entry" id="foo">Sales Staff Member 1</li>
-              <li class="ui-state-default staff-entry">Sales Staff Member 2</li>
+              {% for user in sales_assigned %}
+              <li class="ui-state-default staff-entry" user-id="{{ user.id }}">
+                {{ user.username }}
+              </li>
+              {% endfor %}
             </ul>
           </div>
           <div class="row">
+            <label>Sponsorship Staff Assignments</label>
             <ul id="sponsorship-staff" class="connectedSortable sort-box">
-              <li class="ui-state-default staff-entry">Sponsorship Staff Member 1</li>
-              <li class="ui-state-default staff-entry">Sponsorship Staff Member 2</li>
+              {% for user in sponsorship_assigned %}
+              <li class="ui-state-default staff-entry" user-id="{{ user.id }}">
+                {{ user.username }}
+              </li>
+              {% endfor %}
             </ul>
           </div>
           <div class="row">
+            <label>PD Staff Assignments</label>
             <ul id="pd-staff" class="connectedSortable sort-box">
-              <li class="ui-state-default staff-entry">PD Staff Member 2</li>
-              <li class="ui-state-default staff-entry">PD Staff Member 2</li>
+              {% for user in pd_assigned %}
+              <li class="ui-state-default staff-entry" user-id="{{ user.id }}">
+                {{ user.username }}
+              </li>
+              {% endfor %}
             </ul>
           </div>
         </div>
         <div class="col-sm-6">
-          <ul id="all-staff" class="connectedSortable sort-box">
-            <li class="ui-state-default staff-entry">Unassigned Staff Member 2</li>
-            <li class="ui-state-default staff-entry">Unassigned Staff Member 2</li>
+          <label>Unassigned Staff Members</label>
+          <ul id="unassigned-staff" class="connectedSortable sort-box">
+            {% for user in userlist %}
+            <li class="ui-state-default staff-entry" user-id="{{ user.id }}">
+              {{ user.username }}
+            </li>
+            {% endfor %}
           </ul>
-          <!-- {% for user in userlist %}
-          <div class="well well-sm">
-            {{ user.username }}
-          </div>
-          {% endfor %} -->
         </div>
       </div>
     </div>

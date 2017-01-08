@@ -4,6 +4,8 @@ See avoiding race conditions using F()
 
 TODO: 30) Add autocomplete to industry for crm/new.html and crm/detail.html
 
+TODO: 32) Need to adjust crm/views.py/create_selection_widget to filter for active users only on sublists
+
 TODO: 8) (BIG) rework territory stuff
          - Best Idea is to make templates dynamic with cookie determining what's shown
          a) Need to update sidebar to dynamically reflect whether working on a conference - STARTED

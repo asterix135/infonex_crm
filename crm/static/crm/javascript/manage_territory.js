@@ -1,16 +1,24 @@
 // Javascript for manage_territory.html page
 $(document).ready(function() {
 
-  //Drag and drop employees into category boxes
-  // See: http://www.w3schools.com/html/html5_draganddrop.asp (not so much)
-  // See: https://johnny.github.io/jquery-sortable/
+  // Update assignments after drag/drop of users
+  function updateAssignments(userId, receiverId){
+    console.log('updating assignments....');
+    // ajax call goes here
+  };
 
-  // $("body .staff-entry").draggable();
-  // $(".sort-box").droppable();
 
-  $(".connectedSortable").sortable({
-    connectWith: ".connectedSortable"
-  }).disableSelection();
+  // Activate Drag Drop Sortation (called after AJAX load)
+  function startDragDrop() {
+    $('.connectedSortable').sortable({
+      connectWith: '.connectedSortable',
+      receive: function(event, ui){
+        var movedId = ui.item.attr('user-id');
+        var receiver = $(this).attr('id');
+        updateAssignments(movedId, receiver);
+      }
+    }).disableSelection();
+  };
 
 
   // Select conference and load selection widget
@@ -24,10 +32,7 @@ $(document).ready(function() {
       },
       success: function(data){
         $('#selection-widget').html(data);
-        $('.connectedSortable').sortable({
-          connectWith: '.connectedSortable',
-          update: function(){console.log('updated');}
-        }).disableSelection();
+        startDragDrop();
       }
     });
   });

@@ -294,7 +294,7 @@ class DeletedContact(models.Model):
     method = models.CharField(max_length=20)
 
 
-# PROBABLY DELETE WHEN TERRITORY IS OVERHAULED
+# TO BE DELETED ONCE TERRITORY OVERHAUL IS COMPLETE
 class ListSelection(models.Model):
     """
     Pre-set selection criteria for sales reps etc.
@@ -367,7 +367,56 @@ class ListSelection(models.Model):
                                        default='include')
 
 
+# NEW - KEEP THIS
+class MasterListSelections(models.Model):
+    """
+    Used to set master territory contact list
+    These selects can be refined or ignored on a per-staff member basis
+    Does not currently allow selects based on territory splits or individuals
+    """
+    GEO_CHOICES = (
+        ('East', 'East'),
+        ('West', 'West'),
+        ('Maritimes/East', 'Maritimes'),
+        ('USA', 'USA'),
+        ('Other', 'Other Foreign'),
+        ('Unknown', 'Unknown'),
+        ('', '---'),
+    )
+    CAT_CHOICES = (
+        ('HR', 'HR'),
+        ('FIN', 'FIN'),
+        ('Industry', 'Industry'),
+        ('Aboriginal', 'Aboriginal'),
+        ('Gov', 'Gov'),
+        ('NA', 'None'),
+        ('', '---'),
+    )
+    event = models.ForeignKey(Event)
+    geo = models.CharField(max_length=10,
+                           choices=GEO_CHOICES,
+                           blank=True,
+                           default='')
+    main_category = models.CharField(max_length=25,
+                                     choices=CAT_CHOICES,
+                                     blank=True,
+                                     default='')  # f1 in original db
+    main_category2 = models.CharField(max_length=15,
+                                      choices=CAT_CHOICES,
+                                      blank=True,
+                                      default='')
+    company = models.CharField(max_length=100, blank=True)
+    industry = models.CharField(max_length=100, blank=True)
+    dept = models.CharField(max_length=255, blank=True)
+    include_exclude = models.CharField(max_length=7,
+                                       choices=(('include', 'include'),
+                                                ('exclude', 'exclude')),
+                                       default='include')
+
+
 # Under construction for overhaul
+# THIS NEEDS TO BECOME THE INDIVIDUAL SELECTION MODEL, WHICH MEANS
+# IT'LL PROBABLY BE COMPLICATED
 class TerritorySelects(models.Model):
     event_assignment = models.ForeignKey(EventAssignment)
     include_exclude = models.CharField(max_length=7,

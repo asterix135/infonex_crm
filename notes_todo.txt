@@ -14,6 +14,8 @@ TODO: 8) (BIG) rework territory stuff
          d) Need to create a page for db admin to add a conference (recycle existing?)
          e) COMPETE: Need to create a page for db admin to add people to a conference - manage_territory.html
          f) Need to (re)-create a page to create territory based on set criteria - manage_territory.html - STARTED
+         g) Figure out JS for modal pop-up when destroying personalization
+         h) Flesh out crm/views.py/sample_territory_list
 
 TODO: 31) Add New Person link to top bar (dynamically)
 

@@ -11,21 +11,22 @@
 {% block title %}Manage Territories | {% endblock %}
 
 {% block content %}
-<div class="container-fluid fill">
+{% include 'crm/territory_addins/modal_warn_personalization.html' %}
+<div class="container fill">
   <div class="row">
-    <div class="col-sm-offset-2 col-sm-10">
+    <div class="col-sm-12">
       <h1>
         Manage Sales Territories and Prospect Lists
       </h1>
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-offset-2 col-sm-10">
+    <div class="col-sm-12">
       {{ conference_select_form.event.label_tag }}
     </div>
   </div>
-  <div class="row">
-    <div class="col-sm-offset-2 col-sm-6">
+  <div class="form-group row">
+    <div class="col-sm-6">
       {{ conference_select_form.event.errors }}
       {{ conference_select_form.event }}
     </div>
@@ -33,12 +34,14 @@
       <button type="button" class="btn btn-primary btn-space" id="select-conference">
         Select
       </button>
+    </div>
+    <div class="col=sm-2">
       <button type="button" class="btn btn-default" id="add-new-conference">
         Add New Event
       </button>
     </div>
   </div>
-  <div class="row col-sm-12" id="selection-widget">
+  <div class="form-group row col-sm-12" id="selection-widget">
 
   </div>
 </div>

@@ -26,11 +26,30 @@
 
   <!-- Tab panes -->
   <div class="tab-content">
+
     <!-- Team Selection Tab -->
     <div role="tabpanel" class="tab-pane active fade in" id="team">
       <div class="row">
+        <h3>
+          Please drag and drop staff members into appropriate categories
+        </h3>
+        <p>
+          <span class="errorlist">Note:</span> if you move sombody <strong>back</strong> to Unassigned Staff,
+          any personalized selections for that person will be irrevocably
+          destroyed.
+        </p>
+        <p>
+          Container boxes resize automatically.
+        </p>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <hr class="style-one" />
+        </div>
+      </div>
+      <div class="form-group row">
         <div class="col-sm-6">
-          <div class="row">
+          <div class="form-group row">
             <label>Sales Staff Assignments</label>
             <ul id="sales-staff" class="connectedSortable sort-box">
               {% for user in sales_assigned %}
@@ -40,7 +59,7 @@
               {% endfor %}
             </ul>
           </div>
-          <div class="row">
+          <div class="form-group row">
             <label>Sponsorship Staff Assignments</label>
             <ul id="sponsorship-staff" class="connectedSortable sort-box">
               {% for user in sponsorship_assigned %}
@@ -50,7 +69,7 @@
               {% endfor %}
             </ul>
           </div>
-          <div class="row">
+          <div class="form-group row">
             <label>PD Staff Assignments</label>
             <ul id="pd-staff" class="connectedSortable sort-box">
               {% for user in pd_assigned %}
@@ -76,72 +95,60 @@
 
     <!-- Select master list -->
     <div role="tabpanel" class="tab-pane fade" id="master">
-      <p>
-        Widget to select overall list criteria
-      </p>
-      <a href="http://stackoverflow.com/questions/32392112/bootstrap-fixed-table-headers-with-scrolling-body">http://stackoverflow.com/questions/32392112/bootstrap-fixed-table-headers-with-scrolling-body</a>
-      <div id="master-list-preview">
-        <table class="table table-striped">
-          <thead>
+      <div class="master-list-selector">
+
+        <table class="table">
+          <thead class="thead-inverse">
             <tr>
-              <th>Title</th>
-              <th>Company</th>
+              <th>Include/Exclude</th>
+              <th>Main Category (f1)</th>
+              <th>Main Category 2</th>
+              <th>Division1</th>
+              <th>Division2</th>
               <th>Geo</th>
-              <th>Last Modified</th>
+              <th>Industry</th>
+              <th>Company Name</th>
+              <th>Person</th>
+              <th>Save/Delete</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Title1</td>
-              <td>Company1</td>
-              <td>Geo1</td>
-              <td>ModDate1</td>
+              <td>{{ select_form.include_exclude }}</td>
+              <td>{{ select_form.main_category }}</td>
+              <td>{{ select_form.main_category2 }}</td>
+              <td>{{ select_form.division1 }}</td>
+              <td>{{ select_form.division2 }}</td>
+              <td>{{ select_form.geo }}</td>
+              <td>{{ select_form.industry }}</td>
+              <td>{{ select_form.company }}</td>
+              <td></td>
+              <td><button type="submit" class="btn btn-primary" name="submit_option" value="save">Save</button></td>
             </tr>
+            {% for select in list_selects %}
             <tr>
-              <td>Title1</td>
-              <td>Company1</td>
-              <td>Geo1</td>
-              <td>ModDate1</td>
+              <input type="hidden" name="select_id" value="{{ select.id }}">
+              <td>{{ select.include_exclude }}</td>
+              <td>{{ select.main_category }}</td>
+              <td>{{ select.main_category2 }}</td>
+              <td>{{ select.division1 }}</td>
+              <td>{{ select.division2 }}</td>
+              <td>{{ select.geo }}</td>
+              <td>{{ select.industry }}</td>
+              <td>{{ select.company }}</td>
+              <td>{{ select.person.name }}</td>
+              <td><button type="submit" class="btn btn-secondary" name="submit_option" value="delete">Delete</button></td>
             </tr>
-            <tr>
-              <td>Title2</td>
-              <td>Company2</td>
-              <td>Geo2</td>
-              <td>ModDate2</td>
-            </tr>
-            <tr>
-              <td>Title3</td>
-              <td>Company3</td>
-              <td>Geo3</td>
-              <td>ModDate3</td>
-            </tr>
-            <tr>
-              <td>Title4</td>
-              <td>Company4</td>
-              <td>Geo4</td>
-              <td>ModDate4</td>
-            </tr>
-            <tr>
-              <td>Title5</td>
-              <td>Company5</td>
-              <td>Geo5</td>
-              <td>ModDate5</td>
-            </tr>
-            <tr>
-              <td>Title6</td>
-              <td>Company6</td>
-              <td>Geo6</td>
-              <td>ModDate6</td>
-            </tr>
-            <tr>
-              <td>Title6</td>
-              <td>Company6</td>
-              <td>Geo6</td>
-              <td>ModDate6</td>
-            </tr>
-
+            {% endfor %}
           </tbody>
         </table>
+      </div>
+      <p>
+        Widget to select overall list criteria
+      </p>
+
+      <div id="master-list-preview">
+        {% include 'crm/territory_addins/builder_sample_list.html' %}
       </div>
     </div>
 

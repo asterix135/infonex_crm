@@ -1477,6 +1477,9 @@ def create_selection_widget(request):
         event = Event.objects.get(pk=request.POST['conf_id'])
     except (Event.DoesNotExist, MultiValueDictKeyError):
         raise Http404('Something is wrong - that event does not exist')
+    except ValueError:
+        return HttpResponse('')
+    # Stuff for staff selection pane
     sales_assigned = User.objects.filter(eventassignment__event=event,
                                          eventassignment__role='SA',
                                          is_active=True)
@@ -1489,15 +1492,27 @@ def create_selection_widget(request):
     userlist = User.objects.filter(is_active=True) \
         .exclude(id__in=sales_assigned).exclude(id__in=sponsorship_assigned) \
         .exclude(id__in=pd_assigned)
+
+    # Stuff for master list selection pane
+    select_form = MasterTerritoryForm()
+    list_selects = MasterListSelectsion.objects.filter(event=event)
     context = {
         'event': event,
         'userlist': userlist,
         'sales_assigned': sales_assigned,
         'sponsorship_assigned': sponsorship_assigned,
         'pd_assigned': pd_assigned,
+        'select_form': select_form,
+        'list_selects': list_selects,
     }
     return render(request, 'crm/territory_addins/territory_builder.html',
                   context)
+
+
+@user_passes_test(management_permission, login_url='/crm/',
+                  redirect_field_name=None)
+def sample_territory_list(request):
+    pass
 
 
 @login_required

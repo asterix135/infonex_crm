@@ -445,3 +445,40 @@ class SearchForm(forms.Form):
                                         attrs={'class': 'form-control',
                                                'placeholder': 'yyyy-mm-dd'}
                                     ))
+
+
+class MasterTerritoryForm(forms.ModelForm):
+
+    class Meta:
+        model = MasterListSelections
+        fields = ('geo', 'main_category', 'main_category2', 'company',
+                  'industry', 'include_exclude', 'dept')
+        labels = {
+            'dept': _('Department'),
+            'geo': _('Geographic Group'),
+            'main_category': _('Main Category (F1)'),
+            'main_category2': _('Secondary Category'),
+        }
+        widgets = {
+            'dept': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'geo': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'main_category': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'main_category2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'company': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'industry': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'include_exclude': forms.Select(
+                attrs={'class': 'form-control'}
+            )
+        }

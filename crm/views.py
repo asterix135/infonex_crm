@@ -1478,11 +1478,14 @@ def create_selection_widget(request):
     except (Event.DoesNotExist, MultiValueDictKeyError):
         raise Http404('Something is wrong - that event does not exist')
     sales_assigned = User.objects.filter(eventassignment__event=event,
-                                         eventassignment__role='SA')
+                                         eventassignment__role='SA',
+                                         is_active=True)
     sponsorship_assigned = User.objects.filter(eventassignment__event=event,
-                                               eventassignment__role='SP')
+                                               eventassignment__role='SP',
+                                               is_active=True)
     pd_assigned = User.objects.filter(eventassignment__event=event,
-                                      eventassignment__role="SP")
+                                      eventassignment__role="PD",
+                                      is_active=True)
     userlist = User.objects.filter(is_active=True) \
         .exclude(id__in=sales_assigned).exclude(id__in=sponsorship_assigned) \
         .exclude(id__in=pd_assigned)
@@ -1574,7 +1577,7 @@ def update_user_assignments(request):
     ajax call to update d/b when a user is moved to a new category
     called from manage_territory.html -> territory_builder.html
     """
-    status_map_dict = {
+    role_map_dict = {
         'sales-staff': 'SA',
         'sponsorship-staff': 'SP',
         'pd-staff': 'PD',
@@ -1584,14 +1587,18 @@ def update_user_assignments(request):
         return HttpResponse('')
     try:
         event = Event.objects.get(pk=request.POST['conf_id'])
-        user = User.objets.get(pk=request.POST['user_id'])
+        user = User.objects.get(pk=request.POST['user_id'])
+        role = role_map_dict[request.POST['role']]
     except (Event.DoesNotExist, MultiValueDictKeyError):
         raise Http404('Something is wrong - that event does not exist')
     except User.DoesNotExist:
         raise Http404("Something is wrong - that user does not exist")
-    if len(EventAssignment.objects.filter(event=event, user=user)) > 0:
-        pass
-    # check if user is in EventAssignmet for conference
-    # If there, update record: delete if removed or update category
-    # If not there, add record
-    # return ??? nothing really needed - empty HttpResponse is probably ok
+    except KeyError:
+        raise Http404('Unrecognized target category')
+
+    # Delete any current event/user assignments
+    EventAssignment.objects.filter(event=event, user=user).delete()
+    # create new EventAssignment if set to category
+    if role:
+        EventAssignment(user=user, event=event, role=role).save()
+    return HttpResponse('')

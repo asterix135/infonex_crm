@@ -3,8 +3,16 @@ $(document).ready(function() {
 
   // Update assignments after drag/drop of users
   function updateAssignments(userId, receiverId){
-    console.log('updating assignments....');
-    // ajax call goes here
+    var confId = $('#id_event').val();
+    $.ajax({
+      url: '/crm/update_user_assignments/',
+      type: 'POST',
+      data: {
+        'conf_id': confId,
+        'user_id': userId,
+        'role': receiverId,
+      }
+    });
   };
 
 

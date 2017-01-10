@@ -1430,6 +1430,88 @@ def check_for_dupes(request):
     return render(request, 'crm/addins/possible_dupe_modal.html', context)
 
 
+@user_passes_test(management_permission, login_url='/crm/',
+                  redirect_field_name=None)
+def check_for_user_assignment(request):
+    """
+    ajax call to verify if it is safe to move a staff member into the
+    unassigned category
+    """
+    if request.method != 'POST':
+        return HttpResponse('')
+    user_selects_exist = False
+    try:
+        event = Event.objects.get(pk=request.POST['conf_id'])
+        user = User.objects.get(pk=request.POST['user_id'])
+    except (Event.DoesNotExist, MultiValueDictKeyError):
+        raise Http404('Something is wrong - that event does not exist')
+    except User.DoesNotExist:
+        raise Http404("Something is wrong - that user does not exist")
+    event_assignment = EventAssignment.objects.filter(event=event, user=user)
+    if len(event_assignment) > 0:
+        user_selects = PersonalListSelections.objects.filter(
+            event_assignment=event_assignment
+        )
+        if len(user_selects) > 0:
+            user_selects_exist = True
+    if user_selects_exist:
+        return HttpResponse(
+            '<div>' \
+            '<input type="hidden" id="assignment-exists" value="True"/>' \
+            '<input type="hidden" id="user-name" value="%s"/>' \
+            '</div>' % user.username)
+    else:
+        return HttpResponse(
+            '<div>' \
+            '<input type="hidden" id="assignment-exists" value="False"/>' \
+            '</div'
+        )
+
+
+@user_passes_test(management_permission, login_url='/crm/',
+                  redirect_field_name=None)
+def create_selection_widget(request):
+    """
+    Adds territory builder to manage_territory.html
+    """
+    if request.method != 'POST':
+        return HttpResponse('')
+    try:
+        event = Event.objects.get(pk=request.POST['conf_id'])
+    except (Event.DoesNotExist, MultiValueDictKeyError):
+        raise Http404('Something is wrong - that event does not exist')
+    except ValueError:
+        return HttpResponse('')
+    # Stuff for staff selection pane
+    sales_assigned = User.objects.filter(eventassignment__event=event,
+                                         eventassignment__role='SA',
+                                         is_active=True)
+    sponsorship_assigned = User.objects.filter(eventassignment__event=event,
+                                               eventassignment__role='SP',
+                                               is_active=True)
+    pd_assigned = User.objects.filter(eventassignment__event=event,
+                                      eventassignment__role="PD",
+                                      is_active=True)
+    userlist = User.objects.filter(is_active=True) \
+        .exclude(id__in=sales_assigned).exclude(id__in=sponsorship_assigned) \
+        .exclude(id__in=pd_assigned)
+
+    # Stuff for master list selection pane
+    select_form = MasterTerritoryForm()
+    list_selects = MasterListSelections.objects.filter(event=event)
+    context = {
+        'event': event,
+        'userlist': userlist,
+        'sales_assigned': sales_assigned,
+        'sponsorship_assigned': sponsorship_assigned,
+        'pd_assigned': pd_assigned,
+        'select_form': select_form,
+        'list_selects': list_selects,
+    }
+    return render(request, 'crm/territory_addins/territory_builder.html',
+                  context)
+
+
 @login_required
 def delete_contact_history(request):
     person = None
@@ -1463,50 +1545,6 @@ def get_recent_contacts(request):
         'recent_contact_list': recent_contact_list,
     }
     return render(request, 'crm/addins/recently_viewed.html', context)
-
-
-@user_passes_test(management_permission, login_url='/crm/',
-                  redirect_field_name=None)
-def create_selection_widget(request):
-    """
-    Adds territory builder to manage_territory.html
-    """
-    if request.method != 'POST':
-        return HttpResponse('')
-    try:
-        event = Event.objects.get(pk=request.POST['conf_id'])
-    except (Event.DoesNotExist, MultiValueDictKeyError):
-        raise Http404('Something is wrong - that event does not exist')
-    except ValueError:
-        return HttpResponse('')
-    # Stuff for staff selection pane
-    sales_assigned = User.objects.filter(eventassignment__event=event,
-                                         eventassignment__role='SA',
-                                         is_active=True)
-    sponsorship_assigned = User.objects.filter(eventassignment__event=event,
-                                               eventassignment__role='SP',
-                                               is_active=True)
-    pd_assigned = User.objects.filter(eventassignment__event=event,
-                                      eventassignment__role="PD",
-                                      is_active=True)
-    userlist = User.objects.filter(is_active=True) \
-        .exclude(id__in=sales_assigned).exclude(id__in=sponsorship_assigned) \
-        .exclude(id__in=pd_assigned)
-
-    # Stuff for master list selection pane
-    select_form = MasterTerritoryForm()
-    list_selects = MasterListSelectsion.objects.filter(event=event)
-    context = {
-        'event': event,
-        'userlist': userlist,
-        'sales_assigned': sales_assigned,
-        'sponsorship_assigned': sponsorship_assigned,
-        'pd_assigned': pd_assigned,
-        'select_form': select_form,
-        'list_selects': list_selects,
-    }
-    return render(request, 'crm/territory_addins/territory_builder.html',
-                  context)
 
 
 @user_passes_test(management_permission, login_url='/crm/',

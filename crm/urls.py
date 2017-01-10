@@ -46,6 +46,8 @@ urlpatterns = [
     url(r'^check_for_dupes/$', views.check_for_dupes, name='check_for_dupes'),
     url(r'^create_selection_widget/$', views.create_selection_widget,
         name='create_selection_widget'),
+    url(r'^check_for_user_assignment/$', views.check_for_user_assignment,
+        name='check_for_user_assignment'),
     url(r'^delete_contact_history/$', views.delete_contact_history,
         name='delete_contact_history'),
     url(r'^get_recent_contacts/$', views.get_recent_contacts,

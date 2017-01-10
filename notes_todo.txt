@@ -7,6 +7,8 @@ next #: 33
 TODO: 30) Add autocomplete to industry for crm/new.html and crm/detail.html
 
 TODO: 8) (BIG) rework territory stuff
+
+         GIVE UP ON THE JAVASCRIPT VALIDATION: just create a dummy entry in d/b when somebody moved back to Unassigned
          - Best Idea is to make templates dynamic with cookie determining what's shown
          a) Need to update sidebar to dynamically reflect whether working on a conference - STARTED
          b) Need to (re)-create page showing all people in territory - territory.html - STARTED

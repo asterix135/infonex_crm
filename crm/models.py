@@ -417,13 +417,7 @@ class MasterListSelections(models.Model):
 # Under construction for overhaul
 # THIS NEEDS TO BECOME THE INDIVIDUAL SELECTION MODEL, WHICH MEANS
 # IT'LL PROBABLY BE COMPLICATED
-class TerritorySelects(models.Model):
-    event_assignment = models.ForeignKey(EventAssignment)
-    include_exclude = models.CharField(max_length=7,
-                                       choices=(('include', 'include'),
-                                                 ('exclude', 'exclude')),
-                                       default='include')
-    person = models.ForeignKey(Person, blank=True, null=True)
+class PersonalListSelections(models.Model):
     GEO_CHOICES = (
         ('East', 'East'),
         ('West', 'West'),
@@ -433,10 +427,6 @@ class TerritorySelects(models.Model):
         ('Unknown', 'Unknown'),
         ('', '---'),
     )
-    geo = models.CharField(max_length=10,
-                           choices=GEO_CHOICES,
-                           blank=True,
-                           default='')
     CAT_CHOICES = (
         ('HR', 'HR'),
         ('FIN', 'FIN'),
@@ -446,6 +436,16 @@ class TerritorySelects(models.Model):
         ('NA', 'None'),
         ('', '---'),
     )
+    event_assignment = models.ForeignKey(EventAssignment)
+    include_exclude = models.CharField(max_length=7,
+                                       choices=(('include', 'include'),
+                                                 ('exclude', 'exclude')),
+                                       default='include')
+    person = models.ForeignKey(Person, blank=True, null=True)
+    geo = models.CharField(max_length=10,
+                           choices=GEO_CHOICES,
+                           blank=True,
+                           default='')
     main_category = models.CharField(max_length=25,
                                      choices=CAT_CHOICES,
                                      blank=True,

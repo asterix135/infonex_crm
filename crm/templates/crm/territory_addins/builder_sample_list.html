@@ -9,54 +9,13 @@
     </tr>
   </thead>
   <tbody id="general-selection-sample-list">
+    {% for person in sample_select %}
     <tr>
-      <td>Title1</td>
-      <td>Company1</td>
-      <td>Geo1</td>
-      <td>ModDate1</td>
+      <td>{{ person.title }}</td>
+      <td>{{ person.company }}</td>
+      <td>{{ person.state_prov }}</td>
+      <td>{{ person.date_modified }}</td>
     </tr>
-    <tr>
-      <td>Title1</td>
-      <td>Company1</td>
-      <td>Geo1</td>
-      <td>ModDate1</td>
-    </tr>
-    <tr>
-      <td>Title2</td>
-      <td>Company2</td>
-      <td>Geo2</td>
-      <td>ModDate2</td>
-    </tr>
-    <tr>
-      <td>Title3</td>
-      <td>Company3</td>
-      <td>Geo3</td>
-      <td>ModDate3</td>
-    </tr>
-    <tr>
-      <td>Title4</td>
-      <td>Company4</td>
-      <td>Geo4</td>
-      <td>ModDate4</td>
-    </tr>
-    <tr>
-      <td>Title5</td>
-      <td>Company5</td>
-      <td>Geo5</td>
-      <td>ModDate5</td>
-    </tr>
-    <tr>
-      <td>Title6</td>
-      <td>Company6</td>
-      <td>Geo6</td>
-      <td>ModDate6</td>
-    </tr>
-    <tr>
-      <td>Title6</td>
-      <td>Company6</td>
-      <td>Geo6</td>
-      <td>ModDate6</td>
-    </tr>
-
+    {% endfor %}
   </tbody>
 </table>

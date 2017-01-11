@@ -37,7 +37,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
             last_name=assistant_data['last_name'],
             email=assistant_data['email'],
         )
-        if len(assistant_db_check) > 0:
+        if assistant_db_check.count() > 0:
             assistant=assistant_db_check[0]
             assistant_form = AssistantForm(assistant_data, instance=assistant)
             assistant_form.save()
@@ -77,7 +77,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
             last_name=request.POST['last_name'],
             email1=request.POST['email1']
         )
-        if len(registrant_db_check) > 0:
+        if registrant_db_check.count() > 0:
             registrant = registrant_db_check[0]
             delegate_form = NewDelegateForm(request.POST, instance=registrant)
             delegate_form.save()
@@ -119,7 +119,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
             conference=conference,
             registrant=registrant
         )
-        if len(reg_detail_db_check) > 0:
+        if reg_detail_db_check.count() > 0:
             current_registration = reg_detail_db_check[0]
             reg_details_form = RegDetailsForm(reg_details_data,
                                               instance=current_registration)

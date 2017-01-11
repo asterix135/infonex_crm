@@ -443,4 +443,5 @@ EVENT_ROLES = (
     ('SA', 'Sales'),
     ('SP', 'Sponsorship'),
     ('PD', 'Conference Developer'),
+    ('NA', 'Unassigned'),
 )

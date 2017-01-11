@@ -308,7 +308,7 @@ def create_temp_conf_number():
     counter = 0
     while True:
         event_number = base_number + str(counter)
-        if len(Event.objects.filter(number=event_number)) == 0:
+        if Event.objects.filter(number=event_number).count() == 0:
             return event_number
         counter += 1
 

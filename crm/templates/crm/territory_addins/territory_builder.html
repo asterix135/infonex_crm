@@ -1,3 +1,9 @@
+<div class="row">
+  <!-- <div class="col-sm-12"> -->
+    <hr class="style-one" />
+  <!-- </div> -->
+</div>
+<h2>Build Conference Team and Territories</h2>
 <!-- See if this can be enclosed in a box -->
 <div class="col-sm-12">
 
@@ -29,19 +35,6 @@
 
     <!-- Team Selection Tab -->
     <div role="tabpanel" class="tab-pane active fade in" id="team">
-      <div class="row">
-        <h3>
-          Please drag and drop staff members into appropriate categories
-        </h3>
-        <p>
-          <span class="errorlist">Note:</span> if you move sombody <strong>back</strong> to Unassigned Staff,
-          any personalized selections for that person will be irrevocably
-          destroyed.
-        </p>
-        <p>
-          Container boxes resize automatically.
-        </p>
-      </div>
       <div class="row">
         <div class="col-sm-12">
           <hr class="style-one" />
@@ -93,22 +86,18 @@
       </div>
     </div>
 
-    <!-- Select master list -->
+    <!-- Select master list Tab -->
     <div role="tabpanel" class="tab-pane fade" id="master">
       <div class="master-list-selector">
-
         <table class="table">
           <thead class="thead-inverse">
             <tr>
               <th>Include/Exclude</th>
               <th>Main Category (f1)</th>
               <th>Main Category 2</th>
-              <th>Division1</th>
-              <th>Division2</th>
               <th>Geo</th>
               <th>Industry</th>
               <th>Company Name</th>
-              <th>Person</th>
               <th>Save/Delete</th>
             </tr>
           </thead>
@@ -117,12 +106,9 @@
               <td>{{ select_form.include_exclude }}</td>
               <td>{{ select_form.main_category }}</td>
               <td>{{ select_form.main_category2 }}</td>
-              <td>{{ select_form.division1 }}</td>
-              <td>{{ select_form.division2 }}</td>
               <td>{{ select_form.geo }}</td>
               <td>{{ select_form.industry }}</td>
               <td>{{ select_form.company }}</td>
-              <td></td>
               <td><button type="submit" class="btn btn-primary" name="submit_option" value="save">Save</button></td>
             </tr>
             {% for select in list_selects %}
@@ -131,25 +117,21 @@
               <td>{{ select.include_exclude }}</td>
               <td>{{ select.main_category }}</td>
               <td>{{ select.main_category2 }}</td>
-              <td>{{ select.division1 }}</td>
-              <td>{{ select.division2 }}</td>
               <td>{{ select.geo }}</td>
               <td>{{ select.industry }}</td>
               <td>{{ select.company }}</td>
-              <td>{{ select.person.name }}</td>
               <td><button type="submit" class="btn btn-secondary" name="submit_option" value="delete">Delete</button></td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
-      <p>
-        Widget to select overall list criteria
-      </p>
 
       <!-- List preview section of panel -->
       <div id="master-list-preview">
+        {% if sample_select %}
         {% include 'crm/territory_addins/builder_sample_list.html' %}
+        {% endif %}
       </div>
 
     </div>

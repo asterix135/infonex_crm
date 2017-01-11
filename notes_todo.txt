@@ -8,13 +8,12 @@ TODO: 30) Add autocomplete to industry for crm/new.html and crm/detail.html
 
 TODO: 8) (BIG) rework territory stuff
 
-         GIVE UP ON THE JAVASCRIPT VALIDATION: just create a dummy entry in d/b when somebody moved back to Unassigned
          - Best Idea is to make templates dynamic with cookie determining what's shown
          a) Need to update sidebar to dynamically reflect whether working on a conference - STARTED
          b) Need to (re)-create page showing all people in territory - territory.html - STARTED
          c) Need to update detail.html to show dynamic content based on whether working a conference
          d) Need to create a page for db admin to add a conference (recycle existing?)
-         e) COMPETE: Need to create a page for db admin to add people to a conference - manage_territory.html
+         e) COMPLETED: Need to create a page for db admin to add people to a conference - manage_territory.html
          f) Need to (re)-create a page to create territory based on set criteria - manage_territory.html - STARTED
          g) Figure out JS for modal pop-up when destroying personalization
          h) Flesh out crm/views.py/sample_territory_list

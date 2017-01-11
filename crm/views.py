@@ -1075,6 +1075,42 @@ def add_to_recent_contacts(request, person_id):
     request.session['recent_contacts'] = recent_contact_list
 
 
+def build_master_territory_list(list_select_queryset):
+    """
+    Builds and returns query set based on a territory's master selection
+    criteria
+    """
+    num_conditions = list_select_queryset.count()
+    if num_conditions == 0:
+        return None
+    territory_list = Person.objects.none()
+    exclude_selects = []
+    # First, build list by UNIONing includes
+    for list_select in list_select_queryset:
+        if list_select.include_exclude == 'include':
+            territory_list = territory_list | \
+                Person.objects.filter(
+                    main_category=list_select.main_category,
+                    main_category2=list_select.main_category2,
+                    geo=list_select.geo,
+                    industry__icontains=list_select.industry,
+                    company__icontains=list_select.industry,
+                )
+        else:
+            exclude_selects.append(list_select)
+    if len(exclude_selects) == 0:
+        return territory_list
+    for list_select in exclude_selects:
+        territory_list = territory_list.exclude(
+            main_category=list_select.main_category,
+            main_category2=list_select.main_category2,
+            geo=list_select.geo,
+            industry__icontains=list_select.industry,
+            company__icontains=list_select.company,
+        )
+    return territory_list
+
+
 def management_permission(user):
     """
     To be called by textdecorator @user_passes_test
@@ -1132,7 +1168,7 @@ def detail(request, person_id):
                     reg_list = registrant.regdetails_set.all()
                 else:
                     reg_list = reg_list | registrant.regdetails.set.all()
-            if len(reg_list) == 0:
+            if reg_list.count() == 0:
                 reg_list = None
             else:
                 reg_list = reg_list.order_by('-register_date')
@@ -1416,7 +1452,7 @@ def check_for_dupes(request):
                 dupe_list = dupe_list | Person.objects.filter(email=email)
             else:
                 dupe_list = Person.objects.filter(email=email)
-        if dupe_list and (len(dupe_list) == 0):
+        if dupe_list and dupe_list.count() == 0:
             dupe_list = None
     context = {
         'name': name,
@@ -1428,44 +1464,6 @@ def check_for_dupes(request):
         'dupe_list': dupe_list
     }
     return render(request, 'crm/addins/possible_dupe_modal.html', context)
-
-
-@user_passes_test(management_permission, login_url='/crm/',
-                  redirect_field_name=None)
-def check_for_user_assignment(request):
-    """
-    ajax call to verify if it is safe to move a staff member into the
-    unassigned category
-    """
-    if request.method != 'POST':
-        return HttpResponse('')
-    user_selects_exist = False
-    try:
-        event = Event.objects.get(pk=request.POST['conf_id'])
-        user = User.objects.get(pk=request.POST['user_id'])
-    except (Event.DoesNotExist, MultiValueDictKeyError):
-        raise Http404('Something is wrong - that event does not exist')
-    except User.DoesNotExist:
-        raise Http404("Something is wrong - that user does not exist")
-    event_assignment = EventAssignment.objects.filter(event=event, user=user)
-    if len(event_assignment) > 0:
-        user_selects = PersonalListSelections.objects.filter(
-            event_assignment=event_assignment
-        )
-        if len(user_selects) > 0:
-            user_selects_exist = True
-    if user_selects_exist:
-        return HttpResponse(
-            '<div>' \
-            '<input type="hidden" id="assignment-exists" value="True"/>' \
-            '<input type="hidden" id="user-name" value="%s"/>' \
-            '</div>' % user.username)
-    else:
-        return HttpResponse(
-            '<div>' \
-            '<input type="hidden" id="assignment-exists" value="False"/>' \
-            '</div'
-        )
 
 
 @user_passes_test(management_permission, login_url='/crm/',
@@ -1499,6 +1497,7 @@ def create_selection_widget(request):
     # Stuff for master list selection pane
     select_form = MasterTerritoryForm()
     list_selects = MasterListSelections.objects.filter(event=event)
+    sample_select = build_master_territory_list(list_selects)
     context = {
         'event': event,
         'userlist': userlist,
@@ -1634,7 +1633,7 @@ def update_user_assignments(request):
         'sales-staff': 'SA',
         'sponsorship-staff': 'SP',
         'pd-staff': 'PD',
-        'unassigned-staff': None,
+        'unassigned-staff': 'NA',
     }
     if request.method != 'POST':
         return HttpResponse('')
@@ -1649,9 +1648,12 @@ def update_user_assignments(request):
     except KeyError:
         raise Http404('Unrecognized target category')
 
-    # Delete any current event/user assignments
-    EventAssignment.objects.filter(event=event, user=user).delete()
-    # create new EventAssignment if set to category
-    if role:
+    # if user has an assignment (and possibly sub-selects), update that record
+    if EventAssignment.objects.filter(event=event, user=user).exists():
+        curr_event = EventAssignment.objects.get(event=event, user=user)
+        curr_event.role = role
+        curr_event.save()
+    # otherwise, create new assignment record
+    else:
         EventAssignment(user=user, event=event, role=role).save()
     return HttpResponse('')

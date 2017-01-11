@@ -218,6 +218,9 @@ class EventAssignment(models.Model):
                             choices=EVENT_ROLES,
                             default='SA')
 
+    class Meta:
+        unique_together = ('user', 'event',)
+
 
 # DELETE THIS WHEN OLD FORMS REMOVED
 class RegHistory(models.Model):

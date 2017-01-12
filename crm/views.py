@@ -1,5 +1,6 @@
 import datetime
 import json
+import operator
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
@@ -1082,32 +1083,34 @@ def build_master_territory_list(list_select_queryset):
     """
     num_conditions = list_select_queryset.count()
     if num_conditions == 0:
-        return None
+        return Person.objects.none()
     territory_list = Person.objects.none()
     exclude_selects = []
     # First, build list by UNIONing includes
+    includes_added = False
     for list_select in list_select_queryset:
+        kwargs = {}
+        field_dict = {'main_category': 'main_category',
+                      'main_category2': 'main_category2',
+                      'geo': 'geo',
+                      'industry': 'industry__icontains',
+                      'company': 'company__icontains',
+                      'dept': 'dept__icontains'}
+        for field in field_dict:
+            if getattr(list_select, field) not in ['', None]:
+                kwargs[field_dict[field]] = getattr(list_select, field)
         if list_select.include_exclude == 'include':
-            territory_list = territory_list | \
-                Person.objects.filter(
-                    main_category=list_select.main_category,
-                    main_category2=list_select.main_category2,
-                    geo=list_select.geo,
-                    industry__icontains=list_select.industry,
-                    company__icontains=list_select.industry,
-                )
+            includes_added = True
+            query_list = Person.objects.filter(**kwargs)
+            territory_list = territory_list | query_list
         else:
             exclude_selects.append(list_select)
     if len(exclude_selects) == 0:
         return territory_list
+    if not includes_added:
+        territory_list = Person.objects.all()
     for list_select in exclude_selects:
-        territory_list = territory_list.exclude(
-            main_category=list_select.main_category,
-            main_category2=list_select.main_category2,
-            geo=list_select.geo,
-            industry__icontains=list_select.industry,
-            company__icontains=list_select.company,
-        )
+        territory_list = territory_list.exclude(**kwargs)
     return territory_list
 
 
@@ -1432,6 +1435,51 @@ def add_contact_history(request):
     return render(request, 'crm/addins/detail_contact_history.html', context)
 
 
+@user_passes_test(management_permission, login_url='/crm/',
+                  redirect_field_name=None)
+def add_master_list_select(request):
+    select_form = MasterTerritoryForm()
+    list_selects = None
+    sample_select = None
+    if request.method == 'POST':
+        try:
+            event = Event.objects.get(pk=request.POST['conf_id'])
+        except (Event.DoesNotExist, MultiValueDictKeyError):
+            return Http404('Something is wrong - that event does not exist')
+        select_form = MasterTerritoryForm(request.POST)
+        if select_form.is_valid():
+            new_select = MasterListSelections(
+                event=event,
+                include_exclude=request.POST['include_exclude'],
+            )
+            if request.POST['geo'] != '':
+                new_select.geo = request.POST['geo']
+            if request.POST['main_category'] != '':
+                new_select.main_category = request.POST['main_category']
+            if request.POST['main_category2'] != '':
+                new_select.main_category2 = request.POST['main_category2']
+            if request.POST['company'] != '':
+                new_select.company = request.POST['company']
+            if request.POST['industry'] != '':
+                new_select.industry = request.POST['industry']
+            if request.POST['dept'] != '':
+                new_select.dept = request.POST['dept']
+            new_select.save()
+            select_form = MasterTerritoryForm()
+        list_selects = MasterListSelections.objects.filter(event=event)
+        sample_select = build_master_territory_list(list_selects)
+        select_count = sample_select.count()
+        sample_select = sample_select.order_by('?')[:250]
+    context = {
+        'select_form': select_form,
+        'list_selects': list_selects,
+        'sample_select': sample_select,
+        'select_count': select_count,
+    }
+    return render(request, 'crm/territory_addins/master_territory_panel.html',
+                  context)
+
+
 @login_required
 def check_for_dupes(request):
     """
@@ -1498,6 +1546,9 @@ def create_selection_widget(request):
     select_form = MasterTerritoryForm()
     list_selects = MasterListSelections.objects.filter(event=event)
     sample_select = build_master_territory_list(list_selects)
+    select_count = sample_select.count()
+    sample_select = sample_select.order_by('?')[:250]
+    sample_select = sorted(sample_select, key=lambda o: o.company)
     context = {
         'event': event,
         'userlist': userlist,
@@ -1506,6 +1557,8 @@ def create_selection_widget(request):
         'pd_assigned': pd_assigned,
         'select_form': select_form,
         'list_selects': list_selects,
+        'sample_select': sample_select,
+        'select_count': select_count,
     }
     return render(request, 'crm/territory_addins/territory_builder.html',
                   context)
@@ -1527,14 +1580,43 @@ def delete_contact_history(request):
     return render(request, 'crm/addins/detail_contact_history.html', context)
 
 
+@user_passes_test(management_permission, login_url='/crm/',
+                  redirect_field_name=None)
+def delete_master_list_select(request):
+    select_form = MasterTerritoryForm()
+    list_selects = None
+    sample_select = None
+    if request.method == 'POST':
+        try:
+            event = Event.objects.get(pk=request.POST['conf_id'])
+            select = MasterListSelections.objects.get(
+                pk=request.POST['select_id']
+            )
+            select.delete()
+        except (Event.DoesNotExist, MultiValueDictKeyError):
+            return Http404('Something is wrong - that event does not exist')
+        except MasterListSelections.DoesNotExist:
+            pass
+        list_selects = MasterListSelections.objects.filter(event=event)
+        sample_select = build_master_territory_list(list_selects)
+        select_count = sample_select.count()
+        sample_select = sample_select.order_by('?')[:250]
+    context = {
+        'select_form': select_form,
+        'list_selects': list_selects,
+        'sample_select': sample_select,
+        'select_count': select_count,
+    }
+    return render(request, 'crm/territory_addins/master_territory_panel.html',
+                  context)
+
+
 @login_required
 def get_recent_contacts(request):
     """ ajax call to populate recent contacts on sidebar """
     if 'recent_contacts' not in request.session:
         request.session['recent_contacts'] = []
     recent_contact_list = []
-    print('\n\n')
-    print(request.session['recent_contacts'])
     for contact in request.session['recent_contacts']:
         try:
             recent_contact_list.append(Person.objects.get(pk=contact))

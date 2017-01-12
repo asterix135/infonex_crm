@@ -48,4 +48,54 @@ $(document).ready(function() {
     });
   });
 
+
+  // Add general list selection and update relevant parts of page
+  $('body').on('click', '#master #btn-add-new-select', function(){
+    var confId = $('#id_event').val();
+    var includeExclude = $('#master #id_include_exclude').val();
+    var mainCategory = $('#master #id_main_category').val();
+    var mainCategory2 = $('#master #id_main_category2').val();
+    var geo = $('#master #id_geo').val();
+    var industry = $('#master #id_industry').val();
+    var company = $('#master #id_company').val();
+    var dept = $('#master #id_dept').val();
+    if (mainCategory || geo || industry || company || dept) {
+      $.ajax({
+        url: '/crm/add_master_list_select/',
+        type: 'POST',
+        data: {
+          'conf_id': confId,
+          'include_exclude': includeExclude,
+          'main_category': mainCategory,
+          'main_category2': mainCategory2,
+          'geo': geo,
+          'industry': industry,
+          'company': company,
+          'dept': dept,
+        },
+        success: function(data){
+          $('#master').html(data);
+        }
+      });
+    };
+  });
+
+
+  // Delete general list selection and update relevant parts of page
+  $('body').on('click', '#master #btn-delete-select', function(){
+    var confId = $('#id_event').val();
+    var selectId = $(this).attr('select-value');
+    $.ajax({
+      url: '/crm/delete_master_list_select/',
+      type: 'POST',
+      data: {
+        'conf_id': confId,
+        'select_id': selectId,
+      },
+      success: function(data){
+        $('#master').html(data);
+      }
+    });
+  });
+
 });

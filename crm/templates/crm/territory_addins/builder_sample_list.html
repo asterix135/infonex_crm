@@ -1,4 +1,12 @@
-<h3>Sample of max 250 records in selection</h3>
+<!-- Included in master_territory_panel.html -->
+
+<h3>Sample of Records in Selection</h3>
+{% if select_count < 250 %}
+<h6>{{ select_count }} Records in total</h6>
+{% else %}
+<h6>Random sample of 250 from a total group of {{ select_count }} records</h6>
+{% endif %}
+
 <table class="table table-striped table-fixedheader">
   <thead>
     <tr>

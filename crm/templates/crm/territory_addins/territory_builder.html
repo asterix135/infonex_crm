@@ -88,52 +88,7 @@
 
     <!-- Select master list Tab -->
     <div role="tabpanel" class="tab-pane fade" id="master">
-      <div class="master-list-selector">
-        <table class="table">
-          <thead class="thead-inverse">
-            <tr>
-              <th>Include/Exclude</th>
-              <th>Main Category (f1)</th>
-              <th>Main Category 2</th>
-              <th>Geo</th>
-              <th>Industry</th>
-              <th>Company Name</th>
-              <th>Save/Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{ select_form.include_exclude }}</td>
-              <td>{{ select_form.main_category }}</td>
-              <td>{{ select_form.main_category2 }}</td>
-              <td>{{ select_form.geo }}</td>
-              <td>{{ select_form.industry }}</td>
-              <td>{{ select_form.company }}</td>
-              <td><button type="submit" class="btn btn-primary" name="submit_option" value="save">Save</button></td>
-            </tr>
-            {% for select in list_selects %}
-            <tr>
-              <input type="hidden" name="select_id" value="{{ select.id }}">
-              <td>{{ select.include_exclude }}</td>
-              <td>{{ select.main_category }}</td>
-              <td>{{ select.main_category2 }}</td>
-              <td>{{ select.geo }}</td>
-              <td>{{ select.industry }}</td>
-              <td>{{ select.company }}</td>
-              <td><button type="submit" class="btn btn-secondary" name="submit_option" value="delete">Delete</button></td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-
-      <!-- List preview section of panel -->
-      <div id="master-list-preview">
-        {% if sample_select %}
-        {% include 'crm/territory_addins/builder_sample_list.html' %}
-        {% endif %}
-      </div>
-
+      {% include 'crm/territory_addins/master_territory_panel.html' %}
     </div>
 
     <div role="tabpanel" class="tab-pane fade" id="sales">

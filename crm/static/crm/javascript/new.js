@@ -5,9 +5,26 @@ $(document).ready(function() {
   $('input,textarea,select').filter('[required]').parent().parent().find("label").append('<span class="required-label"> *</span>');
 
 
-  // typeahead autocomplete for company field
-  var my_Suggestion_class = new Bloodhound({
-      limit: 10,
+  // typeahead autocomplete for dept, industry & company fields
+  var deptSuggestionClass = new Bloodhound({
+      limit: 20,
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      remote: {
+        url: '/crm/suggest_dept/',
+        replace: function(url, query){
+          return url + "?q=" + query;
+        },
+        filter: function(my_Suggestion_class) {
+          return $.map(my_Suggestion_class, function(data){
+            return {value: data.identifier};
+          });
+        }
+      }
+  });
+  deptSuggestionClass.initialize();
+  var companySuggestionClass = new Bloodhound({
+      limit: 20,
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       remote: {
@@ -22,8 +39,27 @@ $(document).ready(function() {
         }
       }
   });
-  my_Suggestion_class.initialize();
-  $('#id_company').typeahead({
+  companySuggestionClass.initialize();
+  var industrySuggestionClass = new Bloodhound({
+      limit: 20,
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      remote: {
+        url: '/crm/suggest_industry/',
+        replace: function(url, query){
+          return url + "?q=" + query;
+        },
+        filter: function(my_Suggestion_class) {
+          return $.map(my_Suggestion_class, function(data){
+            return {value: data.identifier};
+          });
+        }
+      }
+  });
+  industrySuggestionClass.initialize();
+
+  // initialize the different typeaheads
+  $('#id_dept').typeahead({
       hint: true,
       highlight: true,
       minLength: 1
@@ -31,7 +67,7 @@ $(document).ready(function() {
   {
       name: 'value',
       displayKey: 'value',
-      source: my_Suggestion_class.ttAdapter(),
+      source: deptSuggestionClass.ttAdapter(),
       templates: {
           empty: [
               '<div class="tt-suggestion">',
@@ -40,6 +76,43 @@ $(document).ready(function() {
           ].join('\n')
       }
   });
+
+  $('#id_company').typeahead({
+      hint: true,
+      highlight: true,
+      minLength: 2
+  },
+  {
+      name: 'value',
+      displayKey: 'value',
+      source: companySuggestionClass.ttAdapter(),
+      templates: {
+          empty: [
+              '<div class="tt-suggestion">',
+              'No Items Found',
+              '</div>'
+          ].join('\n')
+      }
+  });
+
+  $('#id_industry').typeahead({
+      hint: true,
+      highlight: true,
+      minLength: 2
+  },
+  {
+      name: 'value',
+      displayKey: 'value',
+      source: industrySuggestionClass.ttAdapter(),
+      templates: {
+          empty: [
+              '<div class="tt-suggestion">',
+              'No Items Found',
+              '</div>'
+          ].join('\n')
+      }
+  });
+
 
 
   // Check for dupes on new record and either display modal or proceed

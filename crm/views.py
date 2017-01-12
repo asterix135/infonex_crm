@@ -1470,6 +1470,7 @@ def add_master_list_select(request):
         sample_select = build_master_territory_list(list_selects)
         select_count = sample_select.count()
         sample_select = sample_select.order_by('?')[:250]
+        sample_select = sorted(sample_select, key=lambda o: o.company)
     context = {
         'select_form': select_form,
         'list_selects': list_selects,
@@ -1601,6 +1602,7 @@ def delete_master_list_select(request):
         sample_select = build_master_territory_list(list_selects)
         select_count = sample_select.count()
         sample_select = sample_select.order_by('?')[:250]
+        sample_select = sorted(sample_select, key=lambda o: o.company)
     context = {
         'select_form': select_form,
         'list_selects': list_selects,
@@ -1626,12 +1628,6 @@ def get_recent_contacts(request):
         'recent_contact_list': recent_contact_list,
     }
     return render(request, 'crm/addins/recently_viewed.html', context)
-
-
-@user_passes_test(management_permission, login_url='/crm/',
-                  redirect_field_name=None)
-def sample_territory_list(request):
-    pass
 
 
 @login_required
@@ -1690,15 +1686,54 @@ def suggest_company(request):
     that match entered string
     """
     query_term = request.GET.get('q', '')
-    companies = Person.objects.filter(company__icontains=query_term) \
+    selects = Person.objects.filter(company__icontains=query_term) \
         .values('company').annotate(total=Count('name')) \
         .order_by('-total')[:25]
     results = []
-    id_counter = 0
-    for company in companies:
-        company_json = {}
-        company_json['identifier'] = company['company']
-        results.append(company_json)
+    for select in selects:
+        select_json = {}
+        select_json['identifier'] = select['company']
+        results.append(select_json)
+    data = json.dumps(results)
+    mimetype = 'applications/json'
+    return HttpResponse(data, mimetype)
+
+
+@login_required
+def suggest_dept(request):
+    """
+    Ajax call (I think?) - returns json of top 25 dept matches (by number in db)
+    that match entered string
+    """
+    query_term = request.GET.get('q', '')
+    selects = Person.objects.filter(dept__icontains=query_term) \
+        .values('dept').annotate(total=Count('name')) \
+        .order_by('-total')[:25]
+    results = []
+    for select in selects:
+        select_json = {}
+        select_json['identifier'] = select['dept']
+        results.append(select_json)
+    data = json.dumps(results)
+    mimetype = 'applications/json'
+    return HttpResponse(data, mimetype)
+
+
+@login_required
+def suggest_industry(request):
+    """
+    Ajax call (I think?) - returns json of top 25 industry matches (by # in db)
+    that match entered string
+    """
+    query_term = request.GET.get('q', '')
+    selects = Person.objects.filter(industry__icontains=query_term) \
+        .values('industry').annotate(total=Count('name')) \
+        .order_by('-total')[:25]
+    results = []
+    for select in selects:
+        select_json = {}
+        select_json['identifier'] = select['industry']
+        results.append(select_json)
     data = json.dumps(results)
     mimetype = 'applications/json'
     return HttpResponse(data, mimetype)

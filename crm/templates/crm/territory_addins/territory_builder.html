@@ -17,13 +17,13 @@
       </a>
       <ul class="dropdown-menu">
         <li>
-          <a href="#sales" data-toggle="tab">Sales Staff</a>
+          <a href="#personal-selects" data-toggle="tab" id="activate-sales">Sales Staff</a>
         </li>
         <li>
-          <a href="#sponsorship" data-toggle="tab">Sponsorship</a>
+          <a href="#personal-selects" data-toggle="tab" id="activate=sponsorship">Sponsorship</a>
         </li>
         <li>
-          <a href="#pd" data-toggle="tab">PD Staff</a>
+          <a href="#personal-selects" data-toggle="tab" id="activate-pd">PD Staff</a>
         </li>
       </ul>
     </li>
@@ -91,29 +91,8 @@
       {% include 'crm/territory_addins/master_territory_panel.html' %}
     </div>
 
-    <div role="tabpanel" class="tab-pane fade" id="sales">
-      <p>
-        widget to select sales staff territories
-      </p>
-      <p>
-        Consider making these tabs dynamic based on assigned staff
-      </p>
-    </div>
-    <div role="tabpanel" class="tab-pane fade" id="sponsorship">
-      <p>
-        widget to select sponsorship territory
-      </p>
-      <p>
-        Consider making these tabs dynamic based on assigned staff
-      </p>
-    </div>
-    <div role="tabpanel" class="tab-pane fade" id="pd">
-      <p>
-        widget to select pd territory
-      </p>
-      <p>
-        Consider making these tabs dynamic based on assigned staff
-      </p>
+    <div role="tabpanel" class="tab-pane fade" id="personal-selects">
+      {% include 'crm/territory_addins/personal_select_person_chooser.html' %}
     </div>
   </div>
 

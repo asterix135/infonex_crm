@@ -1,0 +1,15 @@
+
+<!-- Included in territory_builder.html
+AJAX call from add_master_list_select -->
+
+<h1>Stuff Goes Here</h1>
+<div class="row form-group">
+  {% for staff_member in staff_group %}
+  <button class="btn btn-default" staff-id="{{ staff_member.id }}" type="button">
+    {{ staff_member.userid }}
+  </button>
+  {% endfor %}
+</div>
+
+<div id="personal-select-details">
+</div>

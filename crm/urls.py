@@ -59,6 +59,9 @@ urlpatterns = [
     url(r'^save_person_details/$', views.save_person_details,
         name='save_person_details'),
     url(r'^suggest_company/$', views.suggest_company, name='suggest_company'),
+    url(r'^suggest_dept/$', views.suggest_dept, name='suggest_dept'),
+    url(r'^suggest_industry/$', views.suggest_industry,
+        name='suggest_industry'),
     url(r'^update_user_assignments/$', views.update_user_assignments,
         name='update_user_assignments'),
 

@@ -8,14 +8,20 @@ AJAX call from add_master_list_select -->
   {% endif %}
   Personalized Selections
 </h1>
-<div class="row form-group">
+<div class="row form-group" >
   {% if staff_group %}
   {% if staff_group|length > 1 %}
+  <h3>Please select a staff member</h3>
   {% for staff_member in staff_group %}
-  <button class="btn btn-default" staff-id="{{ staff_member.id }}" type="button">
+  <button class="btn btn-default btn-staff-select" staff-id="{{ staff_member.id }}" type="button">
     {{ staff_member.username }}
   </button>
   {% endfor %}
+  {% else %}
+  <button class="btn hide btn-staff-select" staff-id="{{ staff_group.first.id }}" type="button">
+    {{ staff_member.username }}
+  </button>
+
   {% endif %}
   {% else %}
   <h3 class="errorlist">No staff members have been assigned to this category yet</h3>
@@ -23,7 +29,4 @@ AJAX call from add_master_list_select -->
 </div>
 
 <div id="personal-select-details">
-  {% if staff_group|length == 1 %}
-  <h4>Only one staff member so show stuff here</h4>
-  {% endif %}
 </div>

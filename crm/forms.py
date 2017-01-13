@@ -404,6 +404,72 @@ class PersonCategoryUpdateForm(forms.ModelForm):
         }
 
 
+class PersonTerritorySelectMethodForm(forms.ModelForm):
+    """
+    Used to select if staff member territory is a filter of master or
+    if it is a selection from entire database
+    """
+
+    class Meta:
+        model = EventAssignment
+        fields = ('filter_master_selects',)
+        labels = {
+            'filter_master_selects': _(
+                'Filter the master selects or start from scratch?'
+            ),
+        }
+        widgets = {
+            'filter_master_selects': forms.RadioSelect(
+                attrs={'class': 'form-control radio-inline'}
+            ),
+        }
+
+
+class PersonalTerritorySelects(forms.ModelForm):
+
+    class Meta:
+        model = PersonalListSelections
+        fields = ('geo', 'main_category', 'main_category2', 'company',
+                  'industry', 'include_exclude', 'dept', 'division1',
+                  'division2')
+        labels = {
+            'dept': _('Department'),
+            'geo': _('Geographic Group'),
+            'main_category': _('Main Category (F1)'),
+            'main_category2': _('Secondary Category'),
+            'division1': _('Sales Division 1'),
+            'division2': _('Sales Division 2'),
+        }
+        widgets = {
+            'dept': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'geo': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'main_category': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'main_category2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'company': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'industry': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'include_exclude': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'division2': forms.Select(
+                attrs={'class': 'form-control'}
+            )
+        }
+
 class SearchForm(forms.Form):
     name = forms.CharField(label='Name',
                            max_length=100,

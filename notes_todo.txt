@@ -2,10 +2,10 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
-next #: 33
+next #: 34
 
 TODO: 8) (BIG) rework territory stuff
-
+         *!*!*! figure out how to render filter/new option for EventAssignment *!*!*!*!
          - Best Idea is to make templates dynamic with cookie determining what's shown
          a) Need to update sidebar to dynamically reflect whether working on a conference - STARTED
          b) Need to (re)-create page showing all people in territory - territory.html - STARTED
@@ -14,6 +14,9 @@ TODO: 8) (BIG) rework territory stuff
          d) Need to create a page for db admin to add a conference (recycle existing?)
          f) Need to (re)-create a page to create territory based on set criteria - manage_territory.html - STARTED
             - Build Personal Content Section - lots o' jquery!!!
+         g) If admin status - add Manage Territory option to sidebar
+
+TODO: 33) In crm.views.py/load_staff_category_selects, fix the except: pass
 
 TODO: 31) Add New Person link to top bar (dynamically)
 

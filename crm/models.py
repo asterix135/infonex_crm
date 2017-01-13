@@ -217,6 +217,7 @@ class EventAssignment(models.Model):
     role = models.CharField(max_length=2,
                             choices=EVENT_ROLES,
                             default='SA')
+    filter_master_selects = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ('user', 'event',)
@@ -439,24 +440,6 @@ class PersonalListSelections(models.Model):
         ('NA', 'None'),
         ('', '---'),
     )
-    event_assignment = models.ForeignKey(EventAssignment)
-    include_exclude = models.CharField(max_length=7,
-                                       choices=(('include', 'include'),
-                                                 ('exclude', 'exclude')),
-                                       default='include')
-    person = models.ForeignKey(Person, blank=True, null=True)
-    geo = models.CharField(max_length=10,
-                           choices=GEO_CHOICES,
-                           blank=True,
-                           default='')
-    main_category = models.CharField(max_length=25,
-                                     choices=CAT_CHOICES,
-                                     blank=True,
-                                     default='')  # f1 in original db
-    main_category2 = models.CharField(max_length=15,
-                                      choices=CAT_CHOICES,
-                                      blank=True,
-                                      default='')
     DIV_CHOICES = (
         ('1', '1 - Misc'),
         ('2', '2 - Misc'),
@@ -476,6 +459,24 @@ class PersonalListSelections(models.Model):
         ('NA', 'Not Determined'),
         ('', '---'),
     )
+    event_assignment = models.ForeignKey(EventAssignment)
+    include_exclude = models.CharField(max_length=7,
+                                       choices=(('include', 'include'),
+                                                 ('exclude', 'exclude')),
+                                       default='include')
+    person = models.ForeignKey(Person, blank=True, null=True)
+    geo = models.CharField(max_length=10,
+                           choices=GEO_CHOICES,
+                           blank=True,
+                           default='')
+    main_category = models.CharField(max_length=25,
+                                     choices=CAT_CHOICES,
+                                     blank=True,
+                                     default='')  # f1 in original db
+    main_category2 = models.CharField(max_length=15,
+                                      choices=CAT_CHOICES,
+                                      blank=True,
+                                      default='')
     division1 = models.CharField(max_length=20,
                                  choices=DIV_CHOICES,
                                  blank=True,
@@ -484,9 +485,9 @@ class PersonalListSelections(models.Model):
                                  choices=DIV_CHOICES,
                                  blank=True,
                                  default='')  # for splitting leads
-    company = models.CharField(max_length=100, blank=True)
-    industry = models.CharField(max_length=100, blank=True)
-
+    company = models.CharField(max_length=100, blank=True, null=True)
+    industry = models.CharField(max_length=100, blank=True, null=True)
+    dept = models.CharField(max_length=255, blank=True, null=True)
 
 
 # THINK ABOUT THIS

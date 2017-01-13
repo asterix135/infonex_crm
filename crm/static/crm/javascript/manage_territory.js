@@ -213,7 +213,7 @@ $(document).ready(function() {
   };
 
 
-  // load appropriate content into personal select panel
+  // load appropriate staff GROUP content into personal select panel
   $('body').on('click', '.staff-select', function(){
     var sectionChosen = $(this).attr('id');
     var confId = $('#id_event').val();
@@ -226,8 +226,35 @@ $(document).ready(function() {
       },
       success: function(data){
         $('#personal-selects').html(data);
+        var numStaff = $('.btn-staff-select', data).length;
+        if (numStaff == 1){
+          var staffId = $('.btn-staff-select', data).attr('staff-id');
+          console.log(staffId);
+          // Need to call callStaffMemberTerritoryDetails here
+        }
         startTypeAhead();
       }
     })
   });
+
+
+  // function to do an ajax load of individual staff member select page
+  function callStaffMemberTerritoryDetails(staffId){
+    var confId = $('#id_event').val();
+
+
+  };
+
+
+  // load appropriate staff MEMBER content into personal select panel
+  $('body').on('click', '.btn-staff-select', function(){
+    $('.btn-staff-select').not(this).each(function(){
+      $(this).removeClass('btn-primary');
+      $(this).addClass('btn-default');
+    });
+    $(this).removeClass('btn-default');
+    $(this).addClass('btn-primary');
+    var staffId = $(this).attr('staff-id');
+  })
+
 });

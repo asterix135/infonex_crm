@@ -1444,7 +1444,7 @@ def add_master_list_select(request):
         try:
             event = Event.objects.get(pk=request.POST['conf_id'])
         except (Event.DoesNotExist, MultiValueDictKeyError):
-            return Http404('Something is wrong - that event does not exist')
+            raise Http404('Something is wrong - that event does not exist')
         select_form = MasterTerritoryForm(request.POST)
         if select_form.is_valid():
             new_select = MasterListSelections(
@@ -1594,7 +1594,7 @@ def delete_master_list_select(request):
             )
             select.delete()
         except (Event.DoesNotExist, MultiValueDictKeyError):
-            return Http404('Something is wrong - that event does not exist')
+            raise Http404('Something is wrong - that event does not exist')
         except MasterListSelections.DoesNotExist:
             pass
         list_selects = MasterListSelections.objects.filter(event=event)
@@ -1632,11 +1632,18 @@ def get_recent_contacts(request):
 @user_passes_test(management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def load_staff_category_selects(request):
+    """
+    Loads panel showing staff members assigned to Sales, PD or Sponsorship for
+    a particular event
+    Called from staff-select pulldown on territory_builder.html
+    """
     role_map_dict = {
         'activate-sales': ('SA', 'Sales Staff'),
         'activate-sponsorship': ('SP', 'Sponsorship Staff'),
         'activate-pd': ('PD', 'PD Staff'),
     }
+    staff_group = User.objects.none()
+    staff_label = None
     if request.method == 'POST':
         section_chosen = request.POST['section_chosen']
     try:
@@ -1648,8 +1655,7 @@ def load_staff_category_selects(request):
         )
         staff_label = role_map_dict[section_chosen][1]
     except (Event.DoesNotExist, MultiValueDictKeyError, KeyError):
-        staff_group = None
-        staff_label = None
+        pass
     context = {
         'staff_group': staff_group,
         'staff_label': staff_label,
@@ -1657,6 +1663,32 @@ def load_staff_category_selects(request):
     return render(request,
                   'crm/territory_addins/personal_select_person_chooser.html',
                   context)
+
+
+@user_passes_test(management_permission, login_url='/crm/',
+                  redirect_field_name=None)
+def load_staff_member_selects(request):
+    """
+    Loads panel showing staff members assigned to Sales, PD or Sponsorship for
+    a particular event
+    Called from staff-select pulldown on territory_builder.html
+    """
+    if request.method != 'POST':
+        return HttpResponse('')
+    try:
+        event = Event.objects.get(pk=request.POST['event_id'])
+        user = User.objects.get(pk=request.POST['user_id'])
+        event_assignment = EventAssignment.objects.get(event=event, user=user)
+    except Event.DoesNotExist:
+        raise Http404('Something is wrong - that event no longer exists')
+    except User.DoesNotExist:
+        raise Http404('Something is wrong - that staff member no longer exists')
+    except EventAssignment.DoesNotExist:
+        raise Http404('Something is wrong - that staff member is not '
+                      'assigned to this conference.')
+    territory_select_method_form = PersonTerritorySelectMethodForm(
+        instance=event_assignment
+    )
 
 
 @login_required

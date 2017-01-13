@@ -1,6 +1,5 @@
 import datetime
 import json
-import operator
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
@@ -1628,6 +1627,36 @@ def get_recent_contacts(request):
         'recent_contact_list': recent_contact_list,
     }
     return render(request, 'crm/addins/recently_viewed.html', context)
+
+
+@user_passes_test(management_permission, login_url='/crm/',
+                  redirect_field_name=None)
+def load_staff_category_selects(request):
+    role_map_dict = {
+        'activate-sales': ('SA', 'Sales Staff'),
+        'activate-sponsorship': ('SP', 'Sponsorship Staff'),
+        'activate-pd': ('PD', 'PD Staff'),
+    }
+    if request.method == 'POST':
+        section_chosen = request.POST['section_chosen']
+    try:
+        event = Event.objects.get(pk=request.POST['conf_id'])
+        staff_group = User.objects.filter(
+            eventassignment__event=event,
+            eventassignment__role=role_map_dict[section_chosen][0],
+            is_active=True
+        )
+        staff_label = role_map_dict[section_chosen][1]
+    except (Event.DoesNotExist, MultiValueDictKeyError, KeyError):
+        staff_group = None
+        staff_label = None
+    context = {
+        'staff_group': staff_group,
+        'staff_label': staff_label,
+    }
+    return render(request,
+                  'crm/territory_addins/personal_select_person_chooser.html',
+                  context)
 
 
 @login_required

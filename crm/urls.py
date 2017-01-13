@@ -54,6 +54,8 @@ urlpatterns = [
         name='delete_master_list_select'),
     url(r'^get_recent_contacts/$', views.get_recent_contacts,
         name='get_recent_contacts'),
+    url(r'^load_staff_category_selects/$', views.load_staff_category_selects,
+        name='load_staff_category_selects'),
     url(r'^save_category_changes/$', views.save_category_changes,
         name='save_category_changes'),
     url(r'^save_person_details/$', views.save_person_details,

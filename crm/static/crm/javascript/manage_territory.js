@@ -214,5 +214,20 @@ $(document).ready(function() {
 
 
   // load appropriate content into personal select panel
-
+  $('body').on('click', '.staff-select', function(){
+    var sectionChosen = $(this).attr('id');
+    var confId = $('#id_event').val();
+    $.ajax({
+      url: '/crm/load_staff_category_selects/',
+      type: 'POST',
+      data: {
+        'conf_id': confId,
+        'section_chosen': sectionChosen,
+      },
+      success: function(data){
+        $('#personal-selects').html(data);
+        startTypeAhead();
+      }
+    })
+  });
 });

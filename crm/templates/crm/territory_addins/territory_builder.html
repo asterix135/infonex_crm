@@ -17,13 +17,19 @@
       </a>
       <ul class="dropdown-menu">
         <li>
-          <a href="#personal-selects" data-toggle="tab" id="activate-sales">Sales Staff</a>
+          <a href="#personal-selects" data-toggle="tab" id="activate-sales" class="staff-select">
+            Sales Staff
+          </a>
         </li>
         <li>
-          <a href="#personal-selects" data-toggle="tab" id="activate=sponsorship">Sponsorship</a>
+          <a href="#personal-selects" data-toggle="tab" id="activate-sponsorship" class="staff-select">
+            Sponsorship
+          </a>
         </li>
         <li>
-          <a href="#personal-selects" data-toggle="tab" id="activate-pd">PD Staff</a>
+          <a href="#personal-selects" data-toggle="tab" id="activate-pd" class="staff-select">
+            PD Staff
+          </a>
         </li>
       </ul>
     </li>
@@ -91,6 +97,7 @@
       {% include 'crm/territory_addins/master_territory_panel.html' %}
     </div>
 
+    <!-- Select personal options tab -->
     <div role="tabpanel" class="tab-pane fade" id="personal-selects">
       {% include 'crm/territory_addins/personal_select_person_chooser.html' %}
     </div>

@@ -2,14 +2,28 @@
 <!-- Included in territory_builder.html
 AJAX call from add_master_list_select -->
 
-<h1>Stuff Goes Here</h1>
+<h1>
+  {% if staff_label %}
+  {{ staff_label }}
+  {% endif %}
+  Personalized Selections
+</h1>
 <div class="row form-group">
+  {% if staff_group %}
+  {% if staff_group|length > 1 %}
   {% for staff_member in staff_group %}
   <button class="btn btn-default" staff-id="{{ staff_member.id }}" type="button">
-    {{ staff_member.userid }}
+    {{ staff_member.username }}
   </button>
   {% endfor %}
+  {% endif %}
+  {% else %}
+  <h3 class="errorlist">No staff members have been assigned to this category yet</h3>
+  {% endif %}
 </div>
 
 <div id="personal-select-details">
+  {% if staff_group|length == 1 %}
+  <h4>Only one staff member so show stuff here</h4>
+  {% endif %}
 </div>

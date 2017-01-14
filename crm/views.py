@@ -1113,6 +1113,10 @@ def build_master_territory_list(list_select_queryset):
     return territory_list
 
 
+def build_user_territory_list(list_select_queryset):
+    pass
+
+
 def management_permission(user):
     """
     To be called by textdecorator @user_passes_test
@@ -1669,9 +1673,8 @@ def load_staff_category_selects(request):
                   redirect_field_name=None)
 def load_staff_member_selects(request):
     """
-    Loads panel showing staff members assigned to Sales, PD or Sponsorship for
-    a particular event
-    Called from staff-select pulldown on territory_builder.html
+    Loads details on a particular staff member's personal territory selects
+    Called from ??? pulldown on ???
     """
     if request.method != 'POST':
         return HttpResponse('')
@@ -1689,6 +1692,14 @@ def load_staff_member_selects(request):
     territory_select_method_form = PersonTerritorySelectMethodForm(
         instance=event_assignment
     )
+
+    context={
+        'territory_select_method_form': territory_select_method_form,
+        'staff_rep': user,
+
+    }
+    return render(request, 'crm/territory_addins/filter_master_option.html',
+                  context)
 
 
 @login_required

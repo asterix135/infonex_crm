@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from .models import *
@@ -215,6 +216,17 @@ class EventForm(forms.ModelForm):
 # ADDED/OKd FOR USE IN OVERHAUL
 #################
 
+#################
+# Renderers
+#################
+class HorizontalRadioRenderer(forms.RadioSelect.renderer):
+    def render(self):
+        return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
+
+
+#################
+# Forms
+#################
 class NewPersonForm(forms.ModelForm):
 
     class Meta:
@@ -413,16 +425,18 @@ class PersonTerritorySelectMethodForm(forms.ModelForm):
     class Meta:
         model = EventAssignment
         fields = ('filter_master_selects',)
-        labels = {
-            'filter_master_selects': _(
-                'Filter the master selects or start from scratch?'
+
+    def __init__(self, *args, **kwargs):
+        super(PersonTerritorySelectMethodForm, self).__init__(*args, **kwargs)
+        self.fields['filter_master_selects'] = forms.ChoiceField(
+            choices=PERSON_MASTER_RELATION_CHOICES,
+            widget=forms.RadioSelect(
+                renderer=HorizontalRadioRenderer,
+                attrs={'class': 'radio-inline'}
             ),
-        }
-        widgets = {
-            'filter_master_selects': forms.RadioSelect(
-                attrs={'class': 'form-control radio-inline'}
-            ),
-        }
+        )
+        self.fields['filter_master_selects'].label = \
+            'Filter the master selects or start from scratch?'
 
 
 class PersonalTerritorySelects(forms.ModelForm):
@@ -469,6 +483,7 @@ class PersonalTerritorySelects(forms.ModelForm):
                 attrs={'class': 'form-control'}
             )
         }
+
 
 class SearchForm(forms.Form):
     name = forms.CharField(label='Name',

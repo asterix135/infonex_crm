@@ -445,3 +445,8 @@ EVENT_ROLES = (
     ('PD', 'Conference Developer'),
     ('NA', 'Unassigned'),
 )
+
+PERSON_MASTER_RELATION_CHOICES = (
+    ('filter', 'Filter'),
+    ('new', 'Start from scratch'),
+)

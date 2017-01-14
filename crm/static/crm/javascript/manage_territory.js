@@ -241,8 +241,18 @@ $(document).ready(function() {
   // function to do an ajax load of individual staff member select page
   function callStaffMemberTerritoryDetails(staffId){
     var confId = $('#id_event').val();
-
-
+    $.ajax({
+      url: '/crm/load_staff_member_selects/',
+      type: 'POST',
+      data: {
+        'event_id': confId,
+        'user_id': staffId,
+      },
+      success: function(data){
+        $('#personal-select-details').html(data);
+        startTypeAhead();
+      }
+    });
   };
 
 
@@ -255,6 +265,7 @@ $(document).ready(function() {
     $(this).removeClass('btn-default');
     $(this).addClass('btn-primary');
     var staffId = $(this).attr('staff-id');
+    callStaffMemberTerritoryDetails(staffId);
   })
 
 });

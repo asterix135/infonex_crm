@@ -60,6 +60,7 @@ $(document).ready(function() {
     var industry = $('#master #id_industry').val();
     var company = $('#master #id_company').val();
     var dept = $('#master #id_dept').val();
+
     if (mainCategory || geo || industry || company || dept) {
       $.ajax({
         url: '/crm/add_master_list_select/',
@@ -76,6 +77,44 @@ $(document).ready(function() {
         },
         success: function(data){
           $('#master').html(data);
+          startTypeAhead();
+        }
+      });
+    };
+  });
+
+
+  // Add personal list selection and update relevant parts of page
+  $('body').on('click', '#btn-add-new-personal-select', function(){
+    var confId = $('#id_event').val();
+    var includeExclude = $('#personal-select-details #id_include_exclude').val();
+    var mainCategory = $('#personal-select-details #id_main_category').val();
+    var mainCategory2 = $('#personal-select-details #id_main_category2').val();
+    var geo = $('#personal-select-details #id_geo').val();
+    var industry = $('#personal-select-details #id_industry').val();
+    var company = $('#personal-select-details #id_company').val();
+    var dept = $('#personal-select-details #id_dept').val();
+    var division1 = $('#personal-select-details #id_division1').val();
+    var division2 = $('#personal-select-details #id_division2').val();
+
+    if (mainCategory || geo || industry || company || dept || division1 || division2) {
+      $.ajax({
+        url: '/crm/add_personal_list_select/',
+        type: 'POST',
+        data: {
+          'conf_id': confId,
+          'include_exclude': includeExclude,
+          'main_category': mainCategory,
+          'main_category2': mainCategory2,
+          'geo': geo,
+          'industry': industry,
+          'company': company,
+          'dept': dept,
+          'division1': division1,
+          'division2': division2,
+        },
+        success: function(data){
+          $('#persons-select-options').html(data);
           startTypeAhead();
         }
       });

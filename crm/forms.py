@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from .models import *
 from .constants import STATE_PROV_TUPLE, FLAG_CHOICES
+from delegate.forms import set_field_html_name
 
 
 class PersonUpdateForm(forms.ModelForm):
@@ -440,6 +441,11 @@ class PersonTerritorySelectMethodForm(forms.ModelForm):
 
 
 class PersonalTerritorySelects(forms.ModelForm):
+    """
+    Note that boolean argument required on instantiation
+    True = filter master selects
+    False = create from scratch
+    """
 
     class Meta:
         model = PersonalListSelections
@@ -483,6 +489,37 @@ class PersonalTerritorySelects(forms.ModelForm):
                 attrs={'class': 'form-control'}
             )
         }
+
+    def __init__(self, filter_master_bool, *args, **kwargs):
+        super(PersonalTerritorySelects, self).__init__(*args, **kwargs)
+        if filter_master_bool:
+            self.fields['include_exclude'] = forms.ChoiceField(
+                choices = (('filter',
+                            "Filter (exclude values that don't match)"),
+                           ('add', 'Add to List'),
+                           ('exclude', 'Exclude from list'),),
+                widget=forms.Select(
+                    attrs={'class': 'form-control'}
+                ),
+            )
+        else:
+            self.fields['include_exclude'] = forms.ChoiceField(
+                choices = (('add', 'Add to List'),
+                           ('exclude', 'Exclude from list'),),
+                widget=forms.Select(
+                    attrs={'class': 'form-control'}
+                ),
+            )
+        set_field_html_name(self.fields['geo'], 'geo_peronal')
+        set_field_html_name(self.fields['main_category'],
+                            'main_category_peronal')
+        set_field_html_name(self.fields['main_category2'],
+                            'main_category2_personal')
+        set_field_html_name(self.fields['company'], 'company_personal')
+        set_field_html_name(self.fields['industry'], 'industry_personal')
+        set_field_html_name(self.fields['include_exclude'],
+                            'include_exclude_personal')
+        set_field_html_name(self.fields['dept'], 'dept_personal')
 
 
 class SearchForm(forms.Form):

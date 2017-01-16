@@ -1,18 +1,20 @@
-<!-- Included in personal_select_person_chooser.html
+<!-- Included in filter_master_option.html
 AJAX call from ???? -->
 
-<div class="master-list-selector">
+<div class="personal-list-selector">
   <table class="table">
     <thead class="thead-inverse">
       <tr>
-        <th>Include/Exclude</th>
-        <th>Main Category (f1)</th>
-        <th>Main Category 2</th>
-        <th>Geo</th>
-        <th>Dept</th>
-        <th>Industry</th>
-        <th>Company Name</th>
-        <th>Save/Delete</th>
+        <th width="10%">Include/Exclude</th>
+        <th width="10%">Sales Division 1</th>
+        <th width="10%">Sales Division 2</th>
+        <th width="10%">Main Category (f1)</th>
+        <th width="10%">Main Category 2</th>
+        <th width="10%">Geo</th>
+        <th width="10%">Dept</th>
+        <th width="10%">Industry</th>
+        <th width="10%">Company Name</th>
+        <th width="10%">Save/Delete</th>
       </tr>
     </thead>
     <tbody>
@@ -20,6 +22,14 @@ AJAX call from ???? -->
         <td>
           {{ select_form.include_exclude.errors }}
           {{ select_form.include_exclude }}
+        </td>
+        <td>
+          {{ select_form.division1.errors }}
+          {{ select_form.division1 }}
+        </td>
+        <td>
+          {{ select_form.division2.errors }}
+          {{ select_form.division2 }}
         </td>
         <td>
           {{ select_form.main_category.errors }}
@@ -45,7 +55,7 @@ AJAX call from ???? -->
           {{ select_form.company.errors }}
           {{ select_form.company }}
         </td>
-        <td><button type="button" class="btn btn-primary" id="btn-add-new-select">Save</button></td>
+        <td><button type="button" class="btn btn-primary" id="btn-add-new-personal-select">Save</button></td>
       </tr>
       {% for select in list_selects %}
       <tr>

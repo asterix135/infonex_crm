@@ -447,6 +447,6 @@ EVENT_ROLES = (
 )
 
 PERSON_MASTER_RELATION_CHOICES = (
-    ('filter', 'Filter'),
-    ('new', 'Start from scratch'),
+    (True, 'Filter'),
+    (False, 'Start from scratch'),
 )

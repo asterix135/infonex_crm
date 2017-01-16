@@ -1080,6 +1080,12 @@ def build_master_territory_list(list_select_queryset):
     Builds and returns query set based on a territory's master selection
     criteria
     """
+    field_dict = {'main_category': 'main_category',
+                  'main_category2': 'main_category2',
+                  'geo': 'geo',
+                  'industry': 'industry__icontains',
+                  'company': 'company__icontains',
+                  'dept': 'dept__icontains'}
     num_conditions = list_select_queryset.count()
     if num_conditions == 0:
         return Person.objects.none()
@@ -1089,12 +1095,6 @@ def build_master_territory_list(list_select_queryset):
     includes_added = False
     for list_select in list_select_queryset:
         kwargs = {}
-        field_dict = {'main_category': 'main_category',
-                      'main_category2': 'main_category2',
-                      'geo': 'geo',
-                      'industry': 'industry__icontains',
-                      'company': 'company__icontains',
-                      'dept': 'dept__icontains'}
         for field in field_dict:
             if getattr(list_select, field) not in ['', None]:
                 kwargs[field_dict[field]] = getattr(list_select, field)
@@ -1109,12 +1109,73 @@ def build_master_territory_list(list_select_queryset):
     if not includes_added:
         territory_list = Person.objects.all()
     for list_select in exclude_selects:
-        territory_list = territory_list.exclude(**kwargs)
+        kwargs = {}
+        for field in field_dict:
+            if getattr(list_select, field) not in ['', None]:
+                kwargs[field_dict[field]] = getattr(list_select, field)
+        territory_list = territory_list.objects.exclude(**kwargs)
     return territory_list
 
 
-def build_user_territory_list(list_select_queryset):
-    pass
+def build_user_territory_list(event_assignment_object, for_staff_member=False):
+    field_dict = {'main_category': 'main_category',
+                  'main_category2': 'main_category2',
+                  'division1': 'division1',
+                  'division2': 'division2',
+                  'geo': 'geo',
+                  'industry': 'industry__icontains',
+                  'company': 'company__icontains',
+                  'dept': 'dept__icontains'}
+    filter_main = event_assignment_object.filter_master_selects
+    if filter_main:
+        event = event_assignment_object.event
+        master_list_selects = MasterListSelections.objects.filter(
+            event=event
+        )
+        territory_list = build_master_territory_list(master_list_selects)
+        includes_added = True
+    else:
+        territory_list = Person.objects.none()
+        includes_added = False
+    user_select_set = PersonalListSelections.objects.filter(
+        event_assignment=event_assignment_object
+    )
+    if user_select_set.count() == 0:
+        return territory_list
+    filter_selects=[]
+    exclude_selects=[]
+    for list_select in user_select_set:
+        kwargs = {}
+        for field in field_dict:
+            if getattr(list_select, field) not in ['', None]:
+                kwargs[field_dict[field]] = getattr(list_select, field)
+        if list_select.include_exclude == 'include':
+            includes_added = True
+            query_list = Person.objects.filter(**kwargs)
+            territory_list = territory_list | query_list
+        elif list_select.include_exclude == 'filter':
+            filter_selects.append(list_select)
+        else:
+            exclude_selects.append(list_select)
+    if len(filter_selects) + len(exclude_selects) == 0:
+        return territory_list
+    if len(filter_selects) > 0 and filter_main:
+        kwargs = {}
+        for field in field_dict:
+            if getattr(list_select, field) not in ['', None]:
+                kwargs[field_dict[field]] = getattr(list_select, field)
+        territory_list = territory_list.objects.filter(**kwargs)
+        if len(exclude_selects) == 0:
+            return territory_list
+    if not includes_added:
+        territory_list = Person.objects.all()
+    for list_select in exclude_selects:
+        kwargs = {}
+        for field in field_dict:
+            if getattr(list_select, field) not in ['', None]:
+                kwargs[field_dict[field]] = getattr(list_select, field)
+        territory_list = territory_list.objects.exclude(**kwargs)
+    return territory_list
 
 
 def management_permission(user):
@@ -1444,6 +1505,7 @@ def add_master_list_select(request):
     select_form = MasterTerritoryForm()
     list_selects = None
     sample_select = None
+    select_count = 0
     if request.method == 'POST':
         try:
             event = Event.objects.get(pk=request.POST['conf_id'])
@@ -1482,6 +1544,25 @@ def add_master_list_select(request):
     }
     return render(request, 'crm/territory_addins/master_territory_panel.html',
                   context)
+
+
+@user_passes_test(management_permission, login_url='/crm/',
+                  redirect_field_name=None)
+def add_personal_list_select(request):
+    select_form = PersonalTerritorySelects()
+    list_selects = None
+    sample_select = None
+    select_count = 0
+    if request.method == 'POST':
+        pass
+
+    context = {
+        'select_form': select_form,
+        'list_selects': list_selects,
+        'sample_select': sample_select,
+        'select_count': select_count,
+    }
+
 
 
 @login_required
@@ -1692,11 +1773,24 @@ def load_staff_member_selects(request):
     territory_select_method_form = PersonTerritorySelectMethodForm(
         instance=event_assignment
     )
+    select_form = PersonalTerritorySelects(
+        event_assignment.filter_master_selects
+    )
+    list_selects = PersonalListSelections.objects.filter(
+        event_assignment=event_assignment
+    )
+    sample_select = build_user_territory_list(event_assignment)
+    select_count = sample_select.count()
+    sample_select = sample_select.order_by('?')[:250]
+    sample_select = sorted(sample_select, key=lambda o: o.company)
 
     context={
         'territory_select_method_form': territory_select_method_form,
         'staff_rep': user,
-
+        'select_form': select_form,
+        'list_selects': list_selects,
+        'sample_select': sample_select,
+        'select_count': select_count,
     }
     return render(request, 'crm/territory_addins/filter_master_option.html',
                   context)

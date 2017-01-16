@@ -461,9 +461,12 @@ class PersonalListSelections(models.Model):
     )
     event_assignment = models.ForeignKey(EventAssignment)
     include_exclude = models.CharField(max_length=7,
-                                       choices=(('include', 'include'),
-                                                 ('exclude', 'exclude')),
-                                       default='include')
+                                       choices=(('filter',
+                                                 "Filter (exclude values that don't match)"),
+                                                ('add', 'Add to List'),
+                                                ('exclude', 'Exclude from list'),
+                                               ),
+                                       default='filter')
     person = models.ForeignKey(Person, blank=True, null=True)
     geo = models.CharField(max_length=10,
                            choices=GEO_CHOICES,

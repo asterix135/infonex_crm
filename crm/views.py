@@ -1118,6 +1118,11 @@ def build_master_territory_list(list_select_queryset):
 
 
 def build_user_territory_list(event_assignment_object, for_staff_member=False):
+    """
+    param event_assignment_object: one Event Assignment Records
+    param for_staff_member: boolean indicating whether list is for use on a
+                            staff member's territory page (True)
+    """
     field_dict = {'main_category': 'main_category',
                   'main_category2': 'main_category2',
                   'division1': 'division1',
@@ -1549,20 +1554,58 @@ def add_master_list_select(request):
 @user_passes_test(management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def add_personal_list_select(request):
-    select_form = PersonalTerritorySelects()
+    select_form = PersonalTerritorySelects(True)
     list_selects = None
     sample_select = None
     select_count = 0
     if request.method == 'POST':
-        pass
-
+        event = get_object_or_404(Event, pk=request.POST['conf_id'])
+        staff_member = get_object_or_404(User, pk=request.POST['staff_id'])
+        event_assignment = EventAssignment(user=staff_member, event=event)
+        select_form = PersonalTerritorySelects(
+            request.POST,
+            filter_master_bool=event_assignment.filter_master_selects,
+        )
+        if select_form.is_valid():
+            new_select = PersonalListSelections(
+                event_assignment=event_assignment,
+                include_exclude=request.POST['include_exclude']
+            )
+            if request.POST['main_category']:
+                new_select.main_category = request.POST['main_category']
+            if request.POST['main_category2']:
+                new_select.main_category2 = request.POST['main_category2']
+            if request.POST['geo']:
+                new_select.geo = request.POST['geo']
+            if request.POST['industry']:
+                new_select.industry = request.POST['industry']
+            if request.POST['company']:
+                new_select.company = request.POST['company']
+            if request.POST['dept']:
+                new_select.dept = request.POST['dept']
+            if request.POST['division1']:
+                new_select.division1 = request.POST['division1']
+            if request.POST['division2']:
+                new_select.division2 = request.POST['division2']
+            new_select.save()
+            select_form = PersonalTerritorySelects(
+                event_assignment.filter_master_selects
+            )
+        list_selects = PersonalListSelections.objects.filter(
+            event_assignment=event_assignment
+        )
+        sample_select = build_user_territory_list(event_assignment)
+        sample_count = sample_select.count()
+        sample_select = sample_select.order_by('?')[:250]
+        sample_select = sorted(sample_select, key=lambda o: o.company)
     context = {
         'select_form': select_form,
         'list_selects': list_selects,
         'sample_select': sample_select,
         'select_count': select_count,
     }
-
+    return render(request, 'crm/territory_addins/filter_master_option.html',
+                  context)
 
 
 @login_required

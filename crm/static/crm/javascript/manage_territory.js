@@ -87,6 +87,7 @@ $(document).ready(function() {
   // Add personal list selection and update relevant parts of page
   $('body').on('click', '#btn-add-new-personal-select', function(){
     var confId = $('#id_event').val();
+    var staffId = $('active-staff-id').val();
     var includeExclude = $('#personal-select-details #id_include_exclude').val();
     var mainCategory = $('#personal-select-details #id_main_category').val();
     var mainCategory2 = $('#personal-select-details #id_main_category2').val();
@@ -103,6 +104,7 @@ $(document).ready(function() {
         type: 'POST',
         data: {
           'conf_id': confId,
+          'staff_id': staffId,
           'include_exclude': includeExclude,
           'main_category': mainCategory,
           'main_category2': mainCategory2,
@@ -268,8 +270,7 @@ $(document).ready(function() {
         var numStaff = $('.btn-staff-select', data).length;
         if (numStaff == 1){
           var staffId = $('.btn-staff-select', data).attr('staff-id');
-          console.log(staffId);
-          // Need to call callStaffMemberTerritoryDetails here
+          callStaffMemberTerritoryDetails(staffId);
         }
         startTypeAhead();
       }

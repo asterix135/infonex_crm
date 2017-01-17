@@ -4,15 +4,16 @@ See avoiding race conditions using F()
 
 next #: 36
 
+TODO: 36) Test the manage_territory function thoroughly.  Maybe write tests???
+
 TODO: 8) (BIG) rework territory stuff
-         - Best Idea is to make templates dynamic with cookie determining what's shown
          a) Need to update sidebar to dynamically reflect whether working on a conference - STARTED
          c) Need to update detail.html to show dynamic content based on whether working a conference
-         d) Need to create a page for db admin to add a conference - Quick add Modal? (recycle existing?)
-         h) Javascript/python/url to delete individual select
+         h) DONE - Javascript/python/url to delete individual select
          g) DONE - If admin status - add Manage Territory option to sidebar
          b) DONE - Need to (re)-create page showing all people in territory - territory.html
          f) DONE - Need to (re)-create a page to create territory based on set criteria - manage_territory.html
+         d) DONE - Need to create a page for db admin to add a conference - Quick add Modal
 
 TODO: 33) In crm.views.py/load_staff_category_selects, fix the except: pass
 

@@ -1271,9 +1271,21 @@ def index(request):
 @user_passes_test(has_management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def manage_territory(request):
+    """
+    Loads manage territory page as a GET request
+    Also responds to form in add_conference_modal to validate/add new conference
+    and reload manage_territory page with new event
+    """
     conference_select_form = ConferenceSelectForm()
     new_conference_form = ConferenceEditForm()
-
+    if request.method == 'POST':
+        new_conference_form = ConferenceEditForm(request.POST)
+        if new_conference_form.is_valid():
+            new_event = new_conference_form.save(commit=False)
+            new_event.created_by = request.user
+            new_event.modified_by = request.user
+            new_event.save()
+            new_conference_form = ConferenceEditForm()
     context = {
         'conference_select_form': conference_select_form,
         'new_conference_form': new_conference_form
@@ -1299,30 +1311,9 @@ def new(request):
             'new_person_form': new_person_form
         }
         return render(request, 'crm/new.html', context)
-    person = Person(
-        name=request.POST['name'],
-        title=request.POST['title'],
-        company=request.POST['company'],
-        city=request.POST['city'],
-        url=request.POST['url'],
-        phone=request.POST['phone'],
-        phone_main=request.POST['phone_main'],
-        do_not_call=request.POST.get('do_not_call', False),
-        email=request.POST['email'],
-        do_not_email=request.POST.get('do_not_email', False),
-        linkedin=request.POST['linkedin'],
-        industry=request.POST['industry'],
-        dept=request.POST['dept'],
-        geo=request.POST['geo'],
-        main_category=request.POST['main_category'],
-        main_category2=request.POST['main_category2'],
-        division1=request.POST['division1'],
-        division2=request.POST['division2'],
-        date_created=timezone.now(),
-        date_modified=timezone.now(),
-        created_by=request.user,
-        modified_by=request.user,
-    )
+    person = new_person_form.save(commit=False)
+    person.created_by=request.user
+    person.modified_by=request.user
     person.save()
     add_to_recent_contacts(request, person.pk)
     return HttpResponseRedirect(reverse('crm:detail', args=(person.id,)))
@@ -1498,8 +1489,8 @@ def add_contact_history(request):
                     person=person,
                     event=event,
                     date_of_contact=timezone.now(),
-                    notes=request.POST['notes'],
-                    method=request.POST['method'],
+                    notes=new_contact_form.cleaned_data['notes'],
+                    method=new_contact_form.cleaned_data['method'],
                     author=request.user,
                 )
                 new_contact.save()
@@ -1530,22 +1521,8 @@ def add_master_list_select(request):
             raise Http404('Something is wrong - that event does not exist')
         select_form = MasterTerritoryForm(request.POST)
         if select_form.is_valid():
-            new_select = MasterListSelections(
-                event=event,
-                include_exclude=request.POST['include_exclude'],
-            )
-            if request.POST['geo'] != '':
-                new_select.geo = request.POST['geo']
-            if request.POST['main_category'] != '':
-                new_select.main_category = request.POST['main_category']
-            if request.POST['main_category2'] != '':
-                new_select.main_category2 = request.POST['main_category2']
-            if request.POST['company'] != '':
-                new_select.company = request.POST['company']
-            if request.POST['industry'] != '':
-                new_select.industry = request.POST['industry']
-            if request.POST['dept'] != '':
-                new_select.dept = request.POST['dept']
+            new_select = select_form.save(commit=False)
+            new_select.event = event
             new_select.save()
             select_form = MasterTerritoryForm()
         list_selects = MasterListSelections.objects.filter(event=event)
@@ -1578,26 +1555,8 @@ def add_personal_list_select(request):
             request.POST,
         )
         if select_form.is_valid():
-            new_select = PersonalListSelections(
-                event_assignment=event_assignment,
-                include_exclude=request.POST['include_exclude']
-            )
-            if request.POST['main_category']:
-                new_select.main_category = request.POST['main_category']
-            if request.POST['main_category2']:
-                new_select.main_category2 = request.POST['main_category2']
-            if request.POST['geo']:
-                new_select.geo = request.POST['geo']
-            if request.POST['industry']:
-                new_select.industry = request.POST['industry']
-            if request.POST['company']:
-                new_select.company = request.POST['company']
-            if request.POST['dept']:
-                new_select.dept = request.POST['dept']
-            if request.POST['division1']:
-                new_select.division1 = request.POST['division1']
-            if request.POST['division2']:
-                new_select.division2 = request.POST['division2']
+            new_select = select_form.save(commit=False)
+            new_select.event_assignment = event_assignment
             new_select.save()
             select_form = PersonalTerritorySelects(
                 event_assignment.filter_master_selects
@@ -1615,7 +1574,7 @@ def add_personal_list_select(request):
         'sample_select': sample_select,
         'select_count': select_count,
     }
-    return render(request, 'crm/territory_addins/filter_master_option.html',
+    return render(request, 'crm/territory_addins/personal_select_details.html',
                   context)
 
 
@@ -1725,6 +1684,7 @@ def delete_master_list_select(request):
     select_form = MasterTerritoryForm()
     list_selects = None
     sample_select = None
+    select_count = 0
     if request.method == 'POST':
         try:
             event = Event.objects.get(pk=request.POST['conf_id'])
@@ -1748,6 +1708,41 @@ def delete_master_list_select(request):
         'select_count': select_count,
     }
     return render(request, 'crm/territory_addins/master_territory_panel.html',
+                  context)
+
+
+@user_passes_test(has_management_permission, login_url='/crm/',
+                  redirect_field_name=None)
+def delete_personal_list_select(request):
+    select_form = PersonalTerritorySelects(True)
+    list_selects = None
+    sample_select = None
+    select_count = 0
+    if request.method == 'POST':
+        event = get_object_or_404(Event, pk=request.POST['conf_id'])
+        staff_member = get_object_or_404(User, pk=request.POST['staff_id'])
+        event_assignment = EventAssignment(user=staff_member, event=event)
+        try:
+            select = PersonalListSelections.objects.get(
+                pk=request.POST['select_id']
+            )
+            select.delete()
+        except PersonalListSelections.DoesNotExist:
+            pass
+        list_selects = PersonalListSelections.objects.filter(
+            event_assignment=event_assignment
+        )
+        sample_select = build_user_territory_list(event_assignment)
+        sample_count = sample_select.count()
+        sample_select = sample_select.order_by('?')[:250]
+        sample_select = sorted(sample_select, key=lambda o: o.company)
+    context = {
+        'select_form': select_form,
+        'list_selects': list_selects,
+        'sample_select': sample_select,
+        'select_count': select_count,
+    }
+    return render(request, 'crm/territory_addins/personal_select_details.html',
                   context)
 
 

@@ -1,6 +1,13 @@
 // Javascript for manage_territory.html page
 $(document).ready(function() {
 
+  // Show modal on load if form errors
+  var newConferenceFormHasErrors = $('#new-conference-form-has-errors').val();
+  if (newConferenceFormHasErrors == 'true'){
+    $('#modal-quick-add-event').modal('show');
+  };
+
+
   // Update assignments after drag/drop of users
   function updateAssignments(userId, receiverId){
     var confId = $('#id_event').val();
@@ -116,7 +123,7 @@ $(document).ready(function() {
           'division2': division2,
         },
         success: function(data){
-          $('#persons-select-options').html(data);
+          $('#person-select-options').html(data);
           startTypeAhead();
         }
       });
@@ -125,8 +132,9 @@ $(document).ready(function() {
 
 
   // Delete general list selection and update relevant parts of page
-  $('body').on('click', '#master #btn-delete-select', function(){
+  $('body').on('click', '.btn-delete-master-select', function(){
     var confId = $('#id_event').val();
+    var staffId = $('#active-staff-id').val();
     var selectId = $(this).attr('select-value');
     $.ajax({
       url: '/crm/delete_master_list_select/',
@@ -134,9 +142,29 @@ $(document).ready(function() {
       data: {
         'conf_id': confId,
         'select_id': selectId,
+        'staff_id': staffId,
       },
       success: function(data){
         $('#master').html(data);
+        startTypeAhead();
+      }
+    });
+  });
+
+
+  // Delete personal list selection and update relevant parts of page
+  $('body').on('click', '.btn-delete-personal-select', function(){
+    var confId = $('#id-event').val();
+    var selectId = $(this).attr('select-value');
+    $.ajax({
+      url: '/crm/delete_personal_list_select/',
+      type: 'POST',
+      data: {
+        'conf_id': confId,
+        'select_id': selectId,
+      },
+      success: function(data){
+        $('#person-select-options').html(data);
         startTypeAhead();
       }
     });

@@ -1,6 +1,13 @@
 <div class="modal fade" id="modal-quick-add-event" tabindex="-1" role="dialog">
+  {% if new_conference_form.errors %}
+  <input type="hidden" id="new-conference-form-has-errors" value="true" />
+  {% else %}
+  <input type="hidden" id="new-conference-form-has-errors" value="false" />
+  {% endif %}
   <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
+    <form method="post" action="" id="quick-add-conference-form">
+      {% csrf_token %}
+      <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">
           <span aria-hidden="true">&times;</span>
@@ -10,13 +17,11 @@
 
       <div class="modal-body">
         <div class="container-fluid bd-example-row">
-
           <div class="row">
             <div class="col-sm-12">
               <h4>Please fill in the form below and click 'Create New Event'</h4>
             </div>
           </div>
-
 
           <div class="row form-group">
             <div class="col-sm-12">
@@ -81,8 +86,9 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="save-new-event">Create New Event</button>
+        <button type="submit" class="btn btn-primary" id="save-new-event">Create New Event</button>
       </div>
     </div>
+    </form>
   </div>
 </div>

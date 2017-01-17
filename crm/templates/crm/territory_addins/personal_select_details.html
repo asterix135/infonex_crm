@@ -61,13 +61,15 @@ AJAX call from ???? -->
       <tr>
         <input type="hidden" name="select_id" value="{{ select.id }}">
         <td>{{ select.include_exclude }}</td>
+        <td>{{ select.division1 }}</td>
+        <td>{{ select.division2 }}</td>
         <td>{{ select.main_category }}</td>
         <td>{{ select.main_category2 }}</td>
         <td>{{ select.geo }}</td>
         <td>{{ select.dept }}</td>
         <td>{{ select.industry }}</td>
         <td>{{ select.company }}</td>
-        <td><button type="submit" class="btn btn-secondary" id="btn-delete-select" select-value="{{ select.id }}">Delete</button></td>
+        <td><button type="submit" class="btn btn-secondary btn-delete-personal-select" select-value="{{ select.id }}">Delete</button></td>
       </tr>
       {% endfor %}
     </tbody>

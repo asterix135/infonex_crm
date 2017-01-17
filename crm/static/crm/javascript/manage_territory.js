@@ -196,6 +196,7 @@ $(document).ready(function() {
   });
   industrySuggestionClass.initialize();
 
+
   // function that will start the typeahead (needs to be called after each ajax)
   function startTypeAhead(){
     $('#id_dept').typeahead({

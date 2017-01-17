@@ -2,14 +2,15 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
-next #: 34
+next #: 36
 
 TODO: 8) (BIG) rework territory stuff
          - Best Idea is to make templates dynamic with cookie determining what's shown
          a) Need to update sidebar to dynamically reflect whether working on a conference - STARTED
          c) Need to update detail.html to show dynamic content based on whether working a conference
          d) Need to create a page for db admin to add a conference - Quick add Modal? (recycle existing?)
-         g) If admin status - add Manage Territory option to sidebar
+         h) Javascript/python/url to delete individual select
+         g) DONE - If admin status - add Manage Territory option to sidebar
          b) DONE - Need to (re)-create page showing all people in territory - territory.html
          f) DONE - Need to (re)-create a page to create territory based on set criteria - manage_territory.html
 
@@ -17,12 +18,16 @@ TODO: 33) In crm.views.py/load_staff_category_selects, fix the except: pass
 
 TODO: 31) Add New Person link to top bar (dynamically)
 
+TODO: 34) registration/forms.py/ConferenceEditForm.clean()
+
+TODO: 35) Check if registration works with event minimally added in crm - popup if first delegate????
+
 TODO: 23) If territory exists: new person should pre-populate categorization with relevant details
           (This means updating crm.new.py)
 
 TODO: 2) Implement new table for invoices
 
-TODO: 26) Date picker widget
+TODO: 26) Date picker widget (https://jqueryui.com/datepicker/)
 
 TODO: 9) Play with pdf maker (ReportLab) and create new invoice & reg note
 TODO: 10) Post-registration processing page

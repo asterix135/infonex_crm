@@ -12,6 +12,7 @@
 {% block title %}Manage Territories | {% endblock %}
 
 {% block content %}
+{% include 'crm/territory_addins/add_conference_modal.html' %}
 <div class="container fill">
   <div class="row">
     <div class="col-sm-12">
@@ -36,7 +37,7 @@
       </button>
     </div>
     <div class="col=sm-2">
-      <button type="button" class="btn btn-default" id="add-new-conference">
+      <button type="button" class="btn btn-default" id="add-new-conference" data-toggle="modal" data-target="#modal-quick-add-event">
         Add New Event
       </button>
     </div>

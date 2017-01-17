@@ -15,7 +15,7 @@ from django.views import View
 from .forms import *
 from .models import *
 from .constants import AC_DICT
-from registration.forms import ConferenceSelectForm
+from registration.forms import ConferenceSelectForm, ConferenceEditForm
 
 
 #########################
@@ -1165,9 +1165,10 @@ def build_user_territory_list(event_assignment_object, for_staff_member=False):
     return territory_list
 
 
-def management_permission(user):
+def has_management_permission(user):
     """
     To be called by textdecorator @user_passes_test
+    Also, any time you need to check if user has management permissions
     """
     if user.groups.filter(name='db_admin').exists():
         return True
@@ -1257,7 +1258,7 @@ def index(request):
 
     # check for permission to view all records
     user = request.user
-    edit_permission_ok = management_permission(request.user)
+    edit_permission_ok = has_management_permission(request.user)
 
     context = {
         'user_is_admin': edit_permission_ok,
@@ -1267,13 +1268,15 @@ def index(request):
     return render(request, 'crm/index.html', context)
 
 
-@user_passes_test(management_permission, login_url='/crm/',
+@user_passes_test(has_management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def manage_territory(request):
     conference_select_form = ConferenceSelectForm()
+    new_conference_form = ConferenceEditForm()
 
     context = {
         'conference_select_form': conference_select_form,
+        'new_conference_form': new_conference_form
     }
     return render(request, 'crm/manage_territory.html', context)
 
@@ -1513,7 +1516,7 @@ def add_contact_history(request):
     return render(request, 'crm/addins/detail_contact_history.html', context)
 
 
-@user_passes_test(management_permission, login_url='/crm/',
+@user_passes_test(has_management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def add_master_list_select(request):
     select_form = MasterTerritoryForm()
@@ -1560,7 +1563,7 @@ def add_master_list_select(request):
                   context)
 
 
-@user_passes_test(management_permission, login_url='/crm/',
+@user_passes_test(has_management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def add_personal_list_select(request):
     select_form = PersonalTerritorySelects(True)
@@ -1650,7 +1653,7 @@ def check_for_dupes(request):
     return render(request, 'crm/addins/possible_dupe_modal.html', context)
 
 
-@user_passes_test(management_permission, login_url='/crm/',
+@user_passes_test(has_management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def create_selection_widget(request):
     """
@@ -1716,7 +1719,7 @@ def delete_contact_history(request):
     return render(request, 'crm/addins/detail_contact_history.html', context)
 
 
-@user_passes_test(management_permission, login_url='/crm/',
+@user_passes_test(has_management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def delete_master_list_select(request):
     select_form = MasterTerritoryForm()
@@ -1765,7 +1768,7 @@ def get_recent_contacts(request):
     return render(request, 'crm/addins/recently_viewed.html', context)
 
 
-@user_passes_test(management_permission, login_url='/crm/',
+@user_passes_test(has_management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def load_staff_category_selects(request):
     """
@@ -1801,7 +1804,7 @@ def load_staff_category_selects(request):
                   context)
 
 
-@user_passes_test(management_permission, login_url='/crm/',
+@user_passes_test(has_management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def load_staff_member_selects(request):
     """
@@ -1956,7 +1959,7 @@ def suggest_industry(request):
     return HttpResponse(data, mimetype)
 
 
-@user_passes_test(management_permission, login_url='/crm/',
+@user_passes_test(has_management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def update_user_assignments(request):
     """

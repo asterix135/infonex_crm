@@ -1,0 +1,88 @@
+<div class="modal fade" id="modal-quick-add-event" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Add New Conference</h3>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid bd-example-row">
+
+          <div class="row">
+            <div class="col-sm-12">
+              <h4>Please fill in the form below and click 'Create New Event'</h4>
+            </div>
+          </div>
+
+
+          <div class="row form-group">
+            <div class="col-sm-12">
+              {{ new_conference_form.number.label_tag }}
+              {{ new_conference_form.number.errors }}
+              {{ new_conference_form.number }}
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-sm-12">
+              {{ new_conference_form.title.label_tag }}
+              {{ new_conference_form.title.errors }}
+              {{ new_conference_form.title }}
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-sm-12">
+              {{ new_conference_form.date_begins.label_tag }}
+              {{ new_conference_form.date_begins.errors }}
+              {{ new_conference_form.date_begins }}
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-sm-6">
+              {{ new_conference_form.city.label_tag }}
+              {{ new_conference_form.city.errors }}
+              {{ new_conference_form.city }}
+            </div>
+            <div class="col-sm-6">
+              {{ new_conference_form.state_prov.label_tag }}
+              {{ new_conference_form.state_prov.errors }}
+              {{ new_conference_form.state_prov }}
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-sm-6">
+              {{ new_conference_form.registrar.label_tag }}
+              {{ new_conference_form.registrar.errors }}
+              {{ new_conference_form.registrar }}
+            </div>
+            <div class="col-sm-6">
+              {{ new_conference_form.developer.label_tag }}
+              {{ new_conference_form.developer.errors }}
+              {{ new_conference_form.developer }}
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-sm-6">
+              {{ new_conference_form.company_brand.label_tag }}
+              {{ new_conference_form.company_brand.errors }}
+              {{ new_conference_form.company_brand }}
+            </div>
+            <div class="col-sm-6">
+              {{ new_conference_form.billing_currency.label_tag }}
+              {{ new_conference_form.billing_currency.errors }}
+              {{ new_conference_form.billing_currency }}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="save-new-event">Create New Event</button>
+      </div>
+    </div>
+  </div>
+</div>

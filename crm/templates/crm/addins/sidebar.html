@@ -50,6 +50,12 @@
     {% if request.path|slice:"5:11" == 'detail' or request.path|slice:"5:11" == 'search' %}
     <a class="list-group-item" href="/crm/new/">Add new contact</a>
     {% endif %}
+
+    {% if perms.crm.change_territoryselects %}
+    <a href="/crm/manage_territory/" class="list-group-item">
+      Manage sales territories
+    </a>
+    {% endif %}
     <!-- TODO: Implement stuff below here -->
     <div class="list-group-item">
       Upcoming calls/appointments

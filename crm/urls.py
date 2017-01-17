@@ -45,6 +45,8 @@ urlpatterns = [
         name='add_contact_history'),
     url(r'^add_master_list_select/$', views.add_master_list_select,
         name='add_master_list_select'),
+    url(r'^add_personal_list_select/$', views.add_personal_list_select,
+        name='add_personal_list_select'),
     url(r'^check_for_dupes/$', views.check_for_dupes, name='check_for_dupes'),
     url(r'^create_selection_widget/$', views.create_selection_widget,
         name='create_selection_widget'),

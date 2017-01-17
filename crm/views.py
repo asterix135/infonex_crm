@@ -31,33 +31,6 @@ TERRITORY_TAGS = [('geo', False),  # T/F indicates whether loose (text) match
                   ('industry', True)]
 
 
-@login_required
-def index(request):
-    if 'event' in request.session:
-        initial_event = Event.objects.get(pk=request.session['event'])
-    else:
-        initial_event = None
-    territory_form = ListSelectForm(initial={'employee': request.user.pk,
-                                             'event': initial_event})
-    territory_form.fields['event'].queryset = Event.objects.filter(
-        date_begins__gte=timezone.now()-datetime.timedelta(weeks=16)
-    ).order_by('-date_begins', 'number')
-    territory_form.fields['employee'].queryset = User.objects.filter(
-        is_active=True
-    )
-
-    # check for permission to view all records
-    user = request.user
-    edit_permission_ok = (user.groups.filter(name='db_admin').exists() or
-                          user.is_superuser)
-
-    context = {
-        'user_is_admin': edit_permission_ok,
-        # 'land_filter': land_filter,
-        'territory_form': territory_form,
-    }
-    return render(request, 'crm/index.html', context)
-
 
 #################
 # HELPER FUNCTION
@@ -1164,14 +1137,23 @@ def build_user_territory_list(event_assignment_object, for_staff_member=False):
             exclude_selects.append(list_select)
     if len(filter_selects) + len(exclude_selects) == 0:
         return territory_list
+
+    # Process each filter separately and then OR them together
     if len(filter_selects) > 0 and filter_main:
-        kwargs = {}
-        for field in field_dict:
-            if getattr(list_select, field) not in ['', None]:
-                kwargs[field_dict[field]] = getattr(list_select, field)
-        territory_list = territory_list.objects.filter(**kwargs)
+        filtered_querysets = []
+        for filter_select in filter_selects:
+            kwargs = {}
+            for field in field_dict:
+                if getattr(list_select, field) not in ['', None]:
+                    kwargs[field_dict[field]] = getattr(list_select, field)
+            filtered_querysets.append(territory_list.object.filter(**kwargs))
+        territory_list = filtered_querysets.pop()
+        while len(filtered_querysets) > 0:
+            territory_list |= filtered_querysets.pop()
         if len(exclude_selects) == 0:
             return territory_list
+
+    # Process excludes
     if not includes_added:
         territory_list = Person.objects.all()
     for list_select in exclude_selects:
@@ -1256,6 +1238,33 @@ def detail(request, person_id):
         'reg_list': reg_list,
     }
     return render(request, 'crm/detail.html', context)
+
+
+@login_required
+def index(request):
+    if 'event' in request.session:
+        initial_event = Event.objects.get(pk=request.session['event'])
+    else:
+        initial_event = None
+    territory_form = ListSelectForm(initial={'employee': request.user.pk,
+                                             'event': initial_event})
+    territory_form.fields['event'].queryset = Event.objects.filter(
+        date_begins__gte=timezone.now()-datetime.timedelta(weeks=16)
+    ).order_by('-date_begins', 'number')
+    territory_form.fields['employee'].queryset = User.objects.filter(
+        is_active=True
+    )
+
+    # check for permission to view all records
+    user = request.user
+    edit_permission_ok = management_permission(request.user)
+
+    context = {
+        'user_is_admin': edit_permission_ok,
+        # 'land_filter': land_filter,
+        'territory_form': territory_form,
+    }
+    return render(request, 'crm/index.html', context)
 
 
 @user_passes_test(management_permission, login_url='/crm/',
@@ -1564,7 +1573,6 @@ def add_personal_list_select(request):
         event_assignment = EventAssignment(user=staff_member, event=event)
         select_form = PersonalTerritorySelects(
             request.POST,
-            filter_master_bool=event_assignment.filter_master_selects,
         )
         if select_form.is_valid():
             new_select = PersonalListSelections(

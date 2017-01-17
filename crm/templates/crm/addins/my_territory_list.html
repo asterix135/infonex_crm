@@ -1,0 +1,9 @@
+<div class="list-group collapse in">
+  {% for event in my_territories %}
+  <div class="list-group-item">
+    <!-- <a href = "{% url 'crm:detail' contact.id %}"> -->
+      {{ event.name }}
+    <!-- </a> -->
+  </div>
+  {% endfor %}
+</div>

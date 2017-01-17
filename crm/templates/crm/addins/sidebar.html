@@ -17,6 +17,9 @@
         {{ request.session.conference_description }}
         {% endif %}
       </p>
+      <div class="collapse" id="my-territory-list">
+        {% include 'crm/addins/my_territory_list.html' %}
+      </div>
     </div>
 
     <div class="list-group-item">
@@ -38,11 +41,6 @@
     <div class="list-group-item">
       Recently Viewed Contacts
       <span class="glyphicon glyphicon-chevron-down float-right glyph-button" id="icon-toggle-recent-viewed"></span>
-
-      <!-- <button type="button" class="btn btn-default btn-xs float-right"
-        title="Toggle list" id="toggle-recently-viewed">
-        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true" id="icon-toggle-recent-viewed"></span>
-      </button> -->
       <div id="recent-contact-list" class="collapse">
         {% include 'crm/addins/recently_viewed.html' %}
       </div>

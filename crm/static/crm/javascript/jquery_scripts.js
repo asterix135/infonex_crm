@@ -42,5 +42,6 @@ $(document).ready(function() {
     };
   });
 
+  // Toggle list of conferences/territories to select
 
 });

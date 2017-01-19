@@ -382,6 +382,9 @@ class PersonDetailsForm(forms.ModelForm):
 
 
 class PersonCategoryUpdateForm(forms.ModelForm):
+    """
+    Used to update category info for a person in the crm database
+    """
 
     class Meta:
         model = Person
@@ -490,7 +493,11 @@ class PersonalTerritorySelects(forms.ModelForm):
             )
         }
 
-    def __init__(self, filter_master_bool, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        try:
+            filter_master_bool = kwargs.pop('filter_master_bool')
+        except KeyError:
+            filter_master_bool = True
         super(PersonalTerritorySelects, self).__init__(*args, **kwargs)
         if filter_master_bool:
             self.fields['include_exclude'] = forms.ChoiceField(
@@ -510,6 +517,7 @@ class PersonalTerritorySelects(forms.ModelForm):
                     attrs={'class': 'form-control'}
                 ),
             )
+        del filter_master_bool
         set_field_html_name(self.fields['geo'], 'geo_peronal')
         set_field_html_name(self.fields['main_category'],
                             'main_category_peronal')

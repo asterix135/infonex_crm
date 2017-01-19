@@ -1086,7 +1086,7 @@ def build_master_territory_list(list_select_queryset):
         for field in field_dict:
             if getattr(list_select, field) not in ['', None]:
                 kwargs[field_dict[field]] = getattr(list_select, field)
-        territory_list = territory_list.objects.exclude(**kwargs)
+        territory_list = territory_list.exclude(**kwargs)
     return territory_list
 
 
@@ -1146,7 +1146,7 @@ def build_user_territory_list(event_assignment_object, for_staff_member=False):
             for field in field_dict:
                 if getattr(list_select, field) not in ['', None]:
                     kwargs[field_dict[field]] = getattr(list_select, field)
-            filtered_querysets.append(territory_list.object.filter(**kwargs))
+            filtered_querysets.append(territory_list.filter(**kwargs))
         territory_list = filtered_querysets.pop()
         while len(filtered_querysets) > 0:
             territory_list |= filtered_querysets.pop()
@@ -1161,7 +1161,7 @@ def build_user_territory_list(event_assignment_object, for_staff_member=False):
         for field in field_dict:
             if getattr(list_select, field) not in ['', None]:
                 kwargs[field_dict[field]] = getattr(list_select, field)
-        territory_list = territory_list.objects.exclude(**kwargs)
+        territory_list = territory_list.exclude(**kwargs)
     return territory_list
 
 
@@ -1543,29 +1543,36 @@ def add_master_list_select(request):
 @user_passes_test(has_management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def add_personal_list_select(request):
-    select_form = PersonalTerritorySelects(True)
+    select_form = PersonalTerritorySelects(filter_master_bool=True)
     list_selects = None
     sample_select = None
     select_count = 0
     if request.method == 'POST':
         event = get_object_or_404(Event, pk=request.POST['conf_id'])
         staff_member = get_object_or_404(User, pk=request.POST['staff_id'])
-        event_assignment = EventAssignment(user=staff_member, event=event)
+        event_assignment = EventAssignment.objects.get(
+            user=staff_member, event=event
+        )
+
         select_form = PersonalTerritorySelects(
             request.POST,
+            filter_master_bool=event_assignment.filter_master_selects
         )
         if select_form.is_valid():
             new_select = select_form.save(commit=False)
             new_select.event_assignment = event_assignment
             new_select.save()
             select_form = PersonalTerritorySelects(
-                event_assignment.filter_master_selects
+                filter_master_bool=event_assignment.filter_master_selects
             )
+        else:
+            print(form.errors)
         list_selects = PersonalListSelections.objects.filter(
             event_assignment=event_assignment
         )
+
         sample_select = build_user_territory_list(event_assignment)
-        sample_count = sample_select.count()
+        select_count = sample_select.count()
         sample_select = sample_select.order_by('?')[:250]
         sample_select = sorted(sample_select, key=lambda o: o.company)
     context = {
@@ -1714,7 +1721,7 @@ def delete_master_list_select(request):
 @user_passes_test(has_management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def delete_personal_list_select(request):
-    select_form = PersonalTerritorySelects(True)
+    select_form = PersonalTerritorySelects(filter_master_bool=True)
     list_selects = None
     sample_select = None
     select_count = 0
@@ -1733,7 +1740,7 @@ def delete_personal_list_select(request):
             event_assignment=event_assignment
         )
         sample_select = build_user_territory_list(event_assignment)
-        sample_count = sample_select.count()
+        select_count = sample_select.count()
         sample_select = sample_select.order_by('?')[:250]
         sample_select = sorted(sample_select, key=lambda o: o.company)
     context = {
@@ -1823,7 +1830,7 @@ def load_staff_member_selects(request):
         instance=event_assignment
     )
     select_form = PersonalTerritorySelects(
-        event_assignment.filter_master_selects
+        filter_master_bool=event_assignment.filter_master_selects
     )
     list_selects = PersonalListSelections.objects.filter(
         event_assignment=event_assignment

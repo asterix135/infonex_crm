@@ -57,6 +57,13 @@ $(document).ready(function() {
   });
 
 
+  // Change staff member's method of list generation (filter vs new)
+  $('body').on('click', '#btn-change-filter', function(){
+    var filterMaster = $('input[name=filter_master_selects]:checked').val();
+    console.log(filterMaster);
+  });
+
+
   // Add general list selection and update relevant parts of page
   $('body').on('click', '#master #btn-add-new-select', function(){
     var confId = $('#id_event').val();
@@ -154,14 +161,16 @@ $(document).ready(function() {
 
   // Delete personal list selection and update relevant parts of page
   $('body').on('click', '.btn-delete-personal-select', function(){
-    var confId = $('#id-event').val();
+    var confId = $('#id_event').val();
     var selectId = $(this).attr('select-value');
+    var staffId = $('#active-staff-id').val();
     $.ajax({
       url: '/crm/delete_personal_list_select/',
       type: 'POST',
       data: {
         'conf_id': confId,
         'select_id': selectId,
+        'staff_id': staffId,
       },
       success: function(data){
         $('#person-select-options').html(data);

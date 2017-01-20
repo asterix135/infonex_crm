@@ -1,5 +1,4 @@
-<!-- Included in filter_master_option.html
-AJAX call from ???? -->
+<!-- Included in filter_master_option.html -->
 
 <div class="personal-list-selector">
   <table class="table">
@@ -58,6 +57,7 @@ AJAX call from ???? -->
         <td><button type="button" class="btn btn-primary" id="btn-add-new-personal-select">Save</button></td>
       </tr>
       {% for select in list_selects %}
+      {% if filter_value or select.include_exclude == 'add' or select.include_exclude == 'exclude' %}
       <tr>
         <input type="hidden" name="select_id" value="{{ select.id }}">
         <td>{{ select.include_exclude }}</td>
@@ -71,6 +71,7 @@ AJAX call from ???? -->
         <td>{{ select.company }}</td>
         <td><button type="submit" class="btn btn-secondary btn-delete-personal-select" select-value="{{ select.id }}">Delete</button></td>
       </tr>
+      {% endif %}
       {% endfor %}
     </tbody>
   </table>
@@ -80,5 +81,7 @@ AJAX call from ???? -->
 <div id="master-list-preview">
   {% if sample_select %}
   {% include 'crm/territory_addins/builder_sample_list.html' %}
+  {% else %}
+  <h3>Territory not yet defined</h3>
   {% endif %}
 </div>

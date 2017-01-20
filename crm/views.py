@@ -1105,6 +1105,9 @@ def build_user_territory_list(event_assignment_object, for_staff_member=False):
                   'company': 'company__icontains',
                   'dept': 'dept__icontains'}
     filter_main = event_assignment_object.filter_master_selects
+    user_select_set = PersonalListSelections.objects.filter(
+        event_assignment=event_assignment_object
+    )
     if filter_main:
         event = event_assignment_object.event
         master_list_selects = MasterListSelections.objects.filter(
@@ -1112,22 +1115,21 @@ def build_user_territory_list(event_assignment_object, for_staff_member=False):
         )
         territory_list = build_master_territory_list(master_list_selects)
         includes_added = True
+        num_user_selects = user_select_set.count()
     else:
         territory_list = Person.objects.none()
         includes_added = False
-    user_select_set = PersonalListSelections.objects.filter(
-        event_assignment=event_assignment_object
-    )
-    if user_select_set.count() == 0:
+        num_user_selects = user_select_set.exclude(include_exclude='filter').count()
+    if num_user_selects == 0:
         return territory_list
     filter_selects=[]
     exclude_selects=[]
     for list_select in user_select_set:
         kwargs = {}
-        for field in field_dict:
-            if getattr(list_select, field) not in ['', None]:
-                kwargs[field_dict[field]] = getattr(list_select, field)
-        if list_select.include_exclude == 'include':
+        if list_select.include_exclude == 'add':
+            for field in field_dict:
+                if getattr(list_select, field) not in ['', None]:
+                    kwargs[field_dict[field]] = getattr(list_select, field)
             includes_added = True
             query_list = Person.objects.filter(**kwargs)
             territory_list = territory_list | query_list
@@ -1141,7 +1143,7 @@ def build_user_territory_list(event_assignment_object, for_staff_member=False):
     # Process each filter separately and then OR them together
     if len(filter_selects) > 0 and filter_main:
         filtered_querysets = []
-        for filter_select in filter_selects:
+        for list_select in filter_selects:
             kwargs = {}
             for field in field_dict:
                 if getattr(list_select, field) not in ['', None]:
@@ -1565,8 +1567,7 @@ def add_personal_list_select(request):
             select_form = PersonalTerritorySelects(
                 filter_master_bool=event_assignment.filter_master_selects
             )
-        else:
-            print(form.errors)
+
         list_selects = PersonalListSelections.objects.filter(
             event_assignment=event_assignment
         )
@@ -1576,6 +1577,7 @@ def add_personal_list_select(request):
         sample_select = sample_select.order_by('?')[:250]
         sample_select = sorted(sample_select, key=lambda o: o.company)
     context = {
+        'filter_value': event_assignment.filter_master_selects,
         'select_form': select_form,
         'list_selects': list_selects,
         'sample_select': sample_select,
@@ -1728,7 +1730,9 @@ def delete_personal_list_select(request):
     if request.method == 'POST':
         event = get_object_or_404(Event, pk=request.POST['conf_id'])
         staff_member = get_object_or_404(User, pk=request.POST['staff_id'])
-        event_assignment = EventAssignment(user=staff_member, event=event)
+        event_assignment = EventAssignment.objects.get(
+            user=staff_member, event=event
+        )
         try:
             select = PersonalListSelections.objects.get(
                 pk=request.POST['select_id']
@@ -1744,6 +1748,7 @@ def delete_personal_list_select(request):
         sample_select = sample_select.order_by('?')[:250]
         sample_select = sorted(sample_select, key=lambda o: o.company)
     context = {
+        'filter_value': event_assignment.filter_master_selects,
         'select_form': select_form,
         'list_selects': list_selects,
         'sample_select': sample_select,
@@ -1812,6 +1817,7 @@ def load_staff_member_selects(request):
     """
     Loads details on a particular staff member's personal territory selects
     Called from ??? pulldown on ???
+    Also called to change filter method
     """
     if request.method != 'POST':
         return HttpResponse('')
@@ -1826,6 +1832,13 @@ def load_staff_member_selects(request):
     except EventAssignment.DoesNotExist:
         raise Http404('Something is wrong - that staff member is not '
                       'assigned to this conference.')
+
+    # Optionally process change to filter value
+    if 'filter_switch' in request.POST:
+        filter_switch = request.POST['filter_switch'] == 'True'
+        event_assignment.filter_master_selects = filter_switch
+        event_assignment.save()
+
     territory_select_method_form = PersonTerritorySelectMethodForm(
         instance=event_assignment
     )
@@ -1841,6 +1854,7 @@ def load_staff_member_selects(request):
     sample_select = sorted(sample_select, key=lambda o: o.company)
 
     context={
+        'filter_value': event_assignment.filter_master_selects,
         'territory_select_method_form': territory_select_method_form,
         'staff_rep': user,
         'select_form': select_form,

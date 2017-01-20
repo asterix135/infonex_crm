@@ -68,5 +68,7 @@ AJAX call from add_master_list_select -->
 <div id="master-list-preview">
   {% if sample_select %}
   {% include 'crm/territory_addins/builder_sample_list.html' %}
+  {% else %}
+  <h3>Territory not yet defined</h3>
   {% endif %}
 </div>

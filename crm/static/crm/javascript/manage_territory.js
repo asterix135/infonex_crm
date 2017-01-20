@@ -60,7 +60,8 @@ $(document).ready(function() {
   // Change staff member's method of list generation (filter vs new)
   $('body').on('click', '#btn-change-filter', function(){
     var filterMaster = $('input[name=filter_master_selects]:checked').val();
-    console.log(filterMaster);
+    var staffId = $('#active-staff-id').val();
+    callStaffMemberTerritoryDetails(staffId, filterMaster);
   });
 
 
@@ -308,8 +309,7 @@ $(document).ready(function() {
         var numStaff = $('.btn-staff-select', data).length;
         if (numStaff == 1){
           var staffId = $('.btn-staff-select', data).attr('staff-id');
-          console.log(staffId);
-          // Need to call callStaffMemberTerritoryDetails here
+          callStaffMemberTerritoryDetails(staffId);
         }
         startTypeAhead();
       }
@@ -318,15 +318,19 @@ $(document).ready(function() {
 
 
   // function to do an ajax load of individual staff member select page
-  function callStaffMemberTerritoryDetails(staffId){
+  function callStaffMemberTerritoryDetails(staffId, filterSwitch){
     var confId = $('#id_event').val();
+    var ajaxData = {
+      'event_id': confId,
+      'user_id': staffId,
+    };
+    if (filterSwitch !== undefined) {
+      ajaxData['filter_switch'] = filterSwitch;
+    };
     $.ajax({
       url: '/crm/load_staff_member_selects/',
       type: 'POST',
-      data: {
-        'event_id': confId,
-        'user_id': staffId,
-      },
+      data: ajaxData,
       success: function(data){
         $('#personal-select-details').html(data);
         startTypeAhead();

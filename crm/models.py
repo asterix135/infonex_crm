@@ -217,6 +217,7 @@ class EventAssignment(models.Model):
     role = models.CharField(max_length=2,
                             choices=EVENT_ROLES,
                             default='SA')
+    # True means filter; False means start from scratch
     filter_master_selects = models.BooleanField(default=True)
 
     class Meta:

@@ -1048,6 +1048,17 @@ def add_to_recent_contacts(request, person_id):
     request.session['recent_contacts'] = recent_contact_list
 
 
+def get_my_territories(user):
+    """
+    returns queryset of active EventAssignments for a user
+    """
+    my_assignments = EventAssignment.objects.filter(
+        user=user,
+        event__date_begins__gte=timezone.now()-datetime.timedelta(weeks=4)
+    ).exclude(role='NA')
+    return my_assignments
+
+
 def build_master_territory_list(list_select_queryset):
     """
     Builds and returns query set based on a territory's master selection
@@ -1234,6 +1245,7 @@ def detail(request, person_id):
     person_details_form = PersonDetailsForm(instance=person)
     category_form = PersonCategoryUpdateForm(instance=person)
     context = {
+        'my_territories': get_my_territories(request.user),
         'person': person,
         'person_details_form': person_details_form,
         'new_contact_form': new_contact_form,
@@ -1261,8 +1273,8 @@ def index(request):
     # check for permission to view all records
     user = request.user
     edit_permission_ok = has_management_permission(request.user)
-
     context = {
+        'my_territories': get_my_territories(request.user),
         'user_is_admin': edit_permission_ok,
         # 'land_filter': land_filter,
         'territory_form': territory_form,
@@ -1303,6 +1315,7 @@ def new(request):
     if request.method != 'POST':
         new_person_form = NewPersonForm()
         context = {
+            'my_territories': get_my_territories(request.user),
             'new_person_form': new_person_form
         }
         return render(request, 'crm/new.html', context)
@@ -1310,7 +1323,8 @@ def new(request):
     new_person_form = NewPersonForm(request.POST)
     if not new_person_form.is_valid():
         context = {
-            'new_person_form': new_person_form
+            'my_territories': get_my_territories(request.user),
+            'new_person_form': new_person_form,
         }
         return render(request, 'crm/new.html', context)
     person = new_person_form.save(commit=False)
@@ -1445,6 +1459,7 @@ def search(request):
         page = paginator.num_pages
 
     context = {
+        'my_territories': get_my_territories(request.user),
         'quick_search_terms': search_string,
         'show_advanced': search_type!='quick',
         'search_form': search_form,
@@ -1469,6 +1484,8 @@ def search(request):
 
 @login_required
 def territory(request):
+    if 'assignment_id' not in request.session:
+        return HttpResponseRedirect('/crm/')
     return render(request, 'crm/territory.html')
 
 
@@ -1913,6 +1930,19 @@ def save_person_details(request):
         'updated_details_success': updated_details_success
     }
     return render(request, 'crm/addins/person_detail.html', context)
+
+
+@login_required
+def select_active_conference(request):
+    context = {
+        'my_territories': get_my_territories(request.user),
+    }
+    if request.method == 'POST':
+        event_assignment = get_object_or_404(EventAssignment,
+                                             pk=request.POST['new_conf_id'])
+        request.session['assignment_id'] = event_assignment.id
+        request.session['conference_description'] = str(event_assignment.event)
+    return render(request, 'crm/addins/my_territory_list.html', context)
 
 
 @login_required

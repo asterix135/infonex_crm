@@ -6,8 +6,24 @@
 <script src="{% static 'crm/javascript/territory.js' %}" type="text/javascript"></script>
 {% endblock %}
 
-{% block title %}Territory | {% endblock %}
+{% block title %}Prospects | {% endblock %}
 
 {% block content %}
-<h1>This is the Territory Page</h1>
+<div class="container-fluid fill">
+  <div class="row row-offcanvas row-offcanvas-right">
+    <div class="col-xs-12 col-sm-9 col-sm-push-3">
+      <p class="pull-right visible-xs">
+        <button type="button" class="btn btn-primary btn-xs"
+          data-toggle="offcanvas" title="Toggle sidebar">
+          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        </button>
+      </p>
+      <div class="col-sm-12 col-md-12 right-main-panel" id="main-panel">
+        {% include 'crm/territory_addins/territory_panel.html' %}
+      </div>
+    </div>
+    {% include 'crm/addins/sidebar.html' %}
+  </div>
+
+</div>
 {% endblock %}

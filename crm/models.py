@@ -223,6 +223,9 @@ class EventAssignment(models.Model):
     class Meta:
         unique_together = ('user', 'event',)
 
+    def __str__(self):
+        return role + ': ' + str(user) + ' - ' + str(event)
+
 
 # DELETE THIS WHEN OLD FORMS REMOVED
 class RegHistory(models.Model):

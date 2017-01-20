@@ -1,9 +1,23 @@
-<div class="list-group collapse in">
-  {% for event in my_territories %}
-  <div class="list-group-item">
-    <!-- <a href = "{% url 'crm:detail' contact.id %}"> -->
-      {{ event.name }}
-    <!-- </a> -->
-  </div>
+<h4>
+  Active Conference
+  <span class="float-right">
+    <a href="#my-territory-list" class="btn btn-xs btn-success" data-toggle="collapse">
+      Change
+    </a>
+    <!-- <button type="button" class="btn btn-xs btn-success" id="btn-change-active-conference">Change</button> -->
+  </span>
+</h4>
+<p>
+  {% if not request.session.conference_description or request.session.conference_description == '' %}
+  None selected
+  {% else %}
+  <a href="/crm/territory/">{{ request.session.conference_description }}</a>
+  {% endif %}
+</p>
+<div class="collapse list-group" id="my-territory-list">
+  {% for territory in my_territories %}
+  <button type="button" class="list-group-item sidebar-territory-option" value="{{ territory.id }}">
+      {{ territory.event }}
+  </button>
   {% endfor %}
 </div>

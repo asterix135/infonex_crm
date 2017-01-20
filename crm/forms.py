@@ -131,21 +131,6 @@ class ListSelectForm(forms.ModelForm):
         }
 
 
-class TerritoryForm(forms.ModelForm):
-
-    class Meta:
-        model = ListSelection
-        fields = ('employee', 'event')
-        widgets = {
-            'employee': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
-            'event': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
-        }
-
-
 class FlagForm(forms.ModelForm):
 
     class Meta:
@@ -228,6 +213,43 @@ class HorizontalRadioRenderer(forms.RadioSelect.renderer):
 #################
 # Forms
 #################
+class MasterTerritoryForm(forms.ModelForm):
+
+    class Meta:
+        model = MasterListSelections
+        fields = ('geo', 'main_category', 'main_category2', 'company',
+                  'industry', 'include_exclude', 'dept')
+        labels = {
+            'dept': _('Department'),
+            'geo': _('Geographic Group'),
+            'main_category': _('Main Category (F1)'),
+            'main_category2': _('Secondary Category'),
+        }
+        widgets = {
+            'dept': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'geo': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'main_category': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'main_category2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'company': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'industry': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'include_exclude': forms.Select(
+                attrs={'class': 'form-control'}
+            )
+        }
+
+
 class NewPersonForm(forms.ModelForm):
 
     class Meta:
@@ -445,9 +467,9 @@ class PersonTerritorySelectMethodForm(forms.ModelForm):
 
 class PersonalTerritorySelects(forms.ModelForm):
     """
-    Note that boolean argument required on instantiation
-    True = filter master selects
-    False = create from scratch
+    :param filter_master_bool: (default=True) whether to filter master (True)
+        or create from scratch (False)
+    :type filter_master_bool: boolean
     """
 
     class Meta:
@@ -573,38 +595,16 @@ class SearchForm(forms.Form):
                                     ))
 
 
-class MasterTerritoryForm(forms.ModelForm):
+class TerritoryForm(forms.ModelForm):
 
     class Meta:
-        model = MasterListSelections
-        fields = ('geo', 'main_category', 'main_category2', 'company',
-                  'industry', 'include_exclude', 'dept')
-        labels = {
-            'dept': _('Department'),
-            'geo': _('Geographic Group'),
-            'main_category': _('Main Category (F1)'),
-            'main_category2': _('Secondary Category'),
-        }
+        model = ListSelection
+        fields = ('employee', 'event')
         widgets = {
-            'dept': forms.TextInput(
+            'employee': forms.Select(
                 attrs={'class': 'form-control'}
             ),
-            'geo': forms.Select(
+            'event': forms.Select(
                 attrs={'class': 'form-control'}
             ),
-            'main_category': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
-            'main_category2': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
-            'company': forms.TextInput(
-                attrs={'class': 'form-control'}
-            ),
-            'industry': forms.TextInput(
-                attrs={'class': 'form-control'}
-            ),
-            'include_exclude': forms.Select(
-                attrs={'class': 'form-control'}
-            )
         }

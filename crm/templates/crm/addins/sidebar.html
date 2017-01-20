@@ -3,23 +3,8 @@
   <div class="list-group">
     <h3 class="list-group-item active">Actions</h3>
 
-    <div class="list-group-item">
-      <h4>
-        Active Conference
-        <span class="float-right">
-          <button type="button" class="btn btn-xs btn-success">Change</button>
-        </span>
-      </h4>
-      <p>
-        {% if not request.session.conference_description or request.session.conference_description == '' %}
-        None selected
-        {% else %}
-        {{ request.session.conference_description }}
-        {% endif %}
-      </p>
-      <div class="collapse" id="my-territory-list">
-        {% include 'crm/addins/my_territory_list.html' %}
-      </div>
+    <div class="list-group-item" id="territory-selector">
+      {% include 'crm/addins/my_territory_list.html' %}
     </div>
 
     <div class="list-group-item">

@@ -7,8 +7,11 @@ next #: 36
 TODO: 36) Test the manage_territory function thoroughly.  Maybe write tests???
 
 TODO: 8) (BIG) rework territory stuff
-         a) Need to update sidebar to dynamically reflect whether working on a conference - STARTED
+         k) Allow to change conference on index page - UPDATE TERRITORY_FORM
          c) Need to update detail.html to show dynamic content based on whether working a conference
+         i) Create user territory list page (recycle search???)
+         j) DONE - Allow to change conference on sidebar
+         a) DONE - Need to update sidebar to dynamically reflect whether working on a conference
          h) DONE - Javascript/python/url to delete individual select
          g) DONE - If admin status - add Manage Territory option to sidebar
          b) DONE - Need to (re)-create page showing all people in territory - territory.html

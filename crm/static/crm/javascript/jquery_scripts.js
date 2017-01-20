@@ -42,6 +42,20 @@ $(document).ready(function() {
     };
   });
 
-  // Toggle list of conferences/territories to select
+  // Change active conference in sidebar
+  $('body').on('click', '.sidebar-territory-option', function(){
+    var newConfId = $(this).val();
+    $.ajax({
+      url: '/crm/select_active_conference/',
+      type: 'POST',
+      data: {
+        'new_conf_id': newConfId,
+      },
+      success: function(data){
+        $('#territory-selector').html(data);
+        console.log('success');
+      }
+    });
+  });
 
 });

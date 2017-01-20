@@ -66,6 +66,8 @@ urlpatterns = [
         name='save_category_changes'),
     url(r'^save_person_details/$', views.save_person_details,
         name='save_person_details'),
+    url(r'^select_active_conference/$', views.select_active_conference,
+        name='select_active_conference'),
     url(r'^suggest_company/$', views.suggest_company, name='suggest_company'),
     url(r'^suggest_dept/$', views.suggest_dept, name='suggest_dept'),
     url(r'^suggest_industry/$', views.suggest_industry,

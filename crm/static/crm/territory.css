@@ -1,0 +1,28 @@
+.red-flag {
+  color: red;
+  cursor: pointer;
+}
+.green-flag {
+  color: green;
+  cursor: pointer;
+}
+.blue-flag {
+  color: blue;
+  cursor: pointer;
+}
+.black-flag {
+  color: black;
+  cursor: pointer;
+}
+.yellow-flag {
+  color: gold;
+  cursor: pointer;
+}
+.purple-flag {
+  color: purple;
+  cursor: pointer;
+}
+.no-flag {
+  color: DarkGrey;
+  cursor: pointer;
+}

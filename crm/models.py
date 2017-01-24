@@ -525,6 +525,13 @@ class Flags(models.Model):
     event_assignment = models.ForeignKey(EventAssignment,
                                          on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    # flag values:
+    #     '1': red
+    #     '2': green
+    #     '3': blue
+    #     '4': black
+    #     '5': yellow
+    #     '6': purple
     flag = models.CharField(max_length=1, blank=True, default='')
     follow_up_date = models.DateField(blank=True, null=True)
 

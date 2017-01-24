@@ -1494,9 +1494,13 @@ def territory(request):
     event_assignment = get_object_or_404(EventAssignment,
                                          pk=request.session['assignment_id'])
     territory_list = build_user_territory_list(event_assignment, True)
+    flag_list = territory_list.filter(flags__event_assignment=event_assignment)
     context = {
+        'event_assignment': event_assignment,
+        'my_territories': get_my_territories(request.user),
         'person_list': territory_list,
         'filter_form': filter_form,
+        'flag_list': flag_list,
     }
     return render(request, 'crm/territory.html', context)
 
@@ -1614,6 +1618,39 @@ def add_personal_list_select(request):
     }
     return render(request, 'crm/territory_addins/personal_select_details.html',
                   context)
+
+
+@login_required
+def change_flag(request):
+    """
+    ajax call to change flag value for an individual
+    called from territory.html and hopefully from detail.html
+    """
+    flag = None
+    if request.method != 'POST':
+        return HttpResponse('')
+    event_assignment = get_object_or_404(EventAssignment,
+                                         pk=request.POST['event_assignment_id'])
+    person = get_object_or_404(Person, pk=request.POST['person_id'])
+    try:
+        flag = Flags.objects.get(event_assignment=event_assignment,
+                                 person=person)
+    except Flags.DoesNotExist:
+        flag = Flags(person=person,
+                     event_assignment=event_assignment)
+    if request.POST['flag_color'] != 'none':
+        flag.flag = FLAG_COLORS[request.POST['flag_color']]
+        if 'followup' in request.POST:
+            flag.follow_up_date = request.POST['followup']
+        flag.save()
+    else:
+        if flag.id:
+            flag.delete()
+        flag = None
+    context = {
+        'flag': flag,
+    }
+    return render(request, 'crm/territory_addins/new_flag_detail.html', context)
 
 
 @login_required

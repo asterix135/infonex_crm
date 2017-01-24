@@ -1,0 +1,17 @@
+{% if flag %}
+{% if flag.flag == '1' %}
+<span class="glyphicon glyphicon-flag red-flag"></span>
+{% elif flag.flag == '2' %}
+<span class="glyphicon glyphicon-flag green-flag"></span>
+{% elif flag.flag == '3' %}
+<span class="glyphicon glyphicon-flag blue-flag"></span>
+{% elif flag.flag == '4' %}
+<span class="glyphicon glyphicon-flag black-flag"></span>
+{% elif flag.flag == '5' %}
+<span class="glyphicon glyphicon-flag yellow-flag"></span>
+{% else %}
+<span class="glyphicon glyphicon-flag purple-flag"></span>
+{% endif %}
+{% else %}
+<span class="glyphicon glyphicon-ban-circle no-flag"></span>
+{% endif %}

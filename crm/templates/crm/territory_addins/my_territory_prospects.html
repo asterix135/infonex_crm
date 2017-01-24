@@ -2,8 +2,27 @@
   <table class="table table-striped">
     <thead class="thead-inverse">
       <tr>
+        <div class="btn-group">
+          <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" id="flag-button-master">
+            Update checked
+          </button>
+            <ul class="dropdown-menu list-inline" role="menu">
+                <li><span class="glyphicon glyphicon-flag red-flag master-flag-icon" flag-for="all" flag-color="red"></span></li>
+                <li><span class="glyphicon glyphicon-flag green-flag master-flag-icon" flag-for="all" flag-color="green"></span></li>
+                <li><span class="glyphicon glyphicon-flag blue-flag master-flag-icon" flag-for="all" flag-color="blue"></span></li>
+                <li><span class="glyphicon glyphicon-flag black-flag master-flag-icon" flag-for="all" flag-color="black"></span></li>
+                <li><span class="glyphicon glyphicon-flag yellow-flag master-flag-icon" flag-for="all" flag-color="yellow"></span></li>
+                <li><span class="glyphicon glyphicon-flag purple-flag master-flag-icon" flag-for="all" flag-color="purple"></span></li>
+                <li><span class="glyphicon glyphicon-ban-circle no-flag master-flag-icon" flag-for="all" flag-color="none"></span></li>
+            </ul>
+        </div>
+
         <th class="col-sm-1">
           <a href="?sort=flag">Flag</a>
+          <label class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="select-all-flags" />
+            <span class="custom-control-indicator"></span>
+          </label>
         </th>
         <th class="col-sm-2"><a href="?sort=name">Person Name</a></th>
         <th class="col-sm-2"><a href="?sort=title">Title</a></th>
@@ -17,10 +36,49 @@
       {% if person_list %}
       {% for person in person_list %}
       <tr>
-        <td><span class="glyphicon glyphicon-flag"></span></td>
+        <td>
+          <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="flag-button-{{ person.id }}">
+
+              {% if person in flag_list %}
+              {% for flag in person.flags_set.all|slice:":1" %}
+              {% if flag.flag == '1' %}
+              <span class="glyphicon glyphicon-flag red-flag"></span>
+              {% elif flag.flag == '2' %}
+              <span class="glyphicon glyphicon-flag green-flag"></span>
+              {% elif flag.flag == '3' %}
+              <span class="glyphicon glyphicon-flag blue-flag"></span>
+              {% elif flag.flag == '4' %}
+              <span class="glyphicon glyphicon-flag black-flag"></span>
+              {% elif flag.flag == '5' %}
+              <span class="glyphicon glyphicon-flag yellow-flag"></span>
+              {% else %}
+              <span class="glyphicon glyphicon-flag purple-flag"></span>
+              {% endif %}
+              {% endfor %}
+              {% else %}
+              <span class="glyphicon glyphicon-ban-circle no-flag"></span>
+              {% endif %}
+
+            </button>
+              <ul class="dropdown-menu list-inline" role="menu">
+                  <li><span class="glyphicon glyphicon-flag red-flag flag-icon" flag-for="{{ person.id }}" flag-color="red"></span></li>
+                  <li><span class="glyphicon glyphicon-flag green-flag flag-icon" flag-for="{{ person.id }}" flag-color="green"></span></li>
+                  <li><span class="glyphicon glyphicon-flag blue-flag flag-icon" flag-for="{{ person.id }}" flag-color="blue"></span></li>
+                  <li><span class="glyphicon glyphicon-flag black-flag flag-icon" flag-for="{{ person.id }}" flag-color="black"></span></li>
+                  <li><span class="glyphicon glyphicon-flag yellow-flag flag-icon" flag-for="{{ person.id }}" flag-color="yellow"></span></li>
+                  <li><span class="glyphicon glyphicon-flag purple-flag flag-icon" flag-for="{{ person.id }}" flag-color="purple"></span></li>
+                  <li><span class="glyphicon glyphicon-ban-circle no-flag flag-icon" flag-for="{{ person.id }}" flag-color="none"></span></li>
+              </ul>
+          </div>
+          <label class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input personal-flag-select" select-person="{{ person.id }}"/>
+            <span class="custom-control-indicator"></span>
+          </label>
+        </td>
         <td>
           <a href = "{% url 'crm:detail' person.id %}">
-            {{ person.name}}
+            {{ person.name }}
           </a>
         </td>
         <td>{{ person.title }}</td>

@@ -450,3 +450,12 @@ PERSON_MASTER_RELATION_CHOICES = (
     (True, 'Filter'),
     (False, 'Start from scratch'),
 )
+
+FLAG_COLORS = {
+    'red': '1',
+    'green': '2',
+    'blue': '3',
+    'black': '4',
+    'yellow': '5',
+    'purple': '6'
+}

@@ -198,6 +198,21 @@ class EventForm(forms.ModelForm):
         }
 
 
+class TerritoryForm(forms.ModelForm):
+
+    class Meta:
+        model = ListSelection
+        fields = ('employee', 'event')
+        widgets = {
+            'employee': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'event': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+        }
+
+
 #################
 # ADDED/OKd FOR USE IN OVERHAUL
 #################
@@ -595,15 +610,15 @@ class SearchForm(forms.Form):
                                     ))
 
 
-class TerritoryForm(forms.ModelForm):
+class SelectMyTerritoryForm(forms.ModelForm):
 
     class Meta:
-        model = ListSelection
-        fields = ('employee', 'event')
+        model = EventAssignment
+        fields = ('event',)
+        labels = {
+            'event': _('Select Event')
+        }
         widgets = {
-            'employee': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
             'event': forms.Select(
                 attrs={'class': 'form-control'}
             ),

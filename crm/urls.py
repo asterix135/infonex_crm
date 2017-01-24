@@ -7,8 +7,8 @@ urlpatterns = [
     url(r'^(?P<person_id>[0-9]+)/add_person_to_territory/$',
         views.add_person_to_territory, name='add_person_to_territory'),
     # ex /crm/create_territory/
-    url(r'^create_territory/$', views.create_territory,
-        name='create_territory'),
+    # url(r'^create_territory/$', views.create_territory,
+    #     name='create_territory'),
     # ex /crm/detail_paginated/
     url(r'^detail_paginated/$',
         views.detail_paginated,
@@ -20,7 +20,7 @@ urlpatterns = [
         name='flag_many_records'),
     # ex /crm/set_territory/
     url(r'^set_territory/$', views.set_territory_params, name='set_territory'),
-    # ex /crm/territory/
+
 
     ################
     # REWORKED STUFF BELOW HERE

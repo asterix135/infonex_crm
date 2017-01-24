@@ -1,1 +1,12 @@
-<h2>This is the territory panel</h2>
+<div class="row">
+  <h1>
+    My Prospects for {{ request.session.conference_description }}
+</h1>
+  <div class="panel panel-primary">
+    {% include 'crm/territory_addins/filter_options.html' %}
+  </div>
+</div>
+<div class="row">
+  <h4>Results:</h4>
+  {% include 'crm/territory_addins/my_territory_prospects.html' %}
+</div>

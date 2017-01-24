@@ -110,6 +110,7 @@ class Person(models.Model):
         return "UNKNOWN"
 
     def has_registration_history(self):
+        reg_list = None
         reg_history_exists = False
         if self.registrants_set.exists():
             for registrant in self.registrants_set.all():
@@ -224,7 +225,7 @@ class EventAssignment(models.Model):
         unique_together = ('user', 'event',)
 
     def __str__(self):
-        return role + ': ' + str(user) + ' - ' + str(event)
+        return self.role + ': ' + str(self.user) + ' - ' + str(self.event)
 
 
 # DELETE THIS WHEN OLD FORMS REMOVED
@@ -497,7 +498,7 @@ class PersonalListSelections(models.Model):
     dept = models.CharField(max_length=255, blank=True, null=True)
 
 
-# THINK ABOUT THIS
+# CANNIBALIZE AND DELETE
 class PersonFlag(models.Model):
     """
     Flags allowing individual user to id records for followup or action
@@ -515,3 +516,17 @@ class PersonFlag(models.Model):
     def __str__(self):
         return self.flag + ' ' + str(self.employee) + ' ' + \
                str(self.event) + ' ' + str(self.person)
+
+
+class Flags(models.Model):
+    """
+    Flags allowing individual user to id records for followup or action
+    """
+    event_assignment = models.ForeignKey(EventAssignment,
+                                         on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    flag = models.CharField(max_length=1, blank=True, default='')
+    follow_up_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        unique_together=('event_assignment', 'person')

@@ -1,0 +1,68 @@
+<div class="panel-heading">
+  <h2 class="panel-title">
+    Filter/Search Contacts
+    <div id="btn-toggle-adv-search" class="float-right glyphicon glyphicon-chevron-down glyph-button"></div>
+  </h2>
+
+</div>
+<div class="panel-body collapse in" id="search-panel">
+  <form action="" method="post">
+    {% csrf_token %}
+    <div class="form-group row">
+      <div class="col-sm-2">
+        {{ filter_form.name.label_tag }}
+      </div>
+      <div class="col-sm-10">
+        {{ filter_form.name.errors }}
+        {{ filter_form.name }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-2">
+        {{ filter_form.title.label_tag }}
+      </div>
+      <div class="col-sm-10">
+        {{ filter_form.title.errors }}
+        {{ filter_form.title }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-2">
+        {{ filter_form.company.label_tag }}
+      </div>
+      <div class="col-sm-10">
+        {{ filter_form.company.errors }}
+        {{ filter_form.company }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-2">
+        {{ filter_form.state_province.label_tag }}
+      </div>
+      <div class="col-sm-2">
+        {{ filter_form.state_province.errors }}
+        {{ filter_form.state_province }}
+      </div>
+      <div class="col-sm-2">
+        {{ filter_form.past_customer.label_tag }}
+      </div>
+      <div class="col-sm-2">
+        {{ filter_form.past_customer.errors }}
+        {{ filter_form.past_customer }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-offset-2 col-sm-2 ">
+        <button type="submit" class="btn btn-primary" name="option"
+          value="filter">Search</button>
+      </div>
+      <div class="col-sm-2">
+        <button type="submit" class="btn btn-default" name="option"
+          value="reset">Reset Form</button>
+      </div>
+      <div class="col-sm-2">
+        <button type="reset" class="btn btn-default">Undo Changes</button>
+      </div>
+    </div>
+  </form>
+</div>

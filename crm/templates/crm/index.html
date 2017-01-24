@@ -20,18 +20,20 @@
           <div class="col-sm-3 col-md-3">
             <h2>Work on a Conference</h2>
             <p>Allows you to work with a defined sales territory for an individual conference</p>
-            <form action="{% url 'crm:set_territory' %}" method="post" name="set_territory">
+
+
+            <form action="{% url 'crm:territory' %}" method="post">
               {% csrf_token %}
-              <input type="hidden" name="page_source" value="index">
               <fieldset class="form-group">
                 <label for="{{ territory_form.event.id_for_label }}">Select event:</label>
                 {{ territory_form.event }}
               </fieldset>
-              <button type="reset" class="btn btn-default">Reset Form</button>
-              <button type="submit" class="btn btn-primary">See Territory</button>
+              <button type="submit" class="btn btn-primary">Go</button>
               {% if user_is_admin %}
               {% endif %}
             </form>
+
+
           </div>
           <div class="col-sm-4">
             <h2>Search Records</h2>

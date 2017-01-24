@@ -856,83 +856,83 @@ def territory_list(request):
     return render(request, 'crm/territory_old.html', context)
 
 
-# TODO: cannibalize and delete
-@login_required
-def create_territory(request):
-    """
-    Used to create a territory for a salesperson
-    """
-    employee = User.objects.get(pk=request.session.get('employee'))
-    territory_event = Event.objects.get(pk=request.session.get('event'))
-    select_form = ListSelectForm
-
-    # if we get here from territory_list
-    if request.method == 'POST' and \
-            request.POST['submit_option'].lower() == 'save':
-        # create new list select
-        new_select = ListSelection(
-            employee=employee,
-            event=territory_event,
-            geo=request.POST['geo'],
-            main_category=request.POST['main_category'],
-            main_category2=request.POST['main_category2'],
-            division1=request.POST['division1'],
-            division2=request.POST['division2'],
-            company=request.POST['company'],
-            industry=request.POST['industry'],
-            include_exclude=request.POST['include_exclude'],
-        )
-        new_select.save()
-    elif request.method == 'POST' and \
-            request.POST['submit_option'].lower() == 'delete':
-        list_select = ListSelection.objects.get(pk=request.POST['select_id'])
-        list_select.delete()
-
-    select_criteria = ListSelection.objects.filter(
-        employee=employee
-    ).filter(
-        event=territory_event
-    )
-    # TODO: Consider making this sorting dynamic
-    territory = generate_territory_list(employee, territory_event,
-                                        'company', 'ASC')
-
-    # Set up pagination
-    paginator = Paginator(territory, TERRITORY_RECORDS_PER_PAGE)
-    page = request.GET.get('page')
-    try:
-        person_list = paginator.page(page)
-    except PageNotAnInteger:
-        # if page not an integer, deliver first page
-        person_list = paginator.page(1)
-        page = 1
-    except EmptyPage:
-        # if page out of range, deliver last page of results
-        person_list = paginator.page(paginator.num_pages)
-        page = paginator.num_pages
-
-    context = {
-        'select_form': select_form,
-        'employee': employee,
-        'event': territory_event,
-        'list_selects': select_criteria,
-        'person_list': person_list,
-        'has_minus4': int(page) - 4 > 0,
-        'has_minus3': int(page) - 3 > 0,
-        'minus3': str(int(page) - 3),
-        'has_minus2': int(page) - 2 > 0,
-        'minus2': str(int(page) - 2),
-        'has_minus1': int(page) - 1 > 0,
-        'minus1': str(int(page) - 1),
-        'has_plus1': int(page) + 1 <= paginator.num_pages,
-        'plus1': str(int(page) + 1),
-        'has_plus2': int(page) + 2 <= paginator.num_pages,
-        'plus2': str(int(page) + 2),
-        'has_plus3': int(page) + 3 <= paginator.num_pages,
-        'plus3': str(int(page) + 3),
-        'has_plus4': int(page) + 4 <= paginator.num_pages,
-    }
-    return render(request, 'crm/create_territory.html', context)
+# # TODO: cannibalize and delete
+# @login_required
+# def create_territory(request):
+#     """
+#     Used to create a territory for a salesperson
+#     """
+#     employee = User.objects.get(pk=request.session.get('employee'))
+#     territory_event = Event.objects.get(pk=request.session.get('event'))
+#     select_form = ListSelectForm
+#
+#     # if we get here from territory_list
+#     if request.method == 'POST' and \
+#             request.POST['submit_option'].lower() == 'save':
+#         # create new list select
+#         new_select = ListSelection(
+#             employee=employee,
+#             event=territory_event,
+#             geo=request.POST['geo'],
+#             main_category=request.POST['main_category'],
+#             main_category2=request.POST['main_category2'],
+#             division1=request.POST['division1'],
+#             division2=request.POST['division2'],
+#             company=request.POST['company'],
+#             industry=request.POST['industry'],
+#             include_exclude=request.POST['include_exclude'],
+#         )
+#         new_select.save()
+#     elif request.method == 'POST' and \
+#             request.POST['submit_option'].lower() == 'delete':
+#         list_select = ListSelection.objects.get(pk=request.POST['select_id'])
+#         list_select.delete()
+#
+#     select_criteria = ListSelection.objects.filter(
+#         employee=employee
+#     ).filter(
+#         event=territory_event
+#     )
+#     # TODO: Consider making this sorting dynamic
+#     territory = generate_territory_list(employee, territory_event,
+#                                         'company', 'ASC')
+#
+#     # Set up pagination
+#     paginator = Paginator(territory, TERRITORY_RECORDS_PER_PAGE)
+#     page = request.GET.get('page')
+#     try:
+#         person_list = paginator.page(page)
+#     except PageNotAnInteger:
+#         # if page not an integer, deliver first page
+#         person_list = paginator.page(1)
+#         page = 1
+#     except EmptyPage:
+#         # if page out of range, deliver last page of results
+#         person_list = paginator.page(paginator.num_pages)
+#         page = paginator.num_pages
+#
+#     context = {
+#         'select_form': select_form,
+#         'employee': employee,
+#         'event': territory_event,
+#         'list_selects': select_criteria,
+#         'person_list': person_list,
+#         'has_minus4': int(page) - 4 > 0,
+#         'has_minus3': int(page) - 3 > 0,
+#         'minus3': str(int(page) - 3),
+#         'has_minus2': int(page) - 2 > 0,
+#         'minus2': str(int(page) - 2),
+#         'has_minus1': int(page) - 1 > 0,
+#         'minus1': str(int(page) - 1),
+#         'has_plus1': int(page) + 1 <= paginator.num_pages,
+#         'plus1': str(int(page) + 1),
+#         'has_plus2': int(page) + 2 <= paginator.num_pages,
+#         'plus2': str(int(page) + 2),
+#         'has_plus3': int(page) + 3 <= paginator.num_pages,
+#         'plus3': str(int(page) + 3),
+#         'has_plus4': int(page) + 4 <= paginator.num_pages,
+#     }
+#     return render(request, 'crm/create_territory.html', context)
 
 
 @login_required
@@ -1257,18 +1257,22 @@ def detail(request, person_id):
 
 @login_required
 def index(request):
-    if 'event' in request.session:
-        initial_event = Event.objects.get(pk=request.session['event'])
-    else:
-        initial_event = None
-    territory_form = ListSelectForm(initial={'employee': request.user.pk,
-                                             'event': initial_event})
+    if 'assignment_id' in request.session:
+        try:
+            initial_event = EventAssignment.objects.get(
+                pk=request.session['assignment_id']
+            ).event
+            if initial_event.date_begins < \
+                datetime.date.today()-datetime.timedelta(weeks=4):
+                initial_event = None
+        except EventAssignment.DoesNotExist:
+            initial_event = None
+            del request.session['assignment_id']
+    territory_form = SelectMyTerritoryForm(initial={'event': initial_event})
     territory_form.fields['event'].queryset = Event.objects.filter(
-        date_begins__gte=timezone.now()-datetime.timedelta(weeks=16)
-    ).order_by('-date_begins', 'number')
-    territory_form.fields['employee'].queryset = User.objects.filter(
-        is_active=True
-    )
+        eventassignment__user=request.user
+    ).filter(date_begins__gte=timezone.now()-datetime.timedelta(weeks=4)
+            ).order_by('-date_begins', 'number')
 
     # check for permission to view all records
     user = request.user
@@ -1276,7 +1280,6 @@ def index(request):
     context = {
         'my_territories': get_my_territories(request.user),
         'user_is_admin': edit_permission_ok,
-        # 'land_filter': land_filter,
         'territory_form': territory_form,
     }
     return render(request, 'crm/index.html', context)
@@ -1484,9 +1487,18 @@ def search(request):
 
 @login_required
 def territory(request):
-    if 'assignment_id' not in request.session:
+    if 'assignment_id' not in request.session or \
+        request.session['assignment_id'] == '':
         return HttpResponseRedirect('/crm/')
-    return render(request, 'crm/territory.html')
+    filter_form = SearchForm()
+    event_assignment = get_object_or_404(EventAssignment,
+                                         pk=request.session['assignment_id'])
+    territory_list = build_user_territory_list(event_assignment, True)
+    context = {
+        'person_list': territory_list,
+        'filter_form': filter_form,
+    }
+    return render(request, 'crm/territory.html', context)
 
 
 ##################

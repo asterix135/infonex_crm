@@ -1,0 +1,53 @@
+<div class="search-results">
+  <table class="table table-striped">
+    <thead class="thead-inverse">
+      <tr>
+        <th class="col-sm-1">
+          <a href="?sort=flag">Flag</a>
+        </th>
+        <th class="col-sm-2"><a href="?sort=name">Person Name</a></th>
+        <th class="col-sm-2"><a href="?sort=title">Title</a></th>
+        <th class="col-sm-3"><a href="?sort=company">Company</a></th>
+        <th class="col-sm-2">Phone</th>
+        <th class="col-sm-2"><a href="?sort=date_modified">Last Modified</a></th>
+        <th class="col-sm-1">Customer?</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if person_list %}
+      {% for person in person_list %}
+      <tr>
+        <td><span class="glyphicon glyphicon-flag"></span></td>
+        <td>
+          <a href = "{% url 'crm:detail' person.id %}">
+            {{ person.name}}
+          </a>
+        </td>
+        <td>{{ person.title }}</td>
+        <td>{{ person.company}}</td>
+        <td>{{ person.phone }}</td>
+        <td>{{ person.date_modified }}</td>
+        <td>
+          {% if person.has_registration_history %}
+          <span class="glyphicon glyphicon-ok alert-success"
+            aria-hidden="true"></span>
+          {% else %}
+          <span class="glyphicon glyphicon-remove alert-warning"
+            aria-hidden="true"></span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      {% else %}
+      <tr>
+        <td class="col-sm-12" colspan="6">
+          <h2 class="empty-list">No Prospects Available</h2>
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+<div id="search-pagination">
+  {% include 'crm/pagination.html' %}
+</div>

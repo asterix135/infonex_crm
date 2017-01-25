@@ -36,8 +36,8 @@ $(document).ready(function() {
         'new_conf_id': newConfId,
       },
       success: function(data){
-        $('#territory-selector').html(data);
-        console.log('success');
+        // $('#territory-selector').html(data);
+        $(location).attr('href', '/crm/territory/')
       }
     });
   });

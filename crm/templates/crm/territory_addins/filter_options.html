@@ -1,11 +1,19 @@
 <div class="panel-heading">
   <h2 class="panel-title">
     Filter/Search Contacts
-    <div id="btn-toggle-adv-search" class="float-right glyphicon glyphicon-chevron-down glyph-button"></div>
+    {% if request.session.filter_hide_options %}
+    <div id="btn-toggle-filter-options" class="float-right glyphicon glyphicon-chevron-down glyph-button"></div>
+    {% else %}
+    <div id="btn-toggle-filter-options" class="float-right glyphicon glyphicon-chevron-up glyph-button"></div>
+    {% endif %}
   </h2>
 
 </div>
-<div class="panel-body collapse in" id="search-panel">
+{% if request.session.filter_hide_options %}
+<div class="panel-body collapse" id="filter-panel">
+{% else %}
+<div class="panel-body collapse in" id="filter-panel">
+{% endif %}
   <form action="" method="post">
     {% csrf_token %}
     <div class="form-group row">
@@ -51,20 +59,55 @@
         {{ filter_form.past_customer }}
       </div>
       <div class="col-sm-2">
-        
+        <label>Flag:</label>
+      </div>
+      <div class="col-sm-2">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="btn-flag-filter-select">
+          Select Flag
+          <span class="caret"></span>
+        </button>
+        <input type="hidden" name="flag" id="id_flag" value="any"/>
+          <ul class="dropdown-menu list" role="menu">
+            <li class="flag-filter-choice" flag-color="any">
+              <span class="glyphicon glyphicon-heart filter-flag-icon"></span>Any
+            </li>
+            <li class="flag-filter-choice" flag-color="red">
+              <span class="glyphicon glyphicon-flag red-flag filter-flag-icon"></span>Red
+            </li>
+            <li class="flag-filter-choice" flag-color="green">
+              <span class="glyphicon glyphicon-flag green-flag filter-flag-icon"></span>Green
+            </li>
+            <li class="flag-filter-choice" flag-color="blue">
+              <span class="glyphicon glyphicon-flag blue-flag filter-flag-icon"></span>Blue
+            </li>
+            <li class="flag-filter-choice" flag-color="black">
+              <span class="glyphicon glyphicon-flag black-flag filter-flag-icon"></span>Black
+            </li>
+            <li class="flag-filter-choice" flag-color="yellow">
+              <span class="glyphicon glyphicon-flag yellow-flag filter-flag-icon"></span>Yellow
+            </li>
+            <li class="flag-filter-choice" flag-color="purple">
+              <span class="glyphicon glyphicon-flag purple-flag filter-flag-icon"></span>Purple
+            </li>
+            <li class="flag-filter-choice" flag-color="none">
+              <span class="glyphicon glyphicon-ban-circle no-flag filter-flag-icon"></span>None
+            </li>
+          </ul>
+        </select>
       </div>
     </div>
     <div class="form-group row">
       <div class="col-sm-offset-2 col-sm-2 ">
-        <button type="submit" class="btn btn-primary" name="option"
-          value="filter">Search</button>
+        <button type="button" class="btn btn-primary" name="option"
+          value="filter">Filter</button>
       </div>
       <div class="col-sm-2">
-        <button type="submit" class="btn btn-default" name="option"
-          value="reset">Reset Form</button>
+        <button type="button" class="btn btn-default" id="btn-clear-filter">
+          Clear Form
+        </button>
       </div>
       <div class="col-sm-2">
-        <button type="reset" class="btn btn-default">Undo Changes</button>
+        <button type="button" class="btn btn-default">See All Contacts</button>
       </div>
     </div>
   </form>

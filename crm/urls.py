@@ -75,6 +75,8 @@ urlpatterns = [
     url(r'^suggest_dept/$', views.suggest_dept, name='suggest_dept'),
     url(r'^suggest_industry/$', views.suggest_industry,
         name='suggest_industry'),
+    url(r'^toggle_territory_filter/$', views.toggle_territory_filter,
+        name='toggle_territory_filter'),
     url(r'^update_user_assignments/$', views.update_user_assignments,
         name='update_user_assignments'),
 

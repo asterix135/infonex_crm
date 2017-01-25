@@ -4,7 +4,10 @@
       <tr>
         <div class="btn-group">
           <button type="button" class="btn btn-xs btn-secondary dropdown-toggle" data-toggle="dropdown" id="flag-button-master">
-            Update checked
+            <span class="glyphicon glyphicon-flag red-flag"></span>
+            <span class="glyphicon glyphicon-flag green-flag"></span>
+            <span class="glyphicon glyphicon-flag blue-flag"></span>
+            ...
           </button>
             <ul class="dropdown-menu list-inline" role="menu">
               <li><span class="glyphicon glyphicon-flag red-flag master-flag-icon" flag-for="all" flag-color="red"></span></li>
@@ -18,7 +21,7 @@
         </div>
 
         <th class="col-sm-1">
-          <a href="?sort=flag">Flag</a>
+          Flag
           <label class="custom-control custom-checkbox">
             <input type="checkbox" class="custom-control-input" id="select-all-flags" />
             <span class="custom-control-indicator"></span>

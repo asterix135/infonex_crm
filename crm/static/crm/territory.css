@@ -26,3 +26,17 @@
   color: DarkGrey;
   cursor: pointer;
 }
+.filter-flag-icon {
+  padding-left: 15px;
+  padding-right: 10px;
+  cursor: default;
+}
+.filter-flag-icon:hover {
+  background-color: #0069D9;
+  color: white;
+}
+.flag-filter-choice:hover {
+  background-color: #0069D9;
+  color: white;
+  cursor: default;
+}

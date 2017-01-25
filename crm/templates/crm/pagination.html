@@ -20,7 +20,7 @@
       {% if has_minus1 %}
       <li><a href="?page={{ minus1 }}">{{ minus1 }}</a></li>
       {% endif %}
-      <li class="active"><a href="?page={{ person_list.number }}">{{ person_list.number }}</a></li>
+      <li class="active" id="active-page-box" page-val="{{ person_list.number }}"><a href="?page={{ person_list.number }}">{{ person_list.number }}</a></li>
       {% if has_plus1 %}
       <li><a href="?page={{ plus1 }}">{{ plus1 }}</a></li>
       {% endif %}

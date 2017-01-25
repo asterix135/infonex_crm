@@ -5,10 +5,12 @@ See avoiding race conditions using F()
 next #: 37
 
 TODO: 8) (BIG) rework territory stuff
+         p) Update manage_territory view to hide person-only selects (server-side)
          c) Need to update detail.html to show dynamic content based on whether working a conference
-         i) Create user territory list page (recycle search???)
          l) Implement filter method
-         n) Implement pagination
+         i) DONE - Create user territory list page (recycle search???)
+         o) DONE - Update personal list generator to include person selects if for user
+         n) DONE - Implement pagination
          m) DONE - Implement update all
          k) DONE - Allow to change conference on index page
          j) DONE - Allow to change conference on sidebar

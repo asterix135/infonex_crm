@@ -1134,6 +1134,8 @@ def build_user_territory_list(event_assignment_object, for_staff_member=False):
                   'industry': 'industry__icontains',
                   'company': 'company__icontains',
                   'dept': 'dept__icontains'}
+    if for_staff_member:
+        field_dict['person'] = 'person_id'
     filter_main = event_assignment_object.filter_master_selects
     user_select_set = PersonalListSelections.objects.filter(
         event_assignment=event_assignment_object
@@ -1362,7 +1364,7 @@ def search(request):
     """ renders search.html and/or executes advanced or quick search """
     search_form = SearchForm()
     person_list = None
-    search_list = []
+    search_list = Person.objects.none()
     search_string = ''
     search_terms = None
     search_type = request.session.get('last_search_type')
@@ -1458,10 +1460,10 @@ def search(request):
         sort_order = 'ASC'
         request.session['sort_order'] = sort_order
     # sort search results
-    if search_list != []:
-        search_list = search_list.order_by(sort_col)
+    if search_list.exists():
         if sort_order == 'DESC':
-            search_list = search_list.reverse()
+            sort_col = '-' + sort_col
+        search_list = search_list.order_by(sort_col)
 
     # paginate results
     paginator = Paginator(search_list, TERRITORY_RECORDS_PER_PAGE)
@@ -1474,11 +1476,11 @@ def search(request):
     except PageNotAnInteger:
         # if page not an integer, deliver first page
         person_list = paginator.page(1)
-        page = 1
+        page = request.session['search_page'] = 1
     except EmptyPage:
         # if page out of range, deliver last page of results
         person_list = paginator.page(paginator.num_pages)
-        page = paginator.num_pages
+        page = request.session['search_page'] = paginator.num_pages
 
     context = {
         'my_territories': get_my_territories(request.user),
@@ -1514,12 +1516,64 @@ def territory(request):
                                          pk=request.session['assignment_id'])
     territory_list = build_user_territory_list(event_assignment, True)
     flag_list = territory_list.filter(flags__event_assignment=event_assignment)
+
+    # Figure out sort order
+    if 'sort' not in request.GET:
+        sort_col = request.session.get('filter_sort_col')
+    else:
+        if request.GET['sort'] == request.session.get('filter_sort_col'):
+            request.session['filter_sort_col'] = 'ASC' if \
+                request.session['filter_sort_order'] == 'DESC' else 'DESC'
+        else:
+            request.session['filter_sort_order'] = 'ASC'
+            request.session['filter_sort_col'] = request.GET['sort']
+        sort_col = request.session['filter_sort_col']
+    sort_order = request.session.get('filter_sort_order')
+    # If sort order not set, set to ascending by company name
+    if not sort_col:
+        sort_col = request.session['filter_sort_col'] = 'company'
+    if not sort_order:
+        sort_order = request.session['filter_sort_order'] = 'ASC'
+    # sort search results
+    if territory_list.exists():
+        if sort_order == 'DESC':
+            sort_col = '-' + sort_col
+        territory_list = territory_list.order_by(sort_col)
+
+    # Paginate results
+    paginator = Paginator(territory_list, TERRITORY_RECORDS_PER_PAGE)
+    if 'page' in request.GET:
+        page = request.session['filter_page'] = request.GET['page']
+    else:
+        page = request.session['filter_page'] = 1
+    try:
+        person_list = paginator.page(page)
+    except PageNotAnInteger:
+        person_list = paginator.page(1)
+        page = request.session['filter_page'] = 1
+    except EmptyPage:
+        person_list = paginator.page(paginator.num_pages)
+        page = request.session['filter_page'] = paginator.num_pages
     context = {
         'event_assignment': event_assignment,
         'my_territories': get_my_territories(request.user),
-        'person_list': territory_list,
+        'person_list': person_list,
         'filter_form': filter_form,
         'flag_list': flag_list,
+        'has_minus4': int(page) - 4 > 0,
+        'has_minus3': int(page) - 3 > 0,
+        'minus3': str(int(page) - 3),
+        'has_minus2': int(page) - 2 > 0,
+        'minus2': str(int(page) - 2),
+        'has_minus1': int(page) - 1 > 0,
+        'minus1': str(int(page) - 1),
+        'has_plus1': int(page) + 1 <= paginator.num_pages,
+        'plus1': str(int(page) + 1),
+        'has_plus2': int(page) + 2 <= paginator.num_pages,
+        'plus2': str(int(page) + 2),
+        'has_plus3': int(page) + 3 <= paginator.num_pages,
+        'plus3': str(int(page) + 3),
+        'has_plus4': int(page) + 4 <= paginator.num_pages,
     }
     return render(request, 'crm/territory.html', context)
 
@@ -1861,9 +1915,51 @@ def group_flag_update(request):
             pass
     territory_list = build_user_territory_list(event_assignment, True)
     flag_list = territory_list.filter(flags__event_assignment=event_assignment)
+
+    # sort list appropriately
+    sort_col = request.session.get('filter_sort_col')
+    sort_order = request.session.get('filter_sort_order')
+    if not sort_col:
+        sort_col = request.session['filter_sort_col'] = 'company'
+    if not sort_order:
+        sort_order = request.session['filter_sort_order'] = 'ASC'
+    if territory_list.exists():
+        if sort_order == 'DESC':
+            sort_col = '-' + sort_col
+        territory_list = territory_list.order_by(sort_col)
+
+    # paginate results
+    paginator = Paginator(territory_list, TERRITORY_RECORDS_PER_PAGE)
+    if 'filter_page' not in request.session:
+        page = request.POST.get('page', 1)
+    else:
+        page = request.session['filter_page']
+    try:
+        person_list = paginator.page(page)
+    except PageNotAnInteger:
+        person_list = paginator.page(1)
+        page = request.session['filter_page'] = 1
+    except EmptyPage:
+        person_list = paginator.page(paginator.num_pages)
+        page = request.session['filter_page'] = paginator.num_pages
+
     context = {
-        'person_list': territory_list,
+        'person_list': person_list,
         'flag_list': flag_list,
+        'has_minus4': int(page) - 4 > 0,
+        'has_minus3': int(page) - 3 > 0,
+        'minus3': str(int(page) - 3),
+        'has_minus2': int(page) - 2 > 0,
+        'minus2': str(int(page) - 2),
+        'has_minus1': int(page) - 1 > 0,
+        'minus1': str(int(page) - 1),
+        'has_plus1': int(page) + 1 <= paginator.num_pages,
+        'plus1': str(int(page) + 1),
+        'has_plus2': int(page) + 2 <= paginator.num_pages,
+        'plus2': str(int(page) + 2),
+        'has_plus3': int(page) + 3 <= paginator.num_pages,
+        'plus3': str(int(page) + 3),
+        'has_plus4': int(page) + 4 <= paginator.num_pages,
     }
     return render(request, 'crm/territory_addins/my_territory_prospects.html',
                   context)
@@ -2011,15 +2107,22 @@ def save_person_details(request):
 
 @login_required
 def select_active_conference(request):
-    context = {
-        'my_territories': get_my_territories(request.user),
-    }
+    # context = {
+    #     'my_territories': get_my_territories(request.user),
+    # }
     if request.method == 'POST':
         event_assignment = get_object_or_404(EventAssignment,
                                              pk=request.POST['new_conf_id'])
         request.session['assignment_id'] = event_assignment.id
         request.session['conference_description'] = str(event_assignment.event)
-    return render(request, 'crm/addins/my_territory_list.html', context)
+        # delete all request.session cookies related to territory filter_switch
+        for cookie in ['filter_page', 'filter_name', 'filter_company',
+                       'filter_prov', 'filter_customer', 'filter_flag',
+                       'filter_sort_col', 'filter_sort_order',
+                       'filter_hide_options']:
+            if cookie in request.session:
+                del(request.session[cookie])
+    return HttpResponse('')
 
 
 @login_required
@@ -2080,6 +2183,16 @@ def suggest_industry(request):
     data = json.dumps(results)
     mimetype = 'applications/json'
     return HttpResponse(data, mimetype)
+
+
+@login_required
+def toggle_territory_filter(request):
+    """
+    Sets whether territory filter options should be hidden by default
+    """
+    toggle = request.GET.get('hide', False) in ['True', 'true']
+    request.session['filter_hide_options'] = toggle
+    return HttpResponse('')
 
 
 @user_passes_test(has_management_permission, login_url='/crm/',

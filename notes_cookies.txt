@@ -9,19 +9,37 @@ For Working with Territory:
 
 Search parameters:
   last_search_type: quick or advanced (or None)
+
   search_string: quick search terms entered
-  search_page: pagination page
   search_name: advanced search parameter
   search_title: advanced search parameter
   search_company: advanced search parameter
   search_prov: advanced search parameter
   search_customer: advanced search parameter
-  page: current pagination location
+
+  search_page: pagination page
   sort_col: for list sortation
   sort_order: for list sortation
 
+
 General CRM
   recent_contacts: list of 10 most recently viewed contacts in CRM
+
+
+Territory filter parameters:
+  filter_page: pagination page
+
+  filter_name: filter parameter
+  filter_title: filter parameter
+  filter_company: filter parameter
+  filter_prov: filter parameter
+  filter_customer: filter parameter
+  filter_flag: filter parameter
+
+  filter_sort_col: for list sortation
+  filter_sort_order: for list sortation
+  filter_hide_options: toggle filter option display
+
 
 Delegate processing (see delegate.views.py)
   current_registration: ??

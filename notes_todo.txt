@@ -2,16 +2,14 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
-next #: 36
-
-TODO: 36) Test the manage_territory function thoroughly.  Maybe write tests???
+next #: 37
 
 TODO: 8) (BIG) rework territory stuff
          c) Need to update detail.html to show dynamic content based on whether working a conference
          i) Create user territory list page (recycle search???)
          l) Implement filter method
-         m) Implement update all
          n) Implement pagination
+         m) DONE - Implement update all
          k) DONE - Allow to change conference on index page
          j) DONE - Allow to change conference on sidebar
          a) DONE - Need to update sidebar to dynamically reflect whether working on a conference
@@ -61,3 +59,5 @@ TODO: 28) if no admin access, set error page for accessing admin page
 Long-term/iffy stuff:
 1) register.index - consider reg button beside names (not hidden) - unsure
 3) Personal notes??  I think everything should be open
+
+DONE-ish: 36) Test the manage_territory function thoroughly.  Maybe write tests???

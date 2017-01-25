@@ -23,7 +23,6 @@ $(document).ready(function() {
   // select or de-select all flags on page
   $('body').on('click', '#select-all-flags', function(){
     var checkedStatus = $('#select-all-flags').prop('checked');
-    console.log(checkedStatus);
     $('.personal-flag-select').each(function(){
       $(this).prop('checked', checkedStatus);
     });
@@ -39,7 +38,18 @@ $(document).ready(function() {
         checkedPeople.push($(this).attr('select-person'));
       };
     });
-    console.log(checkedPeople);
+    $.ajax({
+      url: '/crm/group_flag_update/',
+      type: 'POST',
+      data: {
+        'checked_people': checkedPeople,
+        'event_assignment_id': eventAssignmentId,
+        'flag_color': flagColor,
+      },
+      success: function(data){
+        $('#my-territory-list-panel').html(data);
+      }
+    });
   });
 
 

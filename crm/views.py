@@ -1048,6 +1048,25 @@ def add_to_recent_contacts(request, person_id):
     request.session['recent_contacts'] = recent_contact_list
 
 
+def process_flag_change(request, person, event_assignment):
+    try:
+        flag = Flags.objects.get(person=person,
+                                 event_assignment=event_assignment)
+    except Flags.DoesNotExist:
+        flag = Flags(person = person,
+                     event_assignment = event_assignment)
+    if request.POST['flag_color'] != 'none':
+        flag.flag = FLAG_COLORS[request.POST['flag_color']]
+        if 'followup' in request.POST:
+            flag.follow_up_date = request.POST['followup']
+        flag.save()
+    else:
+        if flag.id:
+            flag.delete()
+        flag = None
+    return flag
+
+
 def get_my_territories(user):
     """
     returns queryset of active EventAssignments for a user
@@ -1632,21 +1651,7 @@ def change_flag(request):
     event_assignment = get_object_or_404(EventAssignment,
                                          pk=request.POST['event_assignment_id'])
     person = get_object_or_404(Person, pk=request.POST['person_id'])
-    try:
-        flag = Flags.objects.get(event_assignment=event_assignment,
-                                 person=person)
-    except Flags.DoesNotExist:
-        flag = Flags(person=person,
-                     event_assignment=event_assignment)
-    if request.POST['flag_color'] != 'none':
-        flag.flag = FLAG_COLORS[request.POST['flag_color']]
-        if 'followup' in request.POST:
-            flag.follow_up_date = request.POST['followup']
-        flag.save()
-    else:
-        if flag.id:
-            flag.delete()
-        flag = None
+    flag = process_flag_change(request, person, event_assignment)
     context = {
         'flag': flag,
     }
@@ -1839,6 +1844,29 @@ def get_recent_contacts(request):
         'recent_contact_list': recent_contact_list,
     }
     return render(request, 'crm/addins/recently_viewed.html', context)
+
+
+@login_required
+def group_flag_update(request):
+    if request.method != 'POST':
+        return HttpResponse('')
+    event_assignment = get_object_or_404(EventAssignment,
+                                         pk=request.POST['event_assignment_id'])
+    people_list = request.POST.getlist('checked_people[]')
+    for person_id in people_list:
+        try:
+            person = Person.objects.get(pk=person_id)
+            process_flag_change(request, person, event_assignment)
+        except Person.DoesNotExist:
+            pass
+    territory_list = build_user_territory_list(event_assignment, True)
+    flag_list = territory_list.filter(flags__event_assignment=event_assignment)
+    context = {
+        'person_list': territory_list,
+        'flag_list': flag_list,
+    }
+    return render(request, 'crm/territory_addins/my_territory_prospects.html',
+                  context)
 
 
 @user_passes_test(has_management_permission, login_url='/crm/',

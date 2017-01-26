@@ -131,15 +131,12 @@ $(document).ready(function() {
       $('#id_company').val() != '' ||
       $('#id_state_province').val() != '' ||
       $('#id_past_customer').val() != '' ||
-      $('#id_flag').val() != ''
+      $('#id_flag').val() != 'any'
     ) {
       doNotSubmit = false;
     };
-    doNotSubmit = true;
-    console.log(doNotSubmit);
     if (doNotSubmit){
       e.preventDefault();
-      console.log('prevented submission');
     };
   });
 

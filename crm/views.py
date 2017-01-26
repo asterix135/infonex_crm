@@ -1049,9 +1049,14 @@ def add_to_recent_contacts(request, person_id):
 
 
 def filter_personal_territory(request, territory_query_set):
-    filter_options = (('name', 'filter_name'),
-                      ('title', 'filter_title'),
-                      ('company' 'filter_company'),
+
+    if True:
+        return territory_query_set
+
+
+    filter_options = (('name', 'filter_name', 'name__icontains'),
+                      ('title', 'filter_title', 'title__icontains'),
+                      ('company' 'filter_company', 'company__icontains'),
                       ('state_prov', 'filter_prov'),
                       ('past_customer', 'filter_customer'),
                       ('flag', 'filter_flag'))
@@ -1065,6 +1070,8 @@ def filter_personal_territory(request, territory_query_set):
     for option in filter_options[:4]:  # customer and flag are special cases
         if option[1] in request.session:
             kwargs[option[0]] = request.session[option[1]]
+    print('\n\n\n')
+    print(kwargs)
     territory_query_set = territory_query_set.filter(**kwargs)
 
     # if 'filter_customer' in request.session:

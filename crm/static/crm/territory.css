@@ -1,31 +1,3 @@
-.red-flag {
-  color: red;
-  cursor: pointer;
-}
-.green-flag {
-  color: green;
-  cursor: pointer;
-}
-.blue-flag {
-  color: blue;
-  cursor: pointer;
-}
-.black-flag {
-  color: black;
-  cursor: pointer;
-}
-.yellow-flag {
-  color: gold;
-  cursor: pointer;
-}
-.purple-flag {
-  color: purple;
-  cursor: pointer;
-}
-.no-flag {
-  color: DarkGrey;
-  cursor: pointer;
-}
 .filter-flag-icon {
   padding-left: 15px;
   padding-right: 10px;
@@ -39,4 +11,11 @@
   background-color: #0069D9;
   color: white;
   cursor: default;
+}
+.button-flag-icon {
+  padding-right: 10px;
+}
+.button-flag-icon:hover {
+  background-color: #0069D9;
+  color: white;
 }

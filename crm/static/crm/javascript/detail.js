@@ -275,6 +275,7 @@ $(document).ready(function() {
     });
   });
 
+
   // Trigger delete confirm modal and add delete form content
   $('body').on('click', '#delete-person-btn', function(){
     $('#deleteConfirmModal').modal('show');
@@ -284,6 +285,7 @@ $(document).ready(function() {
       '<input type="hidden" name="person_id" value="' + personId + '"/>'
     )
   });
+
 
   // Delete record on user confirmation
   $('body').on('click', '#save-after-dupe-check', function(){

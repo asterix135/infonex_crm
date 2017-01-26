@@ -7,8 +7,14 @@
     <input type="hidden" name="updated-details-success" id="updated-details-success" value="False" />
     {% endif %}
     <h1>
-      {{ person.name }}{% if person.title %}, {{ person.title }}{% endif %}{% if person.company %}, {{ person.company }}{% endif %}
+      {{ person.name }}
       <span class="float-right">
+        {% if flag %}
+        <span class="glyphicon glyphicon-flag red-flag" flag-color="red"></span>
+        {% else %}
+        <span class="glyphicon glyphicon-plus"></span>
+        {% endif %}
+        <span id="duplicate-current-person" class="glyphicon glyphicon-duplicate glyph-button"></span>
         <span id="delete-person-btn" class="glyphicon glyphicon-trash errorlist glyph-button"></span>
       </span>
 
@@ -25,6 +31,12 @@
         {% endif %}
       </span>
     </h1>
+    {% if person.title %}
+    <h3>{{ person.title }}</h3>
+    {% endif %}
+    {% if person.company %}
+    <h3>{{ person.company }}</h3>
+    {% endif %}
     <h4>
       Tel:
       {% if person.phone %}

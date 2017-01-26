@@ -856,85 +856,6 @@ def territory_list(request):
     return render(request, 'crm/territory_old.html', context)
 
 
-# # TODO: cannibalize and delete
-# @login_required
-# def create_territory(request):
-#     """
-#     Used to create a territory for a salesperson
-#     """
-#     employee = User.objects.get(pk=request.session.get('employee'))
-#     territory_event = Event.objects.get(pk=request.session.get('event'))
-#     select_form = ListSelectForm
-#
-#     # if we get here from territory_list
-#     if request.method == 'POST' and \
-#             request.POST['submit_option'].lower() == 'save':
-#         # create new list select
-#         new_select = ListSelection(
-#             employee=employee,
-#             event=territory_event,
-#             geo=request.POST['geo'],
-#             main_category=request.POST['main_category'],
-#             main_category2=request.POST['main_category2'],
-#             division1=request.POST['division1'],
-#             division2=request.POST['division2'],
-#             company=request.POST['company'],
-#             industry=request.POST['industry'],
-#             include_exclude=request.POST['include_exclude'],
-#         )
-#         new_select.save()
-#     elif request.method == 'POST' and \
-#             request.POST['submit_option'].lower() == 'delete':
-#         list_select = ListSelection.objects.get(pk=request.POST['select_id'])
-#         list_select.delete()
-#
-#     select_criteria = ListSelection.objects.filter(
-#         employee=employee
-#     ).filter(
-#         event=territory_event
-#     )
-#     # TODO: Consider making this sorting dynamic
-#     territory = generate_territory_list(employee, territory_event,
-#                                         'company', 'ASC')
-#
-#     # Set up pagination
-#     paginator = Paginator(territory, TERRITORY_RECORDS_PER_PAGE)
-#     page = request.GET.get('page')
-#     try:
-#         person_list = paginator.page(page)
-#     except PageNotAnInteger:
-#         # if page not an integer, deliver first page
-#         person_list = paginator.page(1)
-#         page = 1
-#     except EmptyPage:
-#         # if page out of range, deliver last page of results
-#         person_list = paginator.page(paginator.num_pages)
-#         page = paginator.num_pages
-#
-#     context = {
-#         'select_form': select_form,
-#         'employee': employee,
-#         'event': territory_event,
-#         'list_selects': select_criteria,
-#         'person_list': person_list,
-#         'has_minus4': int(page) - 4 > 0,
-#         'has_minus3': int(page) - 3 > 0,
-#         'minus3': str(int(page) - 3),
-#         'has_minus2': int(page) - 2 > 0,
-#         'minus2': str(int(page) - 2),
-#         'has_minus1': int(page) - 1 > 0,
-#         'minus1': str(int(page) - 1),
-#         'has_plus1': int(page) + 1 <= paginator.num_pages,
-#         'plus1': str(int(page) + 1),
-#         'has_plus2': int(page) + 2 <= paginator.num_pages,
-#         'plus2': str(int(page) + 2),
-#         'has_plus3': int(page) + 3 <= paginator.num_pages,
-#         'plus3': str(int(page) + 3),
-#         'has_plus4': int(page) + 4 <= paginator.num_pages,
-#     }
-#     return render(request, 'crm/create_territory.html', context)
-
-
 @login_required
 def flag_record(request):
     """
@@ -978,13 +899,6 @@ def flag_record(request):
     else:
         return HttpResponseRedirect(reverse('crm:territory'))
 
-
-@login_required
-def flag_many_records(request):
-    """
-    bulk update flags from territory listing page_source
-    """
-    pass
 
 
 ##################
@@ -1060,7 +974,7 @@ def filter_personal_territory(request, territory_query_set, search_form=None):
                 request.session[option[1]] = search_form.cleaned_data[option[0]]
             elif option[1] in request.session:
                 del request.session[option[1]]
-            if request.POST['flag'] != 'any':
+            if 'flag' in request.POST and request.POST['flag'] != 'any':
                 request.session['filter_flag'] = request.POST['flag']
             elif 'filter_flag' in request.session:
                 del request.session['filter_flag']

@@ -7,7 +7,7 @@ next #: 37
 TODO: 8) (BIG) rework territory stuff
          p) Update manage_territory view to hide person-only selects (server-side)
          c) Need to update detail.html to show dynamic content based on whether working a conference
-         l) Implement filter method
+         l) DONE - Implement filter method
          i) DONE - Create user territory list page (recycle search???)
          o) DONE - Update personal list generator to include person selects if for user
          n) DONE - Implement pagination

@@ -1,7 +1,6 @@
 .empty-list {
     font-family: 'Signika', sans-serif;
     color: grey;
-
 }
 h1, h2, h3 {
     font-family: 'Signika', sans-serif;
@@ -82,4 +81,32 @@ h1, h2, h3 {
 }
 .btn-space {
   margin-right: 5px;
+}
+.red-flag {
+  color: red;
+  cursor: pointer;
+}
+.green-flag {
+  color: green;
+  cursor: pointer;
+}
+.blue-flag {
+  color: blue;
+  cursor: pointer;
+}
+.black-flag {
+  color: black;
+  cursor: pointer;
+}
+.yellow-flag {
+  color: gold;
+  cursor: pointer;
+}
+.purple-flag {
+  color: purple;
+  cursor: pointer;
+}
+.no-flag {
+  color: DarkGrey;
+  cursor: pointer;
 }

@@ -121,4 +121,26 @@ $(document).ready(function() {
     $('#btn-flag-filter-select').html('Select Flag <span class="caret"></span>');
   });
 
+
+  // check if at least one field is filled in and if so submit filter form
+  $('#filter-form').submit(function(e){
+    var doNotSubmit = true;
+    if (
+      $('#id_name').val() != '' ||
+      $('#id_title').val() != '' ||
+      $('#id_company').val() != '' ||
+      $('#id_state_province').val() != '' ||
+      $('#id_past_customer').val() != '' ||
+      $('#id_flag').val() != ''
+    ) {
+      doNotSubmit = false;
+    };
+    doNotSubmit = true;
+    console.log(doNotSubmit);
+    if (doNotSubmit){
+      e.preventDefault();
+      console.log('prevented submission');
+    };
+  });
+
 });

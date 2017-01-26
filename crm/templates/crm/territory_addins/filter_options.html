@@ -14,7 +14,7 @@
 {% else %}
 <div class="panel-body collapse in" id="filter-panel">
 {% endif %}
-  <form action="" method="post">
+  <form action="" method="post" id="filter-form">
     {% csrf_token %}
     <div class="form-group row">
       <div class="col-sm-2">
@@ -98,7 +98,7 @@
     </div>
     <div class="form-group row">
       <div class="col-sm-offset-2 col-sm-2 ">
-        <button type="button" class="btn btn-primary" name="option"
+        <button type="submit" class="btn btn-primary" name="option"
           value="filter">Filter</button>
       </div>
       <div class="col-sm-2">

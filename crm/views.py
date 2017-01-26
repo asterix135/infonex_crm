@@ -1048,6 +1048,34 @@ def add_to_recent_contacts(request, person_id):
     request.session['recent_contacts'] = recent_contact_list
 
 
+def filter_personal_territory(request, territory_query_set):
+    filter_options = (('name', 'filter_name'),
+                      ('title', 'filter_title'),
+                      ('company' 'filter_company'),
+                      ('state_prov', 'filter_prov'),
+                      ('past_customer', 'filter_customer'),
+                      ('flag', 'filter_flag'))
+    if request.method == 'POST':
+        for option in filter_options:
+            if option[0] in request.POST:
+                request.session[option[1]] = request.POST[option[0]]
+            elif option[1] in request.session:
+                del(request.session[option[1]])
+    kwargs = {}
+    for option in filter_options[:4]:  # customer and flag are special cases
+        if option[1] in request.session:
+            kwargs[option[0]] = request.session[option[1]]
+    territory_query_set = territory_query_set.filter(**kwargs)
+
+    # if 'filter_customer' in request.session:
+    #     cust_filter = request.session['filter_customer'] == 'True'
+    #     territory_query_set.filter(has_registration_history=cust_filter)
+
+    ## need to deal with flag....
+
+    return territory_query_set
+
+
 def process_flag_change(request, person, event_assignment):
     try:
         flag = Flags.objects.get(person=person,
@@ -1515,6 +1543,7 @@ def territory(request):
     event_assignment = get_object_or_404(EventAssignment,
                                          pk=request.session['assignment_id'])
     territory_list = build_user_territory_list(event_assignment, True)
+    territory_list = filter_personal_territory(request, territory_list)
     flag_list = territory_list.filter(flags__event_assignment=event_assignment)
 
     # Figure out sort order
@@ -1914,6 +1943,7 @@ def group_flag_update(request):
         except Person.DoesNotExist:
             pass
     territory_list = build_user_territory_list(event_assignment, True)
+    territory_list = filter_personal_territory(request, territory_list)
     flag_list = territory_list.filter(flags__event_assignment=event_assignment)
 
     # sort list appropriately

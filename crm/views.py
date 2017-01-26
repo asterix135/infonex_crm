@@ -1071,7 +1071,17 @@ def filter_personal_territory(request, territory_query_set, search_form=None):
     territory_query_set = territory_query_set.filter(**kwargs)
 
     # deal with state filter
-    
+    if 'filter_prov' in request.session and \
+        request.session['filter_prov'] != '':
+        ac_tuple = AC_LOOKUP[request.session['filter_prov']]
+        queries = []
+        for ac in ac_tuple:
+            re_term = r'^\s*\(?' + ac
+            queries.append(Q(phone__iregex=re_term))
+        query = queries.pop()
+        for item in queries:
+            query |= item
+        territory_query_set = territory_query_set.filter(query)
 
     # deal with customer filter
     if 'filter_customer' in request.session:

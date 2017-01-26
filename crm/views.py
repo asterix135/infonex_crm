@@ -1048,37 +1048,33 @@ def add_to_recent_contacts(request, person_id):
     request.session['recent_contacts'] = recent_contact_list
 
 
-def filter_personal_territory(request, territory_query_set):
-
-    if True:
-        return territory_query_set
-
-
+def filter_personal_territory(request, territory_query_set, search_form=None):
     filter_options = (('name', 'filter_name', 'name__icontains'),
                       ('title', 'filter_title', 'title__icontains'),
-                      ('company' 'filter_company', 'company__icontains'),
-                      ('state_prov', 'filter_prov'),
-                      ('past_customer', 'filter_customer'),
-                      ('flag', 'filter_flag'))
-    if request.method == 'POST':
+                      ('company', 'filter_company', 'company__icontains'),
+                      ('state_province', 'filter_prov'),
+                      ('past_customer', 'filter_customer'))  # flag not in form
+    if request.method == 'POST' and search_form and search_form.is_valid():
         for option in filter_options:
-            if option[0] in request.POST:
-                request.session[option[1]] = request.POST[option[0]]
+            if search_form.cleaned_data[option[0]] not in ('', None):
+                request.session[option[1]] = search_form.cleaned_data[option[0]]
             elif option[1] in request.session:
-                del(request.session[option[1]])
+                del request.session[option[1]]
+            if request.POST['flag'] != 'any':
+                request.session['filter_flag'] = request.POST['flag']
+            elif 'filter_flag' in request.session:
+                del request.session['filter_flag']
     kwargs = {}
-    for option in filter_options[:4]:  # customer and flag are special cases
+    for option in filter_options[:3]:  # customer, flag, reg are special cases
         if option[1] in request.session:
-            kwargs[option[0]] = request.session[option[1]]
-    print('\n\n\n')
-    print(kwargs)
+            kwargs[option[2]] = request.session[option[1]]
     territory_query_set = territory_query_set.filter(**kwargs)
 
     # if 'filter_customer' in request.session:
     #     cust_filter = request.session['filter_customer'] == 'True'
     #     territory_query_set.filter(has_registration_history=cust_filter)
 
-    ## need to deal with flag....
+    ## need to deal with state, customer and flag....
 
     return territory_query_set
 
@@ -1546,12 +1542,20 @@ def territory(request):
     if 'assignment_id' not in request.session or \
         request.session['assignment_id'] == '':
         return HttpResponseRedirect('/crm/')
-    filter_form = SearchForm()
+    if request.method == 'POST':
+        filter_form = SearchForm(request.POST)
+    else:
+        filter_form = SearchForm()
     event_assignment = get_object_or_404(EventAssignment,
                                          pk=request.session['assignment_id'])
     territory_list = build_user_territory_list(event_assignment, True)
-    territory_list = filter_personal_territory(request, territory_list)
+    territory_list = filter_personal_territory(request, territory_list,
+                                               filter_form)
     flag_list = territory_list.filter(flags__event_assignment=event_assignment)
+    if 'filter_flag' in request.session:
+        flag_filter_value = request.session['filter_flag']
+    else:
+        flag_filter_value = 'any'
 
     # Figure out sort order
     if 'sort' not in request.GET:
@@ -1595,6 +1599,7 @@ def territory(request):
         'my_territories': get_my_territories(request.user),
         'person_list': person_list,
         'filter_form': filter_form,
+        'flag_filter_value': flag_filter_value,
         'flag_list': flag_list,
         'has_minus4': int(page) - 4 > 0,
         'has_minus3': int(page) - 3 > 0,

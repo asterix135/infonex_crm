@@ -1,6 +1,7 @@
 // Javascript for territory.html page
 $(document).ready(function() {
-  var eventAssignmentId = $('#my-event-assignment').val()
+  var eventAssignmentId = $('#my-event-assignment').val();
+  var blankFormSubmitOK = true;
 
   // Process individual flag change
   $('body').on('click', '.flag-icon', function(){
@@ -110,21 +111,26 @@ $(document).ready(function() {
   });
 
 
-  // clear filter form
-  $('body').on('click', '#btn-clear-filter', function(){
+  function clearFilterForm(){
     $('#id_name').val('');
     $('#id_title').val('');
     $('#id_company').val('');
     $('#id_state_province').val('');
     $('#id_past_customer').val('');
     $('#id_flag').val('any');
+  };
+
+
+  // button action to clear filter form
+  $('body').on('click', '#btn-clear-filter', function(){
+    clearFilterForm();
     $('#btn-flag-filter-select').html('Select Flag <span class="caret"></span>');
   });
 
 
   // check if at least one field is filled in and if so submit filter form
-  $('#filter-form').submit(function(e){
-    var doNotSubmit = true;
+  $('#btn-submit-filter').click(function(){
+    var okToSubmit = false;
     if (
       $('#id_name').val() != '' ||
       $('#id_title').val() != '' ||
@@ -133,11 +139,18 @@ $(document).ready(function() {
       $('#id_past_customer').val() != '' ||
       $('#id_flag').val() != 'any'
     ) {
-      doNotSubmit = false;
+      okToSubmit = true;
     };
-    if (doNotSubmit){
-      e.preventDefault();
+    if (okToSubmit){
+      $('#filter-form').submit();
     };
+  });
+
+  // reset filter details and submit blank form
+  $('#btn-see-all-contacts').click(function(){
+    clearFilterForm();
+    blankFormSubmitOK = true
+    $('#filter-form').submit();
   });
 
 });

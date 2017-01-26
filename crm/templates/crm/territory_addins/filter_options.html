@@ -63,10 +63,26 @@
       </div>
       <div class="col-sm-2">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="btn-flag-filter-select">
+          {% if flag_filter_value == 'any' %}
           Select Flag
+          {% elif flag_filter_value == 'red' %}
+          <span class="glyphicon glyphicon-flag red-flag filter-flag-icon"></span>Red
+          {% elif flag_filter_value == 'green' %}
+          <span class="glyphicon glyphicon-flag green-flag filter-flag-icon"></span>Green
+          {% elif flag_filter_value == 'blue' %}
+          <span class="glyphicon glyphicon-flag blue-flag filter-flag-icon"></span>Blue
+          {% elif flag_filter_value == 'black' %}
+          <span class="glyphicon glyphicon-flag black-flag filter-flag-icon"></span>Black
+          {% elif flag_filter_value == 'yellow' %}
+          <span class="glyphicon glyphicon-flag yellow-flag filter-flag-icon"></span>Yellow
+          {% elif flag_filter_value == 'purple' %}
+          <span class="glyphicon glyphicon-flag purple-flag filter-flag-icon"></span>Purple
+          {% elif flag_filter_value == 'none' %}
+          <span class="glyphicon glyphicon-ban-circle no-flag filter-flag-icon"></span>None
+          {% endif %}
           <span class="caret"></span>
         </button>
-        <input type="hidden" name="flag" id="id_flag" value="any"/>
+        <input type="hidden" name="flag" id="id_flag" value="{{ flag_filter_value }}"/>
           <ul class="dropdown-menu list" role="menu">
             <li class="flag-filter-choice" flag-color="any">
               <span class="glyphicon glyphicon-heart filter-flag-icon"></span>Any
@@ -98,8 +114,7 @@
     </div>
     <div class="form-group row">
       <div class="col-sm-offset-2 col-sm-2 ">
-        <button type="submit" class="btn btn-primary" name="option"
-          value="filter">Filter</button>
+        <button type="button" class="btn btn-primary" id="btn-submit-filter">Filter</button>
       </div>
       <div class="col-sm-2">
         <button type="button" class="btn btn-default" id="btn-clear-filter">
@@ -107,7 +122,7 @@
         </button>
       </div>
       <div class="col-sm-2">
-        <button type="button" class="btn btn-default">See All Contacts</button>
+        <button type="button" class="btn btn-default" id="btn-see-all-contacts">See All Contacts</button>
       </div>
     </div>
   </form>

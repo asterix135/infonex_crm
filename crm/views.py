@@ -1071,10 +1071,18 @@ def filter_personal_territory(request, territory_query_set, search_form=None):
     territory_query_set = territory_query_set.filter(**kwargs)
 
     # deal with state filter
-
+    
 
     # deal with customer filter
-
+    if 'filter_customer' in request.session:
+        if request.session['filter_customer'] == 'True':
+            territory_query_set = territory_query_set.filter(
+                registrants__isnull=False
+            ).distinct()
+        elif request.session['filter_customer'] == 'False':
+            territory_query_set = territory_query_set.filter(
+                registrants__isnull=True
+            )
 
     # deal with flag filter
     if 'filter_flag' in request.session and 'assignment_id' in request.session:

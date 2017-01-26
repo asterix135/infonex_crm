@@ -1070,11 +1070,26 @@ def filter_personal_territory(request, territory_query_set, search_form=None):
             kwargs[option[2]] = request.session[option[1]]
     territory_query_set = territory_query_set.filter(**kwargs)
 
-    # if 'filter_customer' in request.session:
-    #     cust_filter = request.session['filter_customer'] == 'True'
-    #     territory_query_set.filter(has_registration_history=cust_filter)
+    # deal with state filter
 
-    ## need to deal with state, customer and flag....
+
+    # deal with customer filter
+
+
+    # deal with flag filter
+    if 'filter_flag' in request.session and 'assignment_id' in request.session:
+        event_assignment = EventAssignment.objects.get(
+            pk=request.session['assignment_id']
+        )
+        if request.session['filter_flag'] not in ('none', 'any'):
+            territory_query_set = territory_query_set.filter(
+                flags__event_assignment=event_assignment,
+                flags__flag=FLAG_COLORS[request.session['filter_flag']]
+            )
+        elif request.session['filter_flag'] == 'none':
+            territory_query_set = territory_query_set.exclude(
+                flags__event_assignment=event_assignment
+            )
 
     return territory_query_set
 

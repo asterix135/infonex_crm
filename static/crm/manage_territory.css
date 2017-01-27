@@ -1,0 +1,63 @@
+/*From jqueryui*/
+
+.ui-draggable, .ui-droppable {
+  background-position: center top;
+}
+.sort-box {
+  border: 1px solid darkgrey;
+  width: 100%;
+  min-height: 50px;
+  list-style-type: none;
+  margin: 0;
+  padding: 5px 0 0 0;
+  float: left;
+  margin-right: 10px;
+}
+.ui-state-default {
+  margin: 0 5px 5px 5px;
+  padding: 5px;
+  font-size: 1.2em;
+  background: #f6f6f6 none repeat scroll 0 0;
+  border: 1px solid #c5c5c5;
+  color: #454545;
+  font-weight: normal;
+}
+
+/* for general selection table*/
+
+table.table-fixedheader {
+  width: 100%;
+}
+table.table-fixedheader,
+table.table-fixedheader>thead,
+table.table-fixedheader>tbody,
+table.table-fixedheader>thead>tr,
+table.table-fixedheader>tbody>tr,
+table.table-fixedheader>thead>tr>th,
+table.table-fixedheader>tbody>td {
+  display: block;
+}
+
+
+table.table-fixedheader>thead>tr:after,
+table.table-fixedheader>tbody>tr:after {
+  content: ' ';
+  display: block;
+  visibility: hidden;
+  clear: both;
+}
+table.table-fixedheader>tbody {
+  overflow-y: scroll;
+  height: 300px;
+}
+table.table-fixedheader>thead {
+  overflow-y: scroll;
+}
+table.table-fixedheader>thead::-webkit-scrollbar{
+  background-color: inherit;
+}
+table.table-fixedheader>thead>tr>th,
+table.table-fixedheader>tbody>tr>td {
+        width: 25%;
+        float: left;
+}

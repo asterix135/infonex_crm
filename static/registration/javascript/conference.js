@@ -1,5 +1,6 @@
 $(document).ready(function() {
 
+  // subroutien called to toggle venue edit panel
   function editVenue(venueID) {
     $.ajax({
       url: '/registration/edit_venue/',
@@ -14,6 +15,7 @@ $(document).ready(function() {
   };
 
 
+  // subroutine called to save Venue changes
   function saveVenueChanges(venueID) {
     $.ajax({
       url: '/registration/edit_venue/',
@@ -64,12 +66,19 @@ $(document).ready(function() {
       },
       success: function(data) {
         $('#venue-sidebar').html(data);
-      }
+        var confCity = $('#conference-edit-panel #id_city').val();
+        if (confCity) {
+          filterVenueList(confCity);
+        };
+        $.ajax({
+          url: '/registration/update_venue_choices/',
+          type: 'GET',
+          success: function(data) {
+            $('#venue-choices').html(data);
+          }
+        });
+      },
     });
-    var confCity = $('#conference-edit-panel #id_city').val();
-    if (confCity) {
-      filterVenueList(confCity);
-    }
   });
 
 
@@ -226,6 +235,13 @@ $(document).ready(function() {
       success: function(data) {
         $('#conference-edit-panel').html(data);
         unfilterVenueList();
+        $.ajax({
+          url: '/registration/update_conference_choices/',
+          type: 'GET',
+          success: function(data){
+            $('#conference-select-dropdown').html(data);
+          }
+        });
       }
     });
   });
@@ -310,8 +326,15 @@ $(document).ready(function() {
 
   // Filter venue list as city is selected
   $('body').on('keyup', '#conference-edit-panel #id_city', function () {
-      var cityPartial = $('#conference-edit-panel #id_city').val();
+      var cityPartial = $('#conference-edit-panel #id_city').val().trim();
       filterVenueList(cityPartial);
   });
+
+
+  // Select venue when selected on sidebar
+  $('body').on('click', '.select-venue-button', function(){
+    var venueId = $(this).attr('venue-id');
+    $('#id_hotel').val(venueId);
+  })
 
 });

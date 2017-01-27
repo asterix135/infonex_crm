@@ -1,5 +1,4 @@
 Django==1.10.5
-django-filter==1.0.1
 gunicorn==19.6.0
 mysqlclient==1.3.9
 olefile==0.44

@@ -2,26 +2,7 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
-next #: 37
-
-TODO: 8) (BIG) rework territory stuff
-         q) Check if the link on the sidebar takes me to the last territory page or page 1 (as a navigation method)
-         p) DONE - Update manage_territory view to hide person-only selects (template-side)
-         r) DONE - Add person to territory
-         c) DONE - Need to update detail.html to show dynamic content based on whether working a conference
-         l) DONE - Implement filter method
-         i) DONE - Create user territory list page (recycle search???)
-         o) DONE - Update personal list generator to include person selects if for user
-         n) DONE - Implement pagination
-         m) DONE - Implement update all
-         k) DONE - Allow to change conference on index page
-         j) DONE - Allow to change conference on sidebar
-         a) DONE - Need to update sidebar to dynamically reflect whether working on a conference
-         h) DONE - Javascript/python/url to delete individual select
-         g) DONE - If admin status - add Manage Territory option to sidebar
-         b) DONE - Need to (re)-create page showing all people in territory - territory.html
-         f) DONE - Need to (re)-create a page to create territory based on set criteria - manage_territory.html
-         d) DONE - Need to create a page for db admin to add a conference - Quick add Modal
+next #: 39
 
 TODO: 38) Fix CSS on detail page for title & company
 
@@ -68,3 +49,23 @@ TODO: 28) if no admin access, set error page for accessing admin page
 #############
 # DONE
 #############
+
+TODO: 8) DONE - (BIG) rework territory stuff
+         q) DONE - Check if the link on the sidebar takes me to the last territory page or page 1 (as a navigation method)
+         s) DONE - Need to implement typeahead on personal selects in manage_territory.html
+         p) DONE - Update manage_territory view to hide person-only selects (template-side)
+         r) DONE - Add person to territory
+         c) DONE - Need to update detail.html to show dynamic content based on whether working a conference
+         l) DONE - Implement filter method
+         i) DONE - Create user territory list page (recycle search???)
+         o) DONE - Update personal list generator to include person selects if for user
+         n) DONE - Implement pagination
+         m) DONE - Implement update all
+         k) DONE - Allow to change conference on index page
+         j) DONE - Allow to change conference on sidebar
+         a) DONE - Need to update sidebar to dynamically reflect whether working on a conference
+         h) DONE - Javascript/python/url to delete individual select
+         g) DONE - If admin status - add Manage Territory option to sidebar
+         b) DONE - Need to (re)-create page showing all people in territory - territory.html
+         f) DONE - Need to (re)-create a page to create territory based on set criteria - manage_territory.html
+         d) DONE - Need to create a page for db admin to add a conference - Quick add Modal

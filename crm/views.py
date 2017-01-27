@@ -646,7 +646,18 @@ def territory(request):
     if request.method == 'POST':
         filter_form = SearchForm(request.POST)
     else:
-        filter_form = SearchForm()
+        form_data = {}
+        if 'filter_name' in request.session:
+            form_data['name'] = request.session['filter_name']
+        if 'filter_title' in request.session:
+            form_data['title'] = request.session['filter_title']
+        if 'filter_company' in request.session:
+            form_data['company'] = request.session['filter_company']
+        if 'filter_prov' in request.session:
+            form_data['state_province'] = request.session['filter_prov']
+        if 'filter_customer' in request.session:
+            form_data['past_customer'] = request.sessoin['filter_customer']
+        filter_form = SearchForm(form_data)
     event_assignment = get_object_or_404(EventAssignment,
                                          pk=request.session['assignment_id'])
     territory_list = build_user_territory_list(event_assignment, True)
@@ -685,6 +696,8 @@ def territory(request):
     paginator = Paginator(territory_list, TERRITORY_RECORDS_PER_PAGE)
     if 'page' in request.GET:
         page = request.session['filter_page'] = request.GET['page']
+    elif 'filter_page' in request.session:
+        page = request.session['filter_page']
     else:
         page = request.session['filter_page'] = 1
     try:
@@ -1262,7 +1275,7 @@ def select_active_conference(request):
         for cookie in ['filter_page', 'filter_name', 'filter_company',
                        'filter_prov', 'filter_customer', 'filter_flag',
                        'filter_sort_col', 'filter_sort_order',
-                       'filter_hide_options']:
+                       'filter_hide_options', 'territory_page']:
             if cookie in request.session:
                 del(request.session[cookie])
     return HttpResponse('')

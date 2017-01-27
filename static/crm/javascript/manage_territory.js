@@ -237,7 +237,7 @@ $(document).ready(function() {
 
   // function that will start the typeahead (needs to be called after each ajax)
   function startTypeAhead(){
-    $('#id_dept').typeahead({
+    $('#master #id_dept, #person-select-options #id_dept').typeahead({
         hint: true,
         highlight: true,
         minLength: 1
@@ -255,7 +255,7 @@ $(document).ready(function() {
         }
     });
 
-    $('#id_company').typeahead({
+    $('#master #id_company, #person-select-options #id_company').typeahead({
         hint: true,
         highlight: true,
         minLength: 2
@@ -273,7 +273,7 @@ $(document).ready(function() {
         }
     });
 
-    $('#id_industry').typeahead({
+    $('#master #id_industry, #person-select-options #id_industry').typeahead({
         hint: true,
         highlight: true,
         minLength: 2

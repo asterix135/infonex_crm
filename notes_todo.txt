@@ -4,14 +4,10 @@ See avoiding race conditions using F()
 
 next #: 39
 
-TODO: 38) Fix CSS on detail page for title & company
-
 TODO: 37) Active button to create new record based on current
 
 TODO: 23) If territory exists: new person should pre-populate categorization with relevant details
          (This means updating crm.new.py)
-
-TODO: 33) In crm.views.py/load_staff_category_selects, fix the except: pass
 
 TODO: 31) Add New Person link to top bar (dynamically)
 
@@ -69,3 +65,5 @@ TODO: 8) DONE - (BIG) rework territory stuff
          b) DONE - Need to (re)-create page showing all people in territory - territory.html
          f) DONE - Need to (re)-create a page to create territory based on set criteria - manage_territory.html
          d) DONE - Need to create a page for db admin to add a conference - Quick add Modal
+
+TODO: 38) DONE - Fix CSS on detail page for title & company

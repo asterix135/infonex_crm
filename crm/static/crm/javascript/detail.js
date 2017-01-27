@@ -313,6 +313,7 @@ $(document).ready(function() {
     });
   });
 
+
   // Toggle whether person in current territory
   $('body').on('click', '.territory-toggle-button', function(){
     var personId = $('#person_id').val();
@@ -334,5 +335,15 @@ $(document).ready(function() {
       }
     });
   });
+
+
+  // Duplicate current person into new record (pre-populated)
+  $('body').on('click', '#duplicate-current-person', function(){
+    var formHtml = '<form action="/crm/new/" method="post">' +
+                   '<input type="hidden" name="dept" value="' + originalDept + '"/>' +
+                   '<input type="hidden" name="company" value="' + originalCompany + '"/>' +
+                   '</form>';
+    $(formHtml).appendTo('body').submit();
+  })
 
 });

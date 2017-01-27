@@ -14,7 +14,7 @@ from django.views import View
 
 from .forms import *
 from .models import *
-from .constants import AC_DICT
+from .constants import *
 from registration.forms import ConferenceSelectForm, ConferenceEditForm
 
 

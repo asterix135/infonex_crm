@@ -1,0 +1,26 @@
+<!-- Called from person_detail.html and from toggle_person_in_territory -->
+<span class="float-right">
+  {% if event_assignment %}
+  {% if in_territory %}
+  <span class="btn-group">
+    <button type="button" class="btn-link dropdown-toggle" data-toggle="dropdown" id="flag-button" title="Change Flag">
+      {% include 'crm/territory_addins/new_flag_detail.html' %}
+    </button>
+    <ul class="dropdown-menu list" role="menu">
+      <li class="flag-choice"><span class="glyphicon glyphicon-flag red-flag flag-icon" flag-color="red">&nbsp;Red</span></li>
+      <li class="flag-choice"><span class="glyphicon glyphicon-flag green-flag flag-icon" flag-color="green">&nbsp;Green</span></li>
+      <li class="flag-choice"><span class="glyphicon glyphicon-flag blue-flag flag-icon" flag-color="blue">&nbsp;Blue</span></li>
+      <li class="flag-choice"><span class="glyphicon glyphicon-flag black-flag flag-icon" flag-color="black">&nbsp;Black</span></li>
+      <li class="flag-choice"><span class="glyphicon glyphicon-flag yellow-flag flag-icon" flag-color="yellow">&nbsp;Yellow</span></li>
+      <li class="flag-choice"><span class="glyphicon glyphicon-flag purple-flag flag-icon" flag-color="purple">&nbsp;Purple</span></li>
+      <li class="flag-choice"><span class="glyphicon glyphicon-ban-circle no-flag flag-icon" flag-color="none">&nbsp;None</span></li><hr />
+      <li class="flag-choice" title="Remove from Territory"><span class="glyphicon glyphicon-minus territory-toggle-button territory-flag" toggle-to="exclude">&nbsp;Remove</span></li>
+    </ul>
+  </span>
+  {% else %}
+  <span class="glyphicon glyphicon-plus territory-toggle-button" id="btn-add-to-territory" title="Add to Territory" toggle-to="add"></span>
+  {% endif %}
+  {% endif %}
+  <span id="duplicate-current-person" class="glyphicon glyphicon-duplicate glyph-button" title="Copy to New Person"></span>
+  <span id="delete-person-btn" class="glyphicon glyphicon-trash errorlist glyph-button" title="Delete"></span>
+</span>

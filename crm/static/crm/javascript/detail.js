@@ -313,4 +313,26 @@ $(document).ready(function() {
     });
   });
 
+  // Toggle whether person in current territory
+  $('body').on('click', '.territory-toggle-button', function(){
+    var personId = $('#person_id').val();
+    var eventAssignmentId = $('#my-event-assignment').val();
+    var toggleTo = $(this).attr('toggle-to');
+    console.log(personId);
+    console.log(eventAssignmentId);
+    console.log(toggleTo);
+    $.ajax({
+      url: '/crm/toggle_person_in_territory/',
+      type: 'POST',
+      data: {
+        'person_id': personId,
+        'toggle_to': toggleTo,
+        'event_assignment_id': eventAssignmentId,
+      },
+      success: function(data){
+        $('#action-buttons').html(data);
+      }
+    });
+  });
+
 });

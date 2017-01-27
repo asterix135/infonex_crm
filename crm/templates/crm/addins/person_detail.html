@@ -1,5 +1,8 @@
 {% load staticfiles %}
 <div class="row">
+  {% if event_assignment %}
+  <input type="hidden" id="my-event-assignment" value="{{ event_assignment.id }}" />
+  {% endif %}
   <div id="person-description">
     {% if updated_details_success %}
     <input type="hidden" name="updated-details-success" id="updated-details-success" value="True" />
@@ -8,32 +11,9 @@
     {% endif %}
     <h1>
       {{ person.name }}
-      <span class="float-right">
-        {% if in_territory %}
-        <input type="hidden" id="my-event-assignment" value="{{ event_assignment.id }}" />
-
-        <span class="btn-group">
-          <button type="button" class="btn-link dropdown-toggle" data-toggle="dropdown" id="flag-button">
-            {% include 'crm/territory_addins/new_flag_detail.html' %}
-          </button>
-          <ul class="dropdown-menu list" role="menu">
-            <li class="flag-choice"><span class="glyphicon glyphicon-flag red-flag flag-icon" flag-color="red">&nbsp;Red</span></li>
-            <li class="flag-choice"><span class="glyphicon glyphicon-flag green-flag flag-icon" flag-color="green">&nbsp;Green</span></li>
-            <li class="flag-choice"><span class="glyphicon glyphicon-flag blue-flag flag-icon" flag-color="blue">&nbsp;Blue</span></li>
-            <li class="flag-choice"><span class="glyphicon glyphicon-flag black-flag flag-icon" flag-color="black">&nbsp;Black</span></li>
-            <li class="flag-choice"><span class="glyphicon glyphicon-flag yellow-flag flag-icon" flag-color="yellow">&nbsp;Yellow</span></li>
-            <li class="flag-choice"><span class="glyphicon glyphicon-flag purple-flag flag-icon" flag-color="purple">&nbsp;Purple</span></li>
-            <li class="flag-choice"><span class="glyphicon glyphicon-ban-circle no-flag flag-icon" flag-color="none">&nbsp;None</span></li>
-          </ul>
-        </span>
-        {% else %}
-        <span class="glyphicon glyphicon-plus" id="btn-add-to-territory"></span>
-        {% endif %}
-        <span id="duplicate-current-person" class="glyphicon glyphicon-duplicate glyph-button"></span>
-        <span id="delete-person-btn" class="glyphicon glyphicon-trash errorlist glyph-button"></span>
+      <span id="action-buttons">
+        {% include 'crm/addins/detail_flag_toggle.html' %}
       </span>
-
-
       <span id="linkedin-link" class="float-right">
         {% if person.linkedin %}
         <a href="http://{{ person.linkedin }}" target="_blank">

@@ -7,13 +7,13 @@ urlpatterns = [
     # url(r'^(?P<person_id>[0-9]+)/add_person_to_territory/$',
     #     views.add_person_to_territory, name='add_person_to_territory'),
     # ex /crm/detail_paginated/
-    url(r'^detail_paginated/$',
-        views.detail_paginated,
-        name='detail_paginated'),
+    # url(r'^detail_paginated/$',
+    #     views.detail_paginated,
+    #     name='detail_paginated'),
     # ex: /crm/flag_record/
-    url(r'^flag_record/$', views.flag_record, name='flag_record'),
+    # url(r'^flag_record/$', views.flag_record, name='flag_record'),
     # ex /crm/set_territory/
-    url(r'^set_territory/$', views.set_territory_params, name='set_territory'),
+    # url(r'^set_territory/$', views.set_territory_params, name='set_territory'),
 
 
     ################
@@ -39,8 +39,6 @@ urlpatterns = [
         name='add_contact_history'),
     url(r'^add_master_list_select/$', views.add_master_list_select,
         name='add_master_list_select'),
-    url(r'^add_person_to_territory/$', views.add_person_to_territory,
-        name='add_person_to_territory'),
     url(r'^add_personal_list_select/$', views.add_personal_list_select,
         name='add_personal_list_select'),
     url(r'^change_flag/$', views.change_flag, name='change_flag'),
@@ -71,6 +69,8 @@ urlpatterns = [
     url(r'^suggest_dept/$', views.suggest_dept, name='suggest_dept'),
     url(r'^suggest_industry/$', views.suggest_industry,
         name='suggest_industry'),
+    url(r'^toggle_person_in_territory/$', views.toggle_person_in_territory,
+        name='toggle_person_in_territory'),
     url(r'^toggle_territory_filter/$', views.toggle_territory_filter,
         name='toggle_territory_filter'),
     url(r'^update_user_assignments/$', views.update_user_assignments,
@@ -79,11 +79,11 @@ urlpatterns = [
     ################
     # TO BE DELETED
     ################
-    url(r'^(?P<person_id>[0-9]+)/$', views.detail_old, name='detail_old'),
-    url(r'^territory_list/$', views.territory_list, name='territory_list'),
-    url(r'^new_person/$', views.new_person, name='new_person'),
-    url(r'^(?P<person_id>[0-9]+)/confirm_delete/$', views.confirm_delete,
-        name='confirm_delete'),
-    url(r'^delete_person/$', views.delete_person, name='delete_person'),
+    # url(r'^(?P<person_id>[0-9]+)/$', views.detail_old, name='detail_old'),
+    # url(r'^territory_list/$', views.territory_list, name='territory_list'),
+    # url(r'^new_person/$', views.new_person, name='new_person'),
+    # url(r'^(?P<person_id>[0-9]+)/confirm_delete/$', views.confirm_delete,
+    #     name='confirm_delete'),
+    # url(r'^delete_person/$', views.delete_person, name='delete_person'),
 
 ]

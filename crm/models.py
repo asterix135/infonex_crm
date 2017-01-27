@@ -423,9 +423,7 @@ class MasterListSelections(models.Model):
                                        default='include')
 
 
-# Under construction for overhaul
-# THIS NEEDS TO BECOME THE INDIVIDUAL SELECTION MODEL, WHICH MEANS
-# IT'LL PROBABLY BE COMPLICATED
+# Seems good - Keep this
 class PersonalListSelections(models.Model):
     GEO_CHOICES = (
         ('East', 'East'),

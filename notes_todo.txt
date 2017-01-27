@@ -5,10 +5,10 @@ See avoiding race conditions using F()
 next #: 37
 
 TODO: 8) (BIG) rework territory stuff
-         r) ADd person to territory
          q) Check if the link on the sidebar takes me to the last territory page or page 1 (as a navigation method)
-         p) Update manage_territory view to hide person-only selects (server-side)
-         c) Need to update detail.html to show dynamic content based on whether working a conference
+         p) DONE - Update manage_territory view to hide person-only selects (template-side)
+         r) DONE - Add person to territory
+         c) DONE - Need to update detail.html to show dynamic content based on whether working a conference
          l) DONE - Implement filter method
          i) DONE - Create user territory list page (recycle search???)
          o) DONE - Update personal list generator to include person selects if for user
@@ -22,6 +22,8 @@ TODO: 8) (BIG) rework territory stuff
          b) DONE - Need to (re)-create page showing all people in territory - territory.html
          f) DONE - Need to (re)-create a page to create territory based on set criteria - manage_territory.html
          d) DONE - Need to create a page for db admin to add a conference - Quick add Modal
+
+TODO: 38) Fix CSS on detail page for title & company
 
 TODO: 37) Active button to create new record based on current
 

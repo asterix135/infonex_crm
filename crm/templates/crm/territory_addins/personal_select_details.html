@@ -58,6 +58,7 @@
       </tr>
       {% for select in list_selects %}
       {% if filter_value or select.include_exclude == 'add' or select.include_exclude == 'exclude' %}
+      {% if not select.person %}
       <tr>
         <input type="hidden" name="select_id" value="{{ select.id }}">
         <td>{{ select.include_exclude }}</td>
@@ -71,6 +72,7 @@
         <td>{{ select.company }}</td>
         <td><button type="submit" class="btn btn-secondary btn-delete-personal-select" select-value="{{ select.id }}">Delete</button></td>
       </tr>
+      {% endif %}
       {% endif %}
       {% endfor %}
     </tbody>

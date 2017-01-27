@@ -3,23 +3,6 @@ from . import views
 
 app_name = 'crm'
 urlpatterns = [
-    # ex: /crm/1234/add_person_to_territory/
-    # url(r'^(?P<person_id>[0-9]+)/add_person_to_territory/$',
-    #     views.add_person_to_territory, name='add_person_to_territory'),
-    # ex /crm/detail_paginated/
-    # url(r'^detail_paginated/$',
-    #     views.detail_paginated,
-    #     name='detail_paginated'),
-    # ex: /crm/flag_record/
-    # url(r'^flag_record/$', views.flag_record, name='flag_record'),
-    # ex /crm/set_territory/
-    # url(r'^set_territory/$', views.set_territory_params, name='set_territory'),
-
-
-    ################
-    # REWORKED STUFF BELOW HERE
-    ################
-
     ################
     # MAIN PAGES
     ################
@@ -75,15 +58,4 @@ urlpatterns = [
         name='toggle_territory_filter'),
     url(r'^update_user_assignments/$', views.update_user_assignments,
         name='update_user_assignments'),
-
-    ################
-    # TO BE DELETED
-    ################
-    # url(r'^(?P<person_id>[0-9]+)/$', views.detail_old, name='detail_old'),
-    # url(r'^territory_list/$', views.territory_list, name='territory_list'),
-    # url(r'^new_person/$', views.new_person, name='new_person'),
-    # url(r'^(?P<person_id>[0-9]+)/confirm_delete/$', views.confirm_delete,
-    #     name='confirm_delete'),
-    # url(r'^delete_person/$', views.delete_person, name='delete_person'),
-
 ]

@@ -30,7 +30,7 @@
         {% include 'crm/addins/recently_viewed.html' %}
       </div>
     </div>
-    {% if request.path|slice:"5:11" == 'detail' or request.path|slice:"5:11" == 'search' %}
+    {% if request.path|slice:"5:11" == 'detail' or request.path|slice:"5:11" == 'search' or request.path|slice"5:14" == 'territory' %}
     <a class="list-group-item" href="/crm/new/">Add new contact</a>
     {% endif %}
 

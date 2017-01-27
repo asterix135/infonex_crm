@@ -293,4 +293,24 @@ $(document).ready(function() {
     $('#delete-person-form').submit();
   })
 
+
+  // Process flag change
+  $('body').on('click', '.flag-icon', function(){
+    var personId = $('#person_id').val();
+    var flagColor = $(this).attr('flag-color');
+    var eventAssignmentId = $('#my-event-assignment').val();
+    $.ajax({
+      url: '/crm/change_flag/',
+      type: 'POST',
+      data: {
+        'person_id': personId,
+        'flag_color': flagColor,
+        'event_assignment_id': eventAssignmentId,
+      },
+      success: function(data){
+        $('#flag-button').html(data);
+      }
+    });
+  });
+
 });

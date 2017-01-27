@@ -1,0 +1,17 @@
+.flag-icon {
+  padding-left: 15px;
+  padding-right: 10px;
+  cursor: default;
+}
+.flag-icon:hover {
+  background-color: #0069D9;
+  color: white;
+}
+.flag-choice{
+  font-size: 150%;
+}
+.flag-choice:hover {
+  background-color: #0069D9;
+  color: white;
+  cursor: default;
+}

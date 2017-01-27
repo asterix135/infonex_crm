@@ -5,6 +5,8 @@ See avoiding race conditions using F()
 next #: 37
 
 TODO: 8) (BIG) rework territory stuff
+         r) ADd person to territory
+         q) Check if the link on the sidebar takes me to the last territory page or page 1 (as a navigation method)
          p) Update manage_territory view to hide person-only selects (server-side)
          c) Need to update detail.html to show dynamic content based on whether working a conference
          l) DONE - Implement filter method
@@ -21,22 +23,25 @@ TODO: 8) (BIG) rework territory stuff
          f) DONE - Need to (re)-create a page to create territory based on set criteria - manage_territory.html
          d) DONE - Need to create a page for db admin to add a conference - Quick add Modal
 
+TODO: 37) Active button to create new record based on current
+
+TODO: 23) If territory exists: new person should pre-populate categorization with relevant details
+         (This means updating crm.new.py)
+
 TODO: 33) In crm.views.py/load_staff_category_selects, fix the except: pass
 
 TODO: 31) Add New Person link to top bar (dynamically)
+
+TODO: 26) Date picker widget (https://jqueryui.com/datepicker/)
+
+TODO: 2) Implement new table for invoices
+
+TODO: 9) Play with pdf maker (ReportLab) and create new invoice & reg note
 
 TODO: 34) registration/forms.py/ConferenceEditForm.clean()
 
 TODO: 35) Check if registration works with event minimally added in crm - popup if first delegate????
 
-TODO: 23) If territory exists: new person should pre-populate categorization with relevant details
-          (This means updating crm.new.py)
-
-TODO: 2) Implement new table for invoices
-
-TODO: 26) Date picker widget (https://jqueryui.com/datepicker/)
-
-TODO: 9) Play with pdf maker (ReportLab) and create new invoice & reg note
 TODO: 10) Post-registration processing page
 TODO: 19) How to send email confirmations?
 TODO: 11) Search and update registration information
@@ -58,8 +63,6 @@ TODO: 25) Booking system for upcoming appointments
 
 TODO: 28) if no admin access, set error page for accessing admin page
 
-Long-term/iffy stuff:
-1) register.index - consider reg button beside names (not hidden) - unsure
-3) Personal notes??  I think everything should be open
-
-DONE-ish: 36) Test the manage_territory function thoroughly.  Maybe write tests???
+#############
+# DONE
+#############

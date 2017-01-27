@@ -149,7 +149,7 @@ def detail_old(request, person_id):
 
 
 @login_required
-def add_person_to_territory(request, person_id):
+def add_person_to_territory_old(request, person_id):
     person = Person.objects.get(pk=person_id)
     event = Event.objects.get(pk=request.session.get('event'))
     employee = User.objects.get(pk=request.session.get('employee'))
@@ -1225,6 +1225,9 @@ def detail(request, person_id):
     """ loads main person page (detail.html) """
     new_contact_form = NewContactForm()
     reg_list = None
+    flag = None
+    in_territory = False
+    event_assignment = None
     try:
         person = Person.objects.get(pk=person_id)
         add_to_recent_contacts(request, person_id)
@@ -1243,7 +1246,28 @@ def detail(request, person_id):
         raise Http404('Person is not in the Database')
     person_details_form = PersonDetailsForm(instance=person)
     category_form = PersonCategoryUpdateForm(instance=person)
+
+    # Check if person is part of current territory - if so fetch flag details
+    if 'assignment_id' in request.session:
+        try:
+            event_assignment = EventAssignment.objects.get(
+                pk=request.session['assignment_id']
+            )
+            my_territory = build_user_territory_list(event_assignment, True)
+            if my_territory.filter(id=person.id).exists():
+                in_territory = True
+                try:
+                    flag = Flags.objects.get(person=person,
+                                             event_assignment=event_assignment)
+                except Flags.DoesNotExist:
+                    pass  # default variable settings are fine
+        except EventAssignment.DoesNotExist:
+            pass  # default variable settings are fine
+
     context = {
+        'flag': flag,
+        'in_territory': in_territory,
+        'event_assignment': event_assignment,
         'my_territories': get_my_territories(request.user),
         'person': person,
         'person_details_form': person_details_form,
@@ -1681,11 +1705,14 @@ def add_personal_list_select(request):
                   context)
 
 
+def add_person_to_territory(request):
+    pass
+
 @login_required
 def change_flag(request):
     """
     ajax call to change flag value for an individual
-    called from territory.html and hopefully from detail.html
+    called from territory.html and from detail.html
     """
     flag = None
     if request.method != 'POST':

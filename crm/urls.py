@@ -4,8 +4,8 @@ from . import views
 app_name = 'crm'
 urlpatterns = [
     # ex: /crm/1234/add_person_to_territory/
-    url(r'^(?P<person_id>[0-9]+)/add_person_to_territory/$',
-        views.add_person_to_territory, name='add_person_to_territory'),
+    # url(r'^(?P<person_id>[0-9]+)/add_person_to_territory/$',
+    #     views.add_person_to_territory, name='add_person_to_territory'),
     # ex /crm/detail_paginated/
     url(r'^detail_paginated/$',
         views.detail_paginated,
@@ -39,6 +39,8 @@ urlpatterns = [
         name='add_contact_history'),
     url(r'^add_master_list_select/$', views.add_master_list_select,
         name='add_master_list_select'),
+    url(r'^add_person_to_territory/$', views.add_person_to_territory,
+        name='add_person_to_territory'),
     url(r'^add_personal_list_select/$', views.add_personal_list_select,
         name='add_personal_list_select'),
     url(r'^change_flag/$', views.change_flag, name='change_flag'),

@@ -228,29 +228,6 @@ class EventAssignment(models.Model):
         return self.role + ': ' + str(self.user) + ' - ' + str(self.event)
 
 
-# DELETE THIS WHEN OLD FORMS REMOVED
-class RegHistory(models.Model):
-    """
-    Registration history - not to be altered by normal users
-    """
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event)
-    STATUS_CHOICES = (
-        ('DELEGATE', 'Paying Delegate'),
-        ('SPEAKER', 'Speaker'),
-        ('GUEST', 'Guest (non-revenue)'),
-        ('SPONSOR', 'Sponsor Representative'),
-        ('CANCEL', 'Cancelled Delegate'),
-        ('OTHER', 'Other attendee'),
-    )
-    status = models.CharField(max_length=10,
-                              choices=STATUS_CHOICES,
-                              default='DELEGATE')
-
-    def __str__(self):
-        return str(self.event) + ': ' + self.status
-
-
 # OK PER OVERHAUL
 class Contact(models.Model):
     """
@@ -301,79 +278,6 @@ class DeletedContact(models.Model):
     date_of_contact = models.DateTimeField('date of contact')
     notes = models.TextField()
     method = models.CharField(max_length=20)
-
-
-# TO BE DELETED ONCE TERRITORY OVERHAUL IS COMPLETE
-class ListSelection(models.Model):
-    """
-    Pre-set selection criteria for sales reps etc.
-    """
-    employee = models.ForeignKey('auth.User')
-    event = models.ForeignKey(Event)
-    person = models.ForeignKey(Person, blank=True, null=True)
-    GEO_CHOICES = (
-        ('East', 'East'),
-        ('West', 'West'),
-        ('Maritimes/East', 'Maritimes'),
-        ('USA', 'USA'),
-        ('Other', 'Other Foreign'),
-        ('Unknown', 'Unknown'),
-        ('', '---'),
-    )
-    geo = models.CharField(max_length=10,
-                           choices=GEO_CHOICES,
-                           blank=True,
-                           default='')
-    CAT_CHOICES = (
-        ('HR', 'HR'),
-        ('FIN', 'FIN'),
-        ('Industry', 'Industry'),
-        ('Aboriginal', 'Aboriginal'),
-        ('Gov', 'Gov'),
-        ('NA', 'None'),
-        ('', '---'),
-    )
-    main_category = models.CharField(max_length=25,
-                                     choices=CAT_CHOICES,
-                                     blank=True,
-                                     default='')  # f1 in original db
-    main_category2 = models.CharField(max_length=15,
-                                      choices=CAT_CHOICES,
-                                      blank=True,
-                                      default='')
-    DIV_CHOICES = (
-        ('1', '1 - Misc'),
-        ('2', '2 - Misc'),
-        ('3', '3 - Misc'),
-        ('4', '4 - Misc'),
-        ('5', '5 - Misc'),
-        ('6', '6 - Misc'),
-        ('A1', '1 - Accounting'),
-        ('A2', '2 - Accounting'),
-        ('A3', '3 - Accounting'),
-        ('Aboriginal', 'Aboriginal'),
-        ('FED 1', 'FED 1'),
-        ('FED 2', 'FED 2'),
-        ('FED 3', 'FED 3'),
-        ('FED 4', 'FED 4'),
-        ('USA', 'USA'),
-        ('NA', 'Not Determined'),
-        ('', '---'),
-    )
-    division1 = models.CharField(max_length=20,
-                                 choices=DIV_CHOICES,
-                                 blank=True,
-                                 default='')  # for splitting leads
-    division2 = models.CharField(max_length=20,
-                                 choices=DIV_CHOICES,
-                                 blank=True,
-                                 default='')  # for splitting leads
-    company = models.CharField(max_length=100, blank=True)
-    industry = models.CharField(max_length=100, blank=True)
-    include_exclude = models.CharField(max_length=7,
-                                       choices=(('include', 'include'),
-                                                ('exclude', 'exclude')),
-                                       default='include')
 
 
 # NEW - KEEP THIS
@@ -494,26 +398,6 @@ class PersonalListSelections(models.Model):
     company = models.CharField(max_length=100, blank=True, null=True)
     industry = models.CharField(max_length=100, blank=True, null=True)
     dept = models.CharField(max_length=255, blank=True, null=True)
-
-
-# CANNIBALIZE AND DELETE
-class PersonFlag(models.Model):
-    """
-    Flags allowing individual user to id records for followup or action
-    """
-    employee = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-
-    flag = models.CharField(max_length=1,
-                            choices=FLAG_CHOICES,
-                            blank=True,
-                            default='')
-    follow_up_date = models.DateField(blank=True, null=True)
-
-    def __str__(self):
-        return self.flag + ' ' + str(self.employee) + ' ' + \
-               str(self.event) + ' ' + str(self.person)
 
 
 class Flags(models.Model):

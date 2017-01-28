@@ -14,14 +14,14 @@ $(document).ready(function() {
   var originalDoNotEmail = $('#id_do_not_email').prop('checked');
   var originalLinkedIn = $('#id_linkedin').val();
   var originalUrl = $('#id_url').val();
-  var originalIndustry = $('id_industry').val();
+  var originalIndustry = $('#id_industry').val();
   // for category form
   var originalCatDept = $('#person-category-form-fields #id_dept').val();
   var originalCatGeo = $('#id_geo').val();
   var originalCatCat1 = $('#id_main_category').val();
   var originalCatCat2 = $('#id_main_category2').val();
   var originalCatDiv1 = $('#id_division1').val();
-  var originalCagDiv2 = $('#id_division2').val();
+  var originalCatDiv2 = $('#id_division2').val();
 
 
   // open person's website in new page
@@ -236,7 +236,7 @@ $(document).ready(function() {
     $('#id_main_category').val(originalCatCat1);
     $('#id_main_category2').val(originalCatCat2);
     $('#id_division1').val(originalCatDiv1);
-    $('#id_division2').val(originalCagDiv2);
+    $('#id_division2').val(originalCatDiv2);
   });
 
 
@@ -269,7 +269,7 @@ $(document).ready(function() {
           originalCatCat1 = $('#id_main_category', data).val();
           originalCatCat2 = $('#id_main_category2', data).val();
           originalCatDiv1 = $('#id_division1', data).val();
-          originalCagDiv2 = $('#id_division2', data).val();
+          originalCatDiv2 = $('#id_division2', data).val();
         }
       }
     });
@@ -339,11 +339,33 @@ $(document).ready(function() {
 
   // Duplicate current person into new record (pre-populated)
   $('body').on('click', '#duplicate-current-person', function(){
+    var csrfToken = null;
+    var i = 0;
+    if (document.cookie && document.cookie !== ''){
+      var cookies = document.cookie.split(';');
+      for (i; i < cookies.length; i++){
+        var cookie = jQuery.trim(cookies[i]);
+        if (cookie.substring(0,10) === 'csrftoken='){
+          csrfToken = decodeURIComponent(cookie.substring(10));
+          break;
+        };
+      };
+    };
     var formHtml = '<form action="/crm/new/" method="post">' +
-                   '<input type="hidden" name="dept" value="' + originalDept + '"/>' +
+                   '<input name="csrfmiddlewaretoken" value="' + csrfToken +'" type="hidden"/>' +
+                   '<input type="hidden" name="dept" value="' + originalCatDept + '"/>' +
                    '<input type="hidden" name="company" value="' + originalCompany + '"/>' +
+                   '<input type="hidden" name="city" value="' + originalCity + '"/>' +
+                   '<input type="hidden" name="phone_main" value="' + originalPhoneMain + '"/>' +
+                   '<input type="hidden" name="url" value="' + originalUrl + '"/>' +
+                   '<input type="hidden" name="industry" value="' + originalIndustry + '"/>' +
+                   '<input type="hidden" name="geo" value="' + originalCatGeo + '"/>' +
+                   '<input type="hidden" name="main_category" value="' + originalCatCat1 + '"/>' +
+                   '<input type="hidden" name="main_category2" value="' + originalCatCat2 + '"/>' +
+                   '<input type="hidden" name="division1" value="' + originalCatDiv1 + '"/>' +
+                   '<input type="hidden" name="division2" value="' + originalCatDiv2 + '"/>' +
                    '</form>';
     $(formHtml).appendTo('body').submit();
-  })
+  });
 
 });

@@ -470,6 +470,26 @@ def new(request):
     """
     if request.method != 'POST':
         new_person_form = NewPersonForm()
+        if 'assignment_id' in request.session:
+            try:
+                event_assignment = EventAssignment.objects.get(
+                    pk=request.session['assignment_id']
+                )
+                master_fields = ['geo', 'main_category', 'main_category2',
+                                 'dept']
+                event = event_assignment.event
+                form_data = {}
+                general_selects = MasterListSelections.objects.filter(
+                    event=event
+                )
+
+                ## NEED TO GO THROUGH FIELDS & SELECTS
+
+                personal_fields = master_fields.extend(['division1',
+                                                        'division2'])
+                new_person_form = NewPersonForm(form_data)
+            except EventAssignment.DoesNotExist:
+                pass  # blank form is OK
         context = {
             'my_territories': get_my_territories(request.user),
             'new_person_form': new_person_form
@@ -485,7 +505,9 @@ def new(request):
         return render(request, 'crm/new.html', context)
     person = new_person_form.save(commit=False)
     person.created_by=request.user
+    person.date_created = timezone.now()
     person.modified_by=request.user
+    person.date_modified = timezone.now()
     person.save()
     add_to_recent_contacts(request, person.pk)
     return HttpResponseRedirect(reverse('crm:detail', args=(person.id,)))
@@ -1379,6 +1401,7 @@ def toggle_person_in_territory(request):
         'event_assignment': event_assignment,
     }
     return render(request, 'crm/addins/detail_flag_toggle.html', context)
+
 
 @login_required
 def toggle_territory_filter(request):

@@ -4,8 +4,6 @@ See avoiding race conditions using F()
 
 next #: 39
 
-TODO: 37) Active button to create new record based on current
-
 TODO: 23) If territory exists: new person should pre-populate categorization with relevant details
          (This means updating crm.new.py)
 
@@ -67,3 +65,5 @@ TODO: 8) DONE - (BIG) rework territory stuff
          d) DONE - Need to create a page for db admin to add a conference - Quick add Modal
 
 TODO: 38) DONE - Fix CSS on detail page for title & company
+
+TODO: 37) DONE - Active button to create new record based on current

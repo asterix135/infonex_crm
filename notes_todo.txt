@@ -6,7 +6,7 @@ next #: 41
 
 TODO: 31) Add New Person link to top bar (dynamically)
 
-TODO: 39) Fix placement of CRM etc in top bar
+TODO: 39) Fix placement of CRM etc in top bar: Need to add registration link to CRM
 
 TODO: 40) Get rid of jumbotron except on home pages; add logo to top bar
 

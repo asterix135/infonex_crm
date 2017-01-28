@@ -62,11 +62,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">Home</a>
+          <a class="navbar-brand" href="/"><img src={% static 'crm/images/INFONEX-logo.png' %} height="25"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="{% url 'crm:index' %}">CRM Home</a></li>
+            <li><a href="{% url 'crm:index' %}">CRM</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}

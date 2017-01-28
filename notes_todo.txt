@@ -2,12 +2,13 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
-next #: 39
-
-TODO: 23) If territory exists: new person should pre-populate categorization with relevant details
-         (This means updating crm.new.py)
+next #: 41
 
 TODO: 31) Add New Person link to top bar (dynamically)
+
+TODO: 39) Fix placement of CRM etc in top bar
+
+TODO: 40) Get rid of jumbotron except on home pages; add logo to top bar
 
 TODO: 26) Date picker widget (https://jqueryui.com/datepicker/)
 
@@ -67,3 +68,6 @@ TODO: 8) DONE - (BIG) rework territory stuff
 TODO: 38) DONE - Fix CSS on detail page for title & company
 
 TODO: 37) DONE - Active button to create new record based on current
+
+TODO: 23) DONE - If territory exists: new person should pre-populate categorization with relevant details
+         (This means updating crm.new.py)

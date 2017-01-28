@@ -482,12 +482,27 @@ def new(request):
                 general_selects = MasterListSelections.objects.filter(
                     event=event
                 )
-
-                ## NEED TO GO THROUGH FIELDS & SELECTS
+                for select in general_selects:
+                    for field_name in master_fields:
+                        if getattr(select, field_name) not in ('', None):
+                            form_data[field_name] = getattr(select, field_name)
+                            master_fields.pop(field_name)
+                        if len(master_fields) == 0:
+                            break
 
                 personal_fields = master_fields.extend(['division1',
                                                         'division2'])
-                new_person_form = NewPersonForm(form_data)
+                personal_selects = PersonalListSelections.objects.filter(
+                    event_assignment=event_assignment
+                )
+                for select in personal_selects:
+                    for field_name in personal_fields:
+                        if getattr(select, field_name) not in ('', None):
+                            form_data[field_name] = getattr(select, field_name)
+                            personal_fields.pop(field_name)
+                        if len(personal_fields) == 0:
+                            break
+                new_person_form = NewPersonForm(initial=form_data)
             except EventAssignment.DoesNotExist:
                 pass  # blank form is OK
         context = {
@@ -496,8 +511,11 @@ def new(request):
         }
         return render(request, 'crm/new.html', context)
 
-    new_person_form = NewPersonForm(request.POST)
-    if not new_person_form.is_valid():
+    if 'dupe_creation' in request.POST:
+        new_person_form = NewPersonForm(initial = dict(request.POST.items()))
+    else:
+        new_person_form = NewPersonForm(request.POST)
+    if 'dupe_creation' in request.POST or not new_person_form.is_valid():
         context = {
             'my_territories': get_my_territories(request.user),
             'new_person_form': new_person_form,

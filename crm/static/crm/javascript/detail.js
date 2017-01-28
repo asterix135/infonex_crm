@@ -364,6 +364,7 @@ $(document).ready(function() {
                    '<input type="hidden" name="main_category2" value="' + originalCatCat2 + '"/>' +
                    '<input type="hidden" name="division1" value="' + originalCatDiv1 + '"/>' +
                    '<input type="hidden" name="division2" value="' + originalCatDiv2 + '"/>' +
+                   '<input type="hidden" name="dupe_creation" value=""/>' +
                    '</form>';
     $(formHtml).appendTo('body').submit();
   });

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load staticfiles %}
+{% load crm_extras %}
 
 <html lang="en">
 
@@ -67,6 +68,11 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="{% url 'crm:index' %}">CRM</a></li>
+            {% if request.user|has_group:'db_admin' or request.user|has_group:'management' or request.user|has_group:'registration' or request.user.is_superuser %}
+            <li>
+              <a href="{% url 'registration:index' %}">Registration</a>
+            </li>
+            {% endif %}
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
@@ -80,14 +86,6 @@
             {% endif %}
           </ul>
         </div>
-      </div>
-    </div>
-    <div class="jumbotron">
-      <div class="container">
-        <h1>
-          <a href="{% url 'home:index' %}"><img src={% static 'crm/images/INFONEX-logo.png' %}></a>&nbsp;&nbsp;
-          CRM System
-        </h1>
       </div>
     </div>
     {% block content %}

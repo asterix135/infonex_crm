@@ -6,6 +6,14 @@
 {% endblock %}
 
 {% block content %}
+<div class="jumbotron">
+  <div class="container">
+    <h1>
+      <a href="{% url 'home:index' %}"><img src={% static 'crm/images/INFONEX-logo.png' %}></a>&nbsp;&nbsp;
+      CRM System
+    </h1>
+  </div>
+</div>
 <div class="container-fluid fill">
   <div class="row row-offcanvas row-offcanvas-right">
     <div class="col-xs-12 col-sm-9 col-sm-push-3">

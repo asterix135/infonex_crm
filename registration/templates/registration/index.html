@@ -1,5 +1,15 @@
 {% extends 'registration/base.html' %}
+{% load staticfiles %}
+
 {% block content %}
+<div class="jumbotron">
+  <div class="container">
+    <h1>
+      <a href="{% url 'home:index' %}"><img src={% static 'crm/images/INFONEX-logo.png' %}></a>&nbsp;&nbsp;
+      Registration System
+    </h1>
+  </div>
+</div>
 <div class="container">
   <div class="row">
     <div class="col-sm-4">

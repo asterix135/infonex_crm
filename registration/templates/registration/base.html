@@ -61,8 +61,8 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="{% url 'registration:index' %}">Registration</a></li>
             <li><a href="{% url 'crm:index' %}">CRM</a></li>
+            <li><a href="{% url 'registration:index' %}">Registration</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
@@ -72,14 +72,6 @@
             {% endif %}
           </ul>
         </div>
-      </div>
-    </div>
-    <div class="jumbotron">
-      <div class="container">
-        <h1>
-          <a href="{% url 'home:index' %}"><img src={% static 'crm/images/INFONEX-logo.png' %}></a>&nbsp;&nbsp;
-          Registration System
-        </h1>
       </div>
     </div>
     {% block content %}

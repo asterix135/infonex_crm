@@ -12,11 +12,11 @@ $(document).ready(function(){
         if (cookie.substring(0, name.length + 1) === (name + '=')) {
           cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
           break;
-        }
-      }
-    }
+        };
+      };
+    };
     return cookieValue;
-  }
+  };
   var csrftoken = getCookie('csrftoken');
 
   function csrfSafeMethod(method) {

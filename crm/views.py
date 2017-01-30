@@ -451,11 +451,16 @@ def manage_territory(request):
     if request.method == 'POST':
         new_conference_form = ConferenceEditForm(request.POST)
         if new_conference_form.is_valid():
+            print('form is valid')
             new_event = new_conference_form.save(commit=False)
             new_event.created_by = request.user
             new_event.modified_by = request.user
             new_event.save()
             new_conference_form = ConferenceEditForm()
+        else:
+            for field in new_conference_form:
+                if field.errors:
+                    print(field, field.errors)
     context = {
         'conference_select_form': conference_select_form,
         'new_conference_form': new_conference_form

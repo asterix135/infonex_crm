@@ -51,6 +51,9 @@ class NewDelegateSearchForm(forms.Form):
 
 
 class ConferenceEditForm(forms.ModelForm):
+    gst_rate = forms.FloatField(required=False)
+    hst_rate = forms.FloatField(required=False)
+    qst_rate = forms.FloatField(required=False)
 
     class Meta():
         model = Event

@@ -283,7 +283,7 @@ class PersonalTerritorySelects(forms.ModelForm):
         model = PersonalListSelections
         fields = ('geo', 'main_category', 'main_category2', 'company',
                   'industry', 'include_exclude', 'dept', 'division1',
-                  'division2')
+                  'division2', 'title')
         labels = {
             'dept': _('Department'),
             'geo': _('Geographic Group'),
@@ -319,7 +319,10 @@ class PersonalTerritorySelects(forms.ModelForm):
             ),
             'division2': forms.Select(
                 attrs={'class': 'form-control'}
-            )
+            ),
+            'title': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
         }
 
     def __init__(self, *args, **kwargs):

@@ -112,8 +112,9 @@ $(document).ready(function() {
     var dept = $('#personal-select-details #id_dept').val();
     var division1 = $('#personal-select-details #id_division1').val();
     var division2 = $('#personal-select-details #id_division2').val();
+    var title = $('#personal-select-details #id_title').val();
 
-    if (mainCategory || geo || industry || company || dept || division1 || division2) {
+    if (mainCategory || geo || industry || company || dept || division1 || division2 || title) {
       $.ajax({
         url: '/crm/add_personal_list_select/',
         type: 'POST',
@@ -129,6 +130,7 @@ $(document).ready(function() {
           'dept': dept,
           'division1': division1,
           'division2': division2,
+          'title': title,
         },
         success: function(data){
           $('#person-select-options').html(data);

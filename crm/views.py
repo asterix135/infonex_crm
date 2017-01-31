@@ -237,7 +237,8 @@ def build_user_territory_list(event_assignment_object, for_staff_member=False):
                   'geo': 'geo',
                   'industry': 'industry__icontains',
                   'company': 'company__icontains',
-                  'dept': 'dept__icontains'}
+                  'dept': 'dept__icontains',
+                  'title': 'title__icontains',}
     if for_staff_member:
         field_dict['person'] = 'pk'
     filter_main = event_assignment_object.filter_master_selects

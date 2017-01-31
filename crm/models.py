@@ -396,6 +396,7 @@ class PersonalListSelections(models.Model):
                                  blank=True,
                                  default='')  # for splitting leads
     company = models.CharField(max_length=100, blank=True, null=True)
+    title = models.CharField(max_length=100, blank=True, null=True)
     industry = models.CharField(max_length=100, blank=True, null=True)
     dept = models.CharField(max_length=255, blank=True, null=True)
 

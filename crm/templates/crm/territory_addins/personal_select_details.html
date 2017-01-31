@@ -4,15 +4,16 @@
   <table class="table">
     <thead class="thead-inverse">
       <tr>
-        <th width="10%">Include/Exclude</th>
-        <th width="10%">Sales Division 1</th>
-        <th width="10%">Sales Division 2</th>
-        <th width="10%">Main Category (f1)</th>
-        <th width="10%">Main Category 2</th>
-        <th width="10%">Geo</th>
-        <th width="10%">Dept</th>
-        <th width="10%">Industry</th>
+        <th width="9%">Include/Exclude</th>
+        <th width="9%">Sales Division 1</th>
+        <th width="9%">Sales Division 2</th>
+        <th width="9%">Main Category (f1)</th>
+        <th width="9%">Main Category 2</th>
+        <th width="9%">Geo</th>
+        <th width="9%">Dept</th>
+        <th width="9%">Industry</th>
         <th width="10%">Company Name</th>
+        <th width="9%">Title</th>
         <th width="10%">Save/Delete</th>
       </tr>
     </thead>
@@ -54,6 +55,10 @@
           {{ select_form.company.errors }}
           {{ select_form.company }}
         </td>
+        <td>
+          {{ select_form.title.errors }}
+          {{ select_form.title }}
+        </td>
         <td><button type="button" class="btn btn-primary" id="btn-add-new-personal-select">Save</button></td>
       </tr>
       {% for select in list_selects %}
@@ -69,6 +74,7 @@
         <td>{{ select.geo }}</td>
         <td>{{ select.dept }}</td>
         <td>{{ select.industry }}</td>
+        <td>{{ select.title }}</td>
         <td>{{ select.company }}</td>
         <td><button type="submit" class="btn btn-secondary btn-delete-personal-select" select-value="{{ select.id }}">Delete</button></td>
       </tr>

@@ -77,7 +77,7 @@ h1, h2, h3 {
 }
 .required-label {
   color: #BA2421;
-  font: bold;
+  font-weight: bold;
 }
 .btn-space {
   margin-right: 5px;

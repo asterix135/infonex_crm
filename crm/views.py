@@ -498,8 +498,7 @@ def new(request):
                     if len(master_fields) == 0:
                         break
 
-                personal_fields = master_fields.extend(['division1',
-                                                        'division2'])
+                personal_fields = master_fields + ['division1', 'division2']
                 personal_selects = PersonalListSelections.objects.filter(
                     event_assignment=event_assignment
                 )

@@ -37,6 +37,8 @@ TODO: 25) Booking system for upcoming appointments
 
 TODO: 28) if no admin access, set error page for accessing admin page
 
+TODO: 42) See what other flags a person has???
+
 #############
 # DONE
 #############

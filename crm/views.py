@@ -495,6 +495,8 @@ def new(request):
                             master_fields.pop(field_name)
                         if len(master_fields) == 0:
                             break
+                    if len(master_fields) == 0:
+                        break
 
                 personal_fields = master_fields.extend(['division1',
                                                         'division2'])
@@ -508,6 +510,8 @@ def new(request):
                             personal_fields.pop(field_name)
                         if len(personal_fields) == 0:
                             break
+                    if len(personal_fields) == 0:
+                        break
                 new_person_form = NewPersonForm(initial=form_data)
             except EventAssignment.DoesNotExist:
                 pass  # blank form is OK
@@ -616,7 +620,7 @@ def search(request):
             search_list = search_list.filter(phone__regex=regex_val)
         if search_customer is not None:
             search_list = search_list.filter(
-                reghistory__isnull=not search_customer)
+                registrants__isnull=not search_customer)
 
     # Figure out sort order
     if 'sort' not in request.GET:

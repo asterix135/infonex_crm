@@ -507,7 +507,7 @@ def new(request):
                     for field_name in personal_fields:
                         if getattr(select, field_name) not in ('', None):
                             form_data[field_name] = getattr(select, field_name)
-                            personal_fields.pop(field_name)
+                            personal_fields.remove(field_name)
                         if len(personal_fields) == 0:
                             break
                     if len(personal_fields) == 0:

@@ -18,7 +18,7 @@ def index(request):
                          user.groups.filter(name='management').exists() or
                          user.is_superuser)
     today_contacts = Contact.objects.filter(
-        # author=user,
+        author=user,
         date_of_contact__date=datetime.datetime.today().date()
     ).count()
     context = {'reg_permission_ok': reg_permission_ok,
@@ -43,8 +43,6 @@ def recent_contact_chart(request):
                 ).date()
             ).count()
             contact_counts.append(day_count)
-    print(len(contact_counts))
-    print(contact_counts)
     if timezone.now().isoweekday() == 2:
         labels = ['Today', 'Monday', 'Friday', 'Thursday',
                   'Wednesday', 'Tuesday']

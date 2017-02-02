@@ -63,5 +63,5 @@ def recent_contact_chart(request):
     contact_chart.title.text = 'Contacts over the Past Week'
     contact_chart.chart.categoryAxis.categoryNames = labels
 
-    chart_object = contact_chart.asString('jpg')
-    return HttpResponse(chart_object, 'image/jpg')
+    chart_object = contact_chart.asString('png')
+    return HttpResponse(chart_object, 'image/png')

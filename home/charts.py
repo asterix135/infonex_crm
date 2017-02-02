@@ -13,7 +13,7 @@ class MyBarChartDrawing(Drawing):
         self.chart.x = 60
         self.chart.y = 20
         self.chart.width = self.width - 70
-        self.chart.height = self.height - 40
+        self.chart.height = self.height - 45
         self.chart.valueAxis.valueMin = 0
 
         self.title.fontName = 'Helvetica-Bold'

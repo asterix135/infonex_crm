@@ -67,7 +67,12 @@
           <iframe src="//giphy.com/embed/dNTr0hRNegpLW" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="http://giphy.com/gifs/welcome-dNTr0hRNegpLW"></a></p>
         </div>
         <div class="col-sm-6">
-          <h3>You've made {{ day_counts.Today }} contacts today</h3>
+          {% if today_contacts == 1 %}
+          <h3>You've made {{ today_contacts }} contact today</h3>
+          {% else %}
+          <h3>You've made {{ today_contacts }} contact today</h3>
+          {% endif %}
+          <img src="{% url 'home:contact_chart' %}" />
         </div>
       </div>
       <div class="row">

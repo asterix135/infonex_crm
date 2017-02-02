@@ -61,17 +61,22 @@
     <div class="container">
       <div class="row">
         <h1>Welcome {{ user.username }}</h1>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <iframe src="//giphy.com/embed/dNTr0hRNegpLW" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="http://giphy.com/gifs/welcome-dNTr0hRNegpLW"></a></p>
+        </div>
+        <div class="col-sm-6">
+          <h3>You've made {{ day_counts.Today }} contacts today</h3>
+          <h6>(This doesn't work yet, so don't worry!)</h6>
+        </div>
+      </div>
+      <div class="row">
+
         <p>
-          This page will present you with details on your calls, contacts and sales.
-        </p>
-        <p>
-          Unfortunately, Chris has not yet coded that.
-        </p>
-        <p>
-          Until he does, please enjoy this
+          Additional information will appear here as the system improves.
         </p>
       </div>
-      <iframe src="//giphy.com/embed/dNTr0hRNegpLW" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="http://giphy.com/gifs/welcome-dNTr0hRNegpLW"></a></p>
       <div class="row">
         <h3><a href="{% url 'crm:index' %}">Go to CRM System</a></h3>
       </div>

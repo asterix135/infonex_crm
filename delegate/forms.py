@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from registration.models import *
 from crm.models import Event
-from crm.constants import STATE_PROV_TUPLE, COMPANY_OPTIONS, BILLING_CURRENCY
+from crm.constants import *
 
 
 def set_field_html_name(cls, new_name):
@@ -147,14 +147,39 @@ class NewCompanyForm(CompanySelectForm):
 
 
 class RegDetailsForm(forms.ModelForm):
+    register_date = forms.DateField(
+        widget = forms.DateInput(
+            attrs={'class': 'form-control',
+                   'placeholder': 'yyyy-mm-dd'}
+        )
+    )
+    cancellation_date = forms.DateField(
+        widget = forms.DateInput(
+            attrs={'class': 'form-control',
+                   'placeholder': 'yyyy-mm-dd'}
+        )
+    )
+    registration_status = forms.ChoiceField(
+        required=True,
+        choices=REG_STATUS_OPTIONS,
+        initial = 'DU',
+        widget = forms.Select(
+            attrs={'class': 'form-control'}
+        )
+    )
+    registration_notes = forms.CharField(
+        widget = forms.Textarea(
+            attrs={'class': 'form-control',
+                   'rows': '4'}
+        )
+    )
 
     class Meta():
         model = RegDetails
         fields = ['priority_code', 'sales_credit', 'pre_tax_price', 'gst_rate',
                   'hst_rate', 'qst_rate', 'payment_date', 'payment_method',
                   'deposit_amount', 'deposit_date', 'deposit_method',
-                  'fx_conversion_rate', 'register_date', 'cancellation_date',
-                  'registration_status', 'invoice_notes', 'registration_notes',
+                  'fx_conversion_rate', 'invoice_notes',
                   'sponsorship_description']
         labels = {
             'invoice_notes': _('Comments to Appear on Invoice'),
@@ -204,22 +229,7 @@ class RegDetailsForm(forms.ModelForm):
                 attrs={'class': 'form-control',
                          'step': '0.001',}
             ),
-            'register_date': forms.DateInput(
-                attrs={'class': 'form-control',
-                       'placeholder': 'yyyy-mm-dd'}
-            ),
-            'cancellation_date': forms.DateInput(
-                attrs={'class': 'form-control',
-                       'placeholder': 'yyyy-mm-dd'}
-            ),
-            'registration_status': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
             'invoice_notes': forms.Textarea(
-                attrs={'class': 'form-control',
-                       'rows': '4'}
-            ),
-            'registration_notes': forms.Textarea(
                 attrs={'class': 'form-control',
                        'rows': '4'}
             ),

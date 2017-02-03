@@ -209,15 +209,41 @@ $(document).ready(function(){
     if (charsEntered > 1) {
       var CompanyNamePartial = $('#company-info #id-name').val();
     }
-  })
+  });
 
 
-  // toggles whether company name is editable
+  // toggles whether company name is editable & change icon
   $('body').on('click', '#toggle-company-edit', function(){
-    $('#company-info #id_name').prop('disabled', function(i, v){
-      return !v;
-    });
-  })
+    if ($('#toggle-company-icon').hasClass('glyphicon-chevron-down')){
+      console.log('down is true');
+      $('#toggle-company-icon').removeClass('glyphicon-chevron-down');
+      $('#toggle-company-icon').addClass('glyphicon-chevron-up');
+      $('#company-details').toggle();
+      $('#company-info #id_name').removeProp('disabled');
+    } else {
+      console.log('up is true');
+      $('#toggle-company-icon').removeClass('glyphicon-chevron-up');
+      $('#toggle-company-icon').addClass('glyphicon-chevron-down');
+      $('#company-details').toggle();
+      $('#company-info #id_name').attr('disabled', '');
+    };
+    // if ($('#toggle-company-icon').hasClass('glyphicon-chevron-down')){
+    //   $('#toggle-company-icon').removeClass('glyphicon-chevron-down');
+    //   $('#toggle-company-icon').addClass('glyphicon-chevron-up');
+    //   $('#company-info #id_name').removeProp('disabled');
+    //   $('#company-details').addClass('in');
+    // } else {
+    //   $('#toggle-company-icon').removeClass('glyphicon-chevron-up');
+    //   $('#toggle-company-icon').addClass('glyphicon-chevron-down');
+    //   $('#company-info #id_name').prop('disabled', '');
+    //   #('#company-details').removeClass('in');
+    //
+    // };
+    // console.log(buttonText);
+    // $('#company-info #id_name').prop('disabled', function(i, v){
+    //   return !v;
+    // });
+  });
 
 
   // Toggle display of assistant panel if choose to send to assistant
@@ -229,6 +255,5 @@ $(document).ready(function(){
       };
     };
   });
-
 
 });

@@ -134,11 +134,15 @@
           <h3>
             Company Information
             {% if company %}
-            <a href="#company-details" id="toggle-company-edit"
-              class="btn btn-default btn-xs crm-list-action" data-toggle="collapse">
+            <button type="button" id="toggle-company-edit" class="btn btn-default btn-xs float-right">
               Edit Company
-              <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-            </a>
+              <span class="glyphicon glyphicon-chevron-down" id="toggle-company-icon"></span>
+            </button>
+            <!-- <a href="#company-details" id="toggle-company-edit"
+              class="btn btn-default btn-xs crm-list-action" >
+              Edit Company
+              <span class="glyphicon glyphicon-chevron-down" id="toggle-company-icon" aria-hidden="true"></span>
+            </a> -->
             {% endif %}
           </h3>
           {% if company %}

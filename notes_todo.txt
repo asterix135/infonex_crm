@@ -4,11 +4,21 @@ See avoiding race conditions using F()
 
 next #: 44
 
+The only real reasons to have a $0.00 invoice is if you're generating an invoice either for a 4th delegate or if someone is paying with a credit note.
+4th free and credit notes are often put as comp in the system and it generates a $0.00 for the delegate - both in the email and the invoice cover sheet.
+Speakers, or speaker's guests or guests of any kind don't generate an invoice or email. There is no money being requested so it doesn't create an invoice. Guest registrations, when they work properly, generate an email with the time and place etc but no actual invoice. I don't think they create an invoice in the system. Comps do.
+I would think it's important to have the option to have a $0.00 invoice, in general - the option would be useful as some random point in the future, I'm sure.
+If they have a credit note there seems to be some confusion, because I think David would still prefer it put in as comp in the system, but it would still generates a $0.00 for the delegate. On our internal invoice cover it will appear as a $0.00 as well.
+
 TODO: 41) Add title filter to territory creation page
 
 TODO: 26) Date picker widget (https://jqueryui.com/datepicker/)
 
 TODO: 43) Upload current registration information and link to CRM records
+          a) DONE - upload company files
+          b) upload last 2 years of person records
+          c) split and upload last 2 years of invoice data (2015-present)
+          d) figure out how to auto-link person & crm
 
 TODO: 2) Implement new table for invoices
 

@@ -227,22 +227,6 @@ $(document).ready(function(){
       $('#company-details').toggle();
       $('#company-info #id_name').attr('disabled', '');
     };
-    // if ($('#toggle-company-icon').hasClass('glyphicon-chevron-down')){
-    //   $('#toggle-company-icon').removeClass('glyphicon-chevron-down');
-    //   $('#toggle-company-icon').addClass('glyphicon-chevron-up');
-    //   $('#company-info #id_name').removeProp('disabled');
-    //   $('#company-details').addClass('in');
-    // } else {
-    //   $('#toggle-company-icon').removeClass('glyphicon-chevron-up');
-    //   $('#toggle-company-icon').addClass('glyphicon-chevron-down');
-    //   $('#company-info #id_name').prop('disabled', '');
-    //   #('#company-details').removeClass('in');
-    //
-    // };
-    // console.log(buttonText);
-    // $('#company-info #id_name').prop('disabled', function(i, v){
-    //   return !v;
-    // });
   });
 
 
@@ -254,6 +238,17 @@ $(document).ready(function(){
         $('#assistant-details').collapse('show');
       };
     };
+  });
+
+  // Deactivate invoice-related fields for registrations that do not get an invoice-related
+  $('body').on('change', '#id_registration_status', function(){
+    var nonInvoiceVals = ['G', 'K', 'KX']
+    if (jQuery.inArray($(this).val(), nonInvoiceVals) >= 0) {
+      console.log('non-invoice registration');
+      $('#id_pre_tax_price, #id_hst_rate').attr('disabled', '');
+    } else {
+      console.log('invoice registration');
+    }
   });
 
 });

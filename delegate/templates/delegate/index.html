@@ -177,6 +177,16 @@
           <h3>Registration/Invoice details</h3>
           <div class="row">
             <div class="col-sm-3">
+              {{ reg_details_form.registration_status.errors }}
+              {{ reg_details_form.registration_status.label_tag }}
+              {{ reg_details_form.registration_status }}
+            </div>
+            <div id="cancellation-details">
+              {% include 'delegate/addins/cancellation_details.html' %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
               {{ reg_details_form.pre_tax_price.errors }}
               {{ reg_details_form.pre_tax_price.label_tag }}
               <div class="input-group">
@@ -201,16 +211,6 @@
           </div>
           <div class="row" id="registration-tax-information">
             {% include 'delegate/addins/delegate_tax_information.html' %}
-          </div>
-          <div class="row">
-            <div class="col-sm-3">
-              {{ reg_details_form.registration_status.errors }}
-              {{ reg_details_form.registration_status.label_tag }}
-              {{ reg_details_form.registration_status }}
-            </div>
-            <div id="cancellation-details">
-              {% include 'delegate/addins/cancellation_details.html' %}
-            </div>
           </div>
           <div id="status-based-reg-fields">
             {% include 'delegate/addins/status_based_reg_fields.html' %}

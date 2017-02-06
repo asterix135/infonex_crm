@@ -175,7 +175,7 @@ class RegDetailsForm(forms.ModelForm):
     )
 
     class Meta():
-        model = RegDetails
+        model = Invoice
         fields = ['priority_code', 'sales_credit', 'pre_tax_price', 'gst_rate',
                   'hst_rate', 'qst_rate', 'payment_date', 'payment_method',
                   'deposit_amount', 'deposit_date', 'deposit_method',

@@ -8,13 +8,13 @@ TODO: 41) Add title filter to territory creation page
 
 TODO: 26) Date picker widget (https://jqueryui.com/datepicker/)
 
+TODO: 44) Rework registration page.  Flow based on reg status; remove deposit details
+
 TODO: 43) Upload current registration information and link to CRM records
           a) DONE - upload company files
           b) upload last 2 years of person records
           c) split and upload last 2 years of invoice data (2015-present)
           d) figure out how to auto-link person & crm
-
-TODO: 2) Implement new table for invoices
 
 TODO: 9) Play with pdf maker (ReportLab) and create new invoice & reg note
 
@@ -75,3 +75,4 @@ TODO: 23) DONE - If territory exists: new person should pre-populate categorizat
 TODO: 39) DONE - Fix placement of CRM etc in top bar: Need to add registration link to CRM
 TODO: 40) DONE - Get rid of jumbotron except on home pages; add logo to top bar
 TODO: 41) DONE - Add territory filter to personal selects
+TODO: 2) DONE - Implement new table for invoices

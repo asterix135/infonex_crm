@@ -75,9 +75,62 @@ class RegDetails(models.Model):
     """
     contains details on booking for invoicing & event management
     """
-    invoice_number = models.IntegerField(unique=True)
+    # invoice_number = models.IntegerField(unique=True)  # copied
     conference = models.ForeignKey('crm.Event')
     registrant = models.ForeignKey(Registrants)
+    # priority_code = models.CharField(max_length=25)
+    # sales_credit = models.ForeignKey('auth.User',  # Copied
+    #                                  related_name='sales_credit',
+    #                                  blank=True, null=True)
+    # pre_tax_price = models.DecimalField(max_digits=10, decimal_places=2)
+    # gst_rate = models.DecimalField(max_digits=6, decimal_places=5)
+    # hst_rate = models.DecimalField(max_digits=6, decimal_places=5)
+    # qst_rate = models.DecimalField(max_digits=6, decimal_places=5)
+    # pst_rate = models.DecimalField(max_digits=6, decimal_places=5)
+    # payment_date = models.DateField(blank=True, null=True)
+    # payment_method = models.CharField(max_length=1,
+    #                                   choices=PAYMENT_METHODS,
+    #                                   blank=True,
+    #                                   default=False,
+    #                                   null=True)
+    # deposit_amount = models.DecimalField(max_digits=10, decimal_places=2,
+    #                                      blank=True, null=True)
+    # deposit_date = models.DateField(blank=True, null=True)
+    # deposit_method = models.CharField(max_length=1,
+    #                                  choices=PAYMENT_METHODS,
+    #                                  blank=True,
+    #                                  default=False,
+    #                                  null=True)
+    # fx_conversion_rate = models.DecimalField(max_digits=10, decimal_places=6,
+    #                                          default=1.0)
+    register_date = models.DateField(default=datetime.date.today)
+    cancellation_date = models.DateField(blank=True, null=True)
+    # Consider how to handle options: maybe different from current db?
+    registration_status = models.CharField(max_length=2,
+                                           choices=REG_STATUS_OPTIONS,
+                                           default='DU')
+    # invoice_notes = models.TextField(blank=True, null=True)
+    registration_notes = models.TextField(blank=True, null=True)
+    # sponsorship_description = models.TextField(blank=True, null=True)
+    created_by = models.ForeignKey('auth.User',
+                                   default=1,
+                                   related_name='reg_created_by')
+    date_created = models.DateTimeField('date created', auto_now_add=True)
+    date_modified = models.DateTimeField('date modified', auto_now=True)
+    modified_by = models.ForeignKey('auth.User',
+                                    default=1,
+                                    related_name='reg_modifed_by')
+
+
+class Invoice(models.Model):
+    """
+    Holds invoice details for paying Registrants
+    """
+    reg_details = models.OneToOneField(
+        RegDetails,
+        on_delete=models.CASCADE,
+    )
+    invoice_date = models.DateField(default=datetime.date.today)
     priority_code = models.CharField(max_length=25)
     sales_credit = models.ForeignKey('auth.User',
                                      related_name='sales_credit',
@@ -103,34 +156,9 @@ class RegDetails(models.Model):
                                      null=True)
     fx_conversion_rate = models.DecimalField(max_digits=10, decimal_places=6,
                                              default=1.0)
-    register_date = models.DateField(default=datetime.date.today)
-    cancellation_date = models.DateField(blank=True, null=True)
-    # Consider how to handle options: maybe different from current db?
-    registration_status = models.CharField(max_length=2,
-                                           choices=REG_STATUS_OPTIONS,
-                                           default='DU')
     invoice_notes = models.TextField(blank=True, null=True)
-    registration_notes = models.TextField(blank=True, null=True)
     sponsorship_description = models.TextField(blank=True, null=True)
-    created_by = models.ForeignKey('auth.User',
-                                   default=1,
-                                   related_name='reg_created_by')
-    date_created = models.DateTimeField('date created', auto_now_add=True)
-    date_modified = models.DateTimeField('date modified', auto_now=True)
-    modified_by = models.ForeignKey('auth.User',
-                                    default=1,
-                                    related_name='reg_modifed_by')
 
-
-class Invoice(models.Model):
-    """
-    Holds invoice details for paying Registrants
-    """
-    reg_details = models.OneToOneField(
-        RegDetails,
-        on_delete=models.CASCADE,
-    )
-    invoice_date = models.DateField(default=datetime.date.today)
 
 
 class Venue(models.Model):

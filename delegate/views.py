@@ -170,6 +170,30 @@ def process_complete_registration(request, assistant_data, company, crm_match,
 # VIEW FUNCTIONS
 #############################
 @login_required
+def confirmation_details(request):
+    """
+    Renders confirmation_details page
+    as redirect from form submission on index
+    """
+    current_registration = RegDetails.objects.get(
+        pk=request.session.pop('current_registration')
+    )
+    registrant = Registrants.objects.get(pk=request.session.pop('registrant'))
+    if request.session['assistant']:
+        assistant = Assistant.objects.get(pk=request.session.pop('assistant'))
+    else:
+        del(request.session['assistant'])
+        assistant = None
+
+    context = {
+        'current_registration': current_registration,
+        'registrant': registrant,
+        'assistant': assistant
+    }
+    return render(request, 'delegate/confirmation_details.html', context)
+
+
+@login_required
 def index(request):
     """ renders base delegate/index.html page """
     new_delegate_form = NewDelegateForm()
@@ -270,197 +294,6 @@ def index(request):
         'data_source': data_source,
     }
     return render(request, 'delegate/index.html', context)
-
-
-@login_required
-def update_crm_match_list(request):
-    """ ajax call to update crm suggestions based on delegate info """
-    crm_match_list = None
-    if request.method == 'POST':
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        company = request.POST['company']
-        crm_match_list = Person.objects.filter(
-            Q(name__icontains=first_name) &
-            Q(name__icontains=last_name),
-            Q(company__icontains=company)
-        ).order_by('company', 'name')[:100]
-    context = {
-        'crm_match_list': crm_match_list,
-    }
-    return render(request, 'delegate/addins/crm_sidebar_list.html', context)
-
-
-@login_required
-def link_new_crm_record(request):
-    """ Ajax call to link different crm record to delegate """
-    crm_match = None
-    if request.method == 'POST':
-        crm_match = Person.objects.get(pk=request.POST['crm_match_id'])
-        if request.POST['delegate_id'] != 'new':
-            registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
-            registrant.crm_person = crm_match
-            registrant.save()
-    context = {
-        'crm_match': crm_match,
-    }
-    return render(request, 'delegate/addins/crm_sidebar_selected.html', context)
-
-
-@login_required
-def link_new_company_record(request):
-    """ ajax call to link selected company record to delegate """
-    company = None
-    if request.method == 'POST':
-        company = Company.objects.get(pk=request.POST['company_match_id'])
-        if request.POST['delegate_id'] != 'new':
-            registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
-            registrant.company = company
-            registrant.save()
-    context = {
-        'company': company,
-    }
-    return render(request, 'delegate/addins/company_sidebar_selected.html',
-                  context)
-
-
-@login_required
-def update_tax_information(request):
-    """
-    ajax call to update part of delegate page showing tax info
-    happens when selected conference is changed
-    should only be called for new registration
-    """
-    conference = None
-    reg_details_form = RegDetailsForm()
-    if request.method == 'POST':
-        conference = Event.objects.get(pk=request.POST['conf_id'])
-    context = {'conference': conference,
-               'reg_details_form': reg_details_form}
-    return render(request, 'delegate/addins/delegate_tax_information.html',
-                  context)
-
-
-@login_required
-def update_conference_options(request):
-    """ ajax call to update conference options when event is changed """
-    conference_options = None
-    if request.method == 'POST':
-        conf_id = request.POST['conf_id']
-        conference = Event.objects.get(pk=conf_id)
-        conference_options = conference.eventoptions_set.all()
-    context = {'conference_options': conference_options}
-    return render(request, 'delegate/addins/conference_options.html', context)
-
-
-@login_required
-def update_fx_conversion(request):
-    """
-    ajax call to update fx_conversion
-    happens when selected conference is changed
-    should only be called for new registration
-    """
-    conference = None
-    reg_details_form = RegDetailsForm()
-    if request.method == 'POST':
-        conference = Event.objects.get(pk=request.POST['conf_id'])
-    context = {'conference': conference,
-               'reg_details_form': reg_details_form}
-    return render(request, 'delegate/addins/fx_details.html', context)
-
-
-@login_required
-def update_cxl_info(request):
-    """ ajax call to update cancellation information """
-    reg_details_form = RegDetailsForm()
-    if request.method == 'POST':
-        form_data = {'registration_status': request.POST['reg_status'],
-                     'cancellation_date': timezone.now()}
-        if request.POST['regdetail_id'] != 'new':
-            current_reg = RegDetails.objects.get(
-                pk=request.POST['regdetail_id']
-            )
-            form_data['cancellation_date'] = current_reg.cancellation_date
-            reg_details_form = RegDetailsForm(form_data, instance=current_reg)
-        else:
-            reg_details_form = RegDetailsForm(form_data)
-    context = {
-        'reg_details_form': reg_details_form,
-        'cxl_values': CXL_VALUES,
-    }
-    return render(request, 'delegate/addins/cancellation_details.html',
-                  context)
-
-
-@login_required
-def update_payment_details(request):
-    """ ajax call to update payment details """
-    reg_details_form = RegDetailsForm()
-    if request.method == 'POST':
-        form_data = {'registration_status': request.POST['reg_status'],
-                     'payment_method': None,
-                     'deposit_method': None}
-        if request.POST['reg_status'] in DEPOSIT_STATUS_VALUES:
-            form_data['deposit_date'] = timezone.now()
-        if request.POST['reg_status'] in PAID_STATUS_VALUES:
-            form_data['payment_date'] = timezone.now()
-        if request.POST['regdetail_id'] != 'new':
-            current_reg = RegDetails.objects.get(
-                pk=request.POST['regdetail_id']
-            )
-            form_data['sponsorship_description'] = \
-                current_reg.sponsorship_description
-            form_data['deposit_amount'] = current_reg.deposit_amount
-            form_data['deposit_date'] = current_reg.deposit_date
-            form_data['deposit_method'] = current_reg.deposit_method
-            form_data['payment_date'] = current_reg.payment_date
-            form_data['payment_method'] = current_reg.payment_method
-            reg_details_from = RegDetailsForm(form_data, instance=current_reg)
-        else:
-            reg_details_form = RegDetailsForm(form_data)
-    context = {
-        'reg_details_form': reg_details_form,
-        'paid_status_values': PAID_STATUS_VALUES,
-        'deposit_values': DEPOSIT_STATUS_VALUES,
-        'sponsor_values': SPONSOR_VALUES,
-    }
-    return render(request, 'delegate/addins/status_based_reg_fields.html',
-                  context)
-
-
-@login_required
-def add_new_company(request):
-    """ ajax call to add new company to database and link to current record """
-    company = None
-    company_match_list = None
-    registrant = None
-    company_select_form = CompanySelectForm()
-    if request.method == 'POST':
-        if request.POST['delegate_id'] != 'new':
-            registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
-        company_select_form = CompanySelectForm(request.POST)
-        if company_select_form.is_valid():
-            company = company_select_form.save()
-            if registrant:
-                registrant.company = company
-                registrant.save()
-            company_select_form = CompanySelectForm()
-        company_match_list = Company.objects.filter(
-            name__icontains=request.POST['name']
-        )
-    context = {
-        'company': company,
-        'company_match_list': company_match_list,
-        'company_select_form': company_select_form,
-        'registrant': registrant,
-    }
-    return render(request, 'delegate/addins/company_sidebar.html', context)
-
-
-@login_required
-def save_comany_changes(request):
-    """ ajax submission to update company information when present """
-    pass
 
 
 @login_required
@@ -624,25 +457,197 @@ def process_registration(request):
     return render(request, 'delegate/index.html', context)
 
 
-@login_required
-def confirmation_details(request):
-    """
-    Renders confirmation_details page
-    as redirect from form submission on index
-    """
-    current_registration = RegDetails.objects.get(
-        pk=request.session.pop('current_registration')
-    )
-    registrant = Registrants.objects.get(pk=request.session.pop('registrant'))
-    if request.session['assistant']:
-        assistant = Assistant.objects.get(pk=request.session.pop('assistant'))
-    else:
-        del(request.session['assistant'])
-        assistant = None
+#######################
+# AJAX Calls
+#######################
 
+
+@login_required
+def add_new_company(request):
+    """ ajax call to add new company to database and link to current record """
+    company = None
+    company_match_list = None
+    registrant = None
+    company_select_form = CompanySelectForm()
+    if request.method == 'POST':
+        if request.POST['delegate_id'] != 'new':
+            registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
+        company_select_form = CompanySelectForm(request.POST)
+        if company_select_form.is_valid():
+            company = company_select_form.save()
+            if registrant:
+                registrant.company = company
+                registrant.save()
+            company_select_form = CompanySelectForm()
+        company_match_list = Company.objects.filter(
+            name__icontains=request.POST['name']
+        )
     context = {
-        'current_registration': current_registration,
+        'company': company,
+        'company_match_list': company_match_list,
+        'company_select_form': company_select_form,
         'registrant': registrant,
-        'assistant': assistant
     }
-    return render(request, 'delegate/confirmation_details.html', context)
+    return render(request, 'delegate/addins/company_sidebar.html', context)
+
+
+@login_required
+def link_new_company_record(request):
+    """ ajax call to link selected company record to delegate """
+    company = None
+    if request.method == 'POST':
+        company = Company.objects.get(pk=request.POST['company_match_id'])
+        if request.POST['delegate_id'] != 'new':
+            registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
+            registrant.company = company
+            registrant.save()
+    context = {
+        'company': company,
+    }
+    return render(request, 'delegate/addins/company_sidebar_selected.html',
+                  context)
+
+
+@login_required
+def link_new_crm_record(request):
+    """ Ajax call to link different crm record to delegate """
+    crm_match = None
+    if request.method == 'POST':
+        crm_match = Person.objects.get(pk=request.POST['crm_match_id'])
+        if request.POST['delegate_id'] != 'new':
+            registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
+            registrant.crm_person = crm_match
+            registrant.save()
+    context = {
+        'crm_match': crm_match,
+    }
+    return render(request, 'delegate/addins/crm_sidebar_selected.html', context)
+
+
+@login_required
+def save_comany_changes(request):
+    """ ajax submission to update company information when present """
+    pass
+
+
+@login_required
+def update_conference_options(request):
+    """ ajax call to update conference options when event is changed """
+    conference_options = None
+    if request.method == 'POST':
+        conf_id = request.POST['conf_id']
+        conference = Event.objects.get(pk=conf_id)
+        conference_options = conference.eventoptions_set.all()
+    context = {'conference_options': conference_options}
+    return render(request, 'delegate/addins/conference_options.html', context)
+
+
+@login_required
+def update_crm_match_list(request):
+    """ ajax call to update crm suggestions based on delegate info """
+    crm_match_list = None
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        company = request.POST['company']
+        crm_match_list = Person.objects.filter(
+            Q(name__icontains=first_name) &
+            Q(name__icontains=last_name),
+            Q(company__icontains=company)
+        ).order_by('company', 'name')[:100]
+    context = {
+        'crm_match_list': crm_match_list,
+    }
+    return render(request, 'delegate/addins/crm_sidebar_list.html', context)
+
+
+@login_required
+def update_cxl_info(request):
+    """ ajax call to update cancellation information """
+    reg_details_form = RegDetailsForm()
+    if request.method == 'POST':
+        form_data = {'registration_status': request.POST['reg_status'],
+                     'cancellation_date': timezone.now()}
+        if request.POST['regdetail_id'] != 'new':
+            current_reg = RegDetails.objects.get(
+                pk=request.POST['regdetail_id']
+            )
+            form_data['cancellation_date'] = current_reg.cancellation_date
+            reg_details_form = RegDetailsForm(form_data, instance=current_reg)
+        else:
+            reg_details_form = RegDetailsForm(form_data)
+    context = {
+        'reg_details_form': reg_details_form,
+        'cxl_values': CXL_VALUES,
+    }
+    return render(request, 'delegate/addins/cancellation_details.html',
+                  context)
+
+
+@login_required
+def update_fx_conversion(request):
+    """
+    ajax call to update fx_conversion
+    happens when selected conference is changed
+    should only be called for new registration
+    """
+    conference = None
+    reg_details_form = RegDetailsForm()
+    if request.method == 'POST':
+        conference = Event.objects.get(pk=request.POST['conf_id'])
+    context = {'conference': conference,
+               'reg_details_form': reg_details_form}
+    return render(request, 'delegate/addins/fx_details.html', context)
+
+
+@login_required
+def update_payment_details(request):
+    """ ajax call to update payment details """
+    reg_details_form = RegDetailsForm()
+    if request.method == 'POST':
+        form_data = {'registration_status': request.POST['reg_status'],
+                     'payment_method': None,
+                     'deposit_method': None}
+        if request.POST['reg_status'] in DEPOSIT_STATUS_VALUES:
+            form_data['deposit_date'] = timezone.now()
+        if request.POST['reg_status'] in PAID_STATUS_VALUES:
+            form_data['payment_date'] = timezone.now()
+        if request.POST['regdetail_id'] != 'new':
+            current_reg = RegDetails.objects.get(
+                pk=request.POST['regdetail_id']
+            )
+            form_data['sponsorship_description'] = \
+                current_reg.sponsorship_description
+            form_data['deposit_amount'] = current_reg.deposit_amount
+            form_data['deposit_date'] = current_reg.deposit_date
+            form_data['deposit_method'] = current_reg.deposit_method
+            form_data['payment_date'] = current_reg.payment_date
+            form_data['payment_method'] = current_reg.payment_method
+            reg_details_from = RegDetailsForm(form_data, instance=current_reg)
+        else:
+            reg_details_form = RegDetailsForm(form_data)
+    context = {
+        'reg_details_form': reg_details_form,
+        'paid_status_values': PAID_STATUS_VALUES,
+        'deposit_values': DEPOSIT_STATUS_VALUES,
+        'sponsor_values': SPONSOR_VALUES,
+    }
+    return render(request, 'delegate/addins/status_based_reg_fields.html',
+                  context)
+
+
+@login_required
+def update_tax_information(request):
+    """
+    ajax call to update part of delegate page showing tax info
+    happens when selected conference is changed
+    should only be called for new registration
+    """
+    conference = None
+    reg_details_form = RegDetailsForm()
+    if request.method == 'POST':
+        conference = Event.objects.get(pk=request.POST['conf_id'])
+    context = {'conference': conference,
+               'reg_details_form': reg_details_form}
+    return render(request, 'delegate/addins/delegate_tax_information.html',
+                  context)

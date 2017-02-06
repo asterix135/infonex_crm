@@ -190,6 +190,18 @@ $(document).ready(function(){
   });
 
 
+
+  // Deactivate invoice-related fields for registrations that do not get an invoice-related
+  $('body').on('change', '#id_registration_status', function(){
+    var nonInvoiceVals = ['G', 'K', 'KX']
+    if (jQuery.inArray($(this).val(), nonInvoiceVals) >= 0) {
+      console.log('non-invoice registration');
+      $('#id_pre_tax_price, #id_hst_rate').attr('disabled', '');
+    } else {
+      console.log('invoice registration');
+    }
+  });
+
   // swap content in sidebar
   $('body').on('click', '.sidebar-button', function(){
     $('#crm-sidebar-content').toggle();
@@ -238,17 +250,6 @@ $(document).ready(function(){
         $('#assistant-details').collapse('show');
       };
     };
-  });
-
-  // Deactivate invoice-related fields for registrations that do not get an invoice-related
-  $('body').on('change', '#id_registration_status', function(){
-    var nonInvoiceVals = ['G', 'K', 'KX']
-    if (jQuery.inArray($(this).val(), nonInvoiceVals) >= 0) {
-      console.log('non-invoice registration');
-      $('#id_pre_tax_price, #id_hst_rate').attr('disabled', '');
-    } else {
-      console.log('invoice registration');
-    }
   });
 
 });

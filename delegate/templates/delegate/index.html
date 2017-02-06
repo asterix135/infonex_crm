@@ -185,41 +185,44 @@
               {% include 'delegate/addins/cancellation_details.html' %}
             </div>
           </div>
-          <div class="row">
-            <div class="col-sm-3">
-              {{ reg_details_form.pre_tax_price.errors }}
-              {{ reg_details_form.pre_tax_price.label_tag }}
-              <div class="input-group">
-                <span class="input-group-addon">$</span>
-                <input type="number" id="id_pre_tax_price" class="form-control"
-                  name="pre_tax_price" min="0" required="" />
+
+          <div id="invoice-details">
+            <div class="row">
+              <div class="col-sm-3">
+                {{ reg_details_form.pre_tax_price.errors }}
+                {{ reg_details_form.pre_tax_price.label_tag }}
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <input type="number" id="id_pre_tax_price" class="form-control"
+                    name="pre_tax_price" min="0" required="" />
+                </div>
+              </div>
+              <div id="fx-details">
+                {% include 'delegate/addins/fx_details.html' %}
+              </div>
+              <div class="col-sm-3">
+                {{ reg_details_form.priority_code.errors }}
+                {{ reg_details_form.priority_code.label_tag }}
+                {{ reg_details_form.priority_code }}
+              </div>
+              <div class="col-sm-3">
+                {{ reg_details_form.sales_credit.errors }}
+                {{ reg_details_form.sales_credit.label_tag }}
+                {{ reg_details_form.sales_credit }}
               </div>
             </div>
-            <div id="fx-details">
-              {% include 'delegate/addins/fx_details.html' %}
+            <div class="row" id="registration-tax-information">
+              {% include 'delegate/addins/delegate_tax_information.html' %}
             </div>
-            <div class="col-sm-3">
-              {{ reg_details_form.priority_code.errors }}
-              {{ reg_details_form.priority_code.label_tag }}
-              {{ reg_details_form.priority_code }}
+            <div id="status-based-reg-fields">
+              {% include 'delegate/addins/status_based_reg_fields.html' %}
             </div>
-            <div class="col-sm-3">
-              {{ reg_details_form.sales_credit.errors }}
-              {{ reg_details_form.sales_credit.label_tag }}
-              {{ reg_details_form.sales_credit }}
-            </div>
-          </div>
-          <div class="row" id="registration-tax-information">
-            {% include 'delegate/addins/delegate_tax_information.html' %}
-          </div>
-          <div id="status-based-reg-fields">
-            {% include 'delegate/addins/status_based_reg_fields.html' %}
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              {{ reg_details_form.invoice_notes.errors }}
-              {{ reg_details_form.invoice_notes.label_tag }}
-              {{ reg_details_form.invoice_notes }}
+            <div class="row">
+              <div class="col-sm-12">
+                {{ reg_details_form.invoice_notes.errors }}
+                {{ reg_details_form.invoice_notes.label_tag }}
+                {{ reg_details_form.invoice_notes }}
+              </div>
             </div>
           </div>
           <div class="row">

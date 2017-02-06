@@ -131,20 +131,21 @@ class Invoice(models.Model):
         on_delete=models.CASCADE,
     )
     invoice_date = models.DateField(default=datetime.date.today)
-    priority_code = models.CharField(max_length=25)
+    priority_code = models.CharField(max_length=25, blank=True, null=True)
     sales_credit = models.ForeignKey('auth.User',
                                      related_name='sales_credit',
                                      blank=True, null=True)
-    pre_tax_price = models.DecimalField(max_digits=10, decimal_places=2)
-    gst_rate = models.DecimalField(max_digits=6, decimal_places=5)
-    hst_rate = models.DecimalField(max_digits=6, decimal_places=5)
-    qst_rate = models.DecimalField(max_digits=6, decimal_places=5)
-    pst_rate = models.DecimalField(max_digits=6, decimal_places=5)
+    pre_tax_price = models.DecimalField(max_digits=10, decimal_places=2,
+                                        null=True, blank=True)
+    gst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0.05)
+    hst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0.13)
+    qst_rate = models.DecimalField(max_digits=6, decimal_places=5,
+                                   default=0.09975)
+    pst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0)
     payment_date = models.DateField(blank=True, null=True)
     payment_method = models.CharField(max_length=1,
                                       choices=PAYMENT_METHODS,
                                       blank=True,
-                                      default=False,
                                       null=True)
     deposit_amount = models.DecimalField(max_digits=10, decimal_places=2,
                                          blank=True, null=True)
@@ -152,7 +153,6 @@ class Invoice(models.Model):
     deposit_method = models.CharField(max_length=1,
                                      choices=PAYMENT_METHODS,
                                      blank=True,
-                                     default=False,
                                      null=True)
     fx_conversion_rate = models.DecimalField(max_digits=10, decimal_places=6,
                                              default=1.0)

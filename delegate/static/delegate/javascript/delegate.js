@@ -160,33 +160,44 @@ $(document).ready(function(){
 
   // updates payment displays when registration status changes
   $('body').on('change', '#id_registration_status', function(){
+    var nonInvoiceVals = ['G', 'K', 'KX', 'SD', 'SE']
     var newStatus = $(this).val();
-    var currentRegDetailId = $('#current-regdetail-id').val()
+    var currentRegDetailId = $('#current-regdetail-id').val();
     if (currentRegDetailId == '') {
       currentRegDetailId = 'new'
     };
-    $.ajax({
-      url: '/delegate/update_cxl_info/',
-      type: 'POST',
-      data: {
-        'regdetail_id': currentRegDetailId,
-        'reg_status': newStatus,
-      },
-      success: function(data){
-        $('#cancellation-details').html(data);
+    var detailsDisplayed = $('#invoice-details').hasClass('in');
+    if (jQuery.inArray(newStatus, nonInvoiceVals) >= 0) {
+      if (detailsDisplayed) {
+        $('#invoice-details')removeClass('in');
       }
-    });
-    $.ajax({
-      url: '/delegate/update_payment_details/',
-      type: 'POST',
-      data: {
-        'regdetail_id': currentRegDetailId,
-        'reg_status': newStatus,
-      },
-      success: function(data){
-        $('#status-based-reg-fields').html(data);
-      }
-    });
+    } else {
+      if (!detailsDisplayed) {
+        $('#invoice-details').addClass('in');
+      };
+      $.ajax({
+        url: '/delegate/update_cxl_info/',
+        type: 'POST',
+        data: {
+          'regdetail_id': currentRegDetailId,
+          'reg_status': newStatus,
+        },
+        success: function(data){
+          $('#cancellation-details').html(data);
+        }
+      });
+      $.ajax({
+        url: '/delegate/update_payment_details/',
+        type: 'POST',
+        data: {
+          'regdetail_id': currentRegDetailId,
+          'reg_status': newStatus,
+        },
+        success: function(data){
+          $('#status-based-reg-fields').html(data);
+        }
+      });
+    };
   });
 
 

@@ -147,13 +147,6 @@ class Invoice(models.Model):
                                       choices=PAYMENT_METHODS,
                                       blank=True,
                                       null=True)
-    deposit_amount = models.DecimalField(max_digits=10, decimal_places=2,
-                                         blank=True, null=True)
-    deposit_date = models.DateField(blank=True, null=True)
-    deposit_method = models.CharField(max_length=1,
-                                     choices=PAYMENT_METHODS,
-                                     blank=True,
-                                     null=True)
     fx_conversion_rate = models.DecimalField(max_digits=10, decimal_places=6,
                                              default=1.0)
     invoice_notes = models.TextField(blank=True, null=True)

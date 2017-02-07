@@ -186,7 +186,11 @@
             </div>
           </div>
 
-          <div id="invoice-details">
+          {% if reg_details_form.registration_status.value in non_invoice_values %}
+          <div id="invoice-details" class="collapse">
+          {% else %}
+          <div id="invoice-details" class="collapse in">
+          {% endif %}
             <div class="row">
               <div class="col-sm-3">
                 {{ reg_details_form.pre_tax_price.errors }}

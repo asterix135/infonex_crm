@@ -178,7 +178,6 @@ class RegDetailsForm(forms.ModelForm):
         model = Invoice
         fields = ['priority_code', 'sales_credit', 'pre_tax_price', 'gst_rate',
                   'hst_rate', 'qst_rate', 'payment_date', 'payment_method',
-                  'deposit_amount', 'deposit_date', 'deposit_method',
                   'fx_conversion_rate', 'invoice_notes',
                   'sponsorship_description']
         labels = {
@@ -212,17 +211,6 @@ class RegDetailsForm(forms.ModelForm):
                        'placeholder': 'yyyy-mm-dd'}
             ),
             'payment_method': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
-            'deposit_amount': forms.NumberInput(
-                attrs={'class': 'form-control',
-                         'step': '1'}
-            ),
-            'deposit_date': forms.DateInput(
-                attrs={'class': 'form-control',
-                       'placeholder': 'yyyy-mm-dd'}
-            ),
-            'deposit_method': forms.Select(
                 attrs={'class': 'form-control'}
             ),
             'fx_conversion_rate': forms.NumberInput(

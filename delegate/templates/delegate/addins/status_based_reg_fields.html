@@ -1,12 +1,3 @@
-<div class="row" id="sponsor-description">
-  {% if reg_details_form.registration_status.value in sponsor_values %}
-  <div class="col-sm-12">
-    {{ reg_details_form.sponsorship_description.errors }}
-    {{ reg_details_form.sponsorship_description.label_tag }}
-    {{ reg_details_form.sponsorship_description }}
-  </div>
-  {% endif %}
-</div>
 <div class="row" id="deposit-details">
   {% if reg_details_form.registration_status.value in deposit_values %}
   <div class="col-sm-3">

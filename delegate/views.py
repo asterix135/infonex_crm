@@ -288,9 +288,8 @@ def index(request):
         'crm_match': crm_match,
         'crm_match_list': crm_match_list,
         'paid_status_values': PAID_STATUS_VALUES,
-        'deposit_values': DEPOSIT_STATUS_VALUES,
         'cxl_values': CXL_VALUES,
-        'sponsor_values': SPONSOR_VALUES,
+        'non_invoice_values': NON_INVOICE_VALUES,
         'data_source': data_source,
     }
     return render(request, 'delegate/index.html', context)
@@ -446,9 +445,8 @@ def process_registration(request):
         'crm_match': crm_match,
         'crm_match_list': crm_match_list,
         'paid_status_values': PAID_STATUS_VALUES,
-        'deposit_values': DEPOSIT_STATUS_VALUES,
         'cxl_values': CXL_VALUES,
-        'sponsor_values': SPONSOR_VALUES,
+        'non_invoice_values': NON_INVOICE_VALUES,
         'data_source': data_source,
         'company_error': company_error,
         'assistant_missing': assistant_missing,
@@ -460,8 +458,6 @@ def process_registration(request):
 #######################
 # AJAX Calls
 #######################
-
-
 @login_required
 def add_new_company(request):
     """ ajax call to add new company to database and link to current record """
@@ -606,10 +602,7 @@ def update_payment_details(request):
     reg_details_form = RegDetailsForm()
     if request.method == 'POST':
         form_data = {'registration_status': request.POST['reg_status'],
-                     'payment_method': None,
-                     'deposit_method': None}
-        if request.POST['reg_status'] in DEPOSIT_STATUS_VALUES:
-            form_data['deposit_date'] = timezone.now()
+                     'payment_method': None}
         if request.POST['reg_status'] in PAID_STATUS_VALUES:
             form_data['payment_date'] = timezone.now()
         if request.POST['regdetail_id'] != 'new':
@@ -618,9 +611,6 @@ def update_payment_details(request):
             )
             form_data['sponsorship_description'] = \
                 current_reg.sponsorship_description
-            form_data['deposit_amount'] = current_reg.deposit_amount
-            form_data['deposit_date'] = current_reg.deposit_date
-            form_data['deposit_method'] = current_reg.deposit_method
             form_data['payment_date'] = current_reg.payment_date
             form_data['payment_method'] = current_reg.payment_method
             reg_details_from = RegDetailsForm(form_data, instance=current_reg)
@@ -629,8 +619,6 @@ def update_payment_details(request):
     context = {
         'reg_details_form': reg_details_form,
         'paid_status_values': PAID_STATUS_VALUES,
-        'deposit_values': DEPOSIT_STATUS_VALUES,
-        'sponsor_values': SPONSOR_VALUES,
     }
     return render(request, 'delegate/addins/status_based_reg_fields.html',
                   context)

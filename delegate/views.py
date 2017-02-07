@@ -488,12 +488,17 @@ def add_new_company(request):
 
 
 @login_required
-def check_that_conf_is_complete(request):
+def conf_has_regs(request):
     if request.method != 'POST':
         return HttpResponse('')
-    event = get_object_or_404(Event, pk=request.POST['event_id'])
-
-    return HttpResponse('')
+    event = get_object_or_404(Event, pk=request.POST['conf_id'])
+    response = '<div>'
+    if RegDetails.objects.filter(conference=event).count() > 0:
+        response += '<input type="hidden" id="first-reg" value="true">'
+    else:
+        response += '<input type="hidden" id="first-reg" value="false"/>'
+    response += '</div>'
+    return HttpResponse(response)
 
 
 @login_required

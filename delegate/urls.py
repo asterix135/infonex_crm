@@ -5,6 +5,7 @@ app_name = 'delegate'
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^conf_has_regs/$', views.conf_has_regs, name='conf_has_regs'),
     url(r'^update_crm_match_list/$', views.update_crm_match_list,
         name='update_crm_match_list'),
     url(r'^link_new_crm_record/$', views.link_new_crm_record,

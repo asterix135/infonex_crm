@@ -124,39 +124,53 @@ $(document).ready(function(){
   $('body').on('click', '#change-conference', function(){
     var newConfId = $('#id_event').val();
     if (newConfId != '') {
-      var newConfName = $('#id_event option:selected').text();
-      $('#displayed-conf-name').text(newConfName);
-      $('#selected-conference-id').val(newConfId);
-      $('#conference-details').removeClass('in');
       $.ajax({
-        url: '/delegate/update_tax_information/',
+        url: '/delegate/conf_has_regs/',
         type: 'POST',
         data: {
           'conf_id': newConfId,
         },
         success: function(data){
-          $('#registration-tax-information').html(data);
-        }
-      });
-      $.ajax({
-        url: '/delegate/update_fx_conversion/',
-        type: 'POST',
-        data: {
-          'conf_id': newConfId,
-        },
-        success: function(data){
-          $('#fx-details').html(data);
-        }
-      });
-      $.ajax({
-        url: '/delegate/update_conference_options/',
-        type: 'POST',
-        data: {
-          'conf_id': newConfId,
-        },
-        success: function(data){
-          $('#conference-options').html(data);
-        }
+          var okToRegister = $('#first-reg', data).val() == 'true';
+          if (okToRegister) {
+            var newConfName = $('#id_event option:selected').text();
+            $('#displayed-conf-name').text(newConfName);
+            $('#selected-conference-id').val(newConfId);
+            $('#conference-details').removeClass('in');
+            $.ajax({
+              url: '/delegate/update_tax_information/',
+              type: 'POST',
+              data: {
+                'conf_id': newConfId,
+              },
+              success: function(data){
+                $('#registration-tax-information').html(data);
+              }
+            });
+            $.ajax({
+              url: '/delegate/update_fx_conversion/',
+              type: 'POST',
+              data: {
+                'conf_id': newConfId,
+              },
+              success: function(data){
+                $('#fx-details').html(data);
+              }
+            });
+            $.ajax({
+              url: '/delegate/update_conference_options/',
+              type: 'POST',
+              data: {
+                'conf_id': newConfId,
+              },
+              success: function(data){
+                $('#conference-options').html(data);
+              }
+            });
+          } else {
+            // ACTIVATE MODAL
+          };
+        };
       });
     };
   });
@@ -192,44 +206,40 @@ $(document).ready(function(){
 
   // updates payment displays when registration status changes
   $('body').on('change', '#id_registration_status', function(){
-    var nonInvoiceVals = ['G', 'K', 'KX', 'SD', 'SE'];
+    displayHideRegDetails();
     var newStatus = $(this).val();
     var currentRegDetailId = $('#current-regdetail-id').val();
     if (currentRegDetailId == '') {
       currentRegDetailId = 'new';
     };
     var detailsDisplayed = $('#invoice-details').hasClass('in');
-    if (jQuery.inArray(newStatus, nonInvoiceVals) >= 0) {
-      if (detailsDisplayed) {
-        $('#invoice-details').removeClass('in');
-      }
-    } else {
-      if (!detailsDisplayed) {
-        $('#invoice-details').addClass('in');
-      };
-      $.ajax({
-        url: '/delegate/update_cxl_info/',
-        type: 'POST',
-        data: {
-          'regdetail_id': currentRegDetailId,
-          'reg_status': newStatus,
-        },
-        success: function(data){
-          $('#cancellation-details').html(data);
-        }
-      });
-      $.ajax({
-        url: '/delegate/update_payment_details/',
-        type: 'POST',
-        data: {
-          'regdetail_id': currentRegDetailId,
-          'reg_status': newStatus,
-        },
-        success: function(data){
-          $('#status-based-reg-fields').html(data);
-        }
-      });
+
+    if (detailsDisplayed) {
+      $('#invoice-details').addClass('in');
     };
+    $.ajax({
+      url: '/delegate/update_cxl_info/',
+      type: 'POST',
+      data: {
+        'regdetail_id': currentRegDetailId,
+        'reg_status': newStatus,
+      },
+      success: function(data){
+        $('#cancellation-details').html(data);
+      }
+    });
+    $.ajax({
+      url: '/delegate/update_payment_details/',
+      type: 'POST',
+      data: {
+        'regdetail_id': currentRegDetailId,
+        'reg_status': newStatus,
+      },
+      success: function(data){
+        $('#status-based-reg-fields').html(data);
+      }
+    });
+
   });
 
 

@@ -723,7 +723,7 @@ def territory(request):
         sort_col = request.session.get('filter_sort_col')
     else:
         if request.GET['sort'] == request.session.get('filter_sort_col'):
-            request.session['filter_sort_col'] = 'ASC' if \
+            request.session['filter_sort_order'] = 'ASC' if \
                 request.session['filter_sort_order'] == 'DESC' else 'DESC'
         else:
             request.session['filter_sort_order'] = 'ASC'

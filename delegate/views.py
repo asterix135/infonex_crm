@@ -491,7 +491,9 @@ def add_new_company(request):
 def check_that_conf_is_complete(request):
     if request.method != 'POST':
         return HttpResponse('')
-    event = get_object_or_404()
+    event = get_object_or_404(Event, pk=request.POST['event_id'])
+
+    return HttpResponse('')
 
 
 @login_required

@@ -177,9 +177,14 @@
           <h3>Registration/Invoice details</h3>
           <div class="row">
             <div class="col-sm-3">
-              {{ reg_details_form.registration_status.errors }}
               {{ reg_details_form.registration_status.label_tag }}
+              {{ reg_details_form.registration_status.errors }}
               {{ reg_details_form.registration_status }}
+            </div>
+            <div class="col-sm-3">
+              {{ reg_details_form.register_date.label_tag }}
+              {{ reg_details_form.register_date.errors }}
+              {{ reg_details_form.register_date }}
             </div>
             <div id="cancellation-details">
               {% include 'delegate/addins/cancellation_details.html' %}

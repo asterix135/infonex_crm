@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Max
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
 from .forms import *
@@ -485,6 +485,13 @@ def add_new_company(request):
         'registrant': registrant,
     }
     return render(request, 'delegate/addins/company_sidebar.html', context)
+
+
+@login_required
+def check_that_conf_is_complete(request):
+    if request.method != 'POST':
+        return HttpResponse('')
+    event = get_object_or_404()
 
 
 @login_required

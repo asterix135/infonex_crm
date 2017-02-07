@@ -1,7 +1,9 @@
 {% if reg_details_form.registration_status.value in cxl_values %}
-<div class="col-sm-3">
+<div class="col-sm-3 collapse in" id="cancellation-panel">
+{% else %}
+<div class="col-sm-3 collapse" id="cancellation-panel">
+{% endif %}
   {{ reg_details_form.cancellation_date.errors }}
   {{ reg_details_form.cancellation_date.label_tag }}
   {{ reg_details_form.cancellation_date }}
 </div>
-{% endif %}

@@ -2,6 +2,10 @@ $(document).ready(function(){
 
   // TODO: Format currency to 2 decimals & fx to 3 decimals
 
+  // Check & adjust display of reg details on page load/reload
+  displayHideRegDetails();
+
+
   // update list of crm suggestion names on keyup
   $('body').on('keyup', '#delegate-info #id_first_name,#delegate-info #id_last_name', function(){
     var charsEntered = $('#delegate-info #id_first_name').val().length +
@@ -158,18 +162,46 @@ $(document).ready(function(){
   });
 
 
+  // function to ensure propert display/hide of reg details
+  function displayHideRegDetails(){
+    var nonInvoiceVals = ['G', 'K', 'KX', 'SD', 'SE', ''];
+    var cxlVals = ['DX', 'SX', 'KX'];
+    var regStatus = $('#id_registration_status').val();
+    var detailsDisplayed = $('#invoice-details').hasClass('in');
+    var cxlDisplayed = $('#cancellation-panel').hasClass('in');
+    if (jQuery.inArray(regStatus, nonInvoiceVals) >= 0) {
+      if (detailsDisplayed) {
+        $('#invoice-details').removeClass('in');
+      };
+    } else {
+      if (!detailsDisplayed) {
+        $('#invoice-details').addClass('in');
+      };
+    };
+    if (jQuery.inArray(regStatus, cxlVals) >= 0){
+      if (!cxlDisplayed) {
+        $('#cancellation-panel').addClass('in');
+      };
+    } else {
+      if (cxlDisplayed) {
+        $('$cancellation-panel').removeClass('in');
+      };
+    };
+  };
+
+
   // updates payment displays when registration status changes
   $('body').on('change', '#id_registration_status', function(){
-    var nonInvoiceVals = ['G', 'K', 'KX', 'SD', 'SE']
+    var nonInvoiceVals = ['G', 'K', 'KX', 'SD', 'SE'];
     var newStatus = $(this).val();
     var currentRegDetailId = $('#current-regdetail-id').val();
     if (currentRegDetailId == '') {
-      currentRegDetailId = 'new'
+      currentRegDetailId = 'new';
     };
     var detailsDisplayed = $('#invoice-details').hasClass('in');
     if (jQuery.inArray(newStatus, nonInvoiceVals) >= 0) {
       if (detailsDisplayed) {
-        $('#invoice-details')removeClass('in');
+        $('#invoice-details').removeClass('in');
       }
     } else {
       if (!detailsDisplayed) {
@@ -201,18 +233,6 @@ $(document).ready(function(){
   });
 
 
-
-  // Deactivate invoice-related fields for registrations that do not get an invoice-related
-  $('body').on('change', '#id_registration_status', function(){
-    var nonInvoiceVals = ['G', 'K', 'KX']
-    if (jQuery.inArray($(this).val(), nonInvoiceVals) >= 0) {
-      console.log('non-invoice registration');
-      $('#id_pre_tax_price, #id_hst_rate').attr('disabled', '');
-    } else {
-      console.log('invoice registration');
-    }
-  });
-
   // swap content in sidebar
   $('body').on('click', '.sidebar-button', function(){
     $('#crm-sidebar-content').toggle();
@@ -238,13 +258,11 @@ $(document).ready(function(){
   // toggles whether company name is editable & change icon
   $('body').on('click', '#toggle-company-edit', function(){
     if ($('#toggle-company-icon').hasClass('glyphicon-chevron-down')){
-      console.log('down is true');
       $('#toggle-company-icon').removeClass('glyphicon-chevron-down');
       $('#toggle-company-icon').addClass('glyphicon-chevron-up');
       $('#company-details').toggle();
       $('#company-info #id_name').removeProp('disabled');
     } else {
-      console.log('up is true');
       $('#toggle-company-icon').removeClass('glyphicon-chevron-up');
       $('#toggle-company-icon').addClass('glyphicon-chevron-down');
       $('#company-details').toggle();

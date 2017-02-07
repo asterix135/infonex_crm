@@ -162,12 +162,13 @@ class RegDetailsForm(forms.ModelForm):
     registration_status = forms.ChoiceField(
         required=True,
         choices=REG_STATUS_OPTIONS,
-        initial = 'DU',
+        initial = '',
         widget = forms.Select(
             attrs={'class': 'form-control'}
         )
     )
     registration_notes = forms.CharField(
+        label = 'Registration Notes (Internal Use Only)',
         widget = forms.Textarea(
             attrs={'class': 'form-control',
                    'rows': '4'}

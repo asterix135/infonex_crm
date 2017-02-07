@@ -8,7 +8,8 @@ PAYMENT_METHODS = (('V', 'Visa'),
                    ('N', 'Credit Note'),
                    ('O', 'Other method'))
 
-REG_STATUS_OPTIONS = (('DP', 'Delegate Paid'),
+REG_STATUS_OPTIONS = (('', '-----------'),
+                      ('DP', 'Delegate Paid'),
                       ('DU', 'Delegate Unpaid'),
                       ('DF', 'Delegate Free'),
                       ('K', 'Speaker'),

@@ -11,6 +11,9 @@
 {% endblock %}
 
 {% block content %}
+<div id="first-registration-modal">
+  {% include 'delegate/addins/conf_setup_modal.html' %}
+</div>
 <form action="process_registration/" method="post">
   <div id="stored-variables">
     <input type="hidden" id="current-registrant-id"
@@ -30,7 +33,6 @@
   <div class="container-fluid fill">
     <div class="row fill">
       <div class="col-sm-9 left-main-panel">
-
         <div id="conference-selection">
           <h3>New Registration For:
             <span class="h1" id="displayed-conf-name">

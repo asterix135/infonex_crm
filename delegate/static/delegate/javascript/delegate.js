@@ -120,6 +120,45 @@ $(document).ready(function(){
   });
 
 
+  // function to change active conference for delegate
+  function changeActiveConference(newConfId){
+    var newConfName = $('#id_event option:selected').text();
+    $('#displayed-conf-name').text(newConfName);
+    $('#selected-conference-id').val(newConfId);
+    $('#conference-details').removeClass('in');
+    $.ajax({
+      url: '/delegate/update_tax_information/',
+      type: 'POST',
+      data: {
+        'conf_id': newConfId,
+      },
+      success: function(data){
+        $('#registration-tax-information').html(data);
+      }
+    });
+    $.ajax({
+      url: '/delegate/update_fx_conversion/',
+      type: 'POST',
+      data: {
+        'conf_id': newConfId,
+      },
+      success: function(data){
+        $('#fx-details').html(data);
+      }
+    });
+    $.ajax({
+      url: '/delegate/update_conference_options/',
+      type: 'POST',
+      data: {
+        'conf_id': newConfId,
+      },
+      success: function(data){
+        $('#conference-options').html(data);
+      }
+    });
+  };
+
+
   // updates display of current conference & saves variable when new conf chosen
   $('body').on('click', '#change-conference', function(){
     var newConfId = $('#id_event').val();
@@ -133,46 +172,23 @@ $(document).ready(function(){
         success: function(data){
           var okToRegister = $('#first-reg', data).val() == 'true';
           if (okToRegister) {
-            var newConfName = $('#id_event option:selected').text();
-            $('#displayed-conf-name').text(newConfName);
-            $('#selected-conference-id').val(newConfId);
-            $('#conference-details').removeClass('in');
-            $.ajax({
-              url: '/delegate/update_tax_information/',
-              type: 'POST',
-              data: {
-                'conf_id': newConfId,
-              },
-              success: function(data){
-                $('#registration-tax-information').html(data);
-              }
-            });
-            $.ajax({
-              url: '/delegate/update_fx_conversion/',
-              type: 'POST',
-              data: {
-                'conf_id': newConfId,
-              },
-              success: function(data){
-                $('#fx-details').html(data);
-              }
-            });
-            $.ajax({
-              url: '/delegate/update_conference_options/',
-              type: 'POST',
-              data: {
-                'conf_id': newConfId,
-              },
-              success: function(data){
-                $('#conference-options').html(data);
-              }
-            });
+            changeActiveConference(newConfId);
           } else {
-            // ACTIVATE MODAL
+            $('#first-registration-modal').html(data);
+            $('#confSetupModal').modal('show');
           };
-        };
+        }
       });
     };
+  });
+
+
+  // Proceed with registration when appropriate button clicked in modal
+  $('body').on('click', '#proceed-with-registration', function(){
+    var newConfId = $('#id_event').val();
+    console.log('should proceed')
+    $('#confSetupModal').modal('hide');
+    changeActiveConference(newConfId);
   });
 
 

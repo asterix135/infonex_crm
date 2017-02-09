@@ -11,53 +11,62 @@ from .forms import *
 from .models import *
 from crm.models import Person, Event
 
+########################
+# HELPER FUNCTIONS
+########################
+def create_temp_conf_number():
+    """ helper function for add_event_option """
+    base_number = "TEMP"
+    counter = 0
+    while True:
+        event_number = base_number + str(counter)
+        if Event.objects.filter(number=event_number).count() == 0:
+            return event_number
+        counter += 1
+
+
+########################
+# BASE VIEWS
+########################
+@login_required
+def add_edit_conference(request):
+    """ Renders conference page """
+    edit_action = 'blank'
+    event = None
+    event_option_set = None
+    conference_edit_form = ConferenceEditForm()
+    conference_option_form = ConferenceOptionForm()
+    if request.method == 'GET':
+        edit_action = request.GET.get('action', 'blank')
+        if edit_action not in ('blank', 'new', 'edit'):
+            edit_action = 'blank'
+        if edit_action == 'edit':
+            try:
+                event = Event.objects.get(pk=request.GET['id'])
+                conference_edit_form = ConferenceEditForm(instance=event)
+                event_option_set = event.eventoptions_set.all()
+            except (Event.DoesNotExist, MultiValueDictKeyError):
+                edit_action = 'blank'
+
+    venue_list = Venue.objects.all().order_by('city', 'name')
+    venue_form = VenueForm()
+    conference_select_form = ConferenceSelectForm()
+    context = {
+        'edit_action': edit_action,
+        'venue_form': venue_form,
+        'venue_list': venue_list,
+        'conference_select_form': conference_select_form,
+        'conference_edit_form': conference_edit_form,
+        'conference_option_form': conference_option_form,
+        'event': event,
+        'event_option_set': event_option_set,
+    }
+    return render(request, 'registration/conference.html', context)
+
+
 @login_required
 def index(request):
     return render(request, 'registration/index.html')
-
-
-@login_required
-def search_dels(request):
-    """
-    AJAX call to get matching delegates and crm contacts for new_delegate_search
-    """
-    if request.method == 'POST':
-        if (request.POST['first_name'] == '' and
-            request.POST['last_name'] == '' and
-            request.POST['company'] == '' and
-            request.POST['postal_code'] == ''):
-
-            past_customer_list = None
-            crm_list = None
-            search_entered = True
-            conference = None
-        else:
-            filterargs = {
-                'first_name__icontains': request.POST['first_name'],
-                'last_name__icontains': request.POST['last_name'],
-                'company__name__icontains': request.POST['company'],
-                'company__postal_code__icontains': request.POST['postal_code'],
-            }
-            past_customer_list = Registrants.objects.filter(**filterargs)
-            crm_list = Person.objects.filter(
-                Q(name__icontains=request.POST['first_name']) &
-                Q(name__icontains=request.POST['last_name']),
-                Q(company__icontains=request.POST['company'])
-            ).order_by('company', 'name')[:100]
-            search_entered = True
-            conference = Event.objects.get(pk=request.POST['event'])
-    else:
-        past_customer_list = None
-        crm_list = None
-        search_entered = None
-        conference = None
-    context = {
-        'past_customer_list': past_customer_list,
-        'crm_list': crm_list,
-        'search_entered': search_entered,
-        'conference': conference,
-    }
-    return render(request, 'registration/addins/match_del_list.html', context)
 
 
 @login_required
@@ -107,212 +116,9 @@ def new_delegate_search(request):
     return render(request, 'registration/new_delegate_search.html', context)
 
 
-@login_required
-def get_registration_history(request):
-    """AJAX call to get reg history for past delegate"""
-    context = RequestContext(request)
-    person_id = None
-    person_regs = None
-    if request.method == 'GET':
-        person_id = request.GET['id']
-    if person_id:
-        person = Registrants.objects.get(pk=person_id)
-        person_regs = person.regdetails_set.all()
-    return render(request, 'registration/addins/reg_history.html',
-        {'person_regs': person_regs})
-
-
-@login_required
-def select_conference_to_edit(request):
-    """ ajax call to select conference for editing """
-    event = None
-    edit_action = 'new'
-    conference_edit_form = ConferenceEditForm()
-    conference_option_form = ConferenceOptionForm()
-    event_option_set = None
-    if request.method == 'POST':
-        if request.POST['edit_action'] != 'edit':
-            edit_action = 'blank'
-        else:
-            try:
-                event = Event.objects.get(pk=request.POST['conf_id'])
-                edit_action = 'edit'
-                conference_edit_form = ConferenceEditForm(instance=event)
-                event_option_set = event.eventoptions_set.all()
-            except (Event.DoesNotExist, MultiValueDictKeyError):
-                edit_action = 'blank'
-    context = {
-        'edit_action': edit_action,
-        'conference_edit_form': conference_edit_form,
-        'conference_option_form': conference_option_form,
-        'event': event,
-        'event_option_set': event_option_set,
-    }
-    return render(request, 'registration/addins/conference_edit_panel.html',
-                  context)
-
-
-@login_required
-def add_edit_conference(request):
-    """ Renders conference page """
-    edit_action = 'blank'
-    event = None
-    event_option_set = None
-    conference_edit_form = ConferenceEditForm()
-    conference_option_form = ConferenceOptionForm()
-    if request.method == 'GET':
-        edit_action = request.GET.get('action', 'blank')
-        if edit_action not in ('blank', 'new', 'edit'):
-            edit_action = 'blank'
-        if edit_action == 'edit':
-            try:
-                event = Event.objects.get(pk=request.GET['id'])
-                conference_edit_form = ConferenceEditForm(instance=event)
-                event_option_set = event.eventoptions_set.all()
-            except (Event.DoesNotExist, MultiValueDictKeyError):
-                edit_action = 'blank'
-
-    venue_list = Venue.objects.all().order_by('city', 'name')
-    venue_form = VenueForm()
-    conference_select_form = ConferenceSelectForm()
-    context = {
-        'edit_action': edit_action,
-        'venue_form': venue_form,
-        'venue_list': venue_list,
-        'conference_select_form': conference_select_form,
-        'conference_edit_form': conference_edit_form,
-        'conference_option_form': conference_option_form,
-        'event': event,
-        'event_option_set': event_option_set,
-    }
-    return render(request, 'registration/conference.html', context)
-
-
-@login_required
-def edit_venue(request):
-    """ AJAX function to edit venue information in sidebar """
-    venue = None
-    venue_id = None
-    template = 'registration/addins/venue_detail.html'
-    if request.method == 'GET':
-        venue_id = request.GET['id']
-    elif request.method == 'POST':
-        venue_id = request.POST['id']
-    if venue_id:
-        venue = Venue.objects.get(pk=venue_id)
-        if request.method == 'GET':
-            venue_form = VenueForm(instance=venue)
-            template = 'registration/addins/venue_edit.html'
-        elif request.method == 'POST':
-            venue_form = VenueForm(request.POST, instance=venue)
-            if venue_form.is_valid():
-                venue_form.save()
-            else:
-                template = 'registration/addins/venue_edit.html'
-        else:
-            venue_form = VenueForm()
-
-    context = {'venue': venue,
-               'venue_form': venue_form,}
-    return render(request, template, context)
-
-
-@login_required
-def add_venue(request):
-    """ AJAX Function to add new venue and refresh venue sidebar """
-    errors = False
-    venue_list = Venue.objects.all().order_by('city', 'name')
-    if request.method == 'POST':
-        venue_form = VenueForm(request.POST)
-        errors = True
-        if venue_form.is_valid():
-            errors = False
-            venue_form.save()
-            venue_form = VenueForm()
-    else:
-        venue_form = VenueForm()
-    context = {
-        'venue_form': venue_form,
-        'venue_list': venue_list,
-        'errors': errors,
-    }
-    return render(request, 'registration/addins/venue_sidebar.html', context)
-
-
-@login_required
-def delete_venue(request):
-    """ AJAX function to delete venue """
-    venue_form = VenueForm()
-    # TODO: Update this when filter function implemented
-    venue_list = Venue.objects.all().order_by('city', 'name')
-    if request.method == 'POST' and 'venue_id' in request.POST:
-        try:
-            venue = Venue.objects.get(id=request.POST['venue_id'])
-        except (Venue.DoesNotExist, MultiValueDictKeyError):
-            venue = None
-        if venue:
-            venue.delete()
-    context = {
-        'venue_form': venue_form,
-        'venue_list': venue_list,
-    }
-    return render(request, 'registration/addins/venue_sidebar.html', context)
-
-
-@login_required
-def filter_venue(request):
-    venue_form = VenueForm()
-    try:
-        city_partial = request.GET['city_partial']
-        venue_list = Venue.objects.filter(
-            city__icontains=city_partial).order_by('city', 'name')
-    except MultiValueDictKeyError:
-        city_partial = None
-        venue_list = Venue.objects.all().order_by('city', 'name')
-    context = {
-        'venue_form': venue_form,
-        'venue_list': venue_list,
-    }
-    return render(request, 'registration/addins/venue_sidebar.html', context)
-
-
-@login_required
-def unfilter_venue(request):
-    venue_form = VenueForm()
-    venue_list = Venue.objects.all().order_by('city', 'name')
-    context = {
-        'venue_form': venue_form,
-        'venue_list': venue_list,
-    }
-    return render(request, 'registration/addins/venue_sidebar.html', context)
-
-
-@login_required
-def delete_temp_conf(request):
-    """ ajax call to delete temporary conference and options """
-    event = None
-    if request.method == 'POST':
-        try:
-            event = Event.objects.get(pk=request.POST['event_id'])
-        except (Event.DoesNotExist, MultiValueDictKeyError):
-            event = None
-        if event:
-            event.delete()
-    return HttpResponse('')
-
-
-@login_required
-def create_temp_conf_number():
-    """ helper function for add_event_option """
-    base_number = "TEMP"
-    counter = 0
-    while True:
-        event_number = base_number + str(counter)
-        if Event.objects.filter(number=event_number).count() == 0:
-            return event_number
-        counter += 1
-
-
+#######################
+# AJAX CALLS
+#######################
 @login_required
 def add_event_option(request):
     """ ajax call to add options to a conference """
@@ -324,12 +130,6 @@ def add_event_option(request):
             event_id = request.POST['event_id']
         except MultiValueDictKeyError:
             event_id = None
-        # form_data = {
-        #     'primary': request.POST['primary'],
-        #     'name': request.POST['name'],
-        #     'startdate': request.POST['startdate'],
-        #     'enddate': request.POST['enddate'],
-        # }
         conference_option_form = ConferenceOptionForm(request.POST)
         if conference_option_form.is_valid():
             if not event_id:
@@ -371,6 +171,28 @@ def add_event_option(request):
 
 
 @login_required
+def add_venue(request):
+    """ AJAX Function to add new venue and refresh venue sidebar """
+    errors = False
+    venue_list = Venue.objects.all().order_by('city', 'name')
+    if request.method == 'POST':
+        venue_form = VenueForm(request.POST)
+        errors = True
+        if venue_form.is_valid():
+            errors = False
+            venue_form.save()
+            venue_form = VenueForm()
+    else:
+        venue_form = VenueForm()
+    context = {
+        'venue_form': venue_form,
+        'venue_list': venue_list,
+        'errors': errors,
+    }
+    return render(request, 'registration/addins/venue_sidebar.html', context)
+
+
+@login_required
 def delete_event_option(request):
     """ ajax call to delete option from a conference """
     conference_option_form = ConferenceOptionForm()
@@ -397,6 +219,104 @@ def delete_event_option(request):
     }
     return render(request, 'registration/addins/conference_options_panel.html',
                   context)
+
+
+@login_required
+def delete_temp_conf(request):
+    """ ajax call to delete temporary conference and options """
+    event = None
+    if request.method == 'POST':
+        try:
+            event = Event.objects.get(pk=request.POST['event_id'])
+        except (Event.DoesNotExist, MultiValueDictKeyError):
+            event = None
+        if event:
+            event.delete()
+    return HttpResponse('')
+
+
+@login_required
+def delete_venue(request):
+    """ AJAX function to delete venue """
+    venue_form = VenueForm()
+    # TODO: Update this when filter function implemented
+    venue_list = Venue.objects.all().order_by('city', 'name')
+    if request.method == 'POST' and 'venue_id' in request.POST:
+        try:
+            venue = Venue.objects.get(id=request.POST['venue_id'])
+        except (Venue.DoesNotExist, MultiValueDictKeyError):
+            venue = None
+        if venue:
+            venue.delete()
+    context = {
+        'venue_form': venue_form,
+        'venue_list': venue_list,
+    }
+    return render(request, 'registration/addins/venue_sidebar.html', context)
+
+
+@login_required
+def edit_venue(request):
+    """ AJAX function to edit venue information in sidebar """
+    venue = None
+    venue_id = None
+    template = 'registration/addins/venue_detail.html'
+    if request.method == 'GET':
+        venue_id = request.GET['id']
+    elif request.method == 'POST':
+        venue_id = request.POST['id']
+    if venue_id:
+        venue = Venue.objects.get(pk=venue_id)
+        if request.method == 'GET':
+            venue_form = VenueForm(instance=venue)
+            template = 'registration/addins/venue_edit.html'
+        elif request.method == 'POST':
+            venue_form = VenueForm(request.POST, instance=venue)
+            if venue_form.is_valid():
+                venue_form.save()
+            else:
+                template = 'registration/addins/venue_edit.html'
+        else:
+            venue_form = VenueForm()
+
+    context = {'venue': venue,
+               'venue_form': venue_form,}
+    return render(request, template, context)
+
+
+@login_required
+def filter_venue(request):
+    """
+    Dynamically filter list of venues based on city
+    """
+    venue_form = VenueForm()
+    try:
+        city_partial = request.GET['city_partial']
+        venue_list = Venue.objects.filter(
+            city__icontains=city_partial).order_by('city', 'name')
+    except MultiValueDictKeyError:
+        city_partial = None
+        venue_list = Venue.objects.all().order_by('city', 'name')
+    context = {
+        'venue_form': venue_form,
+        'venue_list': venue_list,
+    }
+    return render(request, 'registration/addins/venue_sidebar.html', context)
+
+
+@login_required
+def get_registration_history(request):
+    """AJAX call to get reg history for past delegate"""
+    context = RequestContext(request)
+    person_id = None
+    person_regs = None
+    if request.method == 'GET':
+        person_id = request.GET['id']
+    if person_id:
+        person = Registrants.objects.get(pk=person_id)
+        person_regs = person.regdetails_set.all()
+    return render(request, 'registration/addins/reg_history.html',
+        {'person_regs': person_regs})
 
 
 @login_required
@@ -432,11 +352,94 @@ def save_conference_changes(request):
 
 
 @login_required
-def update_venue_choices(request):
-    """ ajax call to update venue selection choices dropdown when new venue added """
+def search_dels(request):
+    """
+    AJAX call to get matching delegates and crm contacts for new_delegate_search
+    """
+    if request.method == 'POST':
+        if (request.POST['first_name'] == '' and
+            request.POST['last_name'] == '' and
+            request.POST['company'] == '' and
+            request.POST['postal_code'] == ''):
+
+            past_customer_list = None
+            crm_list = None
+            search_entered = True
+            conference = None
+        else:
+            filterargs = {
+                'first_name__icontains': request.POST['first_name'],
+                'last_name__icontains': request.POST['last_name'],
+                'company__name__icontains': request.POST['company'],
+                'company__postal_code__icontains': request.POST['postal_code'],
+            }
+            past_customer_list = Registrants.objects.filter(**filterargs)
+            crm_list = Person.objects.filter(
+                Q(name__icontains=request.POST['first_name']) &
+                Q(name__icontains=request.POST['last_name']),
+                Q(company__icontains=request.POST['company'])
+            ).order_by('company', 'name')[:100]
+            search_entered = True
+            try:
+                conference = Event.objects.get(pk=request.POST['event'])
+            except (ValueError, Event.DoesNotExist):
+                conference = None
+    else:
+        past_customer_list = None
+        crm_list = None
+        search_entered = None
+        conference = None
+    context = {
+        'past_customer_list': past_customer_list,
+        'crm_list': crm_list,
+        'search_entered': search_entered,
+        'conference': conference,
+    }
+    return render(request, 'registration/addins/match_del_list.html', context)
+
+
+@login_required
+def select_conference_to_edit(request):
+    """ ajax call to select conference for editing """
+    event = None
+    edit_action = 'new'
     conference_edit_form = ConferenceEditForm()
-    return render(request, 'registration/addins/conference_venue_choices.html',
-                  {'conference_edit_form': conference_edit_form})
+    conference_option_form = ConferenceOptionForm()
+    event_option_set = None
+    if request.method == 'POST':
+        if request.POST['edit_action'] != 'edit':
+            edit_action = 'blank'
+        else:
+            try:
+                event = Event.objects.get(pk=request.POST['conf_id'])
+                edit_action = 'edit'
+                conference_edit_form = ConferenceEditForm(instance=event)
+                event_option_set = event.eventoptions_set.all()
+            except (Event.DoesNotExist, MultiValueDictKeyError):
+                edit_action = 'blank'
+    context = {
+        'edit_action': edit_action,
+        'conference_edit_form': conference_edit_form,
+        'conference_option_form': conference_option_form,
+        'event': event,
+        'event_option_set': event_option_set,
+    }
+    return render(request, 'registration/addins/conference_edit_panel.html',
+                  context)
+
+
+@login_required
+def unfilter_venue(request):
+    """
+    AJAX Call
+    """
+    venue_form = VenueForm()
+    venue_list = Venue.objects.all().order_by('city', 'name')
+    context = {
+        'venue_form': venue_form,
+        'venue_list': venue_list,
+    }
+    return render(request, 'registration/addins/venue_sidebar.html', context)
 
 
 @login_required
@@ -446,3 +449,11 @@ def update_conference_choices(request):
     return render(request,
                   'registration/addins/conference_select_dropdown.html',
                   {'conference_select_form': conference_select_form})
+
+
+@login_required
+def update_venue_choices(request):
+    """ ajax call to update venue selection choices dropdown when new venue added """
+    conference_edit_form = ConferenceEditForm()
+    return render(request, 'registration/addins/conference_venue_choices.html',
+                  {'conference_edit_form': conference_edit_form})

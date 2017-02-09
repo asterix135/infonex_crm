@@ -15,15 +15,40 @@ $(document).ready(function(){
 
   // check that a conference is selected before allowing delegate registration
   $('body').on('click', '.register-delegate', function(e){
+    console.log('click');
     var $event_select_box = $('#id_event');
-    var conf_id = $('#id_event').val();
-    if (conf_id == ''){
+    var submissionType = $(this).attr('register-type');
+    var customerId = $(this).attr('customer-id');
+    console.log(submissionType);
+    var confId = $('#id_event').val();
+    if (confId == ''){
       $event_select_box.css('border-color', '#963634');
       $('.form-warning').show();
       $('html, body').animate({
         scrollTop: $('#id_event').offset().top - 180
       });
       e.preventDefault();
+    } else {
+      e.preventDefault();
+      $.ajax({
+        url: '/delegate/conf_has_regs/',
+        type: 'POST',
+        data: {
+          'conf_id': confId,
+        },
+        success: function(data){
+          var okToRegister = $('#first-reg', data).val() == 'true';
+          console.log(data);
+          console.log(okToRegister);
+          if (okToRegister) {
+            console.log('#' + submissionType + customerId + ' > form');
+            $('#' + submissionType + customerId + ' form').submit();
+          } else {
+            $('#first-registration-modal').html(data);
+            $('#confSetupModal').modal('show');
+          };
+        }
+      });
     };
   });
 

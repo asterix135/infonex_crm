@@ -2,9 +2,13 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
-next #: 44
+next #: 47
+
+TODO: 46) PD/Sales report page on notes
 
 TODO: 41) Add title filter to territory creation page
+
+TODO: 45) On delegate page - need to verify if, on change of conference, the current delegate is registered for that event
 
 TODO: 26) Date picker widget (https://jqueryui.com/datepicker/)
 
@@ -18,7 +22,11 @@ TODO: 9) Play with pdf maker (ReportLab) and create new invoice & reg note
 
 TODO: 34) registration/forms.py/ConferenceEditForm.clean()
 
-TODO: 35) Check if registration works with event minimally added in crm - popup if first delegate????
+TODO: 35) STARTED - Check if registration works with event minimally added in crm
+          a) Need to get directly to conference edit page
+          b) Need JS for 'Proceed' button on both instances
+
+TODO: 44) delegate/views.py/save_company_changes - this is blank, why did I put this in here?
 
 TODO: 10) Post-registration processing page
 TODO: 19) How to send email confirmations?

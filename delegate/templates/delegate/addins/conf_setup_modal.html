@@ -1,61 +1,122 @@
 <div class="modal fade" id="confSetupModal" tabindex="-1" role="dialog">
+  <input type="hidden" id="first-reg" value="{{ first_reg }}" />
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">
           <span>&times;</span>
         </button>
-        <h3 class="modal-title" id="possibleDuplicateLabel">Stop Right There...</h3>
+        <h3 class="modal-title" id="possibleDuplicateLabel">First Registration!!</h3>
       </div>
 
       <div class="modal-body">
         <div class="container-fluid bd-example-row">
           <div class="row">
             <div class="col-sm-12">
-              <h4>This conference is not fully set up.  Please fill in the missing details below in order to continue</h4>
+              <p>
+                It looks like you're about to process the first registration for
+                this event.  Before proceeding, please ensure the information
+                that's been entered is correct.
+              </p>
+              <p>
+                If you need to fix any details, please choose the 'edit event'
+                button below.  Otherwise, click 'Proceed'.
+              </p>
             </div>
-          </div>
-
-          <input type="hidden" id="dupe-list-exists" name="dupe-list-exists" value="True" />
-          <div class="row">
-            <div class="col-sm-12">
-              <h4>Here's what you've entered:</h4>
-            </div>
-          </div>
-          <div class="row">
-            <ul class="list-group">
-              <li class="list-group-item">
-                <strong>{{ name }}</strong><br />
-                {% if title %}{{ title }}<br />{% endif %}
-                {% if company %}{{ company }}<br />{% endif %}
-                {% if city %}City: {{ city }}<br />{% endif %}
-                {% if phone %}Tel: {{ phone }}<br />{% endif %}
-                {% if email %}Email: {{ email }}<br />{% endif %}
-              </li>
-            </ul>
           </div>
 
           <div class="row">
             <div class="col-sm-12">
-              <h4>Possible duplicates in database:</h4>
+              <h4>Conference Details</h4>
             </div>
           </div>
           <div class="row">
-            <ul class="list-group">
-              {% for dupe in dupe_list %}
-              <a href="{% url 'crm:detail' dupe.id %}" class="list-group-item">
-                <strong>{{ dupe.name }}</strong><br />
-                {% if dupe.title %}{{ dupe.title }}<br />{% endif %}
-                {% if dupe.company %}{{ dupe.company }}<br />{% endif %}
-                {% if dupe.city %}City: {{ dupe.city }}<br />{% endif %}
-                {% if dupe.phone %}Tel: {{ dupe.phone }}<br />{% endif %}
-                {% if dupe.email %}Email: {{ dupe.email }}<br />{% endif %}
-              </a>
-              {% endfor %}
-            </ul>
+            <label class="col-sm-4">Event Number:</label>
+            <div class="col-sm-8">
+              {{ conference.number }}
+            </div>
           </div>
           <div class="row">
-
+            <label class="col-sm-4">Event Title:</label>
+            <div class="col-sm-8">
+              {{ conference.title }}
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-4">Event Location:</label>
+            <div class="col-sm-8">
+              {{ conference.city }}, {{ conference.state_prov }}
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-4">Venue:</label>
+            <div class="col-sm-8">
+              {{ conference.hotel }}
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-4">Start Date:</label>
+            <div class="col-sm-8">
+              {{ conference.date_begins }}
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-4">Registrar:</label>
+            <div class="col-sm-8">
+              {{ conference.registrar }}
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-4">Developer:</label>
+            <div class="col-sm-8">
+              {{ conference.developer }}
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-4">Company Brand:</label>
+            <div class="col-sm-8">
+              {% if company.company_brand %}
+              {{ company.company_brand }}
+              {% else %}
+              <span class="errorlist">NOT SET</span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-4">Currency:</label>
+            <div class="col-sm-8">
+              {% if company.company_brand %}
+              {{ company.billing_currency }}
+              {% else %}
+              <span class="errorlist">NOT SET</span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <h4>Tax Information:</h4>
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-4">HST:</label>
+            <div class="col-sm-8">
+              {{ company.hst_charged|yesno:"Yes,No,Not Set"}}
+              {% if company.hst_charged %}{{ company.hst_rate|floatformat:2 }}%{% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-4">GST:</label>
+            <div class="col-sm-8">
+              {{ company.gst_charged|yesno:"Yes,No,Not Set" }}
+              {% if company.gst_charged %}{{ company.gst_rate|floatformat:2 }}%{% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-4">QST:</label>
+            <div class="col-sm-8">
+              {{ company.qst_charged|yesno:"Yes,No,Not Set" }}
+              {% if company.qst_charged %}{{ company.qst_rate|floatformat:4 }}%{% endif %}
+            </div>
           </div>
 
         </div>
@@ -63,7 +124,8 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="save-after-dupe-check">Submit Changes</button>
+        <button type="button" class="btn btn-primary" id="proceed-with-registration">Proceed</button>
+        <button type="button" class="btn btn-warning" id="edit-event">Edit Event</button>
       </div>
     </div>
   </div>

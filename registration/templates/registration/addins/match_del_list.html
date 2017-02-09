@@ -48,7 +48,7 @@
             <input type="hidden" name="conf_id" value="{{ conference.id }}" />
             <input type="hidden" name="registrant_id" value="{{ customer.id }}" />
             <input type="hidden" name="crm_id" value="" />
-            <button type="submit" class="btn btn-success register-delegate">
+            <button type="submit" class="btn btn-success register-delegate" register-type="details" customer-id="{{ customer.id }}">
               Register!
             </button>
           </form>
@@ -141,7 +141,7 @@
             <input type="hidden" name="conf_id" value="{{ conference.id }}" />
             <input type="hidden" name="registrant_id" value="" />
             <input type="hidden" name="crm_id" value="{{ prospect.id }}" />
-            <button type="submit" class="btn btn-success register-delegate">
+            <button type="submit" class="btn btn-success register-delegate" register-type="crm_details"  customer-id="{{ prospect.id }}">
               Register!
             </button>
           </form>

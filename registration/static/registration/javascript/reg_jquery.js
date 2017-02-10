@@ -1,5 +1,8 @@
 $(document).ready(function(){
 
+  // Global variables to access when choosing 'proceed' from modal
+  var formToSubmit = '';
+
   // Pulls registration history for delegate on new_delegate_search page
   // Also inserts conference_id into hidden input field
   $('body').on('click', '.show-delegate', function(){
@@ -19,15 +22,16 @@ $(document).ready(function(){
     var submissionType = $(this).attr('register-type');
     var customerId = $(this).attr('customer-id');
     var confId = $('#id_event').val();
+    formToSubmit = '#' + submissionType + customerId + ' form'
     if (confId == ''){
       $event_select_box.css('border-color', '#963634');
       $('.form-warning').show();
       $('html, body').animate({
         scrollTop: $('#id_event').offset().top - 180
       });
-      e.preventDefault();
+      // e.preventDefault();
     } else {
-      e.preventDefault();
+      // e.preventDefault();
       $.ajax({
         url: '/delegate/conf_has_regs/',
         type: 'POST',
@@ -37,7 +41,7 @@ $(document).ready(function(){
         success: function(data){
           var okToRegister = $('#first-reg', data).val() == 'true';
           if (okToRegister) {
-            $('#' + submissionType + customerId + ' form').submit();
+            $(formToSubmit).submit();
           } else {
             $('#first-registration-modal').html(data);
             $('#confSetupModal').modal('show');
@@ -57,7 +61,7 @@ $(document).ready(function(){
 
   // respond to button click to proceed with registration (from modal)
   $('body').on('click', '#proceed-with-registration', function(){
-    var newConfId
+    $(formToSubmit).submit();
   });
 
 

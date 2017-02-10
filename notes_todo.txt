@@ -22,13 +22,6 @@ TODO: 9) Play with pdf maker (ReportLab) and create new invoice & reg note
 
 TODO: 34) registration/forms.py/ConferenceEditForm.clean()
 
-TODO: 35) STARTED - Check if registration works with event minimally added in crm
-          a) DONE - Need to get directly to conference edit page
-          b) Need JS for 'Proceed' button on both instances
-          c) For proceed button - 1) why is console.log not working
-                                  2) probably use global variable to store detail on form to submit
-                                  3) delegate.js and reg_jquery.js
-
 TODO: 44) delegate/views.py/save_company_changes - this is blank, why did I put this in here?
 
 TODO: 10) Post-registration processing page
@@ -86,3 +79,7 @@ TODO: 40) DONE - Get rid of jumbotron except on home pages; add logo to top bar
 TODO: 41) DONE - Add territory filter to personal selects
 TODO: 2) DONE - Implement new table for invoices
 TODO: 44) DONE: Rework registration page.  Flow based on reg status; remove deposit details
+TODO: 35) DONE - Check if registration works with event minimally added in crm
+          a) DONE - Need to get directly to conference edit page
+          b) DONE - Need JS for 'Proceed' button on both instances
+a

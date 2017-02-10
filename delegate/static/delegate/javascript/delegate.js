@@ -194,7 +194,6 @@ $(document).ready(function(){
   // Proceed with registration when appropriate button clicked in modal
   $('body').on('click', '#proceed-with-registration', function(){
     var newConfId = $('#id_event').val();
-    console.log('should proceed')
     $('#confSetupModal').modal('hide');
     changeActiveConference(newConfId);
   });

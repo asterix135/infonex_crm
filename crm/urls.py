@@ -58,4 +58,10 @@ urlpatterns = [
         name='toggle_territory_filter'),
     url(r'^update_user_assignments/$', views.update_user_assignments,
         name='update_user_assignments'),
+
+    ################
+    # GRAPHICS
+    ################
+    url(r'^call_report/$', views.call_report, name='call_report'),
+
 ]

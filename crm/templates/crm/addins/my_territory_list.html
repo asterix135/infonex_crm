@@ -21,3 +21,9 @@
   </button>
   {% endfor %}
 </div>
+<p>
+  {% if not request.session.conference_description or request.session.conference_description == '' %}
+  {% else %}
+  <a href="/crm/call_report/" target="_blank">Download Call Report History</a>
+  {% endif %}
+</p>

@@ -1,5 +1,6 @@
 import datetime
 import json
+from io import BytesIO
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
@@ -11,6 +12,12 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
+
+from reportlab.lib.enums import TA_LEFT
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.platypus import Paragraph, Table, TableStyle, SimpleDocTemplate
 
 from .forms import *
 from .models import *
@@ -1470,3 +1477,54 @@ def update_user_assignments(request):
     else:
         EventAssignment(user=user, event=event, role=role).save()
     return HttpResponse('')
+
+
+############################
+# GRAPHIC ASSETS
+############################
+@login_required
+def call_report(request):
+    if request.method != 'POST':
+        return HttpResponse('')
+    event = get_object_or_404(Event, pk=request.POST['event'])
+    user = request.user
+    contact_history = Contact.objects.filter(
+        event=event, author=user
+    ).order_by('-date_of_contact')
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="call_report.pdf"'
+    buffr = BytesIO()
+
+    styles = getSampleStyleSheet()
+    cell_style = styles['BodyText']
+    cell_style.alignment = TA_LEFT
+
+    report_details = []
+    title = Paragraph('Call Note Report', styles['title'])
+    report_details.append(title)
+    conf_details_text = event.number + ': ' + event.title + ' (' \
+        + user.userid + ')'
+    report_details.append(Paragraph(conf_details_text, styles['h2']))
+
+    data = []
+    for contact in contact_history:
+        person = contact.person.name
+        if contact.person.title:
+            person = person + '<br/>' + contact.person.title
+        if contact.person.company:
+            person = person + '<br/>' + contact.person.company
+        person = Paragraph(person, cell_style)
+        notes = Paragraph(contact.notes, cell_style)
+        data.append([contact.date_of_contact__date, person, notes])
+    call_detail_table = Table(data, [inch, 2 * inch, 4.5 * inch])
+    call_detail_table.setStyle(TableStyle([('VALIGN', (0,0), (-1, -1), 'TOP')]))
+    report_details.append(call_detail_table)
+
+    report = SimpleDocTemplate(buffr, pagesize=letter,
+                               leftMargin=inch, rightMargin = inch)
+    report.build(report_details)
+
+    pdf = buffr.getvalue()
+    buffr.close()
+    response.write(pdf)
+    return response

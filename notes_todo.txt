@@ -9,6 +9,7 @@ TODO: 46) PD/Sales report page on notes
 TODO: 41) Add title filter to territory creation page
 
 TODO: 45) On delegate page - need to verify if, on change of conference, the current delegate is registered for that event
+          (This requires implementing edit delegate logic for this page)
 
 TODO: 26) Date picker widget (https://jqueryui.com/datepicker/)
 

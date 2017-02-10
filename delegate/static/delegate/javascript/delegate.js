@@ -199,7 +199,7 @@ $(document).ready(function(){
   });
 
 
-  // function to ensure propert display/hide of reg details
+  // function to ensure proper display/hide of reg details
   function displayHideRegDetails(){
     var nonInvoiceVals = ['G', 'K', 'KX', 'SD', 'SE', ''];
     var cxlVals = ['DX', 'SX', 'KX'];

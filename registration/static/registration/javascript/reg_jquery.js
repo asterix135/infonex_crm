@@ -15,11 +15,9 @@ $(document).ready(function(){
 
   // check that a conference is selected before allowing delegate registration
   $('body').on('click', '.register-delegate', function(e){
-    console.log('click');
     var $event_select_box = $('#id_event');
     var submissionType = $(this).attr('register-type');
     var customerId = $(this).attr('customer-id');
-    console.log(submissionType);
     var confId = $('#id_event').val();
     if (confId == ''){
       $event_select_box.css('border-color', '#963634');
@@ -38,10 +36,7 @@ $(document).ready(function(){
         },
         success: function(data){
           var okToRegister = $('#first-reg', data).val() == 'true';
-          console.log(data);
-          console.log(okToRegister);
           if (okToRegister) {
-            console.log('#' + submissionType + customerId + ' > form');
             $('#' + submissionType + customerId + ' form').submit();
           } else {
             $('#first-registration-modal').html(data);
@@ -51,6 +46,20 @@ $(document).ready(function(){
       });
     };
   });
+
+
+  // Respond to button click to go to edit conference page
+  $('body').on('click', '#edit-event', function(){
+    var newConfId = $('#id_event').val();
+    $(location).attr('href', '/registration/conference/?action=edit&id=' + newConfId);
+  });
+
+
+  // respond to button click to proceed with registration (from modal)
+  $('body').on('click', '#proceed-with-registration', function(){
+    var newConfId
+  });
+
 
   // clear border color when event is selected
   // update all hidden fields

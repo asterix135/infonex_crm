@@ -120,6 +120,14 @@ $(document).ready(function(){
   });
 
 
+  // Respond to button click to go to edit conference page
+  $('body').on('click', '#edit-event', function(){
+    console.log('edit clicked');
+    var newConfId = $('#id_event').val();
+    $(location).attr('href', '/registration/conference/?action=edit&id=' + newConfId);
+  });
+
+
   // function to change active conference for delegate
   function changeActiveConference(newConfId){
     var newConfName = $('#id_event option:selected').text();

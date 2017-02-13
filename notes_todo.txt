@@ -2,11 +2,13 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
-next #: 47
+next #: 48
 
 TODO: 46) STARTED - PD/Sales report page on notes (works but ugly)
 
 TODO: 41) Add title filter to territory creation page
+
+TODO: 47) Edit venue button doesn't work when calling a conference to edit??
 
 TODO: 45) On delegate page - need to verify if, on change of conference, the current delegate is registered for that event
           (This requires implementing edit delegate logic for this page)

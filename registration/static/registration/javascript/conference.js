@@ -1,4 +1,14 @@
 $(document).ready(function() {
+  // Filter venue list on load if length of city name > 3
+  var defaultCityName = $('#conference-edit-panel #id_city').val();
+  if (typeof defaultCityName != 'undefined'){
+    console.log(defaultCityName);
+    console.log(defaultCityName.length);
+    if (defaultCityName.length > 3){
+      filterVenueList(defaultCityName);
+    };
+  };
+
 
   // subroutien called to toggle venue edit panel
   function editVenue(venueID) {

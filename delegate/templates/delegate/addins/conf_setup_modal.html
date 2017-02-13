@@ -75,8 +75,8 @@
           <div class="row">
             <label class="col-sm-4">Company Brand:</label>
             <div class="col-sm-8">
-              {% if company.company_brand %}
-              {{ company.company_brand }}
+              {% if conference.company_brand %}
+              {{ conference.get_company_brand_display }}
               {% else %}
               <span class="errorlist">NOT SET</span>
               {% endif %}
@@ -85,8 +85,8 @@
           <div class="row">
             <label class="col-sm-4">Currency:</label>
             <div class="col-sm-8">
-              {% if company.company_brand %}
-              {{ company.billing_currency }}
+              {% if conference.billing_currency %}
+              {{ conference.billing_currency }}
               {% else %}
               <span class="errorlist">NOT SET</span>
               {% endif %}
@@ -100,22 +100,22 @@
           <div class="row">
             <label class="col-sm-4">HST:</label>
             <div class="col-sm-8">
-              {{ company.hst_charged|yesno:"Yes,No,Not Set"}}
-              {% if company.hst_charged %}{{ company.hst_rate|floatformat:2 }}%{% endif %}
+              {{ conference.hst_charged|yesno:"Yes,No,Not Set"}}
+              {% if conference.hst_charged %} - {{ conference.hst_rate|floatformat:2 }}%{% endif %}
             </div>
           </div>
           <div class="row">
             <label class="col-sm-4">GST:</label>
             <div class="col-sm-8">
-              {{ company.gst_charged|yesno:"Yes,No,Not Set" }}
-              {% if company.gst_charged %}{{ company.gst_rate|floatformat:2 }}%{% endif %}
+              {{ conference.gst_charged|yesno:"Yes,No,Not Set" }}
+              {% if conference.gst_charged %} - {{ conference.gst_rate|floatformat:2 }}%{% endif %}
             </div>
           </div>
           <div class="row">
             <label class="col-sm-4">QST:</label>
             <div class="col-sm-8">
-              {{ company.qst_charged|yesno:"Yes,No,Not Set" }}
-              {% if company.qst_charged %}{{ company.qst_rate|floatformat:4 }}%{% endif %}
+              {{ conference.qst_charged|yesno:"Yes,No,Not Set" }}
+              {% if conference.qst_charged %} - {{ conference.qst_rate|floatformat:4 }}%{% endif %}
             </div>
           </div>
 

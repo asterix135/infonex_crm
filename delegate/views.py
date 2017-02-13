@@ -299,10 +299,10 @@ def index(request):
 def process_registration(request):
     """ form submission """
 
-    request.session['current_registration'] = 1
-    request.session['registrant'] = 1
-    request.session['assistant'] = 1
-    return redirect('/delegate/confirmation_details')
+    # request.session['current_registration'] = 1
+    # request.session['registrant'] = 1
+    # request.session['assistant'] = 1
+    # return redirect('/delegate/confirmation_details')
 
     # 1. instantiate various Nones
     current_registration = None
@@ -496,6 +496,8 @@ def conf_has_regs(request):
         first_reg = 'true'
     else:
         first_reg = 'false'
+    print(conference)
+    print(conference.billing_currency)
     context = {
         'first_reg': first_reg,
         'conference': conference,
@@ -655,3 +657,8 @@ def update_tax_information(request):
                'reg_details_form': reg_details_form}
     return render(request, 'delegate/addins/delegate_tax_information.html',
                   context)
+
+
+############################
+# GRAPHICS/DOCUMENTS
+############################

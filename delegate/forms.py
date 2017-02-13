@@ -168,6 +168,7 @@ class RegDetailsForm(forms.ModelForm):
         )
     )
     registration_notes = forms.CharField(
+        required=False,
         label = 'Registration Notes (Internal Use Only)',
         widget = forms.Textarea(
             attrs={'class': 'form-control',

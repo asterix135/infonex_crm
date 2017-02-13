@@ -124,7 +124,6 @@ class Invoice(models.Model):
     sponsorship_description = models.TextField(blank=True, null=True)
 
 
-
 class Venue(models.Model):
     """
     List of Venues with Details

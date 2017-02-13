@@ -4,7 +4,7 @@ See avoiding race conditions using F()
 
 next #: 47
 
-TODO: 46) PD/Sales report page on notes
+TODO: 46) STARTED - PD/Sales report page on notes (works but ugly)
 
 TODO: 41) Add title filter to territory creation page
 

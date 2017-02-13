@@ -1484,9 +1484,9 @@ def update_user_assignments(request):
 ############################
 @login_required
 def call_report(request):
-    if request.method != 'POST':
-        return HttpResponse('')
-    event = get_object_or_404(Event, pk=request.POST['event'])
+    event_assignment = get_object_or_404(EventAssignment,
+                                         pk=request.session['assignment_id'])
+    event = event_assignment.event
     user = request.user
     contact_history = Contact.objects.filter(
         event=event, author=user
@@ -1503,7 +1503,7 @@ def call_report(request):
     title = Paragraph('Call Note Report', styles['title'])
     report_details.append(title)
     conf_details_text = event.number + ': ' + event.title + ' (' \
-        + user.userid + ')'
+        + user.username+ ')'
     report_details.append(Paragraph(conf_details_text, styles['h2']))
 
     data = []
@@ -1513,12 +1513,15 @@ def call_report(request):
             person = person + '<br/>' + contact.person.title
         if contact.person.company:
             person = person + '<br/>' + contact.person.company
+        date = contact.date_of_contact.date()
         person = Paragraph(person, cell_style)
         notes = Paragraph(contact.notes, cell_style)
-        data.append([contact.date_of_contact__date, person, notes])
-    call_detail_table = Table(data, [inch, 2 * inch, 4.5 * inch])
-    call_detail_table.setStyle(TableStyle([('VALIGN', (0,0), (-1, -1), 'TOP')]))
-    report_details.append(call_detail_table)
+        data.append([date, person, notes])
+    if len(data) > 0:
+        call_detail_table = Table(data, [inch, 2 * inch, 4.5 * inch])
+        call_detail_table.setStyle(TableStyle([('VALIGN', (0,0),
+                                                (-1, -1), 'TOP')]))
+        report_details.append(call_detail_table)
 
     report = SimpleDocTemplate(buffr, pagesize=letter,
                                leftMargin=inch, rightMargin = inch)

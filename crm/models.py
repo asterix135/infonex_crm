@@ -172,7 +172,7 @@ class Event(models.Model):
     title = models.CharField(max_length=100)
     city = models.CharField(max_length=50)
     date_begins = models.DateField()
-
+    event_web_site = models.URLField(max_length=255, blank=True, null=True)
     hotel = models.ForeignKey('registration.Venue', blank=True, null=True,
                               on_delete=models.SET_NULL)
     registrar = models.ForeignKey('auth.User', related_name='registrar')

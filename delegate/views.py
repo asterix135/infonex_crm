@@ -100,7 +100,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
                 phone1=request.POST['phone1'],
                 phone2=request.POST['phone2'],
                 contact_option=request.POST['contact_option'],
-                delegate_notes=request.POST['delegate_notes'],
+                # delegate_notes=request.POST['delegate_notes'],
                 created_by=request.user,
                 date_created=timezone.now(),
                 modified_by=request.user,
@@ -109,63 +109,50 @@ def process_complete_registration(request, assistant_data, company, crm_match,
             registrant.save()
 
     # e. reg_details
-    if current_registration:
-        current_registration.conference = conference
-        reg_details_form = RegDetailsForm(reg_details_data,
-                                          instance=current_registration)
-        reg_details_form.save()
-        current_registration.modified_by = request.user
-        current_registration.date_modified = timezone.now()
-        current_registration.save()
-    else:
+    if not current_registration:
         reg_detail_db_check = RegDetails.objects.filter(
             conference=conference,
             registrant=registrant
         )
-        if reg_detail_db_check.count() > 0:
+        if reg_detail_db_check.count() > 0 and \
+            reg_detail_db_check[0].registration_status not in ('SP', 'SU'):
             current_registration = reg_detail_db_check[0]
-            reg_details_form = RegDetailsForm(reg_details_data,
-                                              instance=current_registration)
-            reg_details_form.save()
-            current_registration.modified_by = request.user
-            current_registration.date_modified = timezone.now()
-            current_registration.save()
         else:
-            new_invoice_number = RegDetails.objects.all().aggregate(
-                Max('invoice_number'))['invoice_number'] + 1
-            if requst.POST['sales_credit'] is not None:
-                sales_credit = auth.User(pk=request.POST['sales_credit'])
-            else:
-                sales_credit = None
             current_registration = RegDetails(
-                invoice_number=new_invoice_number,
-                conference=conference,
-                registrant=registrant,
-                priority_code=reg_details_data['priority_code'],
-                sales_credit=sales_credit,
-                pre_tax_price=reg_details_data['pre_tax_price'],
-                gst_rate=reg_details_data['gst_rate'],
-                hst_rate=reg_details_data['hst_rate'],
-                qst_rate=reg_details_data['qst_rate'],
-                pst_rate=0,
-                payment_date=reg_details_data['payment_date'],
-                payment_method=reg_details_data['payment_method'],
-                deposit_amount=reg_details_data['deposit_amount'],
-                deposit_date=reg_details_data['deposit_date'],
-                deposit_method=reg_details_data['deposit_method'],
-                fx_conversion_rate=reg_details_data['fx_conversion_rate'],
-                register_date=reg_details_data['register_date'],
-                cancellation_date=reg_details_data['cancellation_date'],
-                registration_status=reg_details_data['registration_status'],
-                invoice_notes=reg_details_data['invoice_notes'],
-                registration_notes=reg_details_data['registration_notes'],
-                sponsorship_description=reg_details_data['sponsorship_description'],
-                created_by=request.user,
                 date_created=timezone.now(),
-                modified_by=request.user,
-                date_modified=timezone.now(),
+                created_by=request.user,
             )
-            current_registration.save()
+    current_registration.conference = conference
+    current_registration.registrant = registrant
+    current_registration.register_date = request.POST['register_date']
+    if request.POST['cancellation_date'] != '':
+        current_registration.cancellation_date = \
+            request.POST['cancellation_date']
+    else:
+        current_registration.cancellation_date = None
+    current_registration.registration_status = \
+        request.POST['registration_status']
+    current_registration.modified_by = request.user
+    current_registration.date_modified = timezone.now()
+    current_registration.save()
+
+    # f. invoice details
+    try:
+        current_invoice = Invoice.objects.get(reg_details=current_registration)
+    except Invoice.DoesNotExist:
+        # The following ensures that we can issue more than one Invoice
+        # to a sponsor (for partial payments)
+        if current_registration.registration_status in NON_INVOICE_VALUES:
+            current_invoice = None
+        else:
+            current_invoice = Invoice(
+                reg_details=current_registration,
+            )
+    if current_invoice:
+        reg_details_form = RegDetailsForm(reg_details_data,
+                                          instance=current_invoice)
+        reg_details_form.save()
+
     return current_registration, registrant, assistant
 
 
@@ -345,7 +332,6 @@ def process_registration(request):
         }
         assistant_form = AssistantForm(assistant_data)
         reg_details_data = {
-            'priority_code': request.POST['priority_code'],
             'sales_credit': request.POST['sales_credit'],
             'pre_tax_price': request.POST['pre_tax_price'],
             'gst_rate': request.POST['gst_rate'] if 'gst_rate' in \
@@ -665,3 +651,6 @@ def update_tax_information(request):
 ############################
 # GRAPHICS/DOCUMENTS
 ############################
+@login_required
+def generate_invoice(request):
+    pass

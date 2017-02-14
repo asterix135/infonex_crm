@@ -22,7 +22,6 @@
 {% endif %}
 {% if conference.qst_charged %}
 <div class="col-sm-3">
-  {{ conference.qstcharged }}
   {{ reg_details_form.qst_rate.errors }}
   {{ reg_details_form.qst_rate.label_tag }}
   <div class="input-group">
@@ -32,3 +31,17 @@
   </div>
 </div>
 {% endif %}
+{% if conference.qst_charged or conference.gst_charged or conference.hst_charged %}
+<div class="col-sm-3">
+  <label>Tax Total</label>
+  <div class="input-group">
+    <label>$XXX.XX</label>
+  </div>
+</div>
+{% endif %}
+<div class="col-sm-3">
+  <label>Total Invoice</label>
+  <div class="input group">
+    <label>$XXXX.XX</label>
+  </div>
+</div>

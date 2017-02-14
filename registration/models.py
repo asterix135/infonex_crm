@@ -101,17 +101,17 @@ class Invoice(models.Model):
         RegDetails,
         on_delete=models.CASCADE,
     )
-    invoice_date = models.DateField(default=datetime.date.today)
-    priority_code = models.CharField(max_length=25, blank=True, null=True)
     sales_credit = models.ForeignKey('auth.User',
                                      related_name='sales_credit',
                                      blank=True, null=True)
     pre_tax_price = models.DecimalField(max_digits=10, decimal_places=2,
                                         null=True, blank=True)
-    gst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0.05)
-    hst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0.13)
+    gst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0.05,
+                                   blank=True, null=True)
+    hst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0.13,
+                                   blank=True, null=True)
     qst_rate = models.DecimalField(max_digits=6, decimal_places=5,
-                                   default=0.09975)
+                                   default=0.09975, blank=True, null=True)
     pst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0)
     payment_date = models.DateField(blank=True, null=True)
     payment_method = models.CharField(max_length=1,

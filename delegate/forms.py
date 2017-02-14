@@ -154,6 +154,7 @@ class RegDetailsForm(forms.ModelForm):
         )
     )
     cancellation_date = forms.DateField(
+        required = False,
         widget = forms.DateInput(
             attrs={'class': 'form-control',
                    'placeholder': 'yyyy-mm-dd'}
@@ -178,7 +179,7 @@ class RegDetailsForm(forms.ModelForm):
 
     class Meta():
         model = Invoice
-        fields = ['priority_code', 'sales_credit', 'pre_tax_price', 'gst_rate',
+        fields = ['sales_credit', 'pre_tax_price', 'gst_rate',
                   'hst_rate', 'qst_rate', 'payment_date', 'payment_method',
                   'fx_conversion_rate', 'invoice_notes',
                   'sponsorship_description']
@@ -186,9 +187,7 @@ class RegDetailsForm(forms.ModelForm):
             'invoice_notes': _('Comments to Appear on Invoice'),
         }
         widgets = {
-            'priority_code': forms.TextInput(
-                attrs={'class': 'form-control'}
-            ),
+
             'sales_credit': forms.Select(
                 attrs={'class': 'form-control'}
             ),

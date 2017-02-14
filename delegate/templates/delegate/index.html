@@ -140,11 +140,6 @@
               Edit Company
               <span class="glyphicon glyphicon-chevron-down" id="toggle-company-icon"></span>
             </button>
-            <!-- <a href="#company-details" id="toggle-company-edit"
-              class="btn btn-default btn-xs crm-list-action" >
-              Edit Company
-              <span class="glyphicon glyphicon-chevron-down" id="toggle-company-icon" aria-hidden="true"></span>
-            </a> -->
             {% endif %}
           </h3>
           {% if company %}
@@ -211,11 +206,7 @@
               <div id="fx-details">
                 {% include 'delegate/addins/fx_details.html' %}
               </div>
-              <div class="col-sm-3">
-                {{ reg_details_form.priority_code.errors }}
-                {{ reg_details_form.priority_code.label_tag }}
-                {{ reg_details_form.priority_code }}
-              </div>
+
               <div class="col-sm-3">
                 {{ reg_details_form.sales_credit.errors }}
                 {{ reg_details_form.sales_credit.label_tag }}

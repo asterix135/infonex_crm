@@ -17,8 +17,8 @@
   <div class="row fill">
     <div class="col-sm-12">
       <div id="sanity-check-to-delete">
-        <h1>Registration was successful</h1>
-        <h2>Details</h2>
+        <h1>Congratulations!</h1>
+        <h3>You have succcesfully registered {{ registrant.first_name }} {{ registrant.last_name }} for {{ current_registration.conference }}</h3>
         {{ current_registration }}<br />
         {{ registrant }}<br />
         {{ crm_match }}<br />

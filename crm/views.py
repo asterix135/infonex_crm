@@ -540,31 +540,7 @@ def new(request):
     person.save()
 
     # Add person to changes Table
-    new_change = Changes(
-        action='new',
-        orig_id=person.pk,
-        name=person.name,
-        title=person.title,
-        company=person.company,
-        phone=person.phone,
-        phone_main=person.phone_main,
-        email=person.email,
-        do_not_email=person.do_not_email,
-        do_not_call=person.do_not_call,
-        city=person.city,
-        dept=person.dept,
-        industry=person.industry,
-        geo=person.geo,
-        main_category=person.main_category,
-        main_category2=person.main_category2,
-        division1=person.division1,
-        division2=person.division2,
-        date_created=person.date_created,
-        created_by=person.created_by,
-        date_modified=person.date_modified,
-        modified_by=person.modified_by,
-    )
-    new_change.save()
+    add_change_record(person, 'new')
 
     add_to_recent_contacts(request, person.pk)
     return HttpResponseRedirect(reverse('crm:detail', args=(person.id,)))

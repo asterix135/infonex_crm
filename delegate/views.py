@@ -7,7 +7,8 @@ from django.utils import timezone
 
 from .forms import *
 from .constants import *
-from crm.models import Person
+from crm.models import Person, Changes
+from crm.views import add_change_record
 from registration.models import *
 from registration.forms import ConferenceSelectForm
 
@@ -17,7 +18,7 @@ from registration.forms import ConferenceSelectForm
 #############################
 def process_complete_registration(request, assistant_data, company, crm_match,
                                   current_registration, reg_details_data,
-                                  conference):
+                                  registrant, conference):
     """
     Helper function, called from process_registration once request data
     has been verified
@@ -62,6 +63,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
             modified_by=request.user,
         )
         crm_match.save()
+        add_change_record(crm_match, 'reg_add')
 
     # d. registrant
     if registrant:
@@ -108,6 +110,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
 
     # e. reg_details
     if current_registration:
+        current_registration.conference = conference
         reg_details_form = RegDetailsForm(reg_details_data,
                                           instance=current_registration)
         reg_details_form.save()

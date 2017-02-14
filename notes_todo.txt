@@ -4,6 +4,8 @@ See avoiding race conditions using F()
 
 next #: 48
 
+TODO: 49) CRITICAL - REWORK delegate/views.py/process_complete_registration starting at line 113
+
 TODO: 46) STARTED - PD/Sales report page on notes (works but ugly)
 
 TODO: 41) Add title filter to territory creation page

@@ -2,11 +2,15 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
-next #: 55
+next #: 56
 
 TODO: 51) On delegate page load and relevant changes, calculate tax and total invoice
 
+TODO: 55) Need to deal with event option selections on registration processing (currently ignored)
+
 TODO: 52) Implement front-end logic for existing delegate
+
+TODO: 55) Added URL field to event - need to propagate to forms & web pages
 
 TODO: 54) Edit company Javascript seems screwed up on delegate registration page
 

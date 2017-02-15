@@ -1,4 +1,5 @@
 import os
+from pytz import timezone
 
 from .constants import *
 from infonex_crm.settings import BASE_DIR
@@ -6,7 +7,8 @@ from infonex_crm.settings import BASE_DIR
 from reportlab.lib import colors
 from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+
 
 def generate_invoice(canv, reg_details, invoice):
     """
@@ -221,3 +223,324 @@ def generate_reg_note(canv, reg_details, invoice=None):
     logo_path = os.path.join(BASE_DIR,
                              'delegate/static/delegate/INFONEX-logo-tag.jpg')
     black = colors.black
+
+    # Header
+    canv.setFont('Helvetica-BoldOblique', 16)
+    canv.drawRightString(8.2 * inch, 10.275 * inch, 'REGISTRATION NOTE')
+    canv.setLineWidth(2)
+    canv.line(0.45 * inch, 10.15 * inch, 8.2 * inch, 10.15 * inch)
+    canv.setLineWidth(1)
+    canv.line(0.45 * inch, 10.15 * inch - 3, 8.2 * inch, 10.15 * inch - 3)
+    canv.drawImage(logo_path, 0.45 * inch, 10.275 * inch,
+                   height=0.5*inch, width=1.875*inch)
+
+    # Status Box
+    style_sheet = getSampleStyleSheet()
+    style = style_sheet['BodyText']
+    canv.rect(6 * inch, 9.2 * inch, 2.2 * inch, 0.75 * inch)
+    canv.setFont('Helvetica-Bold', 11)
+    canv.drawRightString(6.7 * inch, 9.52 * inch, 'Status:')
+    # status_text = reg_details.get_registration_status_display()
+    para = Paragraph(reg_details.get_registration_status_display(), style)
+    h = para.wrap(1.25 * inch, 1 * inch)[1]
+    para.drawOn(canv, 6.8 * inch,  9.52 * inch - 2 - 0.5 * (h-12))
+
+    # Conference details
+    style = ParagraphStyle(
+        'default',
+        fontName = 'Helvetica',
+        fontSize = 11,
+        leading = 13,
+    )
+    canv.setFont('Helvetica-Bold', 11)
+    canv.drawRightString(1.6 * inch, 9.52 * inch, 'Conference:')
+    conf_name = '<u>' + reg_details.conference.number + ' - ' + \
+        reg_details.conference.title + '</u>'
+    para = Paragraph(conf_name, style)
+    para.wrap(3 * inch, 0.5 * inch)
+    para.drawOn(canv, 1.7 * inch, 9.52 * inch - 2)
+    canv.setFont('Helvetica-Bold', 9)
+    canv.drawRightString(1.6 * inch, 9.52 * inch - 13, 'Start Date:')
+    canv.drawRightString(1.6 * inch, 9.52 * inch - 24, 'Venue:')
+    canv.setFont('Helvetica', 9)
+    canv.drawString(1.7 * inch, 9.52 * inch - 13,
+                    reg_details.conference.date_begins.strftime('%-d %B, %Y'))
+    location_string = reg_details.conference.city
+    if reg_details.conference.hotel:
+        location_string += ' at the ' + reg_details.conference.hotel.name
+    canv.drawString(1.7 * inch, 9.52 * inch - 24, location_string)
+
+    # Purchase details
+    canv.setFont('Helvetica-Bold', 11)
+    canv.drawRightString(1.6 * inch, 8.7 * inch, 'Purchase Date:')
+    canv.drawRightString(6.0 * inch, 8.7 * inch, 'Invoice Number:')
+    canv.setFont('Helvetica', 11)
+    canv.drawString(1.7 * inch, 8.7 * inch,
+                    reg_details.register_date.strftime('%-d %B, %Y'))
+    invoice_number = str(invoice.pk) if invoice else 'NA'
+    canv.drawString(6.1 * inch, 8.7 * inch, invoice_number)
+    canv.setFont('Helvetica-Bold', 9)
+    if invoice:
+        canv.setFont('Helvetica-Bold', 9)
+        canv.drawRightString(1.6 * inch, 8.7 * inch - 13, 'Sales Credit:')
+        canv.drawRightString(1.6 * inch, 8.7 * inch - 25, 'PD Credit:')
+        canv.setFont('Helvetica', 9)
+        if invoice.sales_credit.first_name and invoice.sales_credit.last_name:
+            sales_name = invoice.sales_credit.first_name + ' ' + \
+                invoice.sales_credit.last_name
+        else:
+            sales_name = invoice.sales_credit.username
+        canv.drawString(1.7 * inch, 8.7 * inch - 13, sales_name)
+        if reg_details.conference.developer:
+            if reg_details.conference.developer.first_name and \
+                reg_details.conference.developer.last_name:
+                pd_name = reg_details.conference.developer.first_name + ' ' + \
+                    reg_details.conference.developer.last_name
+            else:
+                pd_name = reg_details.conference.developer.username
+        else:
+            pd_name = 'Not Assigned'
+        canv.drawString(1.7 * inch, 8.7 * inch - 25, pd_name)
+
+        if reg_details.registration_status in PAID_STATUS_VALUES:
+            canv.setFont('Helvetica-Bold', 9)
+            canv.drawRightString(6.0 * inch, 8.7 * inch - 13, 'Payment Method:')
+            canv.drawRightString(6.0 * inch, 8.7 * inch - 25, 'Payment Date:')
+            canv.setFont('Helvetica', 9)
+            canv.drawString(6.1 * inch, 8.7 * inch - 13,
+                            invoice.get_payment_method_display())
+            canv.drawString(6.1 * inch, 8.7 * inch - 25,
+                            invoice.payment_date.strftime('%-d %B, %Y'))
+        if reg_details.registration_status in CXL_VALUES:
+            canv.setFont('Helvetica-Bold', 9)
+            canv.drawRightString(6.0 * inch, 8.7 * inch - 37,
+                                 'Cancellation Date:')
+            canv.setFont('Helvetica', 9)
+            canv.drawString(
+                6.1 * inch, 8.7 * inch - 37,
+                reg_details.cancellation_date.strftime('%-d %B, %Y')
+            )
+
+    # Buyer Details
+    canv.setFont('Helvetica-Bold', 11)
+    canv.drawRightString(1.6 * inch, 7.7 * inch, 'Sold To:')
+    customer_company_details = [reg_details.registrant.company.name,]
+    if reg_details.registrant.company.address1:
+        customer_company_details.append(reg_details.registrant.company.address1)
+    if reg_details.registrant.company.address2:
+        customer_company_details.append(reg_details.registrant.company.address2)
+    city_line = ''
+    if reg_details.registrant.company.city:
+        city_line = reg_details.registrant.company.city
+    if reg_details.registrant.company.state_prov:
+        if len(city_line) > 0:
+            city_line += ', '
+        city_line += reg_details.registrant.company.state_prov
+    if len(city_line) > 0:
+        customer_company_details.append(city_line)
+    if reg_details.registrant.company.postal_code:
+        customer_company_details.append(
+            reg_details.registrant.company.postal_code
+        )
+    if reg_details.registrant.company.country:
+        customer_company_details.append(reg_details.registrant.company.country)
+    canv.setFont('Helvetica', 11)
+    y = 7.7 * inch
+    for line in customer_company_details:
+        canv.drawString(1.7 * inch, y, line)
+        y -= 13
+    canv.setFont('Helvetica-Bold', 9)
+    canv.drawRightString(6.0 * inch, 7.7 * inch, 'Phone:')
+    canv.drawRightString(6.0 * inch, 7.7 * inch - 11, 'Email:')
+    canv.drawRightString(1.6 * inch, 6.5 * inch, 'Company ID No:')
+    canv.setFont('Helvetica', 9)
+    canv.drawString(6.1 * inch, 7.7 * inch, reg_details.registrant.phone1)
+    canv.drawString(1.7 * inch, 6.5 * inch,
+                    str(reg_details.registrant.company.pk))
+    if reg_details.registrant.company.gst_hst_exemption_number:
+        canv.setFont('Helvetica-Bold', 9)
+        canv.drawRightString(1.6 * inch, 6.2 * inch, 'GST/HST Exemption No:')
+        canv.setFont('Helvetica', 9)
+        canv.drawString(1.7 * inch, 6.2 * inch,
+                        reg_details.registrant.company.gst_hst_exemption_number)
+    if reg_details.registrant.company.qst_exemption_number:
+        canv.setFont('Helvetica-Bold', 9)
+        canv.drawRightString(1.6 * inch, 6.2 * inch - 11, 'QST Exemption No:')
+        canv.setFont('Helvetica', 9)
+        canv.drawString(1.7 * inch, 6.2 * inch - 11,
+                        reg_details.registrant.company.qst_exemption_number)
+    # Assistant Details
+    if reg_details.registrant.assistant:
+        canv.setFont('Helvetica-Bold', 9)
+        canv.drawRightString(6.0 * inch, 7.0 * inch, 'Secondary Contact')
+        canv.setFont('Helvetica', 9)
+        assistant_details = []
+        asst_name = ''
+        if reg_details.registrant.assistant.salutation:
+            asst_name += reg_details.registrant.assistant.salutation
+        if reg_details.registrant.assistant.first_name:
+            if len(asst_name) > 0:
+                asst_name += ' '
+            asst_name += reg_details.registrant.assistant.first_name
+        if reg_details.registrant.assistant.last_name:
+            if len(asst_name) > 0:
+                asst_name += ' '
+            asst_name += reg_details.registrant.assistant.last_name
+        if len(asst_name) > 0:
+            assistant_details.append(asst_name)
+        if reg_details.registrant.assistant.phone:
+            assistant_details.append(reg_details.registrant.assistant.phone)
+        if reg_details.registrant.assistant.email:
+            assistant_details.append(reg_details.registrant.assistant.email)
+        if len(assistant_details) > 0:
+            y = 7.0 * inch
+            for line in assistant_details:
+                canv.drawString(6.1 * inch, y, line)
+                y -= 11
+    style = ParagraphStyle(
+        'default',
+        fontName = 'Helvetica',
+        fontSize = 9,
+        leading = 11,
+    )
+    para = Paragraph(reg_details.registrant.email1, style)
+    h = para.wrap(2.1 * inch, 1 * inch)[1]
+    para.drawOn(canv, 6.1 * inch, 7.7 * inch - h - 2)
+
+    # registrant details
+    canv.line(0.45 * inch, 5.8 * inch, 8.2 * inch, 5.8 * inch)
+    style = ParagraphStyle(
+        'default',
+        fontName = 'Helvetica-Bold',
+        fontSize = 11,
+        leading = 13,
+    )
+    para = Paragraph('<u>Registrant Details</u>', style)
+    para.wrap(3 * inch, 0.5 * inch)
+    para.drawOn(canv, 0.45 * inch, 5.6 * inch - 2)
+    canv.setFont('Helvetica-Bold', 9)
+    canv.drawString(0.45 * inch, 5.4 * inch, 'Name')
+    canv.drawString(2.75 * inch, 5.4 * inch, 'Options')
+    canv.drawRightString(8.1 * inch, 5.4 * inch, 'Price')
+    canv.line(0.45 * inch, 5.4 * inch - 5, 8.2 * inch, 5.4 * inch -5)
+    style = ParagraphStyle(
+        'default',
+        fontName = 'Helvetica',
+        fontSize = 9,
+        leading = 11,
+    )
+    name = reg_details.registrant.first_name + ' ' + \
+        reg_details.registrant.last_name
+    para = Paragraph(name, style)
+    h = para.wrap(2.1 * inch, 1 * inch)[1]
+    para.drawOn(canv, 0.45 * inch, 5.1 * inch - h + 9)
+    reg_option_list = []
+    canv.setFont('Helvetica', 9)
+    if reg_details.regeventoptions_set.all().count() > 0:
+        for detail in reg_details.regeventoptions_set.all():
+            start_date = detail.option.startdate.strftime('%-d %B, %Y')
+            end_date = detail.option.enddate.strftime('%-d %B, %Y')
+            conf_detail = detail.option.name + ' - ' + start_date
+            if start_date != end_date:
+                conf_detail += ' to ' + end_date
+            reg_option_list.append(conf_detail)
+    else:
+        detail_date = reg_details.conference.date_begins.strftime('%-d %B, %Y')
+        conf_detail = 'Conference - ' + detail_date
+        reg_option_list.append(conf_detail)
+    y = 5.1 * inch
+    for option in reg_option_list:
+        canv.drawString(2.75 * inch, y, option)
+        y -= 14
+    base_amount = invoice.pre_tax_price if invoice else 0
+    canv.drawRightString(8.1 * inch, 5.1 * inch, '${:,.2f}'.format(base_amount))
+
+    # notes
+    canv.setFont('Helvetica-Bold', 9)
+    canv.drawString(0.45 * inch, 4.2 * inch, 'Notes:')
+    style = ParagraphStyle(
+        'default',
+        fontName = 'Helvetica',
+        fontSize = 9,
+        leading = 11,
+    )
+    memo_text = ''
+    if reg_details.registration_notes:
+        memo_text = reg_details.registration_notes
+    if invoice.invoice_notes:
+        if len(memo_text) > 0:
+            memo_text += '<br/>'
+        memo_text += invoice.invoice_notes
+    if invoice.sponsorship_description:
+        if len(memo_text) > 0:
+            memo_text += '<br/>'
+        memo_text += invoice.sponsorship_description
+    para = Paragraph(memo_text, style)
+    h = para.wrap(4 * inch, 2 * inch)[1]
+    para.drawOn(canv, 0.45 * inch, 4.2 * inch - h)
+
+    # Cost details
+    gst = hst = qst = 0
+    if invoice:
+        if reg_details.conference.gst_charged:
+            gst = base_amount * invoice.gst_rate
+        if reg_details.conference.hst_charged:
+            hst = base_amount * invoice.hst_rate
+        if reg_details.conference.qst_charged:
+            qst = base_amount * (1 + invoice.gst_rate) * invoice.qst_rate
+    canv.line(6.2 * inch, 4.7 * inch, 8.2 * inch, 4.7 * inch)
+    canv.rect(7.2 * inch, 3.3 * inch, 1.0 * inch, 0.5 * inch)
+    canv.setFont('Helvetica-Bold', 9)
+    canv.drawRightString(7.1 * inch, 4.5 * inch, 'Pre-Tax Total:')
+    canv.drawRightString(7.1 * inch, 4.5 * inch - 12, 'GST:')
+    canv.drawRightString(7.1 * inch, 4.5 * inch - 24, 'HST:')
+    canv.drawRightString(7.1 * inch, 4.5 * inch - 36, 'QST:')
+    canv.drawRightString(7.1 * inch, 3.5 * inch, 'Total Invoice:')
+    canv.drawRightString(8.1 * inch, 3.5 * inch,
+                         '${:,.2f}'.format(base_amount + gst + hst + qst))
+    canv.drawRightString(7.1 * inch, 3.1 * inch, 'Currency:')
+    if reg_details.conference.billing_currency != 'CAD':
+        canv.drawRightString(7.1 * inch, 3.1 * inch - 12, 'BOC Conversion Rate')
+        canv.drawRightString(7.1 * inch, 3.1 * inch - 24,
+                             'C$ Equivalent (pre-tax)')
+        canv.drawRightString(7.1 * inch, 3.1 * inch - 36,
+                             'C$ Equivalent (total)')
+    canv.setFont('Helvetica', 9)
+    canv.drawRightString(8.1 * inch, 4.5 * inch, '${:,.2f}'.format(base_amount))
+    canv.drawRightString(8.1 * inch, 4.5 * inch - 12, '${:,.2f}'.format(gst))
+    canv.drawRightString(8.1 * inch, 4.5 * inch - 24, '${:,.2f}'.format(hst))
+    canv.drawRightString(8.1 * inch, 4.5 * inch - 36, '${:,.2f}'.format(qst))
+    canv.drawRightString(8.1 * inch, 3.1 * inch,
+                         reg_details.conference.billing_currency)
+    if reg_details.conference.billing_currency !='CAD':
+        canv.drawRightString(8.1 * inch, 3.1 * inch - 12,
+                             str(invoice.fx_conversion_rate))
+        canv.drawRightString(8.1 * inch, 3.1 * inch - 24,
+                             str(base_amount * invoice.fx_conversion_rate))
+        canv.drawRightString(8.1 * inch, 3.1 * inch - 36,
+                             str((base_amount + hst + gst + qst) *
+                                 invoice.fx_conversion_rate))
+
+    # Staff user details
+    canv.setFont('Helvetica-Bold', 9)
+    canv.drawRightString(1.56 * inch, 0.5 * inch,
+                         'Record Created By:')
+    canv.drawRightString(1.56 * inch, 0.5 * inch - 12,
+                         'Last Modified By:')
+    canv.setFont('Helvetica', 9)
+    if reg_details.created_by.first_name and reg_details.created_by.last_name:
+        add_details = reg_details.created_by.first_name + ' ' + \
+            reg_details.created_by.last_name + ' - '
+    else:
+        add_details = reg_details.created_by.username + ' - '
+    add_date = reg_details.date_created.astimezone(timezone('America/Toronto'))
+    add_details += add_date.strftime('%Y-%m-%d %I:%M:%S %p')
+    canv.drawString(1.66 * inch, 0.5 * inch, add_details)
+    if reg_details.modified_by.first_name and reg_details.modified_by.last_name:
+        modify_details = reg_details.modified_by.first_name + ' ' + \
+            reg_details.modified_by.last_name + ' - '
+    else:
+        modify_details = reg_details.modified_by.username + ' - '
+    mod_date = reg_details.date_modified.astimezone(timezone('America/Toronto'))
+    modify_details += mod_date.strftime('%Y-%m-%d %I:%M:%S %p')
+    canv.drawString(1.66 * inch, 0.5 * inch -12, modify_details)

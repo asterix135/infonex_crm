@@ -12,6 +12,9 @@ TODO: 55) Added URL field to event - need to propagate to forms & web pages
 
 TODO: 54) Edit company Javascript seems screwed up on delegate registration page
 
+TODO: 56) pytz timezone conversion to reports (home page chart & call report)
+          http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
+
 TODO: 53) Deal with GST/QST Exemption in registration/billing process
 
 TODO: 46) STARTED - PD/Sales report page on notes (works but ugly)
@@ -30,8 +33,6 @@ TODO: 43) Upload current registration information and link to CRM records
           b) upload last 2 years of person records
           c) split and upload last 2 years of invoice data (2015-present)
           d) figure out how to auto-link person & crm
-
-TODO: 9) Play with pdf maker (ReportLab) and create new invoice & reg note
 
 TODO: 34) registration/forms.py/ConferenceEditForm.clean()
 
@@ -98,3 +99,4 @@ TODO: 35) DONE - Check if registration works with event minimally added in crm
 TODO: 49) DONE - REWORK delegate/views.py/process_complete_registration starting at line 113
 TODO: 50) DONE - On delegate page load, make sure 'required' values are set correctly
 TODO: 55) DONE = Need to deal with event option selections on registration processing (currently ignored)
+TODO: 9) DONE - Play with pdf maker (ReportLab) and create new invoice & reg note

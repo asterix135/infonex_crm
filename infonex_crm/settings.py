@@ -17,18 +17,6 @@ import socket
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
-
-# SECRET_KEY = \
-#     ''.join([random.SystemRandom().choice(
-#         'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
-#     ) for i in range(50)])
-
-# if 'APP_SECRET' in os.environ:
-#     SECRET_KEY = os.environ['APP_SECRET']
-# else:
-#     SECRET_KEY = 'test_secret'
 SECRET_KEY = os.environ['APP_SECRET']
 
 
@@ -90,9 +78,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'infonex_crm.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 # For AWS
 if 'RDS_DB_NAME' in os.environ:
@@ -159,3 +144,13 @@ USE_TZ = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, "..", "www", "static")
 STATIC_URL = '/static/'
+
+
+# Email settings
+
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'test@infonex.ca'
+EMAIL_HOST_PASSWORD = 'test'

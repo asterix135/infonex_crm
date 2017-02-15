@@ -6,8 +6,6 @@ next #: 56
 
 TODO: 51) On delegate page load and relevant changes, calculate tax and total invoice
 
-TODO: 55) Need to deal with event option selections on registration processing (currently ignored)
-
 TODO: 52) Implement front-end logic for existing delegate
 
 TODO: 55) Added URL field to event - need to propagate to forms & web pages
@@ -99,3 +97,4 @@ TODO: 35) DONE - Check if registration works with event minimally added in crm
           b) DONE - Need JS for 'Proceed' button on both instances
 TODO: 49) DONE - REWORK delegate/views.py/process_complete_registration starting at line 113
 TODO: 50) DONE - On delegate page load, make sure 'required' values are set correctly
+TODO: 55) DONE = Need to deal with event option selections on registration processing (currently ignored)

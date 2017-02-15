@@ -29,7 +29,7 @@ from registration.forms import ConferenceSelectForm
 #############################
 def process_complete_registration(request, assistant_data, company, crm_match,
                                   current_registration, reg_details_data,
-                                  registrant, conference):
+                                  registrant, conference, option_list):
     """
     Helper function, called from process_registration once request data
     has been verified
@@ -163,6 +163,15 @@ def process_complete_registration(request, assistant_data, company, crm_match,
         reg_details_form = RegDetailsForm(reg_details_data,
                                           instance=current_invoice)
         reg_details_form.save()
+
+    # g. Event Options (if applicable)
+    if len(option_list) > 0:
+        for option in option_list:
+            new_option = RegEventOptions(
+                reg=current_registration,
+                option=option
+            )
+            new_option.save()
 
     return current_registration, registrant, assistant
 
@@ -420,7 +429,7 @@ def process_registration(request):
                 process_complete_registration(request, assistant_data, company,
                                               crm_match, current_registration,
                                               reg_details_data, registrant,
-                                              conference)
+                                              conference, option_list)
             request.session['current_registration'] = current_registration.pk
             request.session['registrant'] = registrant.pk
             request.session['assistant'] = assistant.pk if assistant else None
@@ -665,7 +674,7 @@ def update_tax_information(request):
 def generate_invoice(request):
     reg_details = get_object_or_404(RegDetails, pk=request.GET.get('reg', ''))
     invoice = get_object_or_404(Invoice, reg_details=reg_details)
-    file_details = 'attachement; filename="invoice_' + str(invoice.pk) + '"'
+    file_details = 'inline; filename="invoice_' + str(invoice.pk) + '"'
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = file_details
     buffr = BytesIO()
@@ -777,10 +786,23 @@ def generate_invoice(request):
     invoice_pdf.drawString(1.4 * inch, 6.9 * inch,
                            reg_details.conference.city + ', ' + \
                                reg_details.conference.state_prov)
-
-
-    # THIS PART NEEDS TO BE FIXED
-    invoice_pdf.drawString(1.6 * inch, 6.65 * inch, 'Conference - 28 Mar to 29 Mar 2017')
+    reg_option_list = []
+    if reg_details.regeventoptions_set.all().count() > 0:
+        for detail in reg_details.regeventoptions_set.all():
+            start_date = detail.option.startdate.strftime('%-d %B, %Y')
+            end_date = detail.option.enddate.strftime('%-d %B, %Y')
+            conf_detail = detail.option.name + ' - ' + start_date
+            if start_date != end_date:
+                conf_detail += ' to ' + end_date
+            reg_option_list.append(conf_detail)
+    else:
+        detail_date = reg_details.conference.date_begins.strftime('%-d %B, %Y')
+        conf_detail = 'Conference - ' + detail_date
+        reg_option_list.append(conf_detail)
+    y = 6.65 * inch
+    for option in reg_option_list:
+        invoice_pdf.drawString(1.6 * inch, y, option)
+        y -= 14
 
 
     # Do Stuff

@@ -31,5 +31,6 @@ urlpatterns = [
         name='update_tax_information'),
 
     # GRAPHICS/PDFS ETC
-    url(r'^get_invoice/$', views.generate_invoice, name='get_invoice'),
+    url(r'^get_invoice/$', views.get_invoice, name='get_invoice'),
+    url(r'^get_reg_note/$', views.get_reg_note, name='get_reg_note'),
 ]

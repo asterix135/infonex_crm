@@ -1,5 +1,4 @@
 from io import BytesIO
-import os
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -8,18 +7,14 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
-from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
-from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Paragraph
-from reportlab.lib.styles import getSampleStyleSheet
 
 from .forms import *
 from .constants import *
+from .pdfs import *
 from crm.models import Person, Changes
 from crm.views import add_change_record
-from infonex_crm.settings import BASE_DIR
 from registration.models import *
 from registration.forms import ConferenceSelectForm
 
@@ -671,7 +666,7 @@ def update_tax_information(request):
 # GRAPHICS/DOCUMENTS
 ############################
 @login_required
-def generate_invoice(request):
+def get_invoice(request):
     reg_details = get_object_or_404(RegDetails, pk=request.GET.get('reg', ''))
     invoice = get_object_or_404(Invoice, reg_details=reg_details)
     file_details = 'inline; filename="invoice_' + str(invoice.pk) + '"'
@@ -679,136 +674,31 @@ def generate_invoice(request):
     response['Content-Disposition'] = file_details
     buffr = BytesIO()
     invoice_pdf = canvas.Canvas(buffr, pagesize=letter)
-    logo_path = os.path.join(BASE_DIR,
-                             'delegate/static/delegate/INFONEX-logo-tag.jpg')
-    black = colors.black
-
-    # Header
-    invoice_pdf.setFont('Helvetica-BoldOblique', 16)
-    invoice_pdf.drawString(7.2 * inch, 10.275 * inch,'INVOICE')
-    invoice_pdf.setLineWidth(2)
-    invoice_pdf.line(0.45 * inch, 10.15 * inch, 8.2 * inch, 10.15 * inch)
-    invoice_pdf.setLineWidth(1)
-    invoice_pdf.line(0.45 * inch, 10.15 * inch - 3, 8.2 * inch, 10.15 * inch - 3)
-    invoice_pdf.drawImage(logo_path, 0.45 * inch, 10.275 * inch,
-                          height=0.5*inch, width=1.875*inch)
-
-    # Footer
-    company_address = [
-        'INFONEX',
-        '360 Bay Street, Suite 900',
-        'Toronto, ON M5H 2V6',
-        'Phone: (416) 971-4177',
-        'Email: register@infonex.ca',
-    ]
-    if reg_details.conference.event_web_site:
-        company_address.append('Web: ' + reg_details.conference.event_web_site)
-    invoice_pdf.setFont('Helvetica-Bold', 10)
-    invoice_pdf.drawString(0.45 * inch, 0.75 * inch,
-                    'Please Make Cheques Payable to Infonex Inc.')
-    invoice_pdf.setFont('Helvetica-Bold', 8)
-    invoice_pdf.drawString(0.45 * inch, 0.5 * inch,
-                    'GST/HST No: R134050012')
-    y = 0.75 *inch
-    for line in company_address:
-        invoice_pdf.drawRightString(8.2 * inch, y, line)
-        y -= 9.6
-
-    # Invoice number & date
-    invoice_pdf.setFont('Helvetica-Bold', 10)
-    invoice_pdf.drawRightString(7 * inch, 9.8 * inch, 'Invoice Number')
-    invoice_pdf.drawRightString(7 * inch, 9.5 * inch, 'Date')
-    invoice_pdf.setFont('Helvetica', 12)
-    invoice_pdf.drawString(7.2 * inch, 9.8 * inch, str(invoice.pk))
-    invoice_pdf.drawString(7.2 * inch, 9.5 * inch,
-                           str(reg_details.register_date))
-
-    # Customer Info
-    customer_details = []
-    if reg_details.registrant.salutation:
-        cust_name = reg_details.registrant.salutation + ' '
-    else: cust_name = ''
-    if reg_details.registrant.first_name:
-        cust_name += reg_details.registrant.first_name + ' '
-    if reg_details.registrant.last_name:
-        cust_name += reg_details.registrant.last_name
-    customer_details.append(cust_name)
-    if reg_details.registrant.title:
-        customer_details.append(reg_details.registrant.title)
-    if reg_details.registrant.company.name:
-        customer_details.append(reg_details.registrant.company.name)
-    if reg_details.registrant.company.address1:
-        customer_details.append(reg_details.registrant.company.address1)
-    if reg_details.registrant.company.address2:
-        customer_details.append(reg_details.registrant.company.address2)
-    if reg_details.registrant.company.city:
-        city_line = reg_details.registrant.company.city
-    else:
-        city_line = ''
-    if reg_details.registrant.company.state_prov:
-        if len(city_line) > 0:
-            city_line += ', '
-        city_line += reg_details.registrant.company.state_prov + ' '
-    if reg_details.registrant.company.postal_code:
-        city_line += reg_details.registrant.company.postal_code
-    if len(city_line) > 0:
-        customer_details.append(city_line)
-    if reg_details.registrant.company.country:
-        customer_details.append(reg_details.registrant.company.country)
-    invoice_pdf.setFont('Helvetica', 11)
-    invoice_pdf.drawString(0.45 * inch, 9.5 * inch, 'SOLD TO:')
-    invoice_pdf.setFont('Helvetica', 10)
-    y = 9.2 * inch
-    for line in customer_details:
-        invoice_pdf.drawString(0.45 * inch, y, line)
-        y -= 12
-
-    # Details Box
-    invoice_pdf.setLineWidth(1)
-    invoice_pdf.rect(0.45 * inch, 5.15 * inch, 7.75 * inch, 2.75 * inch)
-    invoice_pdf.line(0.45 * inch, 7.65 * inch, 8.2 * inch, 7.65 * inch)
-    invoice_pdf.line(1.2 * inch, 5.15 * inch, 1.2 * inch, 7.9 * inch)
-    invoice_pdf.line(7.2 * inch, 5.15 * inch, 7.2 * inch, 7.9 * inch)
-    # put in header info
-    invoice_pdf.setFont('Helvetica', 10)
-    invoice_pdf.drawCentredString(0.825 * inch, 7.7 * inch, 'Event No.')
-    invoice_pdf.drawString(1.4 * inch, 7.7 * inch, 'Registration Details')
-    invoice_pdf.drawCentredString(7.7 * inch, 7.7 * inch, 'Amount Due')
-    # add order details
-    invoice_pdf.setFont('Helvetica-Bold', 12)
-    invoice_pdf.drawString(1.4 * inch , 7.4 * inch, reg_details.conference.title)
-    invoice_pdf.setFont('Helvetica', 12)
-    invoice_pdf.drawCentredString(0.825 * inch, 7.4 * inch,
-                                  reg_details.conference.number)
-    invoice_pdf.drawRightString(8.1 * inch, 7.4 * inch,
-                                '${:,.2f}'.format(invoice.pre_tax_price))
-    invoice_pdf.drawString(1.4 * inch, 7.15 * inch, 'Attendee: ' + cust_name)
-    invoice_pdf.drawString(1.4 * inch, 6.9 * inch,
-                           reg_details.conference.city + ', ' + \
-                               reg_details.conference.state_prov)
-    reg_option_list = []
-    if reg_details.regeventoptions_set.all().count() > 0:
-        for detail in reg_details.regeventoptions_set.all():
-            start_date = detail.option.startdate.strftime('%-d %B, %Y')
-            end_date = detail.option.enddate.strftime('%-d %B, %Y')
-            conf_detail = detail.option.name + ' - ' + start_date
-            if start_date != end_date:
-                conf_detail += ' to ' + end_date
-            reg_option_list.append(conf_detail)
-    else:
-        detail_date = reg_details.conference.date_begins.strftime('%-d %B, %Y')
-        conf_detail = 'Conference - ' + detail_date
-        reg_option_list.append(conf_detail)
-    y = 6.65 * inch
-    for option in reg_option_list:
-        invoice_pdf.drawString(1.6 * inch, y, option)
-        y -= 14
-
-
-    # Do Stuff
-
+    generate_invoice(invoice_pdf, reg_details, invoice)
     invoice_pdf.showPage()
     invoice_pdf.save()
+    pdf = buffr.getvalue()
+    buffr.close()
+    response.write(pdf)
+    return response
+
+
+@login_required
+def get_reg_note(request):
+    reg_details = get_object_or_404(RegDetails, pk=request.GET.get('reg', ''))
+    try:
+        invoice = Invoice.objects.get(reg_details=reg_details)
+    except Invoice.DoesNotExist:
+        invoice = None
+    inv_num = str(invoice.pk) if invoice else 'free'
+    file_details = 'inline; filename="reg_note_' + inv_num + '"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = file_details
+    buffr = BytesIO()
+    note_pdf = canvas.Canvas(buffr, pagesize=letter)
+    generate_reg_note(note_pdf, reg_details, invoice)
+    note_pdf.showPage()
+    note_pdf.save()
     pdf = buffr.getvalue()
     buffr.close()
     response.write(pdf)

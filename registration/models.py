@@ -122,6 +122,7 @@ class Invoice(models.Model):
                                              default=1.0)
     invoice_notes = models.TextField(blank=True, null=True)
     sponsorship_description = models.TextField(blank=True, null=True)
+    revised_flag = models.BooleanField(default=False)
 
 
 class Venue(models.Model):

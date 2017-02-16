@@ -2,7 +2,7 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
-next #: 56
+next #: 58
 
 TODO: 51) On delegate page load and relevant changes, calculate tax and total invoice
 
@@ -16,6 +16,8 @@ TODO: 56) pytz timezone conversion to reports (home page chart & call report)
           http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
 
 TODO: 53) Deal with GST/QST Exemption in registration/billing process
+
+TODO: 57) Add phone number field to auth.User (this seems complicated) and add to email confirmation etc
 
 TODO: 46) STARTED - PD/Sales report page on notes (works but ugly)
 

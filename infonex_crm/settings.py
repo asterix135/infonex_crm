@@ -149,8 +149,7 @@ STATIC_URL = '/static/'
 # Email settings
 
 EMAIL_USE_TLS = True
-EMAIL_USE_SSL = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'test@infonex.ca'
-EMAIL_HOST_PASSWORD = 'test'
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_PW']

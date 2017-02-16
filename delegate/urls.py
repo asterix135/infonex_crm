@@ -33,4 +33,6 @@ urlpatterns = [
     # GRAPHICS/PDFS ETC
     url(r'^get_invoice/$', views.get_invoice, name='get_invoice'),
     url(r'^get_reg_note/$', views.get_reg_note, name='get_reg_note'),
+
+    url(r'^send_conf_email/$', views.send_conf_email, name='send_conf_email'),
 ]

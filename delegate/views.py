@@ -1,7 +1,9 @@
 from io import BytesIO
+import os
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMessage
 from django.db.models import Q, Max
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,8 +17,10 @@ from .constants import *
 from .pdfs import *
 from crm.models import Person, Changes
 from crm.views import add_change_record
+from infonex_crm.settings import BASE_DIR
 from registration.models import *
 from registration.forms import ConferenceSelectForm
+
 
 
 #############################
@@ -169,6 +173,106 @@ def process_complete_registration(request, assistant_data, company, crm_match,
             new_option.save()
 
     return current_registration, registrant, assistant
+
+
+def build_email_message(reg_details, invoice):
+    """
+    Builds appropriate email message content with merge fields
+    """
+    # Build merge paramaters
+    email_merge_fields = {
+        'event_name': reg_details.conference.title,
+        'venue_name': '',
+        'venue_details': '',
+        'event_url': CANADA_WEBSITE,
+        'reg_options': '',
+        'cxl_policy': CANADA_CXL_POLICY,
+        'account_rep_details': '',
+        'registrar_details': 'Alona Glikin<br>416-971-4177<br>aglikin@infonex.ca'
+    }
+    if reg_details.registrant.salutation:
+        email_merge_fields['salutation'] = reg_details.registrant.salutation + \
+            ' ' + reg_details.registrant.last_name
+    else:
+        email_merge_fields['salutation'] = reg_details.registrant.first_name + \
+            ' ' + reg_details.registrant.last_name
+
+    email_merge_fields['city'] = reg_details.conference.city
+    if reg_details.conference.state_prov:
+        email_merge_fields['city'] += ', ' + reg_details.conference.state_prov
+
+    if reg_details.conference.venue:
+        email_merge_fields['venue_name'] = \
+            email_merge_fields['venue_details'] = \
+            reg_details.conference.venue.name
+        if reg_details.conference.venue.address:
+            email_merge_fields['venue_details'] += '<br/>' + \
+                reg_details.conference.venue.address
+        venue_city = ''
+        if reg_details.conference.venue.city:
+            venue_city += reg_details.conference.city
+        if reg_details.conference.venue.state_prov:
+            if len(venue_city) > 0:
+                venue_city += ', '
+            venue_city += reg_details.conference.venue.state_prov
+        if reg_details.conference.venue.postal_code:
+            if len(venue_city) > 0:
+                venue_cty += ' '
+            venue_city += reg_details.conference.venue.postal_code
+        if len(venue_city) > 0:
+            email_merge_fields['venue_details'] += '<br/>' + venue_city
+        if reg_details.conference.venue.phone:
+            email_merge_fields['venue_details'] += '<br/>Venue Phone: ' + \
+                reg_details.conference.venue.phone
+        if reg_details.conference.venue.hotel_url:
+            email_merge_fields['venue_details'] += '<br/>Venue Web Site: ' + \
+                reg_details.conference.venue.hotel_url
+
+    if reg_details.conference.event_web_site:
+        email_merge_fields['event_url'] = reg_details.conference.event_web_site
+    elif reg_details.conference.company_brand == 'IT':
+        email_merge_fields['event_url'] = TRAINING_CO_WEBSITE
+    elif reg_details.conference.company_brand == 'IU':
+        email_merge_fields['event_url'] = US_WEBSITE
+
+    reg_option_list = []
+    if reg_details.regeventoptions_set.all().count() > 0:
+        for detail in reg_details.regeventoptions_set.all():
+            start_date = detail.option.startdate.strftime('%-d %B, %Y')
+            end_date = detail.option.enddate.strftime('%-d %B, %Y')
+            conf_detail = detail.option.name + ' - ' + start_date
+            if start_date != end_date:
+                conf_detail += ' to ' + end_date
+            reg_option_list.append(conf_detail)
+    else:
+        detail_date = reg_details.conference.date_begins.strftime('%-d %B, %Y')
+        conf_detail = 'Conference - ' + detail_date
+        reg_option_list.append(conf_detail)
+    for option in reg_options_list:
+        email_merge_fields['reg_options'] += option + '<br/>'
+
+    if reg_details.conference.company_brand == 'IT':
+        email_merge_fields['cxl_policy'] = TRAINING_CXL_POLICY
+    elif reg_details.conference.company_brand == 'IU':
+        email_merge_fields['cxl_policy'] = USA_CXL_POLICY
+
+    if invoice:
+        if invoice.sales_credit.groups.filter(name='sales').exists():
+            rep = invoice.sales_credit
+            if rep.first_name and rep_last_name:
+                rep_details = 'Your account representative for this event ' \
+                    'is: ' + rep.first_name + ' ' + rep.last_name + \
+                    '.  If you have any questions, you can reach them at: ' + \
+                    rep.email
+                email_merge_fields['account_rep_details'] = rep_details
+
+    registrar = reg_details.conference.registrar
+    if registrar.first_name and registrar.last_name:
+        registrar_details = registrar.first_name + ' ' + registrar.last_name
+    else:
+        registrar_details = 'Infonex Inc.'
+    registar_details += '<br/>416-971-4177<br/>Email: ' + registrar.email
+    email_merge_fields['registrar_details'] = registrar_details
 
 
 #############################
@@ -345,6 +449,8 @@ def process_registration(request):
             'phone': request.POST['assistant_phone'],
         }
         assistant_form = AssistantForm(assistant_data)
+        current_time = timezone.now()
+        print(current_time)
         reg_details_data = {
             'sales_credit': request.POST['sales_credit'],
             'pre_tax_price': request.POST['pre_tax_price'],
@@ -703,3 +809,38 @@ def get_reg_note(request):
     buffr.close()
     response.write(pdf)
     return response
+
+
+@login_required
+def send_conf_email(request):
+    reg_details = get_object_or_404(RegDetails, pk=request.GET.get('reg', ''))
+    try:
+        invoice = Invoice.objects.get(reg_details=reg_details)
+    except Invoice.DoesNotExist:
+        invoice = None
+    buffr = BytesIO()
+    invoice_pdf = canvas.Canvas(buffr, pagesize=letter)
+    generate_invoice(invoice_pdf, reg_details, invoice)
+    invoice_pdf.showPage()
+    invoice_pdf.save()
+    pdf = buffr.getvalue()
+    buffr.close()
+
+    email_body_path = os.path.join(
+        BASE_DIR,
+        'delegate/static/delegate/email_copy/delegate_confirmation.txt'
+    )
+    with open(email_body_path) as f:
+        email_body = f.read()
+    email_body = email_body.format(**email_merge_fields)
+
+    email = EmailMessage(
+        subject='Test from CRM',
+        body=email_body,
+        to=['chris.graham@infonex.ca',],
+        # cc=['aglikin@infonex.ca',],
+    )
+    email.attach('send_us_your_money_now.pdf', pdf, 'application/pdf')
+    email.content_subtype = 'html'
+    email.send()
+    return HttpResponse('<h1>Email should have been sent</h1>')

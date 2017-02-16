@@ -1,5 +1,5 @@
 import os
-from pytz import timezone
+import pytz
 
 from .constants import *
 from infonex_crm.settings import BASE_DIR
@@ -533,7 +533,9 @@ def generate_reg_note(canv, reg_details, invoice=None):
             reg_details.created_by.last_name + ' - '
     else:
         add_details = reg_details.created_by.username + ' - '
-    add_date = reg_details.date_created.astimezone(timezone('America/Toronto'))
+    add_date = reg_details.date_created.astimezone(
+        pytz.timezone('America/Toronto')
+    )
     add_details += add_date.strftime('%Y-%m-%d %I:%M:%S %p')
     canv.drawString(1.66 * inch, 0.5 * inch, add_details)
     if reg_details.modified_by.first_name and reg_details.modified_by.last_name:
@@ -541,6 +543,8 @@ def generate_reg_note(canv, reg_details, invoice=None):
             reg_details.modified_by.last_name + ' - '
     else:
         modify_details = reg_details.modified_by.username + ' - '
-    mod_date = reg_details.date_modified.astimezone(timezone('America/Toronto'))
+    mod_date = reg_details.date_modified.astimezone(
+        pytz.timezone('America/Toronto')
+    )
     modify_details += mod_date.strftime('%Y-%m-%d %I:%M:%S %p')
     canv.drawString(1.66 * inch, 0.5 * inch -12, modify_details)

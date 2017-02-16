@@ -20,14 +20,12 @@
         <h1>Congratulations!</h1>
         <h3>You have succcesfully registered {{ registrant.first_name }} {{ registrant.last_name }} for {{ current_registration.conference }}</h3>
         {{ current_registration }}<br />
-        {{ registrant }}<br />
-        {{ crm_match }}<br />
-        {{ assistant }}
       </div>
+
       <div id="keep-this-part">
         <ul>
           <li>
-            Send Email confirmation
+            <a href="/delegate/send_conf_email?reg={{ current_registration.pk }}" target="_blank">Send Email Confirmation</a>
           </li>
           <li>
             <a href="/delegate/get_reg_note?reg={{ current_registration.pk }}" target="_blank">Download internal record sheet</a>
@@ -42,5 +40,15 @@
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <object data="/delegate/get_reg_note?reg={{ current_registration.pk }}" type="application/pdf" width="50%" height="500">
+        <p><b>PDF Did not load</b>: This browser does not support PDFs. Please download the PDF to view it: <a href="/delegate/get_reg_note?reg={{ current_registration.pk }}" target="_blank">Download PDF</a>.</p>
+      </object>
+    </div>
+  </div>
+
+
+
 </div>
 {% endblock %}

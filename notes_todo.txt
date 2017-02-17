@@ -1,7 +1,3 @@
-See avoiding race conditions using F()
-    might be an issue with some records and should be implemented
-    https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
-
 next #: 62
 
 TODO: 61) Email_modal form -
@@ -71,6 +67,11 @@ TODO: 25) Booking system for upcoming appointments
 TODO: 28) if no admin access, set error page for accessing admin page
 
 TODO: 42) See what other flags a person has???
+
+See avoiding race conditions using F()
+    might be an issue with some records and should be implemented
+    https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
+
 
 #############
 # DONE

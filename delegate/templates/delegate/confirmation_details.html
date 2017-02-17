@@ -4,10 +4,11 @@
 {% block title %}Confirmation Options | {% endblock %}
 
 {% block script_includes %}
-
+<script type="text/javascript" src="{% static 'delegate/javascript/confirmation.js' %}"></script>
 {% endblock %}
 
 {% block content %}
+{% include 'delegate/confirmation_addins/email_modal.html' %}
 <div class="container fluid-fill" id="main">
   <div id="stored-variables">
     <input type="hidden" name="registrant_id" value="{{ registrant.id }}" />

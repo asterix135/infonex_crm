@@ -1,7 +1,8 @@
-<div class="modal fade" id="modal-quick-add-event" tabindex="-1" role="dialog">
+<div class="modal fade" id="email-confirmation-modal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
-    <form method="post" action="" id="confirm-email">
+    <form method="post" action="{% url 'delegate:send_conf_email' %}" id="confirm-email">
       {% csrf_token %}
+      <input type="hidden" name="reg_id" id="reg-id" value="{{ current_registration.pk }}" />
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">
@@ -14,65 +15,91 @@
           <div class="container-fluid bd-example-row">
             <div class="row">
               <div class="col-sm-12">
-                <h4>Please verify and/or edit the Conformation Email</h4>
+                <h4>Please verify and/or edit the Confirmation Email</h4>
               </div>
             </div>
 
             <div class="row form-group">
-              <div class="col-sm-12">
-                {{ new_conference_form.number.label_tag }}
-                {{ new_conference_form.number.errors }}
-                {{ new_conference_form.number }}
+              <div class="col-sm-12" id="to-address-list">
+                <label>To:</label>
+                {% for address in to_list %}
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default deactivate-email" type="button"><span class="glyphicon glyphicon-remove"></span></button>
+                  </span>
+                  <input type="text" name="to_field" class="form-control" value="{{ address }}" />
+                </div>
+                {% endfor %}
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default activate-email" type="button" id="add_to"><span class="glyphicon glyphicon-plus"></span></button>
+                  </span>
+                  <input type="email" name="to_field[]" class="form-control" placeholder="Add" disabled="" />
+                </div>
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-sm-12" id="cc-address-list">
+                <label>Cc:</label>
+                {% for address in cc_list %}
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default deactivate-email" type="button"><span class="glyphicon glyphicon-remove"></span></button>
+                  </span>
+                  <input type="text" name="cc_field[]" class="form-control" value="{{ address }}" />
+                </div>
+                {% endfor %}
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default activate-email" type="button" id="add_cc"><span class="glyphicon glyphicon-plus"></span></button>
+                  </span>
+                  <input type="email" name="cc_field[]" class="form-control" placeholder="Add" disabled="" />
+                </div>
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-sm-12" id="bcc-address-list">
+                <label>Bcc:</label>
+                {% for address in bcc_list %}
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default deactivate-email" type="button"><span class="glyphicon glyphicon-remove"></span></button>
+                  </span>
+                  <input type="email" name="bcc_field[]" class="form-control" value="{{ address }}" />
+                </div>
+                {% endfor %}
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default activate-email" type="button" id="add_bcc"><span class="glyphicon glyphicon-plus"></span></button>
+                  </span>
+                  <input type="email" name="bcc_field[]" class="form-control" placeholder="Add" disabled="" />
+                </div>
               </div>
             </div>
             <div class="row form-group">
               <div class="col-sm-12">
-                {{ new_conference_form.title.label_tag }}
-                {{ new_conference_form.title.errors }}
-                {{ new_conference_form.title }}
+                <label>Subject</label>
+                <input id="email_subject" class="form-control" name="email_subject" required="" type="text" value="{{ email_subject }}" maxlength="255"/>
               </div>
             </div>
             <div class="row form-group">
               <div class="col-sm-12">
-                {{ new_conference_form.date_begins.label_tag }}
-                {{ new_conference_form.date_begins.errors }}
-                {{ new_conference_form.date_begins }}
+                <label>Message:</label>
+                <textarea id="email_message" class="form-control" name="email_message" required="" cols="40" rows="20">{{ email_body }}</textarea>
               </div>
             </div>
             <div class="row form-group">
-              <div class="col-sm-6">
-                {{ new_conference_form.city.label_tag }}
-                {{ new_conference_form.city.errors }}
-                {{ new_conference_form.city }}
-              </div>
-              <div class="col-sm-6">
-                {{ new_conference_form.state_prov.label_tag }}
-                {{ new_conference_form.state_prov.errors }}
-                {{ new_conference_form.state_prov }}
-              </div>
-            </div>
-            <div class="row form-group">
-              <div class="col-sm-6">
-                {{ new_conference_form.registrar.label_tag }}
-                {{ new_conference_form.registrar.errors }}
-                {{ new_conference_form.registrar }}
-              </div>
-              <div class="col-sm-6">
-                {{ new_conference_form.developer.label_tag }}
-                {{ new_conference_form.developer.errors }}
-                {{ new_conference_form.developer }}
-              </div>
-            </div>
-            <div class="row form-group">
-              <div class="col-sm-6">
-                {{ new_conference_form.company_brand.label_tag }}
-                {{ new_conference_form.company_brand.errors }}
-                {{ new_conference_form.company_brand }}
-              </div>
-              <div class="col-sm-6">
-                {{ new_conference_form.billing_currency.label_tag }}
-                {{ new_conference_form.billing_currency.errors }}
-                {{ new_conference_form.billing_currency }}
+              <div class="col-sm-12">
+                <label>Attachment:</label>
+                <div class="col-sm-12">
+                  {% if invoice %}
+                  <object data="/delegate/get_invoice?reg={{ current_registration.pk }}" type="application/pdf" width="100%" height="500">
+                    <p><b>PDF Did not load</b>: This browser does not support PDFs. Please download the PDF to view it: <a href="/delegate/get_invoice?reg={{ current_registration.pk }}" target="_blank">Download PDF</a>.</p>
+                  </object>
+                  {% else %}
+                  <h5>No Invoice</h5>
+                  {% endif %}
+                </div>
               </div>
             </div>
 
@@ -81,7 +108,7 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel (Do Not Send)</button>
-          <button type="submit" class="btn btn-primary" id="send-email">Send Email</button>
+          <button type="button" class="btn btn-primary" id="send-email">Send Email</button>
         </div>
       </div>
     </form>

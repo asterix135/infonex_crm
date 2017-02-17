@@ -1,23 +1,19 @@
-Dear {salutation}:<br/>
-<br/>
-I am pleased to confirm your registration at {event_name} which is to be held in {city}{venue_name}. Your invoice is attached.<br/>
-For up-to-date information, please visit the event website: {event_url}.<br/>
-<br/>
-{venue_details}
-You are registered for the following:<br/>
-<br/>
-{reg_options}
-<br/>
+Dear {salutation}:
 
-Copies of the speakers presentation will be available for download from our website 2 business days prior to the start of the event.<br/>
-You will receive an email with user name and password to access our online library.<br/>
-Please note you will not receive printed copies of the presentations at the event.<br/>
-<br/>
-Please note the cancellation policy for this event:  {cxl_policy}<br/>
-<br/>
-I thank you for your consideration, and hope that this course is useful and informative.<br/>
-<br/>
+I am pleased to confirm your registration at {event_name} which is to be held in {city}{venue_name}. Your invoice is attached.
+For up-to-date information, please visit the event website: {event_url}.
+{venue_details}
+You are registered for the following:
+
+{reg_options}
+Copies of the speakers' presentations will be available for download from our website 2 business days prior to the start of the event.
+You will receive an email with user name and password to access our online library.
+Please note: you will not receive printed copies of the presentations at the event.
+
+Please note the cancellation policy for this event:  {cxl_policy}
+
+I thank you for your consideration, and hope that this course is useful and informative.
 {account_rep_details}
-Best Regards,<br/>
-<br/>
+Best Regards,
+
 {registrar_details}

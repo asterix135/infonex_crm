@@ -4,9 +4,10 @@ See avoiding race conditions using F()
 
 next #: 62
 
-TODO: 60) Should I put cc, bcc & to in email form?
-
-TODO: 61) Email_modal form
+TODO: 61) Email_modal form -
+          a) finish javascript to add blank email lines
+          b) Validate that there is at least one email address
+          c) Validate that there is a valid message and subject
 
 TODO: 58) Run makemigrations to deal with making sales credit mandatory for Invoice
 
@@ -110,3 +111,4 @@ TODO: 49) DONE - REWORK delegate/views.py/process_complete_registration starting
 TODO: 50) DONE - On delegate page load, make sure 'required' values are set correctly
 TODO: 55) DONE = Need to deal with event option selections on registration processing (currently ignored)
 TODO: 9) DONE - Play with pdf maker (ReportLab) and create new invoice & reg note
+TODO: 60) DONE - Should I put cc, bcc & to in email form?

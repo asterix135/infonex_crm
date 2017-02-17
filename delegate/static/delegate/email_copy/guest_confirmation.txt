@@ -1,6 +1,6 @@
 Dear {salutation}:<br/>
 <br/>
-I am pleased to confirm your registration as a guest at {event_name} which is to be held in {city}{venue_name}.<br/>
+I am pleased to confirm your registration {guest_status} at {event_name} which is to be held in {city}{venue_name}.<br/>
 For up-to-date information, please visit the event website: {event_url}.<br/>
 <br/>
 {venue_details}

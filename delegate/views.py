@@ -22,7 +22,6 @@ from registration.models import *
 from registration.forms import ConferenceSelectForm
 
 
-
 #############################
 # HELPER FUNCTIONS
 #############################
@@ -273,6 +272,33 @@ def build_email_message(reg_details, invoice):
         registrar_details = 'Infonex Inc.'
     registar_details += '<br/>416-971-4177<br/>Email: ' + registrar.email
     email_merge_fields['registrar_details'] = registrar_details
+
+    if reg_details.registration_status in GUEST_CONFIRMATION:
+        email_body_path = os.path.join(
+            BASE_DIR,
+            'delegate/static/delegate/email_copy/guest_confirmation.txt'
+        )
+        if reg_details.registration_status == 'G':
+            email_merge_fields['guest_status'] = 'as a Guest'
+        elif reg_details.registration_status == 'SE':
+            email_merge_fields['guest_status'] = 'with an Exhibit Pass'
+        elif reg_details.registration_status == 'SD':
+            email_merge_fields['guest_status'] = 'with a Sponsor Pass'
+    elif reg_details.registration_status in SPONSOR_CONFIRMATION:
+        email_body_path = os.path.join(
+            BASE_DIR,
+            'delegate/static/delegate/email_copy/sponsor_confirmation.txt'
+        )
+    else:
+        email_body_path = os.path.join(
+            BASE_DIR,
+            'delegate/static/delegate/email_copy/delegate_confirmation.txt'
+        )
+    with open(email_body_path) as f:
+        email_body = f.read()
+    email_body = email_body.format(**email_merge_fields)
+
+    return email_body
 
 
 #############################
@@ -818,29 +844,25 @@ def send_conf_email(request):
         invoice = Invoice.objects.get(reg_details=reg_details)
     except Invoice.DoesNotExist:
         invoice = None
-    buffr = BytesIO()
-    invoice_pdf = canvas.Canvas(buffr, pagesize=letter)
-    generate_invoice(invoice_pdf, reg_details, invoice)
-    invoice_pdf.showPage()
-    invoice_pdf.save()
-    pdf = buffr.getvalue()
-    buffr.close()
+    if invoice:
+        buffr = BytesIO()
+        invoice_pdf = canvas.Canvas(buffr, pagesize=letter)
+        generate_invoice(invoice_pdf, reg_details, invoice)
+        invoice_pdf.showPage()
+        invoice_pdf.save()
+        pdf = buffr.getvalue()
+        buffr.close()
 
-    email_body_path = os.path.join(
-        BASE_DIR,
-        'delegate/static/delegate/email_copy/delegate_confirmation.txt'
-    )
-    with open(email_body_path) as f:
-        email_body = f.read()
-    email_body = email_body.format(**email_merge_fields)
-
+    email_body = build_email_message(reg_details, invoice)
     email = EmailMessage(
         subject='Test from CRM',
         body=email_body,
         to=['chris.graham@infonex.ca',],
         # cc=['aglikin@infonex.ca',],
     )
-    email.attach('send_us_your_money_now.pdf', pdf, 'application/pdf')
+    if pdf:
+        filename = 'invoice-' + str(invoice.pk) + '.pdf'
+        email.attach(filename, pdf, 'application/pdf')
     email.content_subtype = 'html'
     email.send()
     return HttpResponse('<h1>Email should have been sent</h1>')

@@ -2,7 +2,15 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
-next #: 58
+next #: 62
+
+TODO: 60) Should I put cc, bcc & to in email form?
+
+TODO: 61) Email_modal form
+
+TODO: 58) Run makemigrations to deal with making sales credit mandatory for Invoice
+
+TODO: 59) Create new delegate option does not work (oops!)
 
 TODO: 51) On delegate page load and relevant changes, calculate tax and total invoice
 

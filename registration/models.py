@@ -102,8 +102,7 @@ class Invoice(models.Model):
         on_delete=models.CASCADE,
     )
     sales_credit = models.ForeignKey('auth.User',
-                                     related_name='sales_credit',
-                                     blank=True, null=True)
+                                     related_name='sales_credit')
     pre_tax_price = models.DecimalField(max_digits=10, decimal_places=2,
                                         null=True, blank=True)
     gst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0.05,

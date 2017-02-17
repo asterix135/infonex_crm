@@ -297,3 +297,20 @@ class OptionsForm(forms.Form):
                 attrs={'class': 'form-control'}
             )
         )
+
+
+class EmailMessageForm(forms.Form):
+    message = forms.CharField(
+        strip=True,
+        label='Email Message',
+        widget=forms.Textarea(
+            attrs={'class': 'form-control'}
+        )
+    )
+    subject = forms.CharField(
+        strip=True,
+        label='Subject Line',
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )

@@ -70,7 +70,7 @@ def build_email_message(reg_details, invoice):
             venue_city += reg_details.conference.hotel.state_prov
         if reg_details.conference.hotel.postal_code:
             if len(venue_city) > 0:
-                venue_cty += ' '
+                venue_city += ' '
             venue_city += reg_details.conference.hotel.postal_code
         if len(venue_city) > 0:
             email_merge_fields['venue_details'] += '\n' + venue_city

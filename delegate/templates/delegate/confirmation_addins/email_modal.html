@@ -27,14 +27,14 @@
                   <span class="input-group-btn">
                     <button class="btn btn-default deactivate-email" type="button"><span class="glyphicon glyphicon-remove"></span></button>
                   </span>
-                  <input type="text" name="to_field" class="form-control" value="{{ address }}" />
+                  <input type="email" name="to_field" class="form-control" value="{{ address }}" />
                 </div>
                 {% endfor %}
                 <div class="input-group">
                   <span class="input-group-btn">
                     <button class="btn btn-default activate-email" type="button" id="add_to"><span class="glyphicon glyphicon-plus"></span></button>
                   </span>
-                  <input type="email" name="to_field[]" class="form-control" placeholder="Add" disabled="" />
+                  <input type="email" name="to_field" class="form-control" placeholder="Add" disabled="" />
                 </div>
               </div>
             </div>
@@ -46,14 +46,14 @@
                   <span class="input-group-btn">
                     <button class="btn btn-default deactivate-email" type="button"><span class="glyphicon glyphicon-remove"></span></button>
                   </span>
-                  <input type="text" name="cc_field[]" class="form-control" value="{{ address }}" />
+                  <input type="email" name="cc_field" class="form-control" value="{{ address }}" />
                 </div>
                 {% endfor %}
                 <div class="input-group">
                   <span class="input-group-btn">
                     <button class="btn btn-default activate-email" type="button" id="add_cc"><span class="glyphicon glyphicon-plus"></span></button>
                   </span>
-                  <input type="email" name="cc_field[]" class="form-control" placeholder="Add" disabled="" />
+                  <input type="email" name="cc_field" class="form-control" placeholder="Add" disabled="" />
                 </div>
               </div>
             </div>
@@ -72,7 +72,7 @@
                   <span class="input-group-btn">
                     <button class="btn btn-default activate-email" type="button" id="add_bcc"><span class="glyphicon glyphicon-plus"></span></button>
                   </span>
-                  <input type="email" name="bcc_field[]" class="form-control" placeholder="Add" disabled="" />
+                  <input type="email" name="bcc_field" class="form-control" placeholder="Add" disabled="" />
                 </div>
               </div>
             </div>

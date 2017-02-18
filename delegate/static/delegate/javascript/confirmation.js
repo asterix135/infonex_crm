@@ -1,5 +1,14 @@
 $(document).ready(function(){
 
+  var newEmailField = `
+  <div class="input-group">
+    <span class="input-group-btn">
+      <button class="btn btn-default activate-email" type="button" id="add_to" foo="bar"><span class="glyphicon glyphicon-plus"></span></button>
+    </span>
+    <input type="email" name="to_field[]" class="form-control" placeholder="Add" disabled="" />
+  </div>
+  `
+
   // Show email modal on page load
   $('#email-confirmation-modal').modal('show');
 
@@ -79,9 +88,16 @@ $(document).ready(function(){
       var newEmail = '';
     };
     $(this).parent().next('input').val(newEmail);
-    if ($(this).parent().parent().is(':last-child')){
-      console.log('last child');
-      // $('#id-tag').append(html-content);
+    var numOfEmails = $(this).parent().parent().parent().children('.input-group').length;
+    var isLast = $(this).parent().parent().is(':last-child');
+    if (isLast && numOfEmails < 7){
+      $(this).parent().parent().parent().append(newEmailField);
+      var newName = $(this).parent().next('input').prop('name');
+      $(this).parent().parent().parent().find('input').last().attr('name', newName);
+    } else if (isLast && !$(this).parent().parent().parent().find('h5').length){
+      $(this).parent().parent().parent().append(
+        '<h5 class="errorlist">Cannot add more addresses</h5>'
+      )
     };
   });
 });

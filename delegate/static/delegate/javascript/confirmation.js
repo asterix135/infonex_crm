@@ -18,47 +18,99 @@ $(document).ready(function(){
     var regDetailId = $('#reg-id').val();
     var emailMessage = $('#email_message').val();
     var emailSubject = $('#email_subject').val();
+    var emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}$/;
     var toList = [];
     var ccList = [];
     var bccList = [];
     $('input[name="to_field"]').each(function(){
       if (!$(this).prop('disabled')){
-        toList.push($(this).val());
+        if (emailPattern.test($(this).val())) {
+          toList.push($(this).val());
+        };
       };
     });
     $('input[name="cc_field"]').each(function(){
       if (!$(this).prop('disabled')){
-        ccList.push($(this).val());
+        if (emailPattern.test($(this).val())) {
+          ccList.push($(this).val());
+        };
       };
     });
     $('input[name="bcc_field"]').each(function(){
       if (!$(this).prop('disabled')){
-        bccList.push($(this).val());
+        if (emailPattern.test($(this).val())) {
+          bccList.push($(this).val());
+        };
       };
     });
-    console.log(toList);
-    // Add other variables
-    $.ajax({
-      url: '/delegate/send_conf_email/',
-      type: 'POST',
-      data: {
-        'reg_id': regDetailId,
-        'email_message': emailMessage,
-        'email_subject': emailSubject,
-        'to_list': toList,
-        'cc_list': ccList,
-        'bcc_list': bccList,
-      },
-      success: function(){
-        $('#email-confirmation-modal').modal('hide');
-      }
-    });
+    console.log(emailMessage);
+    // Verify that there is an address, subject & body
+    if (toList.length > 0  && emailSubject.length > 14 && emailMessage.length > 49) {
+      $.ajax({
+        url: '/delegate/send_conf_email/',
+        type: 'POST',
+        data: {
+          'reg_id': regDetailId,
+          'email_message': emailMessage,
+          'email_subject': emailSubject,
+          'to_list': toList,
+          'cc_list': ccList,
+          'bcc_list': bccList,
+        },
+        success: function(){
+          $('#email-confirmation-modal').modal('hide');
+        }
+      });
+    } else {
+      $('#modal-error-warnings').html(
+        `<h5 class="errorlist">
+           Please fix the errors indicated below
+         </h5>`
+      )
+      if (emailMessage.length < 50) {
+        $('#email-message-warnings').html(
+          `<h5 class="errorlist">
+             Message must be at least 50 characters long
+           </h5>`
+        );
+        // $('#email_message').focus();
+        $('#email-confirmation-modal').animate({
+          scrollTop: $('#email_message').offset().top
+        });
+      };
+      if (emailSubject.length < 15) {
+        $('#email-subject-warnings').html(
+          `<h5 class="errorlist">
+             Subject line must be at least 15 characters long
+           </h5>`
+        );
+        $('#email-confirmation-modal').animate({
+          scrollTop: $('#email_subject').offset().top - 180
+        });
+      };
+      if (toList.length == 0) {
+        $('#to-address-warnings').html(
+          `<h5 class="errorlist">
+             Must include at least one valid To: address
+           </h5>`
+        );
+        $('#email-confirmation-modal').animate({
+          scrollTop: $('#to-address-list').offset().top - 180
+        });
+      };
+      if (emailSubject.length < 15) {
+        $('#email-subject-warnings').html(
+          `<h5 class="errorlist">
+             Subject line must be at least 15 characters long
+           </h5>`
+        );
+      };
+    };
   });
 
 
   // Disable email address
   $('body').on('click', '.deactivate-email', function(){
-    console.log('deactivating email');
     $(this).children('span').removeClass('glyphicon-remove');
     $(this).children('span').addClass('glyphicon-plus');
     $(this).removeClass('deactivate-email');
@@ -76,7 +128,6 @@ $(document).ready(function(){
 
   // Enable email address and add new blank field if needed
   $('body').on('click', '.activate-email', function(){
-    console.log('activating-email');
     $(this).children('span').removeClass('glyphicon-plus');
     $(this).children('span').addClass('glyphicon-remove');
     $(this).removeClass('activate-email');

@@ -17,10 +17,14 @@
               <div class="col-sm-12">
                 <h4>Please verify and/or edit the Confirmation Email</h4>
               </div>
+              <div class="modal-error-warnings">
+              </div>
             </div>
 
             <div class="row form-group">
               <div class="col-sm-12" id="to-address-list">
+                <div id="to-address-warnings">
+                </div>
                 <label>To:</label>
                 {% for address in to_list %}
                 <div class="input-group">
@@ -78,6 +82,8 @@
             </div>
             <div class="row form-group">
               <div class="col-sm-12">
+                <div id="email-subject-warnings">
+                </div>
                 <label>Subject</label>
                 <input id="email_subject" class="form-control" name="email_subject" required="" type="text" value="{{ email_subject }}" maxlength="255"/>
               </div>
@@ -85,6 +91,8 @@
             <div class="row form-group">
               <div class="col-sm-12">
                 <label>Message:</label>
+                <div id="email-message-warnings">
+                </div>
                 <textarea id="email_message" class="form-control" name="email_message" required="" cols="40" rows="20">{{ email_body }}</textarea>
               </div>
             </div>

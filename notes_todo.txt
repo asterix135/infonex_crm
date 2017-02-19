@@ -1,9 +1,8 @@
 next #: 62
 
-TODO: 61) Email_modal form -
-          a) finish javascript to add blank email lines
-          b) Validate that there is at least one email address
-          c) Validate that there is a valid message and subject
+!*!*!*!*!*!*
+REMEMBER TO ACTVAATE CODE THAT ACTUALLY SENDS THE email
+!*!*!*!*!*!*
 
 TODO: 58) Run makemigrations to deal with making sales credit mandatory for Invoice
 
@@ -113,3 +112,8 @@ TODO: 50) DONE - On delegate page load, make sure 'required' values are set corr
 TODO: 55) DONE = Need to deal with event option selections on registration processing (currently ignored)
 TODO: 9) DONE - Play with pdf maker (ReportLab) and create new invoice & reg note
 TODO: 60) DONE - Should I put cc, bcc & to in email form?
+TODO: 61) DONE - Email_modal form -
+          a) DONE - finish javascript to add blank email lines
+          b) DONE - Validate that email addresses are valid
+          b) DONE - Validate that there is at least one email address
+          c) DONE - Validate that there is a valid message and subject

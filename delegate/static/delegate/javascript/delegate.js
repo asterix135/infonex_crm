@@ -4,6 +4,8 @@ $(document).ready(function(){
 
   // Check & adjust display of reg details on page load/reload
   displayHideRegDetails();
+  // Update display of tax and invoice
+  updateTaxAndInvoice();
 
 
   // update list of crm suggestion names on keyup
@@ -263,6 +265,39 @@ $(document).ready(function(){
       }
     });
 
+  });
+
+
+  // function to update tax and invoice total on screen
+  function updateTaxAndInvoice() {
+    var preTaxPrice = $('#id_pre_tax_price').val();
+    if ($('#id_gst_rate').val() != undefined){
+      var gstRate = $('#id_gst_rate').val();
+    } else {
+      var gstRate = 0;
+    };
+    if ($('#id_hst_rate').val() != undefined){
+      var hstRate = $('#id_hst_rate').val();
+    } else {
+      var hstRate = 0;
+    };
+    if ($('#id_qst_rate').val() != undefined) {
+      var qstRate = $('#id_qst_rate').val();
+    } else {
+      var qstRate = 0;
+    };
+    var totalTax = (preTaxPrice * gstRate) + (preTaxPrice * hstRate) + (preTaxPrice * gstRate) * qstRate
+    var taxAsCurrency = '$' + totalTax.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    var totalInvoice = +(preTaxPrice) + totalTax;
+    var totalAsCurrency = '$' + totalInvoice.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    $('#total-tax').text(taxAsCurrency);
+    $('#total-invoice').text(totalAsCurrency);
+  };
+
+
+  // Update tax and invoice total on changes to relevant fields
+  $('body').on('keyup change', '.cost-field', function(){
+    updateTaxAndInvoice();
   });
 
 

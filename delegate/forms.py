@@ -192,19 +192,19 @@ class RegDetailsForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
             'pre_tax_price': forms.NumberInput(
-                attrs={'class': 'form-control',
+                attrs={'class': 'cost-field form-control',
                        'step': '1'}
             ),
             'gst_rate': forms.NumberInput(
-                attrs={'class': 'form-control',
+                attrs={'class': 'form-control cost-field',
                        'step': '0.01'}
             ),
             'hst_rate': forms.NumberInput(
-                attrs={'class': 'form-control',
+                attrs={'class': 'form-control cost-field',
                        'step': '0.01'}
             ),
             'qst_rate': forms.NumberInput(
-                attrs={'class': 'form-control',
+                attrs={'class': 'form-control cost-field',
                        'step': '0.0005'}
             ),
             'payment_date': forms.DateInput(

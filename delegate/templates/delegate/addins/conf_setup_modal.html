@@ -61,6 +61,12 @@
             </div>
           </div>
           <div class="row">
+            <label class="col-sm-4">Event URL:</label>
+            <div class="col-sm-8">
+              {{ conference.event_web_site }}
+            </div>
+          </div>
+          <div class="row">
             <label class="col-sm-4">Registrar:</label>
             <div class="col-sm-8">
               {{ conference.registrar }}
@@ -93,6 +99,23 @@
             </div>
           </div>
           <div class="row">
+            <label class="col-sm-4">Registration Options</label>
+            <div class="col-sm-8">
+              {% if conference.eventoptions_set.count > 0 %}
+              <ul class="list-group">
+                {% for option in conference.eventoptions_set.all %}
+                <li class="list-group-item">
+                  {{ option.name }}: {{ option.startdate }} - {{ option.enddate }}
+                </li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              No options set (conference only)
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="row">
             <div class="col-sm-12">
               <h4>Tax Information:</h4>
             </div>
@@ -118,7 +141,6 @@
               {% if conference.qst_charged %} - {{ conference.qst_rate|floatformat:4 }}%{% endif %}
             </div>
           </div>
-
         </div>
       </div>
 

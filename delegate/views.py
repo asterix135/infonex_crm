@@ -364,12 +364,6 @@ def confirmation_details(request):
     email_body = build_email_message(reg_details, invoice)
     email_subject = build_email_subject(reg_details)
     to_list, cc_list, bcc_list = build_email_lists(reg_details, invoice)
-    to_list.append('test@foo.com')
-    to_list.append('test2@foo.com')
-    cc_list.append('test@foo.com')
-    cc_list.append('test2@foo.com')
-    bcc_list.append('test@foo.com')
-    bcc_list.append('test2@foo.com')
 
     registrant = Registrants.objects.get(pk=request.session['registrant'])
     if request.session['assistant']:
@@ -489,6 +483,8 @@ def index(request):
         'cxl_values': CXL_VALUES,
         'non_invoice_values': NON_INVOICE_VALUES,
         'data_source': data_source,
+        'total_tax_amount': None,
+        'total_invoice_amount': None,
     }
     return render(request, 'delegate/index.html', context)
 

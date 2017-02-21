@@ -51,16 +51,17 @@ class NewDelegateSearchForm(forms.Form):
 
 
 class ConferenceEditForm(forms.ModelForm):
-    gst_rate = forms.FloatField(required=False)
-    hst_rate = forms.FloatField(required=False)
-    qst_rate = forms.FloatField(required=False)
+    gst_rate = forms.FloatField(required=False, initial=0.05)
+    hst_rate = forms.FloatField(required=False, initial=0.13)
+    qst_rate = forms.FloatField(required=False, initial=0.09975)
 
     class Meta():
         model = Event
         fields = ['number', 'title', 'city', 'date_begins', 'state_prov',
                   'hotel', 'registrar', 'developer', 'company_brand',
                   'gst_charged', 'hst_charged', 'qst_charged',
-                  'gst_rate', 'hst_rate', 'qst_rate', 'billing_currency']
+                  'gst_rate', 'hst_rate', 'qst_rate', 'billing_currency',
+                  'event_web_site']
         labels = {
             'number': _('Event Number'),
             'title': _('Event Title'),
@@ -117,6 +118,9 @@ class ConferenceEditForm(forms.ModelForm):
                        'step': '0.001'}
             ),
             'billing_currency': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'event_web_site': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
         }

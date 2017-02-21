@@ -51,6 +51,13 @@
       {{ conference_edit_form.state_prov }}
     </div>
   </div>
+  <div class="row">
+    <div class="col-sm-11" id="event-url">
+      {{ conference_edit_form.event_web_site.errors }}
+      {{ conference_edit_form.event_web_site.label_tag }}
+      {{ conference_edit_form.event_web_site }}
+    </div>
+  </div>
   <div class="row" id="venue-choices">
     {% include 'registration/addins/conference_venue_choices.html' %}
   </div>

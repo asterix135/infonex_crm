@@ -34,7 +34,7 @@
     <div class="row fill">
       <div class="col-sm-9 left-main-panel">
         <div id="conference-selection">
-          <h3>New Registration For:
+          <h3>Registration for
             <span class="h1" id="displayed-conf-name">
               {{ conference }}
             </span>
@@ -63,6 +63,29 @@
             </div>
           </div>
         </div>
+
+        {% if current_registration and current_registration.invoice_set.all|length > 0 %}
+        <div class="panel panel-primary">
+          <div class="panel-body h4">
+            Invoice Number:
+            {% with current_registration.invoice_set.all|first as invoice %}
+            {{ invoice.pk }}
+            {% endwith %}
+          </div>
+        </div>
+        {% elif current_registration %}
+        <div class="panel panel-primary">
+          <div class="panel-body h4">
+            Non-Invoice Registration
+          </div>
+        </div>
+        {% else %}
+        <div class="panel panel-primary">
+          <div class="panel-body h4">
+            New Registration
+          </div>
+        </div>
+        {% endif %}
 
         <div id="conference-options">
           {% include 'delegate/addins/conference_options.html' %}

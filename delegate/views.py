@@ -431,6 +431,22 @@ def index(request):
             company_match_list = Company.objects.filter(
                 name__icontains=company.name
             )
+            if RegDetails.objects.get(registrant=registrant,
+                                      conference=conference).exists():
+                current_registration = RegDetails.objects.get(
+                    registrant=registrant, conference=conference
+                )
+                reg_data = {
+                    'register_date': current_registration.register_date,
+                    'cancellation_date': current_registration.cancellation_date,
+                    'registration_status': current_registration.registration_status,
+                    'registration_notes': current_registration.registration_notes,
+                }
+                if hasattr(current_registration, 'invoice'):
+                    reg_data['sales_credit'] = current_registration.invoice.sales_credit
+                    reg_data['pre_tax_price'] = current_registration.invoice.pre_tax_price
+
+
             data_source = 'delegate'
         else:  # No registrant, so use CRM
             crm_match = Person.objects.get(pk=request.POST['crm_id'])

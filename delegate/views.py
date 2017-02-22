@@ -225,7 +225,9 @@ def process_complete_registration(request, assistant_data, company, crm_match,
         else:
             assistant = AssistantForm(assistant_data).save()
 
-    # b. company - passed as param
+    # b. Update company with form values
+    company_select_form = CompanySelectForm(request.POST, instance=company)
+    company_select_form.save()
 
     # c. crm record
     # TODO: decide how to check for existing CRM - done on front end??
@@ -302,8 +304,10 @@ def process_complete_registration(request, assistant_data, company, crm_match,
                 date_created=timezone.now(),
                 created_by=request.user,
             )
-    current_registration.conference = conference
-    current_registration.registrant = registrant
+        current_registration.conference = conference
+        current_registration.registrant = registrant
+    elif conference != current_registration.conference:
+        raise ValueError('\nConference changed for registration\n')
     current_registration.register_date = request.POST['register_date']
     if request.POST['cancellation_date'] != '':
         current_registration.cancellation_date = \
@@ -388,6 +392,10 @@ def confirmation_details(request):
 @login_required
 def index(request):
     """ renders base delegate/index.html page """
+    if request.method != 'POST':
+        return redirect('/registration/')
+
+    # Instantiate stuff
     new_delegate_form = NewDelegateForm()
     company_select_form = CompanySelectForm()
     new_company_form = NewCompanyForm()
@@ -405,79 +413,90 @@ def index(request):
     crm_match_list = None
     options_form = None
     data_source = None
-    if request.method == 'POST':
-        conf_id = request.POST['conf_id']
-        conference = Event.objects.get(pk=conf_id)
-        conference_options = conference.eventoptions_set.all()
-        options_form = OptionsForm(conference)
-        crm_id = request.POST['crm_id']
-        registrant_id = request.POST['registrant_id']
-        conference_select_form = ConferenceSelectForm({'event': conf_id})
-        if registrant_id:
-            registrant = Registrants.objects.get(pk=registrant_id)
-            new_delegate_form = NewDelegateForm(instance=registrant)
-            company = registrant.company
-            company_select_form = CompanySelectForm(instance=company)
-            assistant = registrant.assistant
-            if assistant:
-                assistant_form = AssistantForm(instance=assistant)
-            if registrant.crm_person:
-                crm_match = Person.objects.get(pk=registrant.crm_person.id)
-            crm_match_list = Person.objects.filter(
-                Q(name__icontains=registrant.first_name) &
-                Q(name__icontains=registrant.last_name),
-                Q(company__icontains=registrant.company.name)
-            ).order_by('company', 'name')[:100]
-            company_match_list = Company.objects.filter(
-                name__icontains=company.name
+
+    # Deal with passed data
+    conf_id = request.POST['conf_id']
+    conference = Event.objects.get(pk=conf_id)
+    conference_options = conference.eventoptions_set.all()
+    options_form = OptionsForm(conference)
+    crm_id = request.POST['crm_id']
+    registrant_id = request.POST['registrant_id']
+    conference_select_form = ConferenceSelectForm({'event': conf_id})
+    if registrant_id:
+        registrant = Registrants.objects.get(pk=registrant_id)
+        new_delegate_form = NewDelegateForm(instance=registrant)
+        company = registrant.company
+        company_select_form = CompanySelectForm(instance=company)
+        assistant = registrant.assistant
+        if assistant:
+            assistant_form = AssistantForm(instance=assistant)
+        if registrant.crm_person:
+            crm_match = Person.objects.get(pk=registrant.crm_person.id)
+        crm_match_list = Person.objects.filter(
+            Q(name__icontains=registrant.first_name) &
+            Q(name__icontains=registrant.last_name),
+            Q(company__icontains=registrant.company.name)
+        ).order_by('company', 'name')[:100]
+        company_match_list = Company.objects.filter(
+            name__icontains=company.name
+        )
+        try:
+            current_registration = RegDetails.objects.get(
+                registrant=registrant, conference=conference
             )
-            if RegDetails.objects.get(registrant=registrant,
-                                      conference=conference).exists():
-                current_registration = RegDetails.objects.get(
-                    registrant=registrant, conference=conference
-                )
-                reg_data = {
-                    'register_date': current_registration.register_date,
-                    'cancellation_date': current_registration.cancellation_date,
-                    'registration_status': current_registration.registration_status,
-                    'registration_notes': current_registration.registration_notes,
-                }
-                if hasattr(current_registration, 'invoice'):
-                    reg_data['sales_credit'] = current_registration.invoice.sales_credit
-                    reg_data['pre_tax_price'] = current_registration.invoice.pre_tax_price
-
-
-            data_source = 'delegate'
-        else:  # No registrant, so use CRM
-            crm_match = Person.objects.get(pk=request.POST['crm_id'])
-            name_tokens = crm_match.name.split()
-            if len(name_tokens) == 1:
-                first_name_guess = ''
-                last_name_guess = name_tokens[0]
-            elif len(name_tokens) > 1:
-                first_name_guess = name_tokens[0]
-                last_name_guess = ' '.join(name_tokens[1:])
-            else:
-                first_name_guess = last_name_guess = ''
-            form_data = {'first_name': first_name_guess,
-                         'last_name': last_name_guess,
-                         'title': crm_match.title,
-                         'email1': crm_match.email,
-                         'phone1': crm_match.phone,
-                         'contact_option': 'D',
+            reg_data = {
+                'register_date': current_registration.register_date,
+                'cancellation_date': current_registration.cancellation_date,
+                'registration_status': current_registration.registration_status,
+                'registration_notes': current_registration.registration_notes,
             }
-            new_delegate_form = NewDelegateForm(form_data)
-            crm_match_list = Person.objects.filter(
-                name__icontains=crm_match.name,
-                company__icontains=crm_match.company
-            )
-            company_match_list = Company.objects.filter(
-                name__icontains=crm_match.company
-            )
-            company_select_form = CompanySelectForm(
-                {'name': crm_match.company}
-            )
-            data_source = 'crm'
+            if hasattr(current_registration, 'invoice'):
+                invoice = current_registration.invoice
+                reg_data['sales_credit'] = invoice.sales_credit
+                reg_data['pre_tax_price'] = invoice.pre_tax_price
+                reg_data['gst_rate'] = invoice.gst_rate
+                reg_data['hst_rate'] = invoice.hst_rate
+                reg_data['qst_rate'] = invoice.qst_rate
+                reg_data['payment_date'] = invoice.payment_date
+                reg_data['payment_method'] = invoice.payment_method
+                reg_data['fx_conversion_rate'] = invoice.fx_conversion_rate
+                reg_data['invoice_notes'] = invoice.invoice_notes
+                reg_data['sponsorship_description'] = \
+                    invoice.sponsorship_description
+            reg_details_form = RegDetailsForm(initial=reg_data)
+        except RegDetails.DoesNotExist:
+            pass
+        data_source = 'delegate'
+    else:  # No registrant, so use CRM
+        crm_match = Person.objects.get(pk=request.POST['crm_id'])
+        name_tokens = crm_match.name.split()
+        if len(name_tokens) == 1:
+            first_name_guess = ''
+            last_name_guess = name_tokens[0]
+        elif len(name_tokens) > 1:
+            first_name_guess = name_tokens[0]
+            last_name_guess = ' '.join(name_tokens[1:])
+        else:
+            first_name_guess = last_name_guess = ''
+        form_data = {'first_name': first_name_guess,
+                     'last_name': last_name_guess,
+                     'title': crm_match.title,
+                     'email1': crm_match.email,
+                     'phone1': crm_match.phone,
+                     'contact_option': 'D',
+        }
+        new_delegate_form = NewDelegateForm(form_data)
+        crm_match_list = Person.objects.filter(
+            name__icontains=crm_match.name,
+            company__icontains=crm_match.company
+        )
+        company_match_list = Company.objects.filter(
+            name__icontains=crm_match.company
+        )
+        company_select_form = CompanySelectForm(
+            {'name': crm_match.company}
+        )
+        data_source = 'crm'
     context = {
         'current_registration': current_registration,
         'new_delegate_form': new_delegate_form,
@@ -707,8 +726,6 @@ def conf_has_regs(request):
         first_reg = 'true'
     else:
         first_reg = 'false'
-    print(conference)
-    print(conference.billing_currency)
     context = {
         'first_reg': first_reg,
         'conference': conference,
@@ -747,6 +764,26 @@ def link_new_crm_record(request):
         'crm_match': crm_match,
     }
     return render(request, 'delegate/addins/crm_sidebar_selected.html', context)
+
+
+@login_required
+def person_is_registered(request):
+    """
+    Checks whether the current delegate is registered for a conference
+    """
+    if request.method != 'POST':
+        return HttpResponse('')
+    registrant = get_object_or_404(Registrants, pk=request.POST['registrant_id'])
+    new_conference = get_object_or_404(Event, pk=request.POST['conf_id'])
+    try:
+        reg_detail = RegDetails.objects.get(conference=new_conference,
+                                            registrant=registrant)
+    except RegDetails.DoesNotExist:
+        reg_detail = None
+    return HttpResponse('<div><input type="hidden" ' \
+                        'id="person-is-registered" ' \
+                        'name="person-is-registered" value="' + \
+                        str(reg_detail is not None) + '" />')
 
 
 @login_required
@@ -838,11 +875,15 @@ def update_payment_details(request):
             current_reg = RegDetails.objects.get(
                 pk=request.POST['regdetail_id']
             )
-            form_data['sponsorship_description'] = \
-                current_reg.sponsorship_description
-            form_data['payment_date'] = current_reg.payment_date
-            form_data['payment_method'] = current_reg.payment_method
-            reg_details_from = RegDetailsForm(form_data, instance=current_reg)
+            if current_reg.invoice:
+                form_data['sponsorship_description'] = \
+                    current_reg.invoice.sponsorship_description
+                form_data['payment_date'] = current_reg.invoice.payment_date
+                form_data['payment_method'] = \
+                    current_reg.invoice.payment_method
+                reg_details_form = RegDetailsForm(
+                    form_data, instance=current_reg.invoice
+                )
         else:
             reg_details_form = RegDetailsForm(form_data)
     context = {

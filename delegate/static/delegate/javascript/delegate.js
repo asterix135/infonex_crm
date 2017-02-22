@@ -90,7 +90,8 @@ $(document).ready(function(){
     var address1 = $('#new-company-entry #id_address1').val();
     var address2 = $('#new-company-entry #id_address2').val();
     var city = $('#new-company-entry #id_city').val();
-    var postalCode = $('#new-company-entry #id_city').val();
+    var stateProv = $('#new-company-entry #id_state_prov').val();
+    var postalCode = $('#new-company-entry #id_postal_code').val();
     var country = $('#new-company-entry #id_country').val();
     var gstHstExempt = $('#new-company-entry #id_gst_hst_exempt').prop('checked');
     var qstExempt = $('#new-company-entry #id_qst_exempt').prop('checked');
@@ -106,6 +107,7 @@ $(document).ready(function(){
         'address1': address1,
         'address2': address2,
         'city': city,
+        'state_prov': stateProv,
         'postal_code': postalCode,
         'country': country,
         'gst_hst_exempt': gstHstExempt,
@@ -128,6 +130,30 @@ $(document).ready(function(){
     var newConfId = $('#id_event').val();
     $(location).attr('href', '/registration/conference/?action=edit&id=' + newConfId);
   });
+
+
+  // function to reload page when changing to a conference where delegate is already registered
+  function loadRegisteredDelegate(confId, registrantId){
+    var csrfToken = null;
+    var i = 0;
+    if (document.cookie && document.cookie !== ''){
+      var cookies = document.cookie.split(';');
+      for (i; i < cookies.length; i++){
+        var cookie = jQuery.trim(cookies[i]);
+        if (cookie.substring(0,10) === 'csrftoken='){
+          csrfToken = decodeURIComponent(cookie.substring(10));
+          break;
+        };
+      };
+    };
+    var formHtml = '<form action="/delegate/" method="post">' +
+                   '<input name="csrfmiddlewaretoken" value="' + csrfToken +'" type="hidden"/>' +
+                   '<input name="conf_id" value="' + confId + '" type="hidden"/>' +
+                   '<input name="registrant_id" value="' + registrantId + '" type="hidden"/>' +
+                   '<input name="crm_id" value="" type="hidden"/>' +
+                   '</form>';
+    $(formHtml).appendTo('body').submit();
+  };
 
 
   // function to change active conference for delegate
@@ -172,20 +198,38 @@ $(document).ready(function(){
   // updates display of current conference & saves variable when new conf chosen
   $('body').on('click', '#change-conference', function(){
     var newConfId = $('#id_event').val();
+    var currentDelegateId = $('#current-registrant-id').val();
     if (newConfId != '') {
       $.ajax({
-        url: '/delegate/conf_has_regs/',
+        url: '/delegate/person_is_registered/',
         type: 'POST',
         data: {
           'conf_id': newConfId,
+          'registrant_id': currentDelegateId,
         },
         success: function(data){
-          var okToRegister = $('#first-reg', data).val() == 'true';
-          if (okToRegister) {
-            changeActiveConference(newConfId);
+          console.log(data);
+          var isRegistered = $('#person-is-registered', data).val() == 'True';
+          console.log(isRegistered);
+          if (isRegistered) {
+            loadRegisteredDelegate(newConfId, currentDelegateId)
           } else {
-            $('#first-registration-modal').html(data);
-            $('#confSetupModal').modal('show');
+            $.ajax({
+              url: '/delegate/conf_has_regs/',
+              type: 'POST',
+              data: {
+                'conf_id': newConfId,
+              },
+              success: function(data){
+                var okToRegister = $('#first-reg', data).val() == 'true';
+                if (okToRegister) {
+                  changeActiveConference(newConfId);
+                } else {
+                  $('#first-registration-modal').html(data);
+                  $('#confSetupModal').modal('show');
+                };
+              }
+            });
           };
         }
       });

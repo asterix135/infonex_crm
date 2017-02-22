@@ -64,13 +64,11 @@
           </div>
         </div>
 
-        {% if current_registration and current_registration.invoice_set.all|length > 0 %}
+        {% if current_registration and current_registration.invoice %}
         <div class="panel panel-primary">
           <div class="panel-body h4">
             Invoice Number:
-            {% with current_registration.invoice_set.all|first as invoice %}
-            {{ invoice.pk }}
-            {% endwith %}
+            {{ current_registration.invoice.pk }}
           </div>
         </div>
         {% elif current_registration %}
@@ -174,7 +172,7 @@
               </div>
               {% endif %}
               {{ company_select_form.name.label_tag }}
-              <input type="text" id="id_name" class="form-control"
+              <input type="text" id="id_name" class="form-control" name="name"
                 maxlength="255" value="{{ company.name }}" disabled="" />
             </div>
           </div>
@@ -223,7 +221,9 @@
                 <div class="input-group">
                   <span class="input-group-addon">$</span>
                   <input type="number" id="id_pre_tax_price" class="form-control cost-field"
-                    name="pre_tax_price" min="0" required="" />
+                    name="pre_tax_price" min="0" required=""
+                    {% if current_registration.invoice %}value="{{ current_registration.invoice.pre_tax_price }}"{% endif %}
+                    />
                 </div>
               </div>
               <div id="fx-details">

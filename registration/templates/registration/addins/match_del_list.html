@@ -170,3 +170,13 @@
   </table>
 </div>
 {% endif %}
+<div class="panel">
+  <form action ="{% url 'delegate:index' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="conf_id" value="{{ conference.id }}" />
+    <input type="hidden" name="registrant_id" value="" />
+    <input type="hidden" name="crm_id" value="" />
+    <button type="submit" class="btn btn-info col-sm-12" id="create_new-delegate_button" register-type="new">
+    Create New Delegate
+  </button>
+</div>

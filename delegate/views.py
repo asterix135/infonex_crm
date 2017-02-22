@@ -467,8 +467,8 @@ def index(request):
         except RegDetails.DoesNotExist:
             pass
         data_source = 'delegate'
-    else:  # No registrant, so use CRM
-        crm_match = Person.objects.get(pk=request.POST['crm_id'])
+    elif crm_id:  # No registrant, so try CRM
+        crm_match = Person.objects.get(pk=crm_id)
         name_tokens = crm_match.name.split()
         if len(name_tokens) == 1:
             first_name_guess = ''
@@ -497,6 +497,8 @@ def index(request):
             {'name': crm_match.company}
         )
         data_source = 'crm'
+    else:  # neither reg_id or crm_id means new Person
+        data_source = 'new'
     context = {
         'current_registration': current_registration,
         'new_delegate_form': new_delegate_form,

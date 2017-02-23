@@ -21,9 +21,6 @@ TODO: 41) Add title filter to territory creation page
 
 TODO: 47) Edit venue button doesn't work when calling a conference to edit??
 
-TODO: 26) Date picker widget (https://jqueryui.com/datepicker/)
-      CSS: https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css search for datepicker
-
 TODO: 43) Upload current registration information and link to CRM records
           a) DONE - upload company files
           b) upload last 2 years of person records
@@ -113,3 +110,4 @@ TODO: 51) DONE - On delegate page load and relevant changes, calculate tax and t
 TODO: 19) DONE - How to send email confirmations?
 TODO: DONE - 52) Implement front-end logic for existing delegate
 TODO: 45) DONE - On delegate page - need to verify if, on change of conference, the current delegate is registered for that event
+TODO: DONE - 26) Date picker widget (https://jqueryui.com/datepicker/)

@@ -1,6 +1,11 @@
 // Javascript for manage_territory.html page
 $(document).ready(function() {
 
+  // Activate datepicker widget
+  $('#id_date_begins').datepicker({
+    dateFormat: 'yy-mm-dd'
+  });
+
   // Show modal on load if form errors
   var newConferenceFormHasErrors = $('#new-conference-form-has-errors').val();
   if (newConferenceFormHasErrors == 'true'){

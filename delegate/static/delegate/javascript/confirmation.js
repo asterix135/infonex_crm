@@ -43,7 +43,6 @@ $(document).ready(function(){
         };
       };
     });
-    console.log(emailMessage);
     // Verify that there is an address, subject & body
     if (toList.length > 0  && emailSubject.length > 14 && emailMessage.length > 49) {
       $.ajax({

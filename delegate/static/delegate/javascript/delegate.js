@@ -8,7 +8,15 @@ $(document).ready(function(){
   updateTaxAndInvoice();
 
   // Activate datepicker
-  $('#id_register_date').datepicker();
+  $('#id_register_date').datepicker({
+    dateFormat: 'yy-mm-dd'
+  });
+  $('#id_cancellation_date').datepicker({
+    dateFormat: 'yy-mm-dd'
+  });
+  $('#id_payment_date').datepicker({
+    dateFormat: 'yy-mm-dd'
+  });
 
 
   // update list of crm suggestion names on keyup
@@ -129,7 +137,6 @@ $(document).ready(function(){
 
   // Respond to button click to go to edit conference page
   $('body').on('click', '#edit-event', function(){
-    console.log('edit clicked');
     var newConfId = $('#id_event').val();
     $(location).attr('href', '/registration/conference/?action=edit&id=' + newConfId);
   });
@@ -211,9 +218,7 @@ $(document).ready(function(){
           'registrant_id': currentDelegateId,
         },
         success: function(data){
-          console.log(data);
           var isRegistered = $('#person-is-registered', data).val() == 'True';
-          console.log(isRegistered);
           if (isRegistered) {
             loadRegisteredDelegate(newConfId, currentDelegateId)
           } else {
@@ -309,9 +314,11 @@ $(document).ready(function(){
       },
       success: function(data){
         $('#status-based-reg-fields').html(data);
+        $('#id_payment_date').datepicker({
+          dateFormat: 'yy-mm-dd'
+        });
       }
     });
-
   });
 
 

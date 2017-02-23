@@ -2,8 +2,6 @@ $(document).ready(function() {
   // Filter venue list on load if length of city name > 3
   var defaultCityName = $('#conference-edit-panel #id_city').val();
   if (typeof defaultCityName != 'undefined'){
-    console.log(defaultCityName);
-    console.log(defaultCityName.length);
     if (defaultCityName.length > 3){
       filterVenueList(defaultCityName);
     };
@@ -146,6 +144,15 @@ $(document).ready(function() {
           var cityVal = $response.find('#id_city').val();
           if (cityVal){
             filterVenueList(cityVal);
+          $('#id_date_begins').datepicker({
+            dateFormat: 'yy-mm-dd'
+          });
+          $('#id_startdate').datepicker({
+            dateFormat: 'yy-mm-dd'
+          });
+          $('#id_enddate').datepicker({
+            dateFormat: 'yy-mm-dd'
+          });
           }
         }
       });
@@ -155,6 +162,15 @@ $(document).ready(function() {
         type: 'GET',
         success: function(data) {
           $('#conference-edit-panel').html(data);
+          $('#id_date_begins').datepicker({
+            dateFormat: 'yy-mm-dd'
+          });
+          $('#id_startdate').datepicker({
+            dateFormat: 'yy-mm-dd'
+          });
+          $('#id_enddate').datepicker({
+            dateFormat: 'yy-mm-dd'
+          });
         }
       })
     }
@@ -280,6 +296,12 @@ $(document).ready(function() {
         },
         success: function(data) {
           $('#event-options-panel').html(data);
+          $('#id_startdate').datepicker({
+            dateFormat: 'yy-mm-dd'
+          });
+          $('#id_enddate').datepicker({
+            dateFormat: 'yy-mm-dd'
+          });
         }
       })
     } else if (editAction == 'delete'){  // delete
@@ -297,6 +319,12 @@ $(document).ready(function() {
           },
           success: function(data) {
             $('#event-options-panel').html(data);
+            $('#id_startdate').datepicker({
+              dateFormat: 'yy-mm-dd'
+            });
+            $('#id_enddate').datepicker({
+              dateFormat: 'yy-mm-dd'
+            });
           }
         })
       }
@@ -304,6 +332,17 @@ $(document).ready(function() {
       var optionId = $(this).attr('option-val');
       $('#delete-option-warning' + optionId).hide();
     }
+  });
+
+
+  // Set enddate to startdate + 1
+  $('body').on('change', '#id_startdate', function(){
+    var newStartDate = $('#id_startdate').val();
+    var endDate = $('#id_enddate').val();
+    if (endDate == '') {
+
+    }
+    console.log(newStartDate);
   });
 
 

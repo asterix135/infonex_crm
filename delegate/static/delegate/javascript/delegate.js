@@ -379,16 +379,16 @@ $(document).ready(function(){
 
   // toggles whether company name is editable & change icon
   $('body').on('click', '#toggle-company-edit', function(){
-    if ($('#toggle-company-icon').hasClass('glyphicon-chevron-down')){
-      $('#toggle-company-icon').removeClass('glyphicon-chevron-down');
-      $('#toggle-company-icon').addClass('glyphicon-chevron-up');
+    if ($(this).hasClass('glyphicon-chevron-down')){
+      $(this).removeClass('glyphicon-chevron-down');
+      $(this).addClass('glyphicon-chevron-up');
       $('#company-details').toggle();
-      $('#company-info #id_name').removeProp('disabled');
+      $('#id_company_name').removeAttr('disabled');
     } else {
-      $('#toggle-company-icon').removeClass('glyphicon-chevron-up');
-      $('#toggle-company-icon').addClass('glyphicon-chevron-down');
+      $(this).removeClass('glyphicon-chevron-up');
+      $(this).addClass('glyphicon-chevron-down');
       $('#company-details').toggle();
-      $('#company-info #id_name').attr('disabled', '');
+      $('#id_company_name').prop('disabled', true);
     };
   });
 
@@ -399,8 +399,27 @@ $(document).ready(function(){
     if (contactOption == 'C' || contactOption == 'A') {
       if (!$('#assistant-details').hasClass('collapse in')){
         $('#assistant-details').collapse('show');
+        $('#toggle-assistant-details').removeClass('glyphicon-chevron-down');
+        $('#toggle-assistant-details').addClass('glyphicon-chevron-up');
       };
     };
+  });
+
+
+  // Toggle display of assistant panel manually
+  $('body').on('click', '#toggle-assistant-details', function(){
+    if ($('#assistant-details').hasClass('collapse in')) {
+      $(this).removeClass('glyphicon-chevron-up');
+      if (!$(this).hasClass('glyphicon-chevron-down')) {
+        $(this).addClass('glyphicon-chevron-down')
+      }
+    } else {
+      $(this).removeClass('glyphicon-chevron-down');
+      if (!$(this).hasClass('glyphicon-chevron-up')){
+        $(this).addClass('glyphicon-chevron-up');
+      }
+    }
+    $('#assistant-details').collapse('toggle');
   });
 
 });

@@ -5,16 +5,15 @@ REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
 TODO: 62) Overhaul delegate registration page & logic
-          a) Remove sidebar (match_sidebar.html, sidebar_navbar.html, crm_sidebar.html, company_sidebar.html)
+          a) DONE BUT DELETE FILES WHEN GOOD - Remove sidebar (match_sidebar.html, sidebar_navbar.html, crm_sidebar.html, company_sidebar.html)
+          b) DONE - update delegate/index.html layout
+          c) add page to confirm company and crm
+          d) update views.py (add new view and update process_registration)
 
-TODO: 59) Create new delegate option does not work (oops!)  - work registration module on match_del_list.html and reg_jquery.js
-
-TODO: 54) Edit company Javascript seems screwed up on delegate registration page
+TODO: 53) Deal with GST/QST Exemption in registration/billing process
 
 TODO: 56) pytz timezone conversion to reports (home page chart & call report)
           http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
-
-TODO: 53) Deal with GST/QST Exemption in registration/billing process
 
 TODO: 57) Add phone number field to auth.User (this seems complicated) and add to email confirmation etc
 
@@ -114,3 +113,4 @@ TODO: 19) DONE - How to send email confirmations?
 TODO: DONE - 52) Implement front-end logic for existing delegate
 TODO: 45) DONE - On delegate page - need to verify if, on change of conference, the current delegate is registered for that event
 TODO: DONE - 26) Date picker widget (https://jqueryui.com/datepicker/)
+TODO: 59) DONE - Create new delegate option does not work (oops!)  - work registration module on match_del_list.html and reg_jquery.js

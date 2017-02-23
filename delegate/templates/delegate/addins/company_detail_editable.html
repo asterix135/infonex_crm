@@ -1,8 +1,10 @@
+{% if company %}
 <div class="row errorlist">
   <div class="col-sm-12">
     <h4>Changes here will affect all people in this company</h4>
   </div>
 </div>
+{% endif %}
 <div class="row">
   <div class="col-sm-12">
     {{ company_select_form.name_for_badges.errors }}

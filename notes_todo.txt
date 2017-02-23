@@ -4,6 +4,9 @@ next #: 62
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+TODO: 62) Overhaul delegate registration page & logic
+          a) Remove sidebar (match_sidebar.html, sidebar_navbar.html, crm_sidebar.html, company_sidebar.html)
+
 TODO: 59) Create new delegate option does not work (oops!)  - work registration module on match_del_list.html and reg_jquery.js
 
 TODO: 54) Edit company Javascript seems screwed up on delegate registration page

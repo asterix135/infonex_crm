@@ -7,6 +7,9 @@ $(document).ready(function(){
   // Update display of tax and invoice
   updateTaxAndInvoice();
 
+  // Activate datepicker
+  $('#id_register_date').datepicker();
+
 
   // update list of crm suggestion names on keyup
   $('body').on('keyup', '#delegate-info #id_first_name,#delegate-info #id_last_name', function(){

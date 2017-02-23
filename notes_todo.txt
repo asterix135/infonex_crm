@@ -22,6 +22,7 @@ TODO: 41) Add title filter to territory creation page
 TODO: 47) Edit venue button doesn't work when calling a conference to edit??
 
 TODO: 26) Date picker widget (https://jqueryui.com/datepicker/)
+      CSS: https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css search for datepicker
 
 TODO: 43) Upload current registration information and link to CRM records
           a) DONE - upload company files

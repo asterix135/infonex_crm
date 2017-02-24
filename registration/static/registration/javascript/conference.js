@@ -1,4 +1,16 @@
 $(document).ready(function() {
+  // Load datepicker widget
+  $('#id_date_begins').datepicker({
+    dateFormat: 'yy-mm-dd'
+  });
+  $('#id_startdate').datepicker({
+    dateFormat: 'yy-mm-dd'
+  });
+  $('#id_enddate').datepicker({
+    dateFormat: 'yy-mm-dd'
+  });
+
+
   // Filter venue list on load if length of city name > 3
   var defaultCityName = $('#conference-edit-panel #id_city').val();
   if (typeof defaultCityName != 'undefined'){
@@ -225,6 +237,7 @@ $(document).ready(function() {
     var dateBegins = $('#conference-edit-panel #id_date_begins').val();
     var city = $('#conference-edit-panel #id_city').val();
     var stateProv = $('#conference-edit-panel #id_state_prov').val();
+    var eventUrl = $('#conference-edit-panel #id_event_web_site').val();
     var hotel = $('#conference-edit-panel #id_hotel').val();
     var registrar = $('#conference-edit-panel #id_registrar').val();
     var developer = $('#conference-edit-panel #id_developer').val();
@@ -245,6 +258,7 @@ $(document).ready(function() {
         title: title,
         city: city,
         date_begins: dateBegins,
+        'event_web_site': eventUrl,
         state_prov: stateProv,
         hotel: hotel,
         registrar: registrar,

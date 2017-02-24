@@ -13,6 +13,8 @@ urlpatterns = [
 
     # AJAX CALLS
     url(r'^add_new_company/$', views.add_new_company, name='add_new_company'),
+    url(r'^company_crm_modal/$', views.company_crm_modal,
+        name='company_crm_modal'),
     url(r'^conf_has_regs/$', views.conf_has_regs, name='conf_has_regs'),
     url(r'^link_new_company_record/$', views.link_new_company_record,
         name='link_new_company_record'),

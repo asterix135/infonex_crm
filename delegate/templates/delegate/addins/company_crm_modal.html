@@ -5,7 +5,7 @@
         <button type="button" class="close" data-dismiss="modal">
           <span>&times;</span>
         </button>
-        <h3 class="modal-title">New Person</h3>
+        <h3 class="modal-title">New Customer!</h3>
       </div>
 
       <div class="modal-body">
@@ -32,6 +32,10 @@
                 My best guess is shown below.  You can accept it, choose another
                 option, or cancel and go back to editing the record.
               </p>
+              <p>
+                (I'm not that smart yet, so please use your superior human brain
+                to check my work).
+              </p>
             </div>
           </div>
 
@@ -44,7 +48,7 @@
               <p>
                 Here are some suggestions for possible company matches.  If you
                 see one that matches this customer's company, please select that.
-                Otherwise, select 'New company'.
+                Otherwise, select 'No Match - Create New Company Record'.
               </p>
               <table class="table">
                 <thead>
@@ -52,30 +56,47 @@
                     <th class="col-sm-1">
                       Select?
                     </th>
-                    <th class="col-sm-11">
+                    <th class="col-sm-7">
                       Option
+                    </th>
+                    <th class="col-sm-4">
+                      # of Customers at Location
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>
+                      {% if not company_best_guess %}
+                      <input type="radio" name="company-select" value="new" checked />
+                      {% else %}
                       <input type="radio" name="company-select" value="new" />
+                      {% endif %}
                     </td>
                     <td>
-                      Create New Company Record
+                      <b>NO MATCH</b> - Create New Company Record
+                    </td>
+                    <td>
+                      None
                     </td>
                   </tr>
                   {% for suggested_company in company_suggest_list %}
                   <tr>
                     <td>
+                      {% if suggested_company == company_best_guess %}
+                      <input type="radio" name="company-select" value="{{ suggested_company.pk }}" checked />
+                      {% else %}
                       <input type="radio" name="company-select" value="{{ suggested_company.pk }}" />
+                      {% endif %}
                     </td>
                     <td>
                       <b>{{ suggested_company.name }}</b><br />
-                      {{ suggested_company.address1 }}<br />
-                      {{ suggested_company.address2 }}<br />
-                      {{ suggested_company.city }}, {{ suggested_company.state_prov }}  {{ suggested_copmany.postal_code }}
+                      {% if suggested_company.address1 %}{{ suggested_company.address1 }}<br />{% endif %}
+                      {% if suggested_company.address2 %}{{ suggested_company.address2 }}<br />{% endif %}
+                      {% if suggested_company.city %}{{ suggested_company.city }}, {%endif %}{% if suggested_company.state_prov %}{{ suggested_company.state_prov }}  {% endif %}{{ suggested_company.postal_code }}
+                    </td>
+                    <td>
+                      {{ suggested_company.person_set.all|length }}
                     </td>
                   </tr>
                   {% endfor %}
@@ -110,22 +131,30 @@
                 <tbody>
                   <tr>
                     <td>
+                      {% if not crm_best_guess %}
+                      <input type="radio" name="crm-select" value="new" checked />
+                      {% else %}
                       <input type="radio" name="crm-select" value="new" />
+                      {% endif %}
                     </td>
                     <td>
-                      Create new CRM Record
+                      <b>NO MATCH</b> - Create New CRM Record
                     </td>
                   </tr>
                   {% for suggested_match in crm_suggest_list %}
                   <tr>
                     <td>
-                      <input type="radio" name="company-select" value="{{ suggested_company.pk }}" />
+                      {% if suggested_match == crm_best_guess %}
+                      <input type="radio" name="crm-select" value="{{ suggested_match.pk }}" checked />
+                      {% else %}
+                      <input type="radio" name="crm-select" value="{{ suggested_match.pk }}" />
+                      {% endif %}
                     </td>
                     <td>
                       <b>{{ suggested_match.name }}</b><br />
-                      {{ suggested_match.title }}<br />
-                      {{ suggestd_match.company }}<br />
-                      {{ suggested_match.city }}, {{ suggested_match.state_prov }}  {{ suggested_match.postal_code }}
+                      {% if suggested_match.title %}{{ suggested_match.title }}<br />{% endif %}
+                      {% if suggested_match.company %}{{ suggested_match.company }}<br />{% endif %}
+                      {% if suggested_match.city %}{{ suggested_match.city }}, {% endif %}{% if suggested_match.state_prov %}{{ suggested_match.state_prov }}  {% endif %}
                     </td>
                   </tr>
                   {% endfor %}
@@ -139,7 +168,7 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="proceed-with-registration">Proceed</button>
+        <button type="button" class="btn btn-primary" id="register-from-crm-modal">Proceed</button>
       </div>
     </div>
   </div>

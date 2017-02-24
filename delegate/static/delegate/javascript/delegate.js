@@ -23,11 +23,11 @@ $(document).ready(function(){
   $('body').on('keyup', '#delegate-info #id_first_name,#delegate-info #id_last_name', function(){
     var charsEntered = $('#delegate-info #id_first_name').val().length +
       $('#delegate-info #id_last_name').val().length +
-      $('#company-info #id_name').val().length;
+      $('#company-info #id_company_name').val().length;
     if (charsEntered > 5) {
       var firstName = $('#delegate-info #id_first_name').val();
       var lastName = $('#delegate-info #id_last_name').val();
-      var companyName = $('#company-info #id_name').val();
+      var companyName = $('#company-info #id_company_name').val();
       $.ajax({
         url: '/delegate/update_crm_match_list/',
         type: 'POST',
@@ -425,14 +425,60 @@ $(document).ready(function(){
 
   // Called when attempting to process registration
   $('body').on('click', '#process-registration-button', function(){
-    var crmMatchId = $('crm-match-value').val();
+    var crmMatchId = $('#crm-match-value').val();
     var companyMatchId = $('#company-match-value').val();
-    if (crmMatchId=='' || companyMatchId == ''} {
-      // Do an ajax call here to populate modal
-      console.log('need to activate modal');
+    var companyName = $('#id_company_name').val();
+    var address1 = $('#id_address1').val();
+    var address2 = $('#id_address2').val();
+    var city = $('#id_city').val();
+    var stateProv = $('#id_state_prov').val();
+    var postalCode = $('#id_postal_code').val();
+    var firstName = $('#id_first_name').val();
+    var lastName = $('#id_last_name').val();
+    var title = $('#id_title').val();
+    var email = $('#id_email1').val();
+    if (crmMatchId=='' || companyMatchId == '') {
+      $.ajax({
+        url: '/delegate/company_crm_modal/',
+        type: 'POST',
+        data: {
+          'company_id': companyMatchId,
+          'crm_id': crmMatchId,
+          'company_name': companyName,
+          'address1': address1,
+          'address2': address2,
+          'city': city,
+          'state_prov': stateProv,
+          'postal_code': postalCode,
+          'first_name': firstName,
+          'last_name': lastName,
+          'title': title,
+          'email': email,
+        },
+        success: function(data){
+          $('#company-crm-modal').html(data);
+          $('#companyCrmModal').modal('show');
+        }
+      });
     } else {
-      $('#registration-form').submti();
+      $('#registration-form').submit();
     }
+  });
+
+
+  // Submit registration for processing from modal
+  $('body').on('click', '#register-from-crm-modal', function(){
+    var crmId = $('#crm-match-value').val();
+    if (crmId == '') {
+      crmId = $('input[name=crm-select]:checked').val();
+      $('#crm-match-value').val(crmId);
+    };
+    var companyId = $('#company-match-value').val();
+    if (companyId == '') {
+      companyId = $('input[name=company-select]:checked').val();
+      $('#company-match-value').val(companyId);
+    };
+    $('#registration-form').submit();
   })
 
 });

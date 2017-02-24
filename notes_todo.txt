@@ -1,16 +1,14 @@
-next #: 62
+next #: 64
 
 !*!*!*!*!*!*
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-TODO: 62) Overhaul delegate registration page & logic
-          a) DONE BUT DELETE FILES WHEN GOOD - Remove sidebar (match_sidebar.html, sidebar_navbar.html, crm_sidebar.html, company_sidebar.html)
-          b) DONE - update delegate/index.html layout
-          c) add page to confirm company and crm
-          d) update views.py (add new view and update process_registration)
-
 TODO: 53) Deal with GST/QST Exemption in registration/billing process
+
+TODO: 63) When registering from CRM record, company info does not transfer
+
+TODO: 62) Have conference/option end date set automatically based on start date
 
 TODO: 56) pytz timezone conversion to reports (home page chart & call report)
           http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
@@ -59,6 +57,7 @@ See avoiding race conditions using F()
     might be an issue with some records and should be implemented
     https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
+LONGTERM: Put in some kind of machine learning for matching company names - probably a table of match & guess
 
 #############
 # DONE
@@ -114,3 +113,8 @@ TODO: DONE - 52) Implement front-end logic for existing delegate
 TODO: 45) DONE - On delegate page - need to verify if, on change of conference, the current delegate is registered for that event
 TODO: DONE - 26) Date picker widget (https://jqueryui.com/datepicker/)
 TODO: 59) DONE - Create new delegate option does not work (oops!)  - work registration module on match_del_list.html and reg_jquery.js
+TODO: 62) DONE - Overhaul delegate registration page & logic
+          a) DONE BUT DELETE FILES WHEN GOOD - Remove sidebar (match_sidebar.html, sidebar_navbar.html, crm_sidebar.html, company_sidebar.html) & AJAX calls
+          b) DONE - update delegate/index.html layout
+          c) DONE - add page to confirm company and crm
+          d) DONE - update views.py (add new view and update process_registration)

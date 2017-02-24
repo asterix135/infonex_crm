@@ -229,23 +229,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     company_select_form = CompanySelectForm(request.POST, instance=company)
     company_select_form.save()
 
-    # c. crm record
-    # TODO: decide how to check for existing CRM - done on front end??
-    if not crm_match:
-        crm_match = Person(
-            name=request.POST['first_name'] + ' ' + request.POST['last_name'],
-            title=request.POST['title'],
-            company=company.name,
-            phone=request.POST['phone1'],
-            email=request.POST['email1'],
-            city=company.city,
-            date_created=timezone.now(),
-            created_by=request.user,
-            date_modified=timezone.now(),
-            modified_by=request.user,
-        )
-        crm_match.save()
-        add_change_record(crm_match, 'reg_add')
+    # c. crm record - provided
 
     # d. registrant
     if registrant:
@@ -529,12 +513,6 @@ def index(request):
 @login_required
 def process_registration(request):
     """ form submission """
-
-    # request.session['current_registration'] = 1
-    # request.session['registrant'] = 1
-    # request.session['assistant'] = 1
-    # return redirect('/delegate/confirmation_details')
-
     # 1. instantiate various Nones
     current_registration = None
     new_delegate_form = NewDelegateForm()
@@ -573,7 +551,6 @@ def process_registration(request):
         }
         assistant_form = AssistantForm(assistant_data)
         current_time = timezone.now()
-        print(current_time)
         reg_details_data = {
             'sales_credit': request.POST['sales_credit'],
             'pre_tax_price': request.POST['pre_tax_price'],
@@ -615,8 +592,36 @@ def process_registration(request):
             registrant = Registrants.objects.get(
                 pk=request.POST['current_registrant_id']
             )
-        if request.POST['crm_match_value']:
+
+        if request.POST['company_match_value'] not in ('new', ''):
+            company = Company.objects.get(pk=request.POST['company_match_value'])
+        elif request.POST['company_match_value'] == 'new':
+            if company_select_form.is_valid():
+                company = company_select_form.save()
+            else:
+                company_error = True
+        else:
+            company_error = True
+
+        if request.POST['crm_match_value'] not in ('', 'new') and \
+            not company_error:
             crm_match = Person.objects.get(pk=request.POST['crm_match_value'])
+        else:
+            crm_match = Person(
+                name=request.POST['first_name'] + ' ' + \
+                     request.POST['last_name'],
+                title=request.POST['title'],
+                company=company.name,
+                phone=request.POST['phone1'],
+                email=request.POST['email1'],
+                city=company.city,
+                date_created=timezone.now(),
+                created_by=request.user,
+                date_modified=timezone.now(),
+                modified_by=request.user,
+            )
+            crm_match.save()
+            add_change_record(crm_match, 'reg_add')
         if request.POST['selected_conference_id']:
             conference = Event.objects.get(
                 pk=request.POST['selected_conference_id']
@@ -627,10 +632,7 @@ def process_registration(request):
             )
 
         # ensure that various values are correctly submitted
-        if request.POST['company_match_value']:
-            company = Company.objects.get(pk=request.POST['company_match_value'])
-        else:
-            company_error = True
+
         if request.POST['contact_option'] in ['A', 'C'] and not \
             request.POST['assistant_email']:
             assistant_missing = True
@@ -733,6 +735,142 @@ def conf_has_regs(request):
         'conference': conference,
     }
     return render(request, 'delegate/addins/conf_setup_modal.html', context)
+
+
+def company_crm_modal(request):
+    """
+    generates suggested matches for company record and crm record on any
+    new registration and feeds those to a modal pop-up on the
+    delegate/index.html page
+    """
+    if request.method != 'POST':
+        return HttpResponse('')
+    # Set up various variables
+    company = None
+    crm_match = None
+    company_suggest_list = None
+    crm_suggest_list = None
+    company_best_guess = None  # This is a company object or None
+    crm_best_guess = None  # This is a person object or None
+    if request.POST['company_id'] != '':
+        try:
+            company = Company.objects.get(pk=request.POST['company_id'])
+        except Company.DoesNotExist:
+            pass
+    if request.POST['crm_id'] != '':
+        try:
+            crm_match = Person.objects.get(pk=request.POST['crm_id'])
+        except Person.DoesNotExist:
+            pass
+    company_name = request.POST['company_name']
+    address1 = request.POST['address1']
+    address2 = request.POST['address2']
+    city = request.POST['city']
+    state_prov = request.POST['state_prov']
+    postal_code = request.POST['postal_code']
+    first_name = request.POST['first_name']
+    last_name = request.POST['last_name']
+    title = request.POST['title']
+    email = request.POST['email']
+
+    # generate company suggestions
+    if not company:
+        name_tokens = company_name.split()
+        match0 = Company.objects.none()
+        match1 = Company.objects.filter(name=company_name,
+                                        postal_code=postal_code)
+        if match1.count() == 1:
+            company_best_guess = match1[0]
+        elif match1.count() > 1:
+            match0 = match1.filter(address1=address1)
+            if match0.count() > 0:  # Choose the first one if more than one
+                company_best_guess = match0[0]
+        match3 = Company.objects.filter(postal_code=postal_code)
+        if len(name_tokens) > 0:
+            queries = []
+            for token in name_tokens:
+                queries.append(Q(name__icontains=token))
+            query=queries.pop()
+            for item in queries:
+                query |= item
+            match2 = match3.filter(query)
+            if not company_best_guess and match2.count() > 0:
+                company_best_guess = match2[0]
+        else:
+            match2 = Company.objects.none()
+        company_suggest_list = match0 | match1 | match2
+        if company_suggest_list.count() < 10:
+            num_to_add = 10 - crm_suggest_list.count()
+            company_suggest_list = list(company_suggest_list) + \
+                list(match3[:num_to_add])
+
+    if not crm_match:
+        person_name = first_name + ' ' + last_name
+        match0 = Person.objects.none()
+        if email != '':
+            match1 = Person.objects.filter(email=email)
+        else:
+            match1 = Person.objects.none()
+        if match1.count() == 1:
+            crm_best_guess = match1[0]
+        elif match1.count() > 1:
+            match0 = match1.filter(name=person_name)
+            if match0.count() > 1:
+                crm_best_guess = match0[0]
+                match0 = match0.filter(company=company_name)
+                if match0.count() > 0:
+                    crm_best_guess = match0[0]
+            elif match0.count() == 1:
+                crm_best_guess = match0[0]
+            else:
+                crm_best_guess = match1[1]
+        crm_suggest_list = match0 | match1
+        if crm_suggest_list.count() < 10:
+            match2 = Person.objects.filter(name=person_name,
+                                           company=company_name)
+            if not crm_best_guess and match2.count() > 0:
+                crm_best_guess = match2[0]
+            crm_suggest_list = crm_suggest_list | match2
+        if crm_suggest_list.count() < 10:
+            name_qs1 = Person.objects.filter(name__icontains=first_name,
+                                             company=company_name)
+            name_qs2 = Person.objects.filter(name__icontains=last_name,
+                                             company=company_name)
+            crm_suggest_list = crm_suggest_list | name_qs1 | name_qs2
+            if not crm_best_guess and crm_suggest_list.count() > 0:
+                crm_best_guess = crm_suggest_list[0]
+        if crm_suggest_list.count() < 10 and len(name_tokens) > 0:
+            match3 = Person.objects.filter(name=person_name)
+            queries = []
+            for token in name_tokens:
+                queries.append(Q(company__icontains=token))
+            query = queries.pop()
+            for item in queries:
+                query |= item
+            match3 = match3.filter(query)
+            if not crm_best_guess and match3.count() > 0:
+                crm_best_guess = match3[0]
+            crm_suggest_list = crm_suggest_list | match3[:10]
+            print('after 3: ', str(crm_suggest_list.count()))
+        if crm_suggest_list.count() < 10 and len(name_tokens) > 0:
+            match4_a = Person.objects.filter(name__icontains=first_name)
+            match4_b = Person.objects.filter(name__icontains=last_name)
+            match4 = match4_a | match4_b
+            match4 = match4.filter(company__icontains=company_name)
+            if match4.count() > 10:
+                crm_suggest_list = list(crm_suggest_list) + list(match4[:10])
+            else:
+                crm_suggest_list = crm_suggest_list | match4
+
+    context = {
+        'company': company,
+        'crm_match': crm_match,
+        'company_suggest_list': company_suggest_list,
+        'crm_suggest_list': crm_suggest_list,
+        'company_best_guess': company_best_guess,
+        'crm_best_guess': crm_best_guess,
+    }
+    return render(request, 'delegate/addins/company_crm_modal.html', context)
 
 
 @login_required

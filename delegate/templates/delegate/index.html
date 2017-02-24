@@ -4,17 +4,18 @@
 {% block title %}Register Delegate | {% endblock %}
 
 {% block script_includes %}
-<link href="{% static 'delegate/delegate.css' %}"
-  rel="stylesheet" type="text/css">
-<script type="text/javascript"
-  src="{% static 'delegate/javascript/delegate.js' %}"></script>
+<link href="{% static 'delegate/delegate.css' %}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{% static 'delegate/javascript/delegate.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 <div id="first-registration-modal">
   {% include 'delegate/addins/conf_setup_modal.html' %}
 </div>
-<form action="process_registration/" method="post">
+<div id="company-crm-modal">
+  {% include 'delegate/addins/company_crm_modal.html' %}
+</div>
+<form action="process_registration/" method="post" id="registration-form">
   <div id="stored-variables">
     <input type="hidden" id="current-registrant-id" name="current_registrant_id" value="{{ registrant.id }}" />
     <input type="hidden" id="current-regdetail-id" name="current_regdetail_id" value="{{ current_registration.id }}" />
@@ -297,11 +298,17 @@
         </div>
 
         <div id="process-registration-section">
-          <button type="submit" class="btn btn-success col-sm-12"
-            id="process-registration-button">
+          <button type="button" class="btn btn-success col-sm-12" id="process-registration-button">
             Process registration
           </button>
         </div>
+
+        <div id="modal-test">
+          <button type="button" class="btn btn-default" id="toggle-crm-modal" data-toggle="modal" data-target="#companyCrmModal">
+            Show CRM Modal
+          </button>
+        </div>
+
       </div>
     </div>
   </div>

@@ -422,4 +422,17 @@ $(document).ready(function(){
     $('#assistant-details').collapse('toggle');
   });
 
+
+  // Called when attempting to process registration
+  $('body').on('click', '#process-registration-button', function(){
+    var crmMatchId = $('crm-match-value').val();
+    var companyMatchId = $('#company-match-value').val();
+    if (crmMatchId=='' || companyMatchId == ''} {
+      // Do an ajax call here to populate modal
+      console.log('need to activate modal');
+    } else {
+      $('#registration-form').submti();
+    }
+  })
+
 });

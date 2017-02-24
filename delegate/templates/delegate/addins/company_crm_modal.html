@@ -1,0 +1,146 @@
+<div class="modal fade" id="companyCrmModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+        <h3 class="modal-title">New Person</h3>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid bd-example-row">
+          <div class="row">
+            <div class="col-sm-12">
+              <p>
+                This is a new customer for Infonex.  Before processing the registration,
+                we need to verify the following:
+              </p>
+              <ul>
+                {% if not company %}
+                <li>
+                  What company to assign this person to
+                </li>
+                {% endif %}
+                {% if not crm_match %}
+                <li>
+                  What CRM record should be associated with this record.
+                </li>
+                {% endif %}
+              </ul>
+              <p>
+                My best guess is shown below.  You can accept it, choose another
+                option, or cancel and go back to editing the record.
+              </p>
+            </div>
+          </div>
+
+          {% if not company %}
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              Company Selection
+            </div>
+            <div class="panel-body">
+              <p>
+                Here are some suggestions for possible company matches.  If you
+                see one that matches this customer's company, please select that.
+                Otherwise, select 'New company'.
+              </p>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="col-sm-1">
+                      Select?
+                    </th>
+                    <th class="col-sm-11">
+                      Option
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <input type="radio" name="company-select" value="new" />
+                    </td>
+                    <td>
+                      Create New Company Record
+                    </td>
+                  </tr>
+                  {% for suggested_company in company_suggest_list %}
+                  <tr>
+                    <td>
+                      <input type="radio" name="company-select" value="{{ suggested_company.pk }}" />
+                    </td>
+                    <td>
+                      <b>{{ suggested_company.name }}</b><br />
+                      {{ suggested_company.address1 }}<br />
+                      {{ suggested_company.address2 }}<br />
+                      {{ suggested_company.city }}, {{ suggested_company.state_prov }}  {{ suggested_copmany.postal_code }}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if not crm %}
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              CRM Database Match
+            </div>
+            <div class="panel-body">
+              <p>
+                Here are some suggestions for possible matches in the CRM system.
+                If you see one that matches this customer, please select that
+                record.  Otherwise, select 'New CRM record'
+              </p>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="col-sm-1">
+                      Select?
+                    </th>
+                    <th class="col-sm-11">
+                      Option
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <input type="radio" name="crm-select" value="new" />
+                    </td>
+                    <td>
+                      Create new CRM Record
+                    </td>
+                  </tr>
+                  {% for suggested_match in crm_suggest_list %}
+                  <tr>
+                    <td>
+                      <input type="radio" name="company-select" value="{{ suggested_company.pk }}" />
+                    </td>
+                    <td>
+                      <b>{{ suggested_match.name }}</b><br />
+                      {{ suggested_match.title }}<br />
+                      {{ suggestd_match.company }}<br />
+                      {{ suggested_match.city }}, {{ suggested_match.state_prov }}  {{ suggested_match.postal_code }}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="proceed-with-registration">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>

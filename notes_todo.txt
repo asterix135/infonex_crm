@@ -1,4 +1,4 @@
-next #: 64
+next #: 65
 
 !*!*!*!*!*!*
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
@@ -9,6 +9,8 @@ TODO: 53) Deal with GST/QST Exemption in registration/billing process
 TODO: 63) When registering from CRM record, company info does not transfer
 
 TODO: 62) Have conference/option end date set automatically based on start date
+
+TODO: 64) Delete unused Ajax calls & templates from delegate tree
 
 TODO: 56) pytz timezone conversion to reports (home page chart & call report)
           http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/

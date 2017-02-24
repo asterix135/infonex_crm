@@ -470,13 +470,13 @@ def index(request):
                      'contact_option': 'D',
         }
         new_delegate_form = NewDelegateForm(form_data)
-        crm_match_list = Person.objects.filter(
-            name__icontains=crm_match.name,
-            company__icontains=crm_match.company
-        )
-        company_match_list = Company.objects.filter(
-            name__icontains=crm_match.company
-        )
+        # crm_match_list = Person.objects.filter(
+        #     name__icontains=crm_match.name,
+        #     company__icontains=crm_match.company
+        # )
+        # company_match_list = Company.objects.filter(
+        #     name__icontains=crm_match.company
+        # )
         company_select_form = CompanySelectForm(
             {'name': crm_match.company}
         )
@@ -488,7 +488,7 @@ def index(request):
         'new_delegate_form': new_delegate_form,
         'company_select_form': company_select_form,
         'new_company_form': new_company_form,
-        'company_match_list': company_match_list,
+        # 'company_match_list': company_match_list,
         'assistant_form': assistant_form,
         'conference_select_form': conference_select_form,
         'reg_details_form': reg_details_form,
@@ -499,7 +499,7 @@ def index(request):
         'company': company,
         'assistant': assistant,
         'crm_match': crm_match,
-        'crm_match_list': crm_match_list,
+        # 'crm_match_list': crm_match_list,
         'paid_status_values': PAID_STATUS_VALUES,
         'cxl_values': CXL_VALUES,
         'non_invoice_values': NON_INVOICE_VALUES,

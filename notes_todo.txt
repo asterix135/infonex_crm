@@ -1,12 +1,8 @@
-next #: 65
+next #: 66
 
 !*!*!*!*!*!*
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
-
-TODO: 53) Deal with GST/QST Exemption in registration/billing process
-
-TODO: 63) When registering from CRM record, company info does not transfer
 
 TODO: 62) Have conference/option end date set automatically based on start date
 
@@ -21,7 +17,11 @@ TODO: 46) STARTED - PD/Sales report page on notes (works but ugly)
 
 TODO: 41) Add title filter to territory creation page
 
-TODO: 47) Edit venue button doesn't work when calling a conference to edit??
+TODO: 47) Edit venue button doesn't work when calling a conference to edit (update - seems ok, but monitor)
+
+TODO: 65) Create various reports for registration dept
+
+TODO: 65) Export data http://djangotricks.blogspot.ca/2013/12/how-to-export-data-as-excel.html
 
 TODO: 43) Upload current registration information and link to CRM records
           a) DONE - upload company files
@@ -120,3 +120,5 @@ TODO: 62) DONE - Overhaul delegate registration page & logic
           b) DONE - update delegate/index.html layout
           c) DONE - add page to confirm company and crm
           d) DONE - update views.py (add new view and update process_registration)
+TODO: DONE - 63) When registering from CRM record, company info does not transfer
+TODO: 53) DONE - Deal with GST/QST Exemption in registration/billing process

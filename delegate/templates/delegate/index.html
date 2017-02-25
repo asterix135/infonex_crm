@@ -163,8 +163,10 @@
             <div class="row">
               <div class="col-sm-12">
                 {{ company_select_form.name.label_tag }}
-                <input type="text" id="id_company_name" class="form-control" name="name"
-                  maxlength="255" value="{{ company.name }}" {% if company %}disabled="true"{% endif %} />
+                <input type="text" id="id_company_name" class="form-control" name="name" maxlength="255"
+                  {% if company %}value="{{ company.name }}" disabled="true"
+                  {% elif crm_match %}value="{{ crm_match.company }}"
+                  {% endif %} />
               </div>
             </div>
             {% if company %}

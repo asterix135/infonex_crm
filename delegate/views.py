@@ -406,7 +406,7 @@ def index(request):
     crm_id = request.POST['crm_id']
     registrant_id = request.POST['registrant_id']
     conference_select_form = ConferenceSelectForm({'event': conf_id})
-    if registrant_id:
+    if registrant_id != '':
         registrant = Registrants.objects.get(pk=registrant_id)
         new_delegate_form = NewDelegateForm(instance=registrant)
         company = registrant.company
@@ -447,11 +447,25 @@ def index(request):
                 reg_data['invoice_notes'] = invoice.invoice_notes
                 reg_data['sponsorship_description'] = \
                     invoice.sponsorship_description
+            else:
+                if registrant.company.gst_hst_exempt:
+                    reg_data['gst_rate'] = 0
+                    reg_data['hst_rate'] = 0
+                if registrant.company.qst_exempt:
+                    reg_data['qst_rate'] = 0
             reg_details_form = RegDetailsForm(initial=reg_data)
         except RegDetails.DoesNotExist:
-            pass
+            reg_data = {}
+            if registrant.company.gst_hst_exempt:
+                reg_data['gst_rate'] = 0
+                reg_data['hst_rate'] = 0
+            if registrant.company.qst_exempt:
+                reg_data['qst_rate'] = 0
+            if len(reg_data) > 0:
+                reg_details_form = RegDetailsForm(initial = reg_data)
         data_source = 'delegate'
-    elif crm_id:  # No registrant, so try CRM
+    elif crm_id != '':  # No registrant, so try CRM
+        print('\n\ncrm section')
         crm_match = Person.objects.get(pk=crm_id)
         name_tokens = crm_match.name.split()
         if len(name_tokens) == 1:
@@ -469,7 +483,7 @@ def index(request):
                      'phone1': crm_match.phone,
                      'contact_option': 'D',
         }
-        new_delegate_form = NewDelegateForm(form_data)
+        new_delegate_form = NewDelegateForm(initial=form_data)
         # crm_match_list = Person.objects.filter(
         #     name__icontains=crm_match.name,
         #     company__icontains=crm_match.company
@@ -478,7 +492,10 @@ def index(request):
         #     name__icontains=crm_match.company
         # )
         company_select_form = CompanySelectForm(
-            {'name': crm_match.company}
+            initial={'name': crm_match.company,
+                     'name_for_badges': crm_match.company[:30],
+                      'city': crm_match.city,
+                     }
         )
         data_source = 'crm'
     else:  # neither reg_id or crm_id means new Person
@@ -760,6 +777,7 @@ def company_crm_modal(request):
     if request.POST['crm_id'] != '':
         try:
             crm_match = Person.objects.get(pk=request.POST['crm_id'])
+            print('\n\ncrm matched')
         except Person.DoesNotExist:
             pass
     company_name = request.POST['company_name']
@@ -800,7 +818,7 @@ def company_crm_modal(request):
             match2 = Company.objects.none()
         company_suggest_list = match0 | match1 | match2
         if company_suggest_list.count() < 10:
-            num_to_add = 10 - crm_suggest_list.count()
+            num_to_add = 10 - company_suggest_list.count()
             company_suggest_list = list(company_suggest_list) + \
                 list(match3[:num_to_add])
 
@@ -913,13 +931,16 @@ def person_is_registered(request):
     """
     if request.method != 'POST':
         return HttpResponse('')
-    registrant = get_object_or_404(Registrants, pk=request.POST['registrant_id'])
-    new_conference = get_object_or_404(Event, pk=request.POST['conf_id'])
-    try:
-        reg_detail = RegDetails.objects.get(conference=new_conference,
-                                            registrant=registrant)
-    except RegDetails.DoesNotExist:
-        reg_detail = None
+    if request.POST['registrant_id'] != '':
+        registrant = get_object_or_404(Registrants,
+                                       pk=request.POST['registrant_id'])
+        new_conference = get_object_or_404(Event, pk=request.POST['conf_id'])
+        try:
+            reg_detail = RegDetails.objects.get(conference=new_conference,
+                                                registrant=registrant)
+        except RegDetails.DoesNotExist:
+            reg_detail = None
+    else: reg_detail = None
     return HttpResponse('<div><input type="hidden" ' \
                         'id="person-is-registered" ' \
                         'name="person-is-registered" value="' + \
@@ -1045,6 +1066,15 @@ def update_tax_information(request):
     reg_details_form = RegDetailsForm()
     if request.method == 'POST':
         conference = Event.objects.get(pk=request.POST['conf_id'])
+        if request.POST['company_id'] not in ('', 'new'):
+            reg_form_data = {}
+            company = get_object_or_404(Company, request.POST['conf_id'])
+            if company.gst_hst_exempt:
+                reg_form_data['gst_rate'] = 0
+                reg_form_data['hst_rate'] = 0
+            if company.qst_exempt:
+                reg_form_data['qst_rate'] = 0
+            reg_details_form = RegDetailsForm(reg_form_data)
     context = {'conference': conference,
                'reg_details_form': reg_details_form}
     return render(request, 'delegate/addins/delegate_tax_information.html',

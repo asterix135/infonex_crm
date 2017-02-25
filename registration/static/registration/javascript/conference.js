@@ -349,12 +349,15 @@ $(document).ready(function() {
   });
 
 
-  // Set enddate to startdate + 1
+  // Set option enddate to startdate + 1
   $('body').on('change', '#id_startdate', function(){
+    var dateRegEx = /^\d{4}-\d{2}-\d{2}$/;
     var newStartDate = $('#id_startdate').val();
     var endDate = $('#id_enddate').val();
     if (endDate == '') {
-
+      if (newStartDate.match(dateRegEx) != null) {
+        console.log('you still need to do this');
+      }
     }
     console.log(newStartDate);
   });

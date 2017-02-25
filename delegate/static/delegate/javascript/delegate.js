@@ -169,6 +169,7 @@ $(document).ready(function(){
   // function to change active conference for delegate
   function changeActiveConference(newConfId){
     var newConfName = $('#id_event option:selected').text();
+    var companyId = $('#company-match-value').val();
     $('#displayed-conf-name').text(newConfName);
     $('#selected-conference-id').val(newConfId);
     $('#conference-details').removeClass('in');
@@ -177,6 +178,7 @@ $(document).ready(function(){
       type: 'POST',
       data: {
         'conf_id': newConfId,
+        'company_id': companyId,
       },
       success: function(data){
         $('#registration-tax-information').html(data);

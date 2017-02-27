@@ -1,11 +1,13 @@
 $(document).ready(function() {
   // Load datepicker widget
+  // cv http://stackoverflow.com/questions/4419804/restrict-date-in-jquery-datepicker-based-on-another-datepicker-or-textbox
+  
   function conferenceDateDatepicker(){
     $('#id_date_begins').datepicker({
       dateFormat: 'yy-mm-dd',
       onSelect: function(date){
         var selectedDate = new Date(date);
-        
+
       }
     })
   };

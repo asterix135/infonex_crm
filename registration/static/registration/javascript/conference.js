@@ -1,5 +1,14 @@
 $(document).ready(function() {
   // Load datepicker widget
+  function conferenceDateDatepicker(){
+    $('#id_date_begins').datepicker({
+      dateFormat: 'yy-mm-dd',
+      onSelect: function(date){
+        var selectedDate = new Date(date);
+        
+      }
+    })
+  };
   $('#id_date_begins').datepicker({
     dateFormat: 'yy-mm-dd'
   });

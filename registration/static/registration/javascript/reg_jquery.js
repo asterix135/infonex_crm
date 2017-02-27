@@ -52,6 +52,40 @@ $(document).ready(function(){
   });
 
 
+  $('body').on('click', '#create-new-delegate-button', function(e){
+    var $event_select_box = $('#id_event');
+    // var submissionType = $(this).attr('register-type');
+    // var customerId = $(this).attr('customer-id');
+    var confId = $('#id_event').val();
+    formToSubmit = '#' + $(this).parent().attr('id');
+    if (confId == ''){
+      $event_select_box.css('border-color', '#963634');
+      $('.form-warning').show();
+      $('html, body').animate({
+        scrollTop: $('#id_event').offset().top - 180
+      });
+    } else {
+      $.ajax({
+        url: '/delegate/conf_has_regs/',
+        type: 'POST',
+        data: {
+          'conf_id': confId,
+        },
+        success: function(data){
+          var okToRegister = $('#first-reg', data).val() == 'true';
+          if (okToRegister) {
+            $(formToSubmit).submit();
+          } else {
+            $('#first-registration-modal').html(data);
+            $('#confSetupModal').modal('show');
+          };
+        }
+      });
+    };
+  });
+
+
+
   // Respond to button click to go to edit conference page
   $('body').on('click', '#edit-event', function(){
     var newConfId = $('#id_event').val();

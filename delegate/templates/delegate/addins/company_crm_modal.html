@@ -96,7 +96,7 @@
                       {% if suggested_company.city %}{{ suggested_company.city }}, {%endif %}{% if suggested_company.state_prov %}{{ suggested_company.state_prov }}  {% endif %}{{ suggested_company.postal_code }}
                     </td>
                     <td>
-                      {{ suggested_company.person_set.all|length }}
+                      {{ suggested_company.registrants_set.all|length }}
                     </td>
                   </tr>
                   {% endfor %}

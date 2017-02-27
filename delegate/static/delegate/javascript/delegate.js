@@ -319,6 +319,7 @@ $(document).ready(function(){
         $('#id_payment_date').datepicker({
           dateFormat: 'yy-mm-dd'
         });
+        $('#id_payment_date')
       }
     });
   });

@@ -54,6 +54,17 @@ def build_email_message(reg_details, invoice):
     if reg_details.conference.state_prov:
         email_merge_fields['city'] += ', ' + reg_details.conference.state_prov
 
+    if reg_details.registrant.contact_option != 'C':
+        email_merge_fields['whose_registration'] = 'your'
+        email_merge_fields['who_is_registered'] = 'You'
+    else:
+        email_merge_fields['whose_registration'] = \
+            reg_details.registrant.first_name + ' ' + \
+            reg_details.registrant.last_name + "'s"
+        email_merge_fields['who_is_registered'] = \
+            reg_details.registrant.salutation + ' ' + \
+            reg_details.registrant.last_name
+
     if reg_details.conference.hotel:
         email_merge_fields['venue_name'] = \
             email_merge_fields['venue_details'] = \
@@ -229,7 +240,17 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     company_select_form = CompanySelectForm(request.POST, instance=company)
     company_select_form.save()
 
-    # c. crm record - provided
+    # c. update crm record with form values
+    crm_match.name = request.POST['first_name'] + ' ' + request.POST['last_name']
+    crm_match.title = request.POST['title']
+    crm_match.company = request.POST['name']
+    crm_match.phone = request.POST['phone1']
+    crm_match.email = request.POST['email1']
+    crm_match.city = request.POST['city']
+    crm_match.date_modified = timezone.now()
+    crm_match.modified_by = request.user
+    crm_match.save()
+    add_change_record(crm_match, 'update')
 
     # d. registrant
     if registrant:
@@ -484,13 +505,6 @@ def index(request):
                      'contact_option': 'D',
         }
         new_delegate_form = NewDelegateForm(initial=form_data)
-        # crm_match_list = Person.objects.filter(
-        #     name__icontains=crm_match.name,
-        #     company__icontains=crm_match.company
-        # )
-        # company_match_list = Company.objects.filter(
-        #     name__icontains=crm_match.company
-        # )
         company_select_form = CompanySelectForm(
             initial={'name': crm_match.company,
                      'name_for_badges': crm_match.company[:30],
@@ -505,7 +519,6 @@ def index(request):
         'new_delegate_form': new_delegate_form,
         'company_select_form': company_select_form,
         'new_company_form': new_company_form,
-        # 'company_match_list': company_match_list,
         'assistant_form': assistant_form,
         'conference_select_form': conference_select_form,
         'reg_details_form': reg_details_form,
@@ -516,7 +529,6 @@ def index(request):
         'company': company,
         'assistant': assistant,
         'crm_match': crm_match,
-        # 'crm_match_list': crm_match_list,
         'paid_status_values': PAID_STATUS_VALUES,
         'cxl_values': CXL_VALUES,
         'non_invoice_values': NON_INVOICE_VALUES,
@@ -754,6 +766,7 @@ def conf_has_regs(request):
     return render(request, 'delegate/addins/conf_setup_modal.html', context)
 
 
+@login_required
 def company_crm_modal(request):
     """
     generates suggested matches for company record and crm record on any

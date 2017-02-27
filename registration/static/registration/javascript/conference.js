@@ -1,26 +1,63 @@
 $(document).ready(function() {
   // Load datepicker widget
-  // cv http://stackoverflow.com/questions/4419804/restrict-date-in-jquery-datepicker-based-on-another-datepicker-or-textbox
-  
-  function conferenceDateDatepicker(){
+  var msecsInADay = 86400000;
+  var dateRegEx = /^\d{4}-\d{2}-\d{2}$/;
+
+
+  function datebeginsDatepicker(){
     $('#id_date_begins').datepicker({
       dateFormat: 'yy-mm-dd',
       onSelect: function(date){
         var selectedDate = new Date(date);
-
+        var startDateMin = new Date(selectedDate.getTime() - 3 * msecsInADay);
+        $('#id_startdate').datepicker('destroy');
+        startdateDatepicker(startDateMin);
       }
     })
-  };
-  $('#id_date_begins').datepicker({
-    dateFormat: 'yy-mm-dd'
-  });
-  $('#id_startdate').datepicker({
-    dateFormat: 'yy-mm-dd'
-  });
-  $('#id_enddate').datepicker({
-    dateFormat: 'yy-mm-dd'
-  });
+  }
 
+  function startdateDatepicker(startDateMin = null){
+    var dateBeginsVal = $('#id_date_begins').val();
+    if (dateBeginsVal != undefined && dateBeginsVal.match(dateRegEx) != null) {
+      var dateBeginsDate = new Date($('#id_date_begins').val());
+      startDateMin = new Date(dateBeginsDate.getTime() - 3 * msecsInADay);
+    }
+    $('#id_startdate').datepicker({
+      dateFormat: 'yy-mm-dd',
+      minDate: startDateMin,
+      onSelect: function(date){
+        var selectedDate = new Date(date);
+        $('#id_enddate').datepicker('destroy');
+        $('#id_enddate').datepicker({
+          dateFormat: 'yy-mm-dd',
+          minDate: new Date(selectedDate.getTime()),
+        });
+      }
+    });
+  };
+
+  function enddateDatePicker(){
+    var startdateVal = $('#id_startdate').val();
+    var dateBeginsVal = $('#id_date_begins').val();
+    if (startdateVal != undefined && startdateVal.match(dateRegEx) != null) {
+      var startdateDate = new Date($('#id_startdate').val());
+      var enddateMin = startdateDate.getTime();
+    } else if (dateBeginsVal != undefined && dateBeginsVal.match(dateRegEx) != null) {
+      var dateBeginsDate = new Date($('#id_date_begins').val());
+      var enddateMin = new Date(dateBeginsDate.getTime() - 3 * msecsInADay);
+    } else {
+      var enddateMin = null;
+    }
+    $('#id_enddate').datepicker('destroy');
+    $('#id_enddate').datepicker({
+      dateFormat: 'yy-mm-dd',
+      minDate: enddateMin,
+    });
+  }
+
+  datebeginsDatepicker();
+  startdateDatepicker();
+  enddateDatePicker();
 
   // Filter venue list on load if length of city name > 3
   var defaultCityName = $('#conference-edit-panel #id_city').val();
@@ -167,15 +204,9 @@ $(document).ready(function() {
           var cityVal = $response.find('#id_city').val();
           if (cityVal){
             filterVenueList(cityVal);
-          $('#id_date_begins').datepicker({
-            dateFormat: 'yy-mm-dd'
-          });
-          $('#id_startdate').datepicker({
-            dateFormat: 'yy-mm-dd'
-          });
-          $('#id_enddate').datepicker({
-            dateFormat: 'yy-mm-dd'
-          });
+          datebeginsDatepicker();
+          startdateDatepicker();
+          enddateDatePicker();
           }
         }
       });
@@ -185,15 +216,9 @@ $(document).ready(function() {
         type: 'GET',
         success: function(data) {
           $('#conference-edit-panel').html(data);
-          $('#id_date_begins').datepicker({
-            dateFormat: 'yy-mm-dd'
-          });
-          $('#id_startdate').datepicker({
-            dateFormat: 'yy-mm-dd'
-          });
-          $('#id_enddate').datepicker({
-            dateFormat: 'yy-mm-dd'
-          });
+          datebeginsDatepicker();
+          startdateDatepicker();
+          enddateDatePicker();
         }
       })
     }
@@ -321,12 +346,8 @@ $(document).ready(function() {
         },
         success: function(data) {
           $('#event-options-panel').html(data);
-          $('#id_startdate').datepicker({
-            dateFormat: 'yy-mm-dd'
-          });
-          $('#id_enddate').datepicker({
-            dateFormat: 'yy-mm-dd'
-          });
+          startdateDatepicker();
+          enddateDatePicker();
         }
       })
     } else if (editAction == 'delete'){  // delete
@@ -344,12 +365,8 @@ $(document).ready(function() {
           },
           success: function(data) {
             $('#event-options-panel').html(data);
-            $('#id_startdate').datepicker({
-              dateFormat: 'yy-mm-dd'
-            });
-            $('#id_enddate').datepicker({
-              dateFormat: 'yy-mm-dd'
-            });
+            startdateDatepicker();
+            enddateDatePicker();
           }
         })
       }

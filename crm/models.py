@@ -146,7 +146,7 @@ class Changes(models.Model):
     do_not_email = models.BooleanField(default=False)
     do_not_call = models.BooleanField(default=False)
     city = models.CharField(max_length=50, blank=True)
-    dept = models.CharField(max_length=50, blank=True)
+    dept = models.CharField(max_length=50, blank=True, null=True)
     industry = models.TextField(blank=True)  # free-form descripton
     geo = models.CharField(max_length=10, blank=True)
     main_category = models.CharField(max_length=25, blank=True)

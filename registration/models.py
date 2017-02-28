@@ -1,5 +1,8 @@
 import datetime
+
 from django.db import models
+from django.utils import timezone
+
 from .constants import *
 from crm.constants import STATE_PROV_TUPLE
 
@@ -77,7 +80,7 @@ class RegDetails(models.Model):
     """
     conference = models.ForeignKey('crm.Event')
     registrant = models.ForeignKey(Registrants)
-    register_date = models.DateField(default=datetime.date.today)
+    register_date = models.DateField(default=timezone.now)
     cancellation_date = models.DateField(blank=True, null=True)
     registration_status = models.CharField(max_length=2,
                                            choices=REG_STATUS_OPTIONS,

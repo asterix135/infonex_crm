@@ -10,7 +10,10 @@ $(document).ready(function(){
   `
 
   // Show email modal on page load
-  $('#email-confirmation-modal').modal('show');
+  var regStatus = $('#registration-type').val();
+  if (regStatus != 'K' && regStatus != 'KX') {
+    $('#email-confirmation-modal').modal('show');
+  };
 
   // Send email confirmation
   $('body').on('click', '#send-email', function(){

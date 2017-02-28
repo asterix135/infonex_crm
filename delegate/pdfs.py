@@ -324,11 +324,14 @@ def generate_reg_note(canv, reg_details, invoice=None):
     # Buyer Details
     canv.setFont('Helvetica-Bold', 11)
     canv.drawRightString(1.6 * inch, 7.7 * inch, 'Sold To:')
-    customer_company_details = [reg_details.registrant.company.name,]
+
+    customer_company_details = reg_details.registrant.company.name
     if reg_details.registrant.company.address1:
-        customer_company_details.append(reg_details.registrant.company.address1)
+        customer_company_details += '<br/>'
+        customer_company_details += reg_details.registrant.company.address1
     if reg_details.registrant.company.address2:
-        customer_company_details.append(reg_details.registrant.company.address2)
+        customer_company_details += '<br/>'
+        customer_company_details += reg_details.registrant.company.address2
     city_line = ''
     if reg_details.registrant.company.city:
         city_line = reg_details.registrant.company.city
@@ -337,18 +340,23 @@ def generate_reg_note(canv, reg_details, invoice=None):
             city_line += ', '
         city_line += reg_details.registrant.company.state_prov
     if len(city_line) > 0:
-        customer_company_details.append(city_line)
+        customer_company_details += '<br/>' + city_line
     if reg_details.registrant.company.postal_code:
-        customer_company_details.append(
-            reg_details.registrant.company.postal_code
-        )
+        customer_company_details += '<br/>'
+        customer_company_details += reg_details.registrant.company.postal_code
     if reg_details.registrant.company.country:
-        customer_company_details.append(reg_details.registrant.company.country)
-    canv.setFont('Helvetica', 11)
-    y = 7.7 * inch
-    for line in customer_company_details:
-        canv.drawString(1.7 * inch, y, line)
-        y -= 13
+        customer_company_details += '<br/>'
+        customer_company_details += reg_details.registrant.company.country
+    style = ParagraphStyle(
+        'default',
+        fontName='Helvetica',
+        fontSize=11,
+        leading=13,
+    )
+    para = Paragraph(customer_company_details, style)
+    h = para.wrap(3.5 * inch, 1.2 * inch)[1]
+    para.drawOn(canv, 1.7 * inch, 7.7 * inch - h + 11)
+
     canv.setFont('Helvetica-Bold', 9)
     canv.drawRightString(6.0 * inch, 7.7 * inch, 'Phone:')
     canv.drawRightString(6.0 * inch, 7.7 * inch - 11, 'Email:')
@@ -467,14 +475,15 @@ def generate_reg_note(canv, reg_details, invoice=None):
     memo_text = ''
     if reg_details.registration_notes:
         memo_text = reg_details.registration_notes
-    if invoice.invoice_notes:
-        if len(memo_text) > 0:
-            memo_text += '<br/>'
-        memo_text += invoice.invoice_notes
-    if invoice.sponsorship_description:
-        if len(memo_text) > 0:
-            memo_text += '<br/>'
-        memo_text += invoice.sponsorship_description
+    if invoice:
+        if invoice.invoice_notes:
+            if len(memo_text) > 0:
+                memo_text += '<br/><br/>'
+            memo_text += invoice.invoice_notes
+        if invoice.sponsorship_description:
+            if len(memo_text) > 0:
+                memo_text += '<br/><br/>'
+            memo_text += invoice.sponsorship_description
     para = Paragraph(memo_text, style)
     h = para.wrap(4 * inch, 2 * inch)[1]
     para.drawOn(canv, 0.45 * inch, 4.2 * inch - h)

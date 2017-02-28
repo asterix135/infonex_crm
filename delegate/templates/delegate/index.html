@@ -15,7 +15,7 @@
 <div id="company-crm-modal">
   {% include 'delegate/addins/company_crm_modal.html' %}
 </div>
-<form action="process_registration/" method="post" id="registration-form">
+<form action="/delegate/process_registration/" method="post" id="registration-form">
   <div id="stored-variables">
     <input type="hidden" id="current-registrant-id" name="current_registrant_id" value="{{ registrant.id }}" />
     <input type="hidden" id="current-regdetail-id" name="current_regdetail_id" value="{{ current_registration.id }}" />

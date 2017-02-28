@@ -148,6 +148,7 @@ class NewCompanyForm(CompanySelectForm):
 
 class RegDetailsForm(forms.ModelForm):
     register_date = forms.DateField(
+        initial = timezone.now(),
         widget = forms.DateInput(
             attrs={'class': 'form-control',
                    'placeholder': 'yyyy-mm-dd'}

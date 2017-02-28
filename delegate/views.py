@@ -1,3 +1,4 @@
+import datetime
 from io import BytesIO
 import os
 
@@ -43,31 +44,41 @@ def build_email_message(reg_details, invoice):
         'account_rep_details': '',
         'registrar_details': 'Alona Glikin\n416-971-4177\naglikin@infonex.ca'
     }
-    if reg_details.registrant.salutation:
-        email_merge_fields['salutation'] = reg_details.registrant.salutation + \
-            ' ' + reg_details.registrant.last_name
-    else:
-        email_merge_fields['salutation'] = reg_details.registrant.first_name + \
-            ' ' + reg_details.registrant.last_name
 
     email_merge_fields['city'] = reg_details.conference.city
     if reg_details.conference.state_prov:
         email_merge_fields['city'] += ', ' + reg_details.conference.state_prov
 
-    if reg_details.registrant.contact_option != 'C':
+    if reg_details.registrant.contact_option != 'A':
         email_merge_fields['whose_registration'] = 'your'
-        email_merge_fields['who_is_registered'] = 'You'
+        email_merge_fields['who_is_registered'] = 'You are'
+        if reg_details.registrant.salutation:
+            email_merge_fields['salutation'] = reg_details.registrant.salutation + \
+                ' ' + reg_details.registrant.last_name
+        else:
+            email_merge_fields['salutation'] = reg_details.registrant.first_name + \
+                ' ' + reg_details.registrant.last_name
     else:
         email_merge_fields['whose_registration'] = \
             reg_details.registrant.first_name + ' ' + \
             reg_details.registrant.last_name + "'s"
         email_merge_fields['who_is_registered'] = \
             reg_details.registrant.salutation + ' ' + \
-            reg_details.registrant.last_name
+            reg_details.registrant.last_name + ' is'
+        if reg_details.registrant.assistant.salutation:
+            email_merge_fields['salutation'] = \
+                reg_details.registrant.assistant.salutation + ' ' + \
+                reg_details.registrant.assistant.last_name
+        else:
+            email_merge_fields['salutation'] = \
+                reg_details.registrant.assistant.first_name + ' ' + \
+                reg_details.registrant.assistant.last_name
 
     if reg_details.conference.hotel:
-        email_merge_fields['venue_name'] = \
-            email_merge_fields['venue_details'] = \
+        email_merge_fields['venue_name'] = ' at the ' + \
+            reg_details.conference.hotel.name
+        email_merge_fields['venue_details'] = \
+            '\nVenue Details are as follows:\n\n' + \
             reg_details.conference.hotel.name
         if reg_details.conference.hotel.address:
             email_merge_fields['venue_details'] += '\n' + \
@@ -91,6 +102,7 @@ def build_email_message(reg_details, invoice):
         if reg_details.conference.hotel.hotel_url:
             email_merge_fields['venue_details'] += '\nVenue Web Site: ' + \
                 reg_details.conference.hotel.hotel_url
+        email_merge_fields['venue_details'] += '\n'
 
     if reg_details.conference.event_web_site:
         email_merge_fields['event_url'] = reg_details.conference.event_web_site
@@ -437,14 +449,6 @@ def index(request):
             assistant_form = AssistantForm(instance=assistant)
         if registrant.crm_person:
             crm_match = Person.objects.get(pk=registrant.crm_person.id)
-        crm_match_list = Person.objects.filter(
-            Q(name__icontains=registrant.first_name) &
-            Q(name__icontains=registrant.last_name),
-            Q(company__icontains=registrant.company.name)
-        ).order_by('company', 'name')[:100]
-        company_match_list = Company.objects.filter(
-            name__icontains=company.name
-        )
         try:
             current_registration = RegDetails.objects.get(
                 registrant=registrant, conference=conference
@@ -486,7 +490,6 @@ def index(request):
                 reg_details_form = RegDetailsForm(initial = reg_data)
         data_source = 'delegate'
     elif crm_id != '':  # No registrant, so try CRM
-        print('\n\ncrm section')
         crm_match = Person.objects.get(pk=crm_id)
         name_tokens = crm_match.name.split()
         if len(name_tokens) == 1:
@@ -601,7 +604,10 @@ def process_registration(request):
                 'deposit_method' in request.POST else None,
             'fx_conversion_rate': request.POST['fx_conversion_rate'] if \
                 'fx_conversion_rate' in request.POST else 1,
-            'register_date': timezone.now(),
+            'register_date': request.POST['register_date'] if (
+                'register_date' in request.POST and
+                request.POST['register_date'] != ''
+            ) else None,
             'cancellation_date': request.POST['cancellation_date'] if \
                 'cancellation_date' in request.POST else None,
             'registration_status': request.POST['registration_status'],
@@ -610,6 +616,8 @@ def process_registration(request):
             'sponsorship_description': request.POST['sponsorship_description'] \
                 if 'sponsorship_description' in request.POST else None
         }
+        if request.POST['registration_status'] in NON_INVOICE_VALUES:
+            reg_details_data['sales_credit'] = request.user.pk
         reg_details_form = RegDetailsForm(reg_details_data)
         if request.POST['current_regdetail_id']:
             current_registration = RegDetails.objects.get(
@@ -722,35 +730,6 @@ def process_registration(request):
 # AJAX Calls
 #######################
 @login_required
-def add_new_company(request):
-    """ ajax call to add new company to database and link to current record """
-    company = None
-    company_match_list = None
-    registrant = None
-    company_select_form = CompanySelectForm()
-    if request.method == 'POST':
-        if request.POST['delegate_id'] != 'new':
-            registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
-        company_select_form = CompanySelectForm(request.POST)
-        if company_select_form.is_valid():
-            company = company_select_form.save()
-            if registrant:
-                registrant.company = company
-                registrant.save()
-            company_select_form = CompanySelectForm()
-        company_match_list = Company.objects.filter(
-            name__icontains=request.POST['name']
-        )
-    context = {
-        'company': company,
-        'company_match_list': company_match_list,
-        'company_select_form': company_select_form,
-        'registrant': registrant,
-    }
-    return render(request, 'delegate/addins/company_sidebar.html', context)
-
-
-@login_required
 def conf_has_regs(request):
     if request.method != 'POST':
         return HttpResponse('')
@@ -832,8 +811,8 @@ def company_crm_modal(request):
         company_suggest_list = match0 | match1 | match2
         if company_suggest_list.count() < 10:
             num_to_add = 10 - company_suggest_list.count()
-            company_suggest_list = list(company_suggest_list) + \
-                list(match3[:num_to_add])
+            company_suggest_list = list(set(list(company_suggest_list) + \
+                list(match3[:num_to_add])))
 
     if not crm_match:
         person_name = first_name + ' ' + last_name
@@ -889,7 +868,8 @@ def company_crm_modal(request):
             match4 = match4_a | match4_b
             match4 = match4.filter(company__icontains=company_name)
             if match4.count() > 10:
-                crm_suggest_list = list(crm_suggest_list) + list(match4[:10])
+                crm_suggest_list = list(set(list(crm_suggest_list) +
+                                            list(match4[:10])))
             else:
                 crm_suggest_list = crm_suggest_list | match4
 
@@ -902,39 +882,6 @@ def company_crm_modal(request):
         'crm_best_guess': crm_best_guess,
     }
     return render(request, 'delegate/addins/company_crm_modal.html', context)
-
-
-@login_required
-def link_new_company_record(request):
-    """ ajax call to link selected company record to delegate """
-    company = None
-    if request.method == 'POST':
-        company = Company.objects.get(pk=request.POST['company_match_id'])
-        if request.POST['delegate_id'] != 'new':
-            registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
-            registrant.company = company
-            registrant.save()
-    context = {
-        'company': company,
-    }
-    return render(request, 'delegate/addins/company_sidebar_selected.html',
-                  context)
-
-
-@login_required
-def link_new_crm_record(request):
-    """ Ajax call to link different crm record to delegate """
-    crm_match = None
-    if request.method == 'POST':
-        crm_match = Person.objects.get(pk=request.POST['crm_match_id'])
-        if request.POST['delegate_id'] != 'new':
-            registrant = Registrants.objects.get(pk=request.POST['delegate_id'])
-            registrant.crm_person = crm_match
-            registrant.save()
-    context = {
-        'crm_match': crm_match,
-    }
-    return render(request, 'delegate/addins/crm_sidebar_selected.html', context)
 
 
 @login_required
@@ -961,12 +908,6 @@ def person_is_registered(request):
 
 
 @login_required
-def save_comany_changes(request):
-    """ ajax submission to update company information when present """
-    pass
-
-
-@login_required
 def update_conference_options(request):
     """ ajax call to update conference options when event is changed """
     conference_options = None
@@ -976,25 +917,6 @@ def update_conference_options(request):
         conference_options = conference.eventoptions_set.all()
     context = {'conference_options': conference_options}
     return render(request, 'delegate/addins/conference_options.html', context)
-
-
-@login_required
-def update_crm_match_list(request):
-    """ ajax call to update crm suggestions based on delegate info """
-    crm_match_list = None
-    if request.method == 'POST':
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        company = request.POST['company']
-        crm_match_list = Person.objects.filter(
-            Q(name__icontains=first_name) &
-            Q(name__icontains=last_name),
-            Q(company__icontains=company)
-        ).order_by('company', 'name')[:100]
-    context = {
-        'crm_match_list': crm_match_list,
-    }
-    return render(request, 'delegate/addins/crm_sidebar_list.html', context)
 
 
 @login_required

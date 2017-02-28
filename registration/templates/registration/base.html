@@ -62,7 +62,8 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="{% url 'crm:index' %}">CRM</a></li>
-            <li><a href="{% url 'registration:index' %}">Registration</a></li>
+            <li><a href="{% url 'registration:index' %}">Registration Home</a></li>
+            <li><a href="{% url 'registration:new_delegate_search' %}">New Registration</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}

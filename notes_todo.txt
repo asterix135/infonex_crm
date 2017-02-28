@@ -1,11 +1,8 @@
-next #: 66
+next #: 67
 
 !*!*!*!*!*!*
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
-
-
-TODO: 64) Delete unused Ajax calls & templates from delegate tree
 
 TODO: 56) pytz timezone conversion to reports (home page chart & call report)
           http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
@@ -53,6 +50,8 @@ TODO: 25) Booking system for upcoming appointments
 TODO: 28) if no admin access, set error page for accessing admin page
 
 TODO: 42) See what other flags a person has???
+
+TODO: 66) Pre-populate new delegate form based on search criteria
 
 See avoiding race conditions using F()
     might be an issue with some records and should be implemented
@@ -123,3 +122,4 @@ TODO: DONE - 63) When registering from CRM record, company info does not transfe
 TODO: 53) DONE - Deal with GST/QST Exemption in registration/billing process
 TODO: 62) DONE - Have conference/option end date set automatically based on start date
 TODO: 66) Change company field on delegate page from disabled to readonly?  Or create hidden input value & update it
+TODO: 64) DONE - Delete unused Ajax calls & templates from delegate tree

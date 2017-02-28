@@ -14,19 +14,19 @@
     <input type="hidden" name="registrant_id" value="{{ registrant.id }}" />
     <input type="hidden" name="current_registration_id" value="{{ current_registration.id }}" />
     <input type="hidden" name="assistant_id" value="{{ assistant.id }}" />
+    <input type="hidden" id="registration-type" name="registration_type" value="{{ current_registration.registration_status }}" />
   </div>
   <div class="row fill">
     <div class="col-sm-12">
       <div id="sanity-check-to-delete">
         <h1>Congratulations!</h1>
         <h3>You have succcesfully registered {{ registrant.first_name }} {{ registrant.last_name }} for {{ current_registration.conference }}</h3>
-        {{ current_registration }}<br />
       </div>
 
       <div id="keep-this-part">
         <ul>
           <li>
-            <a href="/delegate/send_conf_email?reg={{ current_registration.pk }}" target="_blank">Send Email Confirmation</a>
+            <a href="#email-confirmation-modal" data-toggle="modal">Send Email Confirmation</a>
           </li>
           <li>
             <a href="/delegate/get_reg_note?reg={{ current_registration.pk }}" target="_blank">Download internal record sheet</a>
@@ -35,7 +35,7 @@
             <a href="/delegate/get_invoice?reg={{ current_registration.pk }}" target="_blank">Download copy of invoice</a>
           </li>
           <li>
-            Register another person from the same company
+            <a href="{% url 'registration:new_delegate_search' %}">New Registration</a>
           </li>
         </ul>
       </div>

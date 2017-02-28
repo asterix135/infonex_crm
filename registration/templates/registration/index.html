@@ -16,39 +16,30 @@
       <h2>Registration Management</h2>
       <p>Enter and update delegate and sponsor registrations</p>
       <p>
-        <a class="btn btn-default" href="new_delegate_search">New Delegate &raquo;</a>
+        <a class="btn btn-default" href="new_delegate_search">New Registration &raquo;</a>
       </p>
       <p>
-        <a href="#del-search" class="btn btn-default"
-          data-toggle="collapse">
-          Edit Delegate &raquo;
+        <a href="#del-search" class="btn btn-default" data-toggle="collapse">
+          Find Registration &raquo;
         </a>
       </p>
       <div id="del-search" class="collapse">
-        <h5>This should only show when button is pressed</h5>
-      </div>
-      <p>
-        <a class="btn btn-default" href="">New Sponsor &raquo;</a>
-      </p>
-      <p>
-        <a href="#sponsor-search" class="btn btn-default"
-          data-toggle="collapse">
-          Edit Sponsor &raquo;
-        </a>
-      </p>
-      <div id="sponsor-search" class="collapse">
-        <h5>This should show only when button is pressed</h5>
+        <label>Enter Invoice Number</label>
+        <div class="input-group">
+          <input type="number" class="form-control" name="invoice-number" id="invoice-number" />
+          <span class="input-group-btn">
+            <button class="btn btn-success" type="button" id="search-invoice-number">Go!</button>
+          </span>
+        </div>
       </div>
     </div>
 
     <div class="col-sm-4">
       <h2>Edit Database Records</h2>
-      <p>Add to or Update Conference or Employee Lists</p>
-      <p><a class="btn btn-default" href="/registration/conference">Manage conferences &raquo;</a></p>
-      <p><a class="btn btn-default" href="">Edit Salseperson List &raquo;</a></p>
-      <p><a class="btn btn-default" href="">Edit PD List &raquo;</a></p>
-      <p><a class="btn btn-default" href="">Update FX conversion rate &raquo;</a></p>
-      <p><a class="btn btn-default" href="">Edit reg values &raquo;</a></p>
+      <p>Add to or Update Conferences</p>
+      <p><a class="btn btn-default" href="/registration/conference">Manage current conferences &raquo;</a></p>
+      <!-- <p><a class="btn btn-default" href="">Update FX conversion rate &raquo;</a></p> -->
+      <!-- <p><a class="btn btn-default" href="">Edit reg values &raquo;</a></p> -->
     </div>
 
     <div class="col-sm-4">

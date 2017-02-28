@@ -386,12 +386,12 @@ $(document).ready(function(){
       $(this).removeClass('glyphicon-chevron-down');
       $(this).addClass('glyphicon-chevron-up');
       $('#company-details').toggle();
-      $('#id_company_name').removeAttr('disabled');
+      $('#id_company_name').removeAttr('readonly');
     } else {
       $(this).removeClass('glyphicon-chevron-up');
       $(this).addClass('glyphicon-chevron-down');
       $('#company-details').toggle();
-      $('#id_company_name').prop('disabled', true);
+      $('#id_company_name').prop('readonly', true);
     };
   });
 

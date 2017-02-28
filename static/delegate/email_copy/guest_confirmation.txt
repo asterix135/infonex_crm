@@ -1,0 +1,18 @@
+Dear {salutation}:
+
+I am pleased to confirm {whose_registration} registration {guest_status} at {event_name} which is to be held in {city}{venue_name}.
+For up-to-date information, please visit the event website: {event_url}.
+{venue_details}
+{who_is_registered} are registered for the following:
+
+{reg_options}
+
+Copies of the speakers presentation will be available for download from our website 2 business days prior to the start of the event.
+You will receive an email with user name and password to access our online library.
+Please note: we do not provide printed copies of presentations.
+
+I thank you for your consideration, and hope that this course is useful and informative.
+
+Best Regards,
+
+{registrar_details}

@@ -289,7 +289,6 @@ $(document).ready(function() {
 
   // Delete record on user confirmation
   $('body').on('click', '#save-after-dupe-check', function(){
-    // $(location).attr('href', 'http://www.infonex.ca');
     $('#delete-person-form').submit();
   })
 

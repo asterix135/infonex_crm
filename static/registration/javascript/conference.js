@@ -1,4 +1,72 @@
 $(document).ready(function() {
+  // Load datepicker widget
+  var msecsInADay = 86400000;
+  var dateRegEx = /^\d{4}-\d{2}-\d{2}$/;
+
+
+  function datebeginsDatepicker(){
+    $('#id_date_begins').datepicker({
+      dateFormat: 'yy-mm-dd',
+      onSelect: function(date){
+        var selectedDate = new Date(date);
+        var startDateMin = new Date(selectedDate.getTime() - 3 * msecsInADay);
+        $('#id_startdate').datepicker('destroy');
+        startdateDatepicker(startDateMin);
+      }
+    })
+  }
+
+  function startdateDatepicker(startDateMin = null){
+    var dateBeginsVal = $('#id_date_begins').val();
+    if (dateBeginsVal != undefined && dateBeginsVal.match(dateRegEx) != null) {
+      var dateBeginsDate = new Date($('#id_date_begins').val());
+      startDateMin = new Date(dateBeginsDate.getTime() - 3 * msecsInADay);
+    }
+    $('#id_startdate').datepicker({
+      dateFormat: 'yy-mm-dd',
+      minDate: startDateMin,
+      onSelect: function(date){
+        var selectedDate = new Date(date);
+        $('#id_enddate').datepicker('destroy');
+        $('#id_enddate').datepicker({
+          dateFormat: 'yy-mm-dd',
+          minDate: new Date(selectedDate.getTime()),
+        });
+      }
+    });
+  };
+
+  function enddateDatePicker(){
+    var startdateVal = $('#id_startdate').val();
+    var dateBeginsVal = $('#id_date_begins').val();
+    if (startdateVal != undefined && startdateVal.match(dateRegEx) != null) {
+      var startdateDate = new Date($('#id_startdate').val());
+      var enddateMin = startdateDate.getTime();
+    } else if (dateBeginsVal != undefined && dateBeginsVal.match(dateRegEx) != null) {
+      var dateBeginsDate = new Date($('#id_date_begins').val());
+      var enddateMin = new Date(dateBeginsDate.getTime() - 3 * msecsInADay);
+    } else {
+      var enddateMin = null;
+    }
+    $('#id_enddate').datepicker('destroy');
+    $('#id_enddate').datepicker({
+      dateFormat: 'yy-mm-dd',
+      minDate: enddateMin,
+    });
+  }
+
+  datebeginsDatepicker();
+  startdateDatepicker();
+  enddateDatePicker();
+
+  // Filter venue list on load if length of city name > 3
+  var defaultCityName = $('#conference-edit-panel #id_city').val();
+  if (typeof defaultCityName != 'undefined'){
+    if (defaultCityName.length > 3){
+      filterVenueList(defaultCityName);
+    };
+  };
+
 
   // subroutien called to toggle venue edit panel
   function editVenue(venueID) {
@@ -136,6 +204,9 @@ $(document).ready(function() {
           var cityVal = $response.find('#id_city').val();
           if (cityVal){
             filterVenueList(cityVal);
+          datebeginsDatepicker();
+          startdateDatepicker();
+          enddateDatePicker();
           }
         }
       });
@@ -145,6 +216,9 @@ $(document).ready(function() {
         type: 'GET',
         success: function(data) {
           $('#conference-edit-panel').html(data);
+          datebeginsDatepicker();
+          startdateDatepicker();
+          enddateDatePicker();
         }
       })
     }
@@ -199,6 +273,7 @@ $(document).ready(function() {
     var dateBegins = $('#conference-edit-panel #id_date_begins').val();
     var city = $('#conference-edit-panel #id_city').val();
     var stateProv = $('#conference-edit-panel #id_state_prov').val();
+    var eventUrl = $('#conference-edit-panel #id_event_web_site').val();
     var hotel = $('#conference-edit-panel #id_hotel').val();
     var registrar = $('#conference-edit-panel #id_registrar').val();
     var developer = $('#conference-edit-panel #id_developer').val();
@@ -219,6 +294,7 @@ $(document).ready(function() {
         title: title,
         city: city,
         date_begins: dateBegins,
+        'event_web_site': eventUrl,
         state_prov: stateProv,
         hotel: hotel,
         registrar: registrar,
@@ -270,6 +346,8 @@ $(document).ready(function() {
         },
         success: function(data) {
           $('#event-options-panel').html(data);
+          startdateDatepicker();
+          enddateDatePicker();
         }
       })
     } else if (editAction == 'delete'){  // delete
@@ -287,6 +365,8 @@ $(document).ready(function() {
           },
           success: function(data) {
             $('#event-options-panel').html(data);
+            startdateDatepicker();
+            enddateDatePicker();
           }
         })
       }
@@ -294,6 +374,20 @@ $(document).ready(function() {
       var optionId = $(this).attr('option-val');
       $('#delete-option-warning' + optionId).hide();
     }
+  });
+
+
+  // Set option enddate to startdate + 1
+  $('body').on('change', '#id_startdate', function(){
+    var dateRegEx = /^\d{4}-\d{2}-\d{2}$/;
+    var newStartDate = $('#id_startdate').val();
+    var endDate = $('#id_enddate').val();
+    if (endDate == '') {
+      if (newStartDate.match(dateRegEx) != null) {
+        console.log('you still need to do this');
+      }
+    }
+    console.log(newStartDate);
   });
 
 

@@ -1,5 +1,8 @@
 $(document).ready(function(){
 
+  // Global variables to access when choosing 'proceed' from modal
+  var formToSubmit = '';
+
   // Pulls registration history for delegate on new_delegate_search page
   // Also inserts conference_id into hidden input field
   $('body').on('click', '.show-delegate', function(){
@@ -16,16 +19,85 @@ $(document).ready(function(){
   // check that a conference is selected before allowing delegate registration
   $('body').on('click', '.register-delegate', function(e){
     var $event_select_box = $('#id_event');
-    var conf_id = $('#id_event').val();
-    if (conf_id == ''){
+    var submissionType = $(this).attr('register-type');
+    var customerId = $(this).attr('customer-id');
+    var confId = $('#id_event').val();
+    formToSubmit = '#' + submissionType + customerId + ' form'
+    if (confId == ''){
       $event_select_box.css('border-color', '#963634');
       $('.form-warning').show();
       $('html, body').animate({
         scrollTop: $('#id_event').offset().top - 180
       });
-      e.preventDefault();
+      // e.preventDefault();
+    } else {
+      // e.preventDefault();
+      $.ajax({
+        url: '/delegate/conf_has_regs/',
+        type: 'POST',
+        data: {
+          'conf_id': confId,
+        },
+        success: function(data){
+          var okToRegister = $('#first-reg', data).val() == 'true';
+          if (okToRegister) {
+            $(formToSubmit).submit();
+          } else {
+            $('#first-registration-modal').html(data);
+            $('#confSetupModal').modal('show');
+          };
+        }
+      });
     };
   });
+
+
+  $('body').on('click', '#create-new-delegate-button', function(e){
+    var $event_select_box = $('#id_event');
+    // var submissionType = $(this).attr('register-type');
+    // var customerId = $(this).attr('customer-id');
+    var confId = $('#id_event').val();
+    formToSubmit = '#' + $(this).parent().attr('id');
+    if (confId == ''){
+      $event_select_box.css('border-color', '#963634');
+      $('.form-warning').show();
+      $('html, body').animate({
+        scrollTop: $('#id_event').offset().top - 180
+      });
+    } else {
+      $.ajax({
+        url: '/delegate/conf_has_regs/',
+        type: 'POST',
+        data: {
+          'conf_id': confId,
+        },
+        success: function(data){
+          var okToRegister = $('#first-reg', data).val() == 'true';
+          if (okToRegister) {
+            $(formToSubmit).submit();
+          } else {
+            $('#first-registration-modal').html(data);
+            $('#confSetupModal').modal('show');
+          };
+        }
+      });
+    };
+  });
+
+
+
+  // Respond to button click to go to edit conference page
+  $('body').on('click', '#edit-event', function(){
+    var newConfId = $('#id_event').val();
+    $(location).attr('href', '/registration/conference/?action=edit&id=' + newConfId);
+  });
+
+
+  // respond to button click to proceed with registration (from modal)
+  $('body').on('click', '#proceed-with-registration', function(){
+    $(formToSubmit).submit();
+  });
+
 
   // clear border color when event is selected
   // update all hidden fields

@@ -55,6 +55,15 @@ class ConferenceEditForm(forms.ModelForm):
     hst_rate = forms.FloatField(required=False, initial=0.13)
     qst_rate = forms.FloatField(required=False, initial=0.09975)
 
+    def __init__(self, *args, **kwargs):
+        super(ConferenceEditForm, self).__init__(*args, **kwargs)
+        self.fields['developer'].queryset = User.objects.filter(
+            groups__name='conference_developer'
+        ).order_by('username')
+        self.fields['registrar'].queryset = User.objects.filter(
+            groups__name='registration'
+        ).order_by('username')
+
     class Meta():
         model = Event
         fields = ['number', 'title', 'city', 'date_begins', 'state_prov',

@@ -178,6 +178,12 @@ class RegDetailsForm(forms.ModelForm):
         )
     )
 
+    def __init__(self, *args, **kwargs):
+        super(RegDetailsForm, self).__init__(*args, **kwargs)
+        self.fields['sales_credit'].queryset = User.objects.filter(
+            groups__name='sales'
+        ).order_by('username')
+
     class Meta():
         model = Invoice
         fields = ['sales_credit', 'pre_tax_price', 'gst_rate',

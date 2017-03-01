@@ -119,7 +119,7 @@ $(document).ready(function() {
     var division2 = $('#personal-select-details #id_division2').val();
     var title = $('#personal-select-details #id_title').val();
 
-    if (mainCategory || geo || industry || company || dept || division1 || division2 || title) {
+    if (mainCategory || geo || industry || company || dept || division1 || division2 || title || mainCategory2) {
       $.ajax({
         url: '/crm/add_personal_list_select/',
         type: 'POST',

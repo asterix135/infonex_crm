@@ -9,6 +9,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 from .forms import *
 from .models import *
+from .pdfs import *
 from crm.models import Person, Event
 
 ########################
@@ -462,3 +463,32 @@ def update_venue_choices(request):
     conference_edit_form = ConferenceEditForm()
     return render(request, 'registration/addins/conference_venue_choices.html',
                   {'conference_edit_form': conference_edit_form})
+
+
+############################
+# GRAPHICS/DOCUMENTS
+############################
+@login_required
+def get_delegate_list(request):
+    event = get_object_or_404(RegDetails, pk=request.GET.get('event', ''))
+    sort = request.GET.get('sort', 'company')
+    destination = request.GET.get('dest', 'attachment')
+    if destination not in ('attachment', 'inline'):
+        destination = 'attachment'
+    file_details = destination + '; filename="delegate_list_' + str(invoice.pk) + '"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = file_details
+    buffr = BytesIO()
+    del_list = canvas.Canvas(buffr, pagesize=letter)
+    story = []
+    generate_delegate_list(story, event, sort)
+    report = SimpleDocTemplate(buffr, pagesize=letter,
+                               leftMargin=inch, rightMargin = inch)
+    report.build(story,
+                 onFirstPage = del_list_first_page,
+                 onLaterPages=del_list_later_pages)
+
+    pdf = buffr.getvalue()
+    buffr.close()
+    response.write(pdf)
+    return response

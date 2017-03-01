@@ -557,35 +557,3 @@ def generate_reg_note(canv, reg_details, invoice=None):
     )
     modify_details += mod_date.strftime('%Y-%m-%d %I:%M:%S %p')
     canv.drawString(1.66 * inch, 0.5 * inch -12, modify_details)
-
-
-def delegate_list(canv):
-    pass
-
-
-def no_name_list(canv):
-    pass
-
-
-def registration_report(canv):
-    pass
-
-
-def on_site_report(canv):
-    pass
-
-
-def unpaid_list(canv):
-    pass
-
-
-def phone_list(canv):
-    pass
-
-
-def badges(canv):
-    pass
-
-
-def big_name_badges(canv):
-    pass

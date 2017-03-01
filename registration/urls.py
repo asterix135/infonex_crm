@@ -10,7 +10,8 @@ urlpatterns = [
         name='conference'),
     url(r'^new_delegate_search/$', views.new_delegate_search,
         name='new_delegate_search'),
-
+    url(r'^reports/$', views.reports),
+    
     # AJAX Calls
     url(r'^add_event_option/$', views.add_event_option,
         name='add_event_option'),

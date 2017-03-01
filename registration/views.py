@@ -116,6 +116,11 @@ def new_delegate_search(request):
     return render(request, 'registration/new_delegate_search.html', context)
 
 
+@login_required
+def reports(request):
+    return render(request, 'registration/reports.html')
+
+
 #######################
 # AJAX CALLS
 #######################

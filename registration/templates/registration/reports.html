@@ -1,0 +1,37 @@
+{% extends 'registration/base.html' %}
+{% load staticfiles %}
+
+{% block title %}Reports | {% endblock %}
+
+{% block script_includes %}
+<script type="text/javascript" src="{% static 'registration/javascript/reports.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<h1>Generate Reports</h1>
+
+<ul>
+  <li>
+    Badges
+  </li>
+  <li>
+    Registration List
+  </li>
+  <li>
+    No-name list
+  </li>
+  <li>
+    Delegate List
+  </li>
+  <li>
+    On-Site Staff Report
+  </li>
+  <li>
+    Unpaid list
+  </li>
+  <li>
+    Phone list
+  </li>
+</ul>
+
+{% endblock %}

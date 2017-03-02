@@ -1,11 +1,18 @@
+from io import BytesIO
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template import RequestContext
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
+
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate
+
 
 from .forms import *
 from .models import *
@@ -470,23 +477,26 @@ def update_venue_choices(request):
 ############################
 @login_required
 def get_delegate_list(request):
-    event = get_object_or_404(RegDetails, pk=request.GET.get('event', ''))
+    if 'event' not in request.GET:
+        raise Http404('Event not specified')
+    event = get_object_or_404(Event, pk=request.GET.get('event', ''))
     sort = request.GET.get('sort', 'company')
-    destination = request.GET.get('dest', 'attachment')
+    destination = request.GET.get('dest', 'inline')
     if destination not in ('attachment', 'inline'):
         destination = 'attachment'
-    file_details = destination + '; filename="delegate_list_' + str(invoice.pk) + '"'
+    file_details = destination + '; filename="delegate_list_' + \
+        str(event.number) + '"'
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = file_details
     buffr = BytesIO()
-    del_list = canvas.Canvas(buffr, pagesize=letter)
+    # del_list = canvas.Canvas(buffr, pagesize=letter)
     story = []
     generate_delegate_list(story, event, sort)
-    report = SimpleDocTemplate(buffr, pagesize=letter,
+    del_list = SimpleDocTemplate(buffr, pagesize=letter,
                                leftMargin=inch, rightMargin = inch)
-    report.build(story,
-                 onFirstPage = del_list_first_page,
-                 onLaterPages=del_list_later_pages)
+    del_list.build(story,
+                   onFirstPage=del_list_page,
+                   onLaterPages=del_list_page)
 
     pdf = buffr.getvalue()
     buffr.close()

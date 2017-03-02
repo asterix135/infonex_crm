@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^new_delegate_search/$', views.new_delegate_search,
         name='new_delegate_search'),
     url(r'^reports/$', views.reports),
-    
+
     # AJAX Calls
     url(r'^add_event_option/$', views.add_event_option,
         name='add_event_option'),
@@ -35,4 +35,8 @@ urlpatterns = [
         name='update_conference_choices'),
     url(r'^update_venue_choices/$', views.update_venue_choices,
         name='update_venue_choices'),
+
+    # Graphics & DOCUMENTS
+    url(r'^get_delegate_list/$', views.get_delegate_list,
+        name='get_delegate_list'),
 ]

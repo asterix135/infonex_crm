@@ -6,8 +6,15 @@ from infonex_crm.settings import BASE_DIR
 
 from reportlab.lib import colors
 from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
 from reportlab.platypus import Paragraph
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+
+LOGO_PATH = os.path.join(BASE_DIR,
+                         'delegate/static/delegate/INFONEX-logo-tag.jpg')
+PAGE_HEIGHT = letter[1]
+PAGE_WIDTH = letter[0]
+
 
 ################
 # Generic
@@ -19,31 +26,28 @@ def insert_generic_report_header(canv, event):
 ################
 # Delegate List
 ################
-def del_list_first_page(canv, doc):
-    PAGE_HEIGHT = letter[1]
-    PAGE_WIDTH = letter[0]
+def del_list_page(canvas, doc):
+
     styles=getSampleStyleSheet()
     title = 'Hello World!'
     pageinfo = 'platypus example'
 
     # call insert generic... here
     canvas.saveState()
-    canvas.setFont('Times-Bold', 16)
+    canvas.setFont('Helvetica', 16)
     canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-108, title)
-    canvas.setFont('Times-Roman', 9)
-    canvas.drawString(inch, 0.75 * inch, 'First Page / %s' % pageinfo)
-    canvas.restoreState()
-
-
-def del_list_later_pages(canvas, doc):
-    canvas.saveState()
-    canvas.setFont('Times-Roman', 9)
-    canvas.drawString(inch, 0.75 * inch, 'Page %d %s' % (doc.page, pageinfo))
+    canvas.setFont('Helvetica-Bold', 9)
+    canvas.drawString(inch, 0.75 * inch, 'Page %d' % (doc.page,))
     canvas.restoreState()
 
 
 def generate_delegate_list(story, event, sort='company'):
-    pass
+    styles = getSampleStyleSheet()
+    style = styles['Normal']
+    name = 'this is placeholder text'
+    p = Paragraph(name, style)
+    story.append(p)
+
 
 
 ################

@@ -39,4 +39,8 @@ urlpatterns = [
     # Graphics & DOCUMENTS
     url(r'^get_delegate_list/$', views.get_delegate_list,
         name='get_delegate_list'),
+    url(r'^get_no_name_list/$', views.get_no_name_list,
+        name='get_no_name_list'),
+    url(r'^get_registration_list/$', views.get_registration_list,
+        name='get_registration_list'),
 ]

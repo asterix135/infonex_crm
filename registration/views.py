@@ -489,16 +489,50 @@ def get_delegate_list(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = file_details
     buffr = BytesIO()
-    # del_list = canvas.Canvas(buffr, pagesize=letter)
-    story = []
-    generate_delegate_list(story, event, sort)
-    del_list = SimpleDocTemplate(buffr, pagesize=letter,
-                               leftMargin=inch, rightMargin = inch)
-    del_list.build(story,
-                   onFirstPage=del_list_page,
-                   onLaterPages=del_list_page)
+    report = ConferenceReportPdf(buffr, event, sort)
+    pdf = report.generate_delegate_list()
+    buffr.close()
+    response.write(pdf)
+    return response
 
-    pdf = buffr.getvalue()
+
+@login_required
+def get_no_name_list(request):
+    if 'event' not in request.GET:
+        raise Http404('Event not specified')
+    event = get_object_or_404(Event, pk=request.GET.get('event', ''))
+    sort = request.GET.get('sort', 'company')
+    destination = request.GET.get('dest', 'inline')
+    if destination not in ('attachment', 'inline'):
+        destination = 'attachment'
+    file_details = destination + '; filename="delegate_list_' + \
+        str(event.number) + '"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = file_details
+    buffr = BytesIO()
+    report = ConferenceReportPdf(buffr, event, sort)
+    pdf = report.generate_no_name_list()
+    buffr.close()
+    response.write(pdf)
+    return response
+
+
+@login_required
+def get_registration_list(request):
+    if 'event' not in request.GET:
+        raise Http404('Event not specified')
+    event = get_object_or_404(Event, pk=request.GET.get('event', ''))
+    sort = request.GET.get('sort', 'company')
+    destination = request.GET.get('dest', 'inline')
+    if destination not in ('attachment', 'inline'):
+        destination = 'attachment'
+    file_details = destination + '; filename="delegate_list_' + \
+        str(event.number) + '"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = file_details
+    buffr = BytesIO()
+    report = ConferenceReportPdf(buffr, event, sort)
+    pdf = report.generate_registration_list()
     buffr.close()
     response.write(pdf)
     return response

@@ -217,31 +217,64 @@ class ConferenceReportPdf:
                      'registrant__title',
                      'registrant__last_name',
                      'registrant__first_name']
-        reg_list = self._event.regdetails_set.all().order_by(*sorts)
+        # reg_list = self._event.regdetails_set.all().order_by(*sorts)
+        reg_list = self._event.regdetails_set.filter(invoice__isnull=False)
         for i, reg_detail in enumerate(reg_list):
-            name = Paragraph(
+            invoice_total = reg_detail.invoice.pre_tax_price + \
+                reg_detail.invoice.pre_tax_price * \
+                    reg_detail.invoice.gst_rate + \
+                reg_detail.invoice.pre_tax_price * \
+                    reg_detail.invoice.hst_rate + \
+                reg_detail.invoice.pre_tax_price * \
+                    (1 + reg_detail.invoice.gst_rate) * \
+                    reg_detail.invoice.qst_rate
+            cell1 = Paragraph(
+                reg_detail.get_registration_status_display() + '<br/>' + \
+                    reg_detail.register_date.strftime('%-d %B, %Y') + \
+                    '<br/>Inv#: ' + str(reg_detail.invoice.pk),
+                cell_style
+            )
+            cell2 = Paragraph(
+                str('${:,.2f}'.format(reg_detail.invoice.pre_tax_price)) + \
+                    '<br/>+ Tax<br/>' + \
+                    str('${:,.2f}'.format(invoice_total)),
+                cell_style
+            )
+            cell3 = Paragraph(
                 reg_detail.registrant.first_name + ' ' + \
-                    reg_detail.registrant.last_name,
+                    reg_detail.registrant.last_name + '<br/>' + \
+                    reg_detail.registrant.title + '<br/>' +
+                    reg_detail.registrant.company.name,
                 cell_style
             )
-            title = Paragraph(
-                reg_detail.registrant.title,
+            cell4 = Paragraph(
+                reg_detail.registrant.company.city + '<br/>' + \
+                    reg_detail.registrant.company.state_prov,
                 cell_style
             )
-            company = Paragraph(
-                reg_detail.registrant.company.name,
+            cell5 = Paragraph(
+                'Sales:<br/>Paid:', cell_style
+            )
+            cell6 = Paragraph(
+                reg_detail.invoice.sales_credit.username + '<br/>' + \
+                    reg_detail.invoice.payment_date.strftime('%-d %B, %Y'),
                 cell_style
             )
-            table_data.append([name, title, company])
-        table = Table(table_data,
-                      colWidths=[cm * 3.5, cm * 3, cm * 5.5,
-                                 cm * 3, cm, cm * 3])
-        table.setStyle(TableStyle([
-            ('LINEABOVE', (0,0), (-1, 0), 2, colors.black),
-            ('LINEBELOW', (0,0), (-1, 0), 1, colors.black),
-            ('VALIGN', (0,0), (-1, -1), 'TOP'),
-        ]))
-        elements.append(table)
+            table_data.append([cell1, cell2, cell3, cell4, cell5, cell6])
+        if len(table_data) > 0:
+            table = Table(table_data,
+                          colWidths=[cm * 3.5, cm * 3, cm * 4.5,
+                                     cm * 3, cm * 2, cm * 3])
+            table.setStyle(TableStyle([
+                ('LINEABOVE', (0,0), (-1, 0), 2, colors.black),
+                ('LINEBELOW', (0,0), (-1, -1), 1, colors.black),
+                ('VALIGN', (0,0), (-1, -1), 'TOP'),
+            ]))
+            elements.append(table)
+        else:
+            notice_style = styles['h2']
+            notice_style.alignment = TA_CENTER
+            elements.append(Paragraph('No delegates', notice_style))
         doc.build(elements,
                   onFirstPage=partial(self._header, event=self._event,
                                       report_title = report_name),

@@ -784,8 +784,8 @@ def company_crm_modal(request):
     email = request.POST['email']
 
     # generate company suggestions
+    name_tokens = company_name.split()
     if not company:
-        name_tokens = company_name.split()
         match0 = Company.objects.none()
         match1 = Company.objects.filter(name=company_name,
                                         postal_code=postal_code)

@@ -135,7 +135,7 @@ def build_email_message(reg_details, invoice):
     if invoice:
         if invoice.sales_credit.groups.filter(name='sales').exists():
             rep = invoice.sales_credit
-            if rep.first_name and rep_last_name:
+            if rep.first_name and rep.last_name:
                 rep_details = 'Your account representative for this event ' \
                     'is: ' + rep.first_name + ' ' + rep.last_name + \
                     '.  If you have any questions, you can reach them at: ' + \

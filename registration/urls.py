@@ -41,6 +41,9 @@ urlpatterns = [
         name='get_delegate_list'),
     url(r'^get_no_name_list/$', views.get_no_name_list,
         name='get_no_name_list'),
+    url(r'^get_phone_list/$', views.get_phone_list, name='get_phone_list'),
     url(r'^get_registration_list/$', views.get_registration_list,
         name='get_registration_list'),
+    url(r'^get_unpaid_list/$', views.get_unpaid_list, name='get_unpaid_list'),
+
 ]

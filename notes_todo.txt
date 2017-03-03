@@ -17,6 +17,8 @@ TODO: 46) STARTED - PD/Sales report page on notes (works but ugly)
 
 TODO: 41) Add title filter to territory creation page
 
+TODO: 69) Add Delegate lists to territory selections
+
 TODO: 47) Edit venue button doesn't work when calling a conference to edit (update - seems ok, but monitor)
 
 TODO: 65) Create various reports for registration dept

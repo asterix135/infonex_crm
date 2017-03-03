@@ -769,7 +769,6 @@ def company_crm_modal(request):
     if request.POST['crm_id'] != '':
         try:
             crm_match = Person.objects.get(pk=request.POST['crm_id'])
-            print('\n\ncrm matched')
         except Person.DoesNotExist:
             pass
     company_name = request.POST['company_name']
@@ -861,7 +860,6 @@ def company_crm_modal(request):
             if not crm_best_guess and match3.count() > 0:
                 crm_best_guess = match3[0]
             crm_suggest_list = crm_suggest_list | match3[:10]
-            print('after 3: ', str(crm_suggest_list.count()))
         if crm_suggest_list.count() < 10 and len(name_tokens) > 0:
             match4_a = Person.objects.filter(name__icontains=first_name)
             match4_b = Person.objects.filter(name__icontains=last_name)

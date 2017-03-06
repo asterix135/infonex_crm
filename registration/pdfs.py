@@ -1,6 +1,7 @@
 import os
 import pytz
 from functools import partial
+from math import ceil
 
 from django.utils import timezone
 
@@ -498,6 +499,7 @@ class ConferenceReportPdf:
         return pdf
 
     def generate_onsite_list(self):
+        report_name = 'Onsite Delegate Checklist'
         buffer = self._buffer
         doc = SimpleDocTemplate(buffer,
                                 rightMargin=inch / 2,
@@ -559,8 +561,6 @@ class ConferenceReportPdf:
                       rowHeights=[inch * 0.3] + [max_height + 6] * reg_list.count(),
                       repeatRows=1)
         table.setStyle(TableStyle([
-            # ('INNERGRID', (0,0), (-1,-1), 1, colors.black),
-            # ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('VALIGN', (0,0), (-1, 0), 'TOP'),
             ('VALIGN', (0,1), (1, -1), 'TOP'),
             ('VALIGN', (2, 1), (-1, -1), 'MIDDLE'),
@@ -570,15 +570,176 @@ class ConferenceReportPdf:
         ]))
         elements.append(table)
         doc.build(elements,
-                  onFirstPage=partial(self._onsite_header,
-                                      event=self._event),
-                  onLaterPages=partial(self._onsite_header,
-                                       event=self._event),
+                  onFirstPage=partial(self._small_header,
+                                      event=self._event,
+                                      report_title=report_name),
+                  onLaterPages=partial(self._small_header,
+                                       event=self._event,
+                                       report_title=report_name),
                   canvasmaker=NumberedCanvas)
 
         pdf = buffer.getvalue()
         return pdf
 
+    def generate_ce_sign_in_sheet(self):
+        report_name = 'Sign-in Sheet for CE Credits'
+        buffer = self._buffer
+        event_has_options = self._event.eventoptions_set.exists()
+        doc = SimpleDocTemplate(buffer,
+                                rightMargin=inch / 2,
+                                leftMargin=inch / 2,
+                                topMargin=1.0 * inch,
+                                bottomMargin=inch * 0.75,
+                                pagesize=self._pagesize)
+        elements = []
+        table_data = []
+        header_style = ParagraphStyle(
+            name='headerStyle',
+            fontName='Helvetica-Bold',
+            fontSize=10,
+            leading=12,
+            alignment=TA_CENTER,
+        )
+        person_style = ParagraphStyle(
+            name='personStyle',
+            fontName='Helvetica',
+            fontSize=10,
+            leading=12,
+            alignment=TA_LEFT,
+        )
+        label_style = ParagraphStyle(
+            name='labelStyle',
+            fontName='Helvetica',
+            fontSize=10,
+            leading=12,
+            alignment=TA_RIGHT,
+        )
+        table_data.append([
+            Paragraph('', header_style),
+            Paragraph('', header_style),
+            Paragraph('Time', header_style),
+            Paragraph('Initials', header_style),
+        ])
+        sorts = ['registrant__last_name',
+                 'registrant__first_name',
+                 'registrant__company__name']
+        reg_list = self._event.regdetails_set.all().order_by(*sorts)
+        max_height = inch * 0.2
+        for i, reg_detail in enumerate(reg_list):
+            person_name = '<b>' + reg_detail.registrant.first_name + ' ' + \
+                reg_detail.registrant.last_name + '</b><br/>'
+            if reg_detail.registrant.title:
+                person_name += reg_detail.registrant.title + '<br/>'
+            if reg_detail.registrant.company.name:
+                person_name += reg_detail.registrant.company.name
+            person = Paragraph(
+                person_name,
+                person_style
+            )
+
+            self._label = '<br/>'
+            self._line_groups = []  # List to show where to put extra <br/>s
+            if event_has_options:
+                self._make_sign_in_label_list(reg_detail)
+            else:
+                self._label += 'Day One Arrival:<br/><br/>' + \
+                    'Departure:<br/><br/>' + \
+                    'Day Two Arrival:<br/><br/>' + \
+                    'Departure:<br/><br/><br/>'
+                self._line_groups.append(4)
+            self._label = self._label[:-5]  # remove last <br/> tag
+            labels = Paragraph(self._label, label_style)
+
+            info_lines = '<br/> '
+            for line_group in self._line_groups:
+                for i in range(line_group):
+                    info_lines += '_' * 20 + ' <br/><br/> '
+                info_lines += '<br/>'
+            line_para = Paragraph(info_lines, header_style)
+
+            table_data.append([person, labels, line_para, line_para])
+            cell_height = person.wrap(doc.width/4.0 - 12, inch * 9.0)[1]
+            if cell_height > max_height:
+                max_height = cell_height
+            cell_height = labels.wrap(doc.width/4.0 - 12, inch * 9.0)[1]
+            if cell_height > max_height:
+                max_height = cell_height
+        table = Table(table_data,
+                      colWidths=[doc.width / 4.0] * 4,
+                      rowHeights=[inch * 0.3] + [max_height + 6] * reg_list.count(),
+                      repeatRows=1)
+        table.setStyle(TableStyle([
+            ('VALIGN', (0,0), (-1, 0), 'TOP'),
+            ('VALIGN', (0,1), (-1, -1), 'TOP'),
+            ('LINEABOVE', (0,0), (-1, 0), 2, colors.black),
+            ('LINEBELOW', (0,0), (-1, -1), 1, colors.black),
+        ]))
+        elements.append(table)
+        doc.build(elements,
+                  onFirstPage=partial(self._small_header,
+                                      event=self._event,
+                                      report_title=report_name),
+                  onLaterPages=partial(self._small_header,
+                                       event=self._event,
+                                       report_title=report_name),
+                  canvasmaker=NumberedCanvas)
+
+        pdf = buffer.getvalue()
+        return pdf
+
+    def badges(self):
+        buffer = self._buffer
+        doc = SimpleDocTemplate(buffer,
+                                rightMargin=cm,
+                                leftMargin=0,
+                                topMargin=cm,
+                                bottomMargin=0,
+                                pagesize=self._pagesize)
+        elements = []
+        table_data = []
+        big_style = ParagraphStyle(  # company on big company, first name on regular
+            name='bigStyle',
+            fontName='Helvetica-Bold',
+            fontSize=24,
+            leading=26,
+            alignment=TA_CENTER,
+        )
+        medium_style = ParagraphStyle(  # last name on regular badges, full name on big company badges
+            name='mediumStyle',
+            fontName='Helvetica',
+            fontSize=18,
+            leading=20,
+            alignment=TA_CENTER,
+        )
+        small_style = ParagraphStyle(  # company on regular badges
+            name='smallStyle',
+            fontName='Helvetica',
+            fontSize=14,
+            leading=16,
+            alignment=TA_CENTER,
+        )
+        sorts = ['registrant__last_name',
+                 'registrant__first_name',
+                 'registrant__company__name']
+        reg_list = self._event.regdetails_set.all().order_by(*sorts)
+        num_rows = ceil(reg_list.count() / 2)
+
+        ## Build badge list and add to table_data
+
+        table = Table(table_data,
+                      colWidths=[doc.width/2.0] * 2,
+                      rowHeights=[cm * 7]* num_rows)
+        table.setStyle(TableStyle([
+            ('VALIGN', (0,0), (-1, -1), 'MIDDLE'),
+            ('TOPPADDING', (0,0), (-1, -1), inch),
+            ('LEFTPADDING', (0,0), (-1, -1), cm),
+            ('RIGHTPADDING', (0,0), (-1, -1), cm),
+            ('BOTTOMPADDING', (0,0), (-1, -1), cm),
+        ]))
+
+
+        pdf = buffer.getvalue()
+        return pdf
 
     @staticmethod
     def _header(canvas, doc, event, report_title):
@@ -646,22 +807,33 @@ class ConferenceReportPdf:
         canvas.restoreState()
 
     @staticmethod
-    def _onsite_header(canvas, doc, event):
+    def _small_header(canvas, doc, event, report_title):
         canvas.saveState()
 
         canvas.drawImage(LOGO_PATH, 0.45 * inch, PAGE_HEIGHT - inch * 0.75,
                          height=0.5 * inch, width=1.875*inch)
-        # canvas.setLineWidth(2)
-        # canvas.line(0.45 * inch, PAGE_HEIGHT - inch * 0.8,
-        #             PAGE_WIDTH - 0.45 * inch, PAGE_HEIGHT - inch * 0.8)
-        # canvas.setLineWidth(1)
-        # canvas.line(0.45 * inch, PAGE_HEIGHT - inch * 0.84,
-        #             PAGE_WIDTH - 0.45 * inch, PAGE_HEIGHT - inch * 0.84)
         canvas.setFont('Helvetica-Bold', 16)
-        canvas.drawString(inch * 2.6, PAGE_HEIGHT - inch * 0.4,
-                          'Onsite Delegate Checklist')
+        canvas.drawString(inch * 2.6, PAGE_HEIGHT - inch * 0.42,
+                          report_title)
         canvas.setFont('Helvetica', 13)
         canvas.drawString(inch * 2.6, PAGE_HEIGHT - inch * 0.7,
-                          '1234 = blah blah')
+                          str(event.number) + ' - ' + event.title)
 
         canvas.restoreState()
+
+    def _make_sign_in_label_list(self, reg_detail):
+        event_options = self._event.eventoptions_set.all()
+        for option in event_options:
+            date_diff = (option.enddate - option.startdate).days
+            if RegEventOptions(reg=reg_detail, option=option).exists():
+                if date_diff > 0:
+                    total_lines_for_day = 0
+                    for num in range(date_diff):
+                        self._label += option.name + ' Day ' + str(num + 1) \
+                            + ' Arr:<br/><br/>Dep:<br/><br/><br/>'
+                        total_lines_for_day += 2
+                    self._line_groups.append(total_lines_for_day)
+                else:
+                    self._label += option.name + 'Arr:<br/><br/>' + \
+                        'Dep:</br><br/><br/>'
+                    self._line_groups.append(2)

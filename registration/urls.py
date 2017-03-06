@@ -45,6 +45,8 @@ urlpatterns = [
     url(r'^get_phone_list/$', views.get_phone_list, name='get_phone_list'),
     url(r'^get_registration_list/$', views.get_registration_list,
         name='get_registration_list'),
+    url(r'^get_sign_in_sheet/$', views.get_sign_in_sheet,
+        name='get_sign_in_sheet'),
     url(r'^get_unpaid_list/$', views.get_unpaid_list, name='get_unpaid_list'),
 
 ]

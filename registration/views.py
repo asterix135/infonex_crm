@@ -578,3 +578,24 @@ def get_unpaid_list(request):
     buffr.close()
     response.write(pdf)
     return response
+
+
+@login_required
+def get_onsite_list(request):
+    if 'event' not in request.GET:
+        raise Http404('Event not specified')
+    event = get_object_or_404(Event, pk=request.GET.get('event', ''))
+    sort = request.GET.get('sort', 'company')
+    destination = request.GET.get('dest', 'inline')
+    if destination not in ('attachment', 'inline'):
+        destination = 'attachment'
+    file_details = destination + '; filename="unpaid_delegate_list_' + \
+        str(event.number) + '"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = file_details
+    buffr = BytesIO()
+    report = ConferenceReportPdf(buffr, event, sort)
+    pdf = report.generate_onsite_list()
+    buffr.close()
+    response.write(pdf)
+    return response

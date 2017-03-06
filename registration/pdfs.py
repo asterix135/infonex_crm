@@ -20,7 +20,7 @@ from reportlab.platypus.flowables import HRFlowable
 LOGO_PATH = os.path.join(BASE_DIR,
                          'delegate/static/delegate/INFONEX-logo-tag.jpg')
 CHECKBOX_PATH = os.path.join(BASE_DIR,
-                             'crm/static/crm/checkbox.png')
+                             'crm/static/crm/images/checkbox.jpg')
 PAGE_HEIGHT = letter[1]
 PAGE_WIDTH = letter[0]
 
@@ -422,7 +422,7 @@ class ConferenceReportPdf:
         doc = SimpleDocTemplate(buffer,
                                 rightMargin=inch / 2,
                                 leftMargin=inch / 2,
-                                topMargin=1.6 * inch,
+                                topMargin=1.8 * inch,
                                 bottomMargin=inch * 0.75,
                                 pagesize=self._pagesize)
         elements = []
@@ -502,7 +502,7 @@ class ConferenceReportPdf:
         doc = SimpleDocTemplate(buffer,
                                 rightMargin=inch / 2,
                                 leftMargin=inch / 2,
-                                topMargin=1.6 * inch,
+                                topMargin=1.0 * inch,
                                 bottomMargin=inch * 0.75,
                                 pagesize=self._pagesize)
         elements = []
@@ -531,21 +531,22 @@ class ConferenceReportPdf:
                  'registrant__first_name',
                  'registrant__company__name']
         reg_list = self._event.regdetails_set.all().order_by(*sorts)
-        max_height = inch * 0.5
+        max_height = inch * 0.2
         for i, reg_detail in enumerate(reg_list):
             name = Paragraph(
                 '<b>' + reg_detail.registrant.first_name + ' ' + \
                     reg_detail.registrant.last_name + '</b><br/>' + \
-                    get_registration_status_display(),
+                    reg_detail.get_registration_status_display(),
                 cell_style
             )
             company = Paragraph(
-                reg_detail.registrant.company.name,
+                reg_detail.registrant.company.name + '<br/>' + \
+                    reg_detail.registrant.phone1,
                 cell_style
             )
             checkbox = Image(CHECKBOX_PATH)
-            checkbox.drawHeight = cm
-            checkbox.drawWidth = cm
+            checkbox.drawHeight = cm * 0.5
+            checkbox.drawWidth = cm * 0.5
             table_data.append([name, company, checkbox, checkbox])
             cell_height = name.wrap(doc.width/4.0 - 12, inch * 9.0)[1]
             if cell_height > max_height:
@@ -554,19 +555,24 @@ class ConferenceReportPdf:
             if cell_height > max_height:
                 max_height = cell_height
         table = Table(table_data,
-                      colWidths=[doc.width/4.0]*4,
+                      colWidths=[doc.width / 3.0] * 2 + [doc.width / 6.0] * 2,
                       rowHeights=[inch * 0.3] + [max_height + 6] * reg_list.count(),
                       repeatRows=1)
         table.setStyle(TableStyle([
-            ('INNERGRID', (0,0), (-1,-1), 1, colors.black),
-            ('BOX', (0,0), (-1,-1), 1, colors.black),
-            ('VALIGN', (0,0), (-1, -1), 'TOP'),
+            # ('INNERGRID', (0,0), (-1,-1), 1, colors.black),
+            # ('BOX', (0,0), (-1,-1), 1, colors.black),
+            ('VALIGN', (0,0), (-1, 0), 'TOP'),
+            ('VALIGN', (0,1), (1, -1), 'TOP'),
+            ('VALIGN', (2, 1), (-1, -1), 'MIDDLE'),
+            ('LINEABOVE', (0,0), (-1, 0), 2, colors.black),
+            ('LINEBELOW', (0,0), (-1, -1), 1, colors.black),
+
         ]))
         elements.append(table)
         doc.build(elements,
-                  onFirstPage=partial(self._unpaid_list_header,
+                  onFirstPage=partial(self._onsite_header,
                                       event=self._event),
-                  onLaterPages=partial(self._unpaid_list_header,
+                  onLaterPages=partial(self._onsite_header,
                                        event=self._event),
                   canvasmaker=NumberedCanvas)
 
@@ -637,5 +643,25 @@ class ConferenceReportPdf:
         h = boilerplate.wrap(doc.width, inch * 1.5)[1]
         boilerplate.drawOn(canvas, doc.leftMargin, PAGE_HEIGHT - inch * 1.25 - h)
 
+        canvas.restoreState()
+
+    @staticmethod
+    def _onsite_header(canvas, doc, event):
+        canvas.saveState()
+
+        canvas.drawImage(LOGO_PATH, 0.45 * inch, PAGE_HEIGHT - inch * 0.75,
+                         height=0.5 * inch, width=1.875*inch)
+        # canvas.setLineWidth(2)
+        # canvas.line(0.45 * inch, PAGE_HEIGHT - inch * 0.8,
+        #             PAGE_WIDTH - 0.45 * inch, PAGE_HEIGHT - inch * 0.8)
+        # canvas.setLineWidth(1)
+        # canvas.line(0.45 * inch, PAGE_HEIGHT - inch * 0.84,
+        #             PAGE_WIDTH - 0.45 * inch, PAGE_HEIGHT - inch * 0.84)
+        canvas.setFont('Helvetica-Bold', 16)
+        canvas.drawString(inch * 2.6, PAGE_HEIGHT - inch * 0.4,
+                          'Onsite Delegate Checklist')
+        canvas.setFont('Helvetica', 13)
+        canvas.drawString(inch * 2.6, PAGE_HEIGHT - inch * 0.7,
+                          '1234 = blah blah')
 
         canvas.restoreState()

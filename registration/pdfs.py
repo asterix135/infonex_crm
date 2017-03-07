@@ -688,35 +688,21 @@ class ConferenceReportPdf:
         pdf = buffer.getvalue()
         return pdf
 
-    def badges(self, badge_style='bigCompany'):
+    def badges(self, badge_type='bigCompany'):
         buffer = self._buffer
         doc = SimpleDocTemplate(buffer,
                                 rightMargin=cm,
                                 leftMargin=0,
-                                topMargin=cm,
+                                topMargin=0,
                                 bottomMargin=0,
                                 pagesize=self._pagesize)
         elements = []
         table_data = []
-        big_style = ParagraphStyle(  # company on big company, first name on regular
-            name='bigStyle',
-            fontName='Helvetica-Bold',
-            fontSize=24,
-            leading=26,
-            alignment=TA_CENTER,
-        )
-        medium_style = ParagraphStyle(  # last name on regular badges, full name on big company badges
+        badge_style = ParagraphStyle(  # last name on regular badges, full name on big company badges
             name='mediumStyle',
             fontName='Helvetica',
             fontSize=18,
-            leading=20,
-            alignment=TA_CENTER,
-        )
-        small_style = ParagraphStyle(  # company on regular badges
-            name='smallStyle',
-            fontName='Helvetica',
-            fontSize=14,
-            leading=16,
+            leading=28,
             alignment=TA_CENTER,
         )
         sorts = ['registrant__last_name',
@@ -724,31 +710,25 @@ class ConferenceReportPdf:
                  'registrant__company__name']
         reg_list = self._event.regdetails_set.all().order_by(*sorts)
         num_rows = ceil(reg_list.count() / 2)
-
         badge_row = []
-        # for reg1, reg2 in zip_longest(fillvalue=None, *[iter(reg_list)] * 2):
+        print('count: ', reg_list.count())
         for reg in reg_list:
-            if badge_style == 'bigCompany':
+            if badge_type == 'bigCompany':
                 badge_text = '<font size=18>' + reg.registrant.first_name + \
                     ' ' + reg.registrant.last_name + '</font><br/>' + \
                     '<font size=24><b>' + reg.registrant.company.name + \
                     '</b></font>'
             else:
-                badge_text = '<font size = 24'> + reg.registrant.first_name + \
-                    '</font><br/>'
-
-            badge_text = reg.registrant.first_name + ' ' + \
-                reg.registrant.last_name
-            if reg_registrant.title
-            badge_text = Paragraph(
-
-            )
-            reg1_badge = Paragraph(
-                reg1.registrant.first_name + ' ' +
-            )
-
-        ## Build badge list and add to table_data
-
+                badge_text = '<font size = 24>' + reg.registrant.first_name + \
+                    '</font><br/>' + reg.registrant.last_name + '<br/>'
+                if reg.registrant.company.name:
+                    badge_text += '<font size=14>' + \
+                        reg.registrant.company.name + '</font>'
+            badge = Paragraph(badge_text, badge_style)
+            badge_row.append(badge)
+            if len(badge_row) == 2:
+                table_data.append(badge_row)
+                badge_row = []
         table = Table(table_data,
                       colWidths=[doc.width/2.0] * 2,
                       rowHeights=[cm * 7]* num_rows)
@@ -759,8 +739,8 @@ class ConferenceReportPdf:
             ('RIGHTPADDING', (0,0), (-1, -1), cm),
             ('BOTTOMPADDING', (0,0), (-1, -1), cm),
         ]))
-
-
+        elements.append(table)
+        doc.build(elements)
         pdf = buffer.getvalue()
         return pdf
 

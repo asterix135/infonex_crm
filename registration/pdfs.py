@@ -4,7 +4,7 @@ from functools import partial
 from itertools import zip_longest
 from math import ceil
 
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.utils import timezone
 
 from .constants import *
@@ -756,10 +756,70 @@ class ConferenceReportPdf:
                                 topMargin=1.6 * inch,
                                 bottomMargin=inch * 0.75,
                                 pagesize=self._pagesize)
+        title_style = ParagraphStyle(
+            name='titleStyle',
+            fontName='Helvetica-Bold',
+            fontSize=16,
+            leading=18,
+            alignment=TA_CENTER
+        )
+        label_cell_style = ParagraphStyle(
+            name='labelCellStyle',
+            fontName='Helvetica',
+            fontSize=12,
+            leading=16,
+            alignment=TA_RIGHT
+        )
+        count_cell_style = ParagraphStyle(
+            name='counteCellStyle',
+            fontName='Helvetica',
+            fontSize=12,
+            leading=16,
+            alignment=TA_LEFT
+        )
         elements = []
         table_data = []
+
+        counts_by_option = []
         if event_has_options:
-            pass
+            for option in EventOptions.objects.filter(event=self._event):
+                counts_by_option.append(
+                    [option.name,
+                     RegDetails.objects.filter(eventoptions=option).annotate(
+                         total=Count('registration_status')
+                     ).order_by('total')]
+                )
+        else:
+            counts_by_option.append([
+                'Conference',
+                RegDetails.objects.filter(
+                    conference=self._event
+                ).values('registration_status').annotate(
+                    total=Count('registration_status')
+                ).order_by('total')
+            ])
+            # del_counts = RegDetails.objects.filter(
+            #     conference=self._event
+            # ).values('registration_status').annotate(
+            #     total=Count('registration_status')
+            # ).order_by('total')
+        for count in counts_by_option:
+            labels=''
+            counts=''
+            for total in count[1]:
+                labels += total.get_registration_status_display() + ':<br/>'
+                counts += str(total.total) + '<br/>'
+            cell1 = [
+                Paragraph(labels, label_cell_style),
+                HRFlowable(width='100%', thickness=1, color=colors.black),
+                Paragraph('<b>Grand Total:</b>', label_cell_style)
+            ]
+            cell2 = [
+                Paragraph(counts, count_cell_style),
+                HRFlowable(width='100%', thickness=1, color=colors.black),
+                Paragraph('<b>' + total.aggregate(Sum('total') + '</b>'),
+                          count_cell_style)
+            ]
 
 
 

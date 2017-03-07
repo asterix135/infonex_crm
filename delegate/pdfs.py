@@ -521,7 +521,7 @@ def generate_reg_note(canv, reg_details, invoice=None):
     canv.drawRightString(8.1 * inch, 4.5 * inch - 36, '${:,.2f}'.format(qst))
     canv.drawRightString(8.1 * inch, 3.1 * inch,
                          reg_details.conference.billing_currency)
-    if reg_details.conference.billing_currency !='CAD':
+    if reg_details.conference.billing_currency !='CAD' and invoice:
         canv.drawRightString(8.1 * inch, 3.1 * inch - 12,
                              str(invoice.fx_conversion_rate))
         canv.drawRightString(8.1 * inch, 3.1 * inch - 24,

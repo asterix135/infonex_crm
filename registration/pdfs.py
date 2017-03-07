@@ -4,6 +4,7 @@ from functools import partial
 from itertools import zip_longest
 from math import ceil
 
+from django.db.models import Count
 from django.utils import timezone
 
 from .constants import *
@@ -729,20 +730,39 @@ class ConferenceReportPdf:
             if len(badge_row) == 2:
                 table_data.append(badge_row)
                 badge_row = []
-        table = Table(table_data,
-                      colWidths=[doc.width/2.0] * 2,
-                      rowHeights=[cm * 7]* num_rows)
-        table.setStyle(TableStyle([
-            ('VALIGN', (0,0), (-1, -1), 'MIDDLE'),
-            ('TOPPADDING', (0,0), (-1, -1), inch),
-            ('LEFTPADDING', (0,0), (-1, -1), cm),
-            ('RIGHTPADDING', (0,0), (-1, -1), cm),
-            ('BOTTOMPADDING', (0,0), (-1, -1), cm),
-        ]))
-        elements.append(table)
+        if len(table_data) > 0:
+            table = Table(table_data,
+                          colWidths=[doc.width/2.0] * 2,
+                          rowHeights=[cm * 7]* num_rows)
+            table.setStyle(TableStyle([
+                ('VALIGN', (0,0), (-1, -1), 'MIDDLE'),
+                ('TOPPADDING', (0,0), (-1, -1), inch),
+                ('LEFTPADDING', (0,0), (-1, -1), cm),
+                ('RIGHTPADDING', (0,0), (-1, -1), cm),
+                ('BOTTOMPADDING', (0,0), (-1, -1), cm),
+            ]))
+            elements.append(table)
         doc.build(elements)
         pdf = buffer.getvalue()
         return pdf
+
+    def delegate_count(self):
+        report_name = 'Attendee Count'
+        event_has_options = self._event.eventoptions_set.exists()
+        buffer = self._buffer
+        doc = SimpleDocTemplate(buffer,
+                                rightMargin=inch / 2,
+                                leftMargin=inch / 2,
+                                topMargin=1.6 * inch,
+                                bottomMargin=inch * 0.75,
+                                pagesize=self._pagesize)
+        elements = []
+        table_data = []
+        if event_has_options:
+            pass
+
+
+
 
     @staticmethod
     def _header(canvas, doc, event, report_title):

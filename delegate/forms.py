@@ -181,7 +181,7 @@ class RegDetailsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RegDetailsForm, self).__init__(*args, **kwargs)
         self.fields['sales_credit'].queryset = User.objects.filter(
-            groups__name='sales'
+            groups__name__in=('sales', 'sponsorship')
         ).order_by('username')
 
     class Meta():

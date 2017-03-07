@@ -101,9 +101,9 @@
                 <label>Attachment:</label>
                 <div class="col-sm-12">
                   {% if invoice %}
-                  <object data="/delegate/get_invoice?reg={{ current_registration.pk }}" type="application/pdf" width="100%" height="500">
+                  <iframe src="/delegate/get_invoice?reg={{ current_registration.pk }}" width="100%" height="300" style="border:none;">
                     <p><b>PDF Did not load</b>: This browser does not support PDFs. Please download the PDF to view it: <a href="/delegate/get_invoice?reg={{ current_registration.pk }}" target="_blank">Download PDF</a>.</p>
-                  </object>
+                  </iframe>
                   {% else %}
                   <h5>No Invoice</h5>
                   {% endif %}

@@ -43,13 +43,10 @@
   </div>
   <div class="row">
     <div class="col-sm-12">
-      <object data="/delegate/get_reg_note?reg={{ current_registration.pk }}" type="application/pdf" width="50%" height="500">
+      <iframe src="/delegate/get_reg_note?reg={{ current_registration.pk }}" width="50%" height="500" style="border:none;">
         <p><b>PDF Did not load</b>: This browser does not support PDFs. Please download the PDF to view it: <a href="/delegate/get_reg_note?reg={{ current_registration.pk }}" target="_blank">Download PDF</a>.</p>
-      </object>
+      </iframe>
     </div>
   </div>
-
-
-
 </div>
 {% endblock %}

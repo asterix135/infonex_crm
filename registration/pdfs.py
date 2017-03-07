@@ -1,6 +1,7 @@
 import os
 import pytz
 from functools import partial
+from itertools import zip_longest
 from math import ceil
 
 from django.utils import timezone
@@ -687,7 +688,7 @@ class ConferenceReportPdf:
         pdf = buffer.getvalue()
         return pdf
 
-    def badges(self):
+    def badges(self, badge_style='bigCompany'):
         buffer = self._buffer
         doc = SimpleDocTemplate(buffer,
                                 rightMargin=cm,
@@ -723,6 +724,28 @@ class ConferenceReportPdf:
                  'registrant__company__name']
         reg_list = self._event.regdetails_set.all().order_by(*sorts)
         num_rows = ceil(reg_list.count() / 2)
+
+        badge_row = []
+        # for reg1, reg2 in zip_longest(fillvalue=None, *[iter(reg_list)] * 2):
+        for reg in reg_list:
+            if badge_style == 'bigCompany':
+                badge_text = '<font size=18>' + reg.registrant.first_name + \
+                    ' ' + reg.registrant.last_name + '</font><br/>' + \
+                    '<font size=24><b>' + reg.registrant.company.name + \
+                    '</b></font>'
+            else:
+                badge_text = '<font size = 24'> + reg.registrant.first_name + \
+                    '</font><br/>'
+
+            badge_text = reg.registrant.first_name + ' ' + \
+                reg.registrant.last_name
+            if reg_registrant.title
+            badge_text = Paragraph(
+
+            )
+            reg1_badge = Paragraph(
+                reg1.registrant.first_name + ' ' +
+            )
 
         ## Build badge list and add to table_data
 

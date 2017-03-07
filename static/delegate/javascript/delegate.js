@@ -237,7 +237,7 @@ $(document).ready(function(){
     } else {
       var qstRate = 0;
     };
-    var totalTax = (preTaxPrice * gstRate) + (preTaxPrice * hstRate) + (preTaxPrice * gstRate) * qstRate
+    var totalTax = (preTaxPrice * gstRate) + (preTaxPrice * hstRate) + (preTaxPrice * (1 + gstRate)) * qstRate
     var taxAsCurrency = '$' + totalTax.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
     var totalInvoice = +(preTaxPrice) + totalTax;
     var totalAsCurrency = '$' + totalInvoice.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");

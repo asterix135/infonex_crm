@@ -38,6 +38,8 @@ urlpatterns = [
 
     # Graphics & DOCUMENTS
     url(r'^get_badges/$', views.get_badges, name='get_badges'),
+    url(r'^get_count_report/$', views.get_count_report,
+        name='get_count_report'),
     url(r'^get_delegate_list/$', views.get_delegate_list,
         name='get_delegate_list'),
     url(r'^get_no_name_list/$', views.get_no_name_list,

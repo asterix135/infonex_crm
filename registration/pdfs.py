@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from .constants import *
 from delegate.constants import UNPAID_STATUS_VALUES
+from registration.models import RegDetails
 from infonex_crm.settings import BASE_DIR
 
 from reportlab.lib import colors
@@ -17,7 +18,8 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch, mm, cm
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Table, TableStyle, Image
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Table, \
+    TableStyle, Image, Spacer
 from reportlab.platypus.flowables import HRFlowable
 
 LOGO_PATH = os.path.join(BASE_DIR,
@@ -749,6 +751,9 @@ class ConferenceReportPdf:
     def delegate_count(self):
         report_name = 'Attendee Count'
         event_has_options = self._event.eventoptions_set.exists()
+        option_dict = {}
+        for opt in REG_STATUS_OPTIONS:
+            option_dict[opt[0]] = opt[1]
         buffer = self._buffer
         doc = SimpleDocTemplate(buffer,
                                 rightMargin=inch / 2,
@@ -777,9 +782,14 @@ class ConferenceReportPdf:
             leading=16,
             alignment=TA_LEFT
         )
-        elements = []
+        elements = [
+            HRFlowable(width='100%', thickness=2, color=colors.black),
+            Spacer(1, cm * 0.75),
+        ]
         table_data = []
-
+        delegates_exist = RegDetails.objects.filter(
+            conference=self._event
+        ).count() > 0
         counts_by_option = []
         if event_has_options:
             for option in EventOptions.objects.filter(event=self._event):
@@ -787,7 +797,7 @@ class ConferenceReportPdf:
                     [option.name,
                      RegDetails.objects.filter(eventoptions=option).annotate(
                          total=Count('registration_status')
-                     ).order_by('total')]
+                     ).order_by('-total')]
                 )
         else:
             counts_by_option.append([
@@ -796,33 +806,57 @@ class ConferenceReportPdf:
                     conference=self._event
                 ).values('registration_status').annotate(
                     total=Count('registration_status')
-                ).order_by('total')
+                ).order_by('-total')
             ])
-            # del_counts = RegDetails.objects.filter(
-            #     conference=self._event
-            # ).values('registration_status').annotate(
-            #     total=Count('registration_status')
-            # ).order_by('total')
         for count in counts_by_option:
             labels=''
             counts=''
-            for total in count[1]:
-                labels += total.get_registration_status_display() + ':<br/>'
-                counts += str(total.total) + '<br/>'
+            total_people = 0
+            if count[1].count() > 0:
+                for reg_detail in count[1]:
+                    labels += option_dict[reg_detail['registration_status']]
+                    labels += ':&nbsp;&nbsp;&nbsp;<br/>'
+                    counts += str(reg_detail['total']) + '<br/>'
+                    if reg_detail['registration_status'][-1] != 'X':
+                        total_people += reg_detail['total']
+            else:
+                labels = 'No Delegates:&nbsp;&nbsp;&nbsp;<br/>'
+                counts = '0<br/>'
+                total_people = 0
             cell1 = [
                 Paragraph(labels, label_cell_style),
                 HRFlowable(width='100%', thickness=1, color=colors.black),
-                Paragraph('<b>Grand Total:</b>', label_cell_style)
+                Paragraph('<b>Grand Total:&nbsp;&nbsp;&nbsp;</b>',
+                          label_cell_style)
             ]
             cell2 = [
                 Paragraph(counts, count_cell_style),
                 HRFlowable(width='100%', thickness=1, color=colors.black),
-                Paragraph('<b>' + total.aggregate(Sum('total') + '</b>'),
+                Paragraph('<b>' + str(total_people) + '</b>',
                           count_cell_style)
             ]
             elements.append(Paragraph(count[0], title_style))
             table_data.append([cell1, cell2])
-
+            table = Table(table_data,
+                          colWidths=[inch * 2, inch / 2])
+            table.setStyle(TableStyle([
+                ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                ('TOPPADDING', (0,0), (-1,-1), cm),
+                ('LEFTPADDING', (0,0), (-1,-1), 0),
+                ('RIGHTPADDING', (0,0), (-1,-1), 0),
+            ]))
+            elements.append(table)
+            table_data = []
+            elements.append(Spacer(1, cm))
+        elements.pop()  # remove the final spacer
+        doc.build(elements,
+                  onFirstPage=partial(self._header, event=self._event,
+                                      report_title=report_name),
+                  onLaterPages=partial(self._header, event=self._event,
+                                       report_title=report_name),
+                  canvasmaker=NumberedCanvas)
+        pdf = buffer.getvalue()
+        return pdf
 
     @staticmethod
     def _header(canvas, doc, event, report_title):

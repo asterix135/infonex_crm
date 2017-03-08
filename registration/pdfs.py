@@ -820,8 +820,8 @@ class ConferenceReportPdf:
                 Paragraph('<b>' + total.aggregate(Sum('total') + '</b>'),
                           count_cell_style)
             ]
-
-
+            elements.append(Paragraph(count[0], title_style))
+            table_data.append([cell1, cell2])
 
 
     @staticmethod

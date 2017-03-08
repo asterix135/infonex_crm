@@ -126,7 +126,13 @@ def new_delegate_search(request):
 
 @login_required
 def reports(request):
-    return render(request, 'registration/reports.html')
+    conference_select_form = ConferenceSelectForm(
+        queryset=Event.objects.all().order_by('-number')
+    )
+    context = {
+        'conference_select_form': conference_select_form,
+    }
+    return render(request, 'registration/reports.html', context)
 
 
 #######################

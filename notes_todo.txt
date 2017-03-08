@@ -4,12 +4,18 @@ next #: 69
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+TODO: 71) Need a better way to deal with/look for/ validate existing companies
+
+TODO: 70) Delegate page - cxl info doesn't disappear when it should
+
 TODO: 67) Need logic on delegate page to validate and deal with invoice changes
 
 TODO: 68) Make it possible to substitute a delegate
 
 TODO: 56) pytz timezone conversion to reports (home page chart & call report)
           http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
+
+TODO: 70) Intake/queueing system for registrations to be processed (so they don’t get lost)
 
 TODO: 57) Add phone number field to auth.User (this seems complicated) and add to email confirmation etc
 

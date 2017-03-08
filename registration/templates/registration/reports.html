@@ -8,8 +8,16 @@
 {% endblock %}
 
 {% block content %}
-<h1>Generate Reports</h1>
-
+<div class="container">
+  <div class="row">
+    <h1>Generate Reports</h1>
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="panel-title h2">Select report details</h2>
+      </div>
+    </div>
+  </div>
+</div>
 <ul>
   <li>
     <a href="{% url 'registration:get_badges' %}?event=3" target="_blank">Badges</a>

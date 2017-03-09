@@ -1,6 +1,6 @@
 Dear {salutation}:
 
-Attached please find an updated invoice for your sponsorship at at {event_name} which is to be held in {city}{venue_name}
+Attached please find an invoice for your sponsorship at at {event_name} which is to be held in {city}{venue_name}
 For up-to-date information, please visit the event website: {event_url}.
 {account_rep_details}
 I thank you for your consideration, and hope that you enjoy the event.

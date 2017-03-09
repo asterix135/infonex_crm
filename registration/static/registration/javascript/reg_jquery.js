@@ -134,4 +134,19 @@ $(document).ready(function(){
     searchDels();
   });
 
+  // Load ajax panels on index page
+  $('body').on('click', '.ajax-load', function(){
+    var ajaxPayload = $(this).attr('ajax-target');
+    $.ajax({
+      url: '/registration/index_panel/',
+      type: 'GET',
+      data: {
+        'panel': ajaxPayload,
+      },
+      success: function(data) {
+        $('#ajax-content').html(data);
+      }
+    });
+  });
+
 });

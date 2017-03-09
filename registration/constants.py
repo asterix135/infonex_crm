@@ -25,3 +25,13 @@ REG_STATUS_OPTIONS = (('', '-----------'),
 CONTACT_OPTIONS = (('D', 'Attention: delegate'),
                    ('A', 'Attention: assistant'),
                    ('C', 'cc to Assistant'))
+
+ADMIN_REPORTS = (('Delegate', 'Delegate List'),
+                 ('NoName', 'No-Name Delegate List'),
+                 ('Registration', 'Registration List'),
+                 ('Phone', 'Phone/Email List'),
+                 ('Onsite', 'Onsite Delegate List'),
+                 ('Unpaid', 'Unpaid Delegate List'),
+                 ('CE', 'CE Sign-in Sheet'),
+                 ('Badges', 'Badges'),
+                 ('Counts', 'Registration Counts'),)

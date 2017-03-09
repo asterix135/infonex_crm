@@ -182,7 +182,7 @@ class RegDetailsForm(forms.ModelForm):
         super(RegDetailsForm, self).__init__(*args, **kwargs)
         self.fields['sales_credit'].queryset = User.objects.filter(
             groups__name__in=('sales', 'sponsorship')
-        ).order_by('username')
+        ).distinct().order_by('username')
 
     class Meta():
         model = Invoice

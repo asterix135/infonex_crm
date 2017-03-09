@@ -220,3 +220,15 @@ class ConferenceSelectForm(forms.Form):
             attrs={'class': 'form-control col-sm-4'}
         )
     )
+
+
+class AdminReportOptionsForm(forms.Form):
+    report = forms.ChoiceField(
+        label='Select Report Type',
+        required=True,
+        initial='',
+        choices=ADMIN_REPORTS,
+        widget=forms.RadioSelect(
+            attrs={'class': 'form-control'}
+        )
+    )

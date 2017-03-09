@@ -4,8 +4,19 @@
     <h2 class="panel-title h2">Select report details</h2>
   </div>
   <div class="panel-body">
-    <div class="form-group row">
-      <label class="col-sm-2 form-control-label">Select Conference</label>
+    <div class="form-group row col-sm-12">
+      {{ conference_select_form.event.errors }}
+      {{ conference_select_form.event.label_tag }}
+      {{ conference_select_form.event }}
     </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 form-control-label">Select Report</label>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 form-control-label">Select Options</label>
+    </div>
+
   </div>
 </div>

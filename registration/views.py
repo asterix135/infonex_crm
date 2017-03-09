@@ -126,9 +126,9 @@ def new_delegate_search(request):
 
 @login_required
 def reports(request):
-    conference_select_form = ConferenceSelectForm(
-        queryset=Event.objects.all().order_by('-number')
-    )
+    conference_select_form = ConferenceSelectForm()
+    conference_select_form.fields['event'].queryset = \
+        Event.objects.all().order_by('-number')
     context = {
         'conference_select_form': conference_select_form,
     }
@@ -336,6 +336,24 @@ def get_registration_history(request):
         person_regs = person.regdetails_set.all()
     return render(request, 'registration/addins/reg_history.html',
         {'person_regs': person_regs})
+
+
+@login_required
+def index_panel(request):
+    if 'panel' not in request.GET:
+        return HttpResponse('')
+    if request.GET['panel'] == 'admin-reports':
+        response_url = 'registration/addins/admin_reports.html'
+        conference_select_form = ConferenceSelectForm()
+        conference_select_form.fields['event'].queryset = \
+            Event.objects.all().order_by('-date_begins')
+        report_options_form = AdminReportOptionsForm()
+        context = {
+            'conference_select_form': conference_select_form,
+            'report_options_form': report_options_form,
+        }
+
+    return render(request, response_url, context)
 
 
 @login_required

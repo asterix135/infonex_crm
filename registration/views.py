@@ -347,10 +347,10 @@ def index_panel(request):
         conference_select_form = ConferenceSelectForm()
         conference_select_form.fields['event'].queryset = \
             Event.objects.all().order_by('-date_begins')
-        report_options_form = AdminReportOptionsForm()
+        admin_report_options_form = AdminReportOptionsForm()
         context = {
             'conference_select_form': conference_select_form,
-            'report_options_form': report_options_form,
+            'admin_report_options_form': admin_report_options_form,
         }
 
     return render(request, response_url, context)
@@ -500,6 +500,86 @@ def update_venue_choices(request):
 # GRAPHICS/DOCUMENTS
 ############################
 @login_required
+def get_admin_reports(request):
+    # Pull relevant info out of GET request
+    if 'event' not in request.GET:
+        raise Http404('Event not specified')
+    event = get_object_or_404(Event, pk=request.GET['event'])
+    sort = request.GET.get('sort', 'company')
+    if sort not in ('company', 'name', 'title'):
+        sort = 'company'
+    destination = request.GET.get('destination', 'inline')
+    if destination not in ('attachment', 'inline'):
+        destination = 'attachment'
+    doc_format = request.GET.get('docformat', 'pdf')
+    if doc_format not in ('pdf', 'csv', 'xslx'):
+        doc_format = 'pdf'
+    report_type = request.GET.get('report', '')
+
+    if doc_format == 'pdf':
+        buffr = BytesIO()
+        report = ConferenceReportPdf(buffr, event, sort)
+        response = HttpResponse(content_type='application/pdf')
+        if report_type == 'Delegate':
+            file_details = destination + '; filename="delegate_list_' + \
+                str(event.number) + '"'
+            response['Content-Disposition'] = file_details
+            pdf = report.generate_delegate_list()
+        elif report_type == 'NoName':
+            file_details = destination + '; filename="delegate_list_' + \
+                str(event.number) + '"'
+            response['Content-Disposition'] = file_details
+            pdf = report.generate_no_name_list()
+        elif report_type == 'Registration':
+            file_details = destination + '; filename="registration_list_' + \
+                str(event.number) + '"'
+            response['Content-Disposition'] = file_details
+            pdf = report.generate_registration_list()
+        elif report_type == 'Phone':
+            file_details = destination + '; filename="phone_list_' + \
+                str(event.number) + '"'
+            response['Content-Disposition'] = file_details
+            pdf = report.generate_phone_list()
+        elif report_type == 'Onsite':
+            file_details = destination + '; filename="onsite_delegate_list_' + \
+                str(event.number) + '"'
+            response['Content-Disposition'] = file_details
+            pdf = report.generate_onsite_list()
+        elif report_type == 'Unpaid':
+            file_details = destination + '; filename="unpaid_delegate_list_' + \
+                str(event.number) + '"'
+            response['Content-Disposition'] = file_details
+            pdf = report.generate_unpaid_list()
+        elif report_type == 'CE':
+            file_details = destination + '; filename="CE_signin_' + \
+                str(event.number) + '"'
+            response['Content-Disposition'] = file_details
+            pdf = report.generate_ce_sign_in_sheet()
+        elif report_type == 'Badges':
+            file_details = destination + '; filename="badges_' + \
+                str(event.number) + '"'
+            response['Content-Disposition'] = file_details
+            pdf = report.badges()
+        elif report_type == 'Counts':
+            file_details = destination + '; filename="count_report_' + \
+                str(event.number) + '"'
+            response['Content-Disposotion'] = file_details
+            pdf = report.delegate_count()
+        else:  # Invalid report type
+            buffr.close()
+            raise Http404('Invalid report type')
+        buffr.close()
+        response.write(pdf)
+        return response
+    elif doc_format == 'csv':
+        raise Http404('Not Yet Coded')
+    elif doc_format == 'xlsx':
+        raise Http404('Not Yet Coded')
+    else:
+        raise Http404('Invalid document format')
+
+
+@login_required
 def get_delegate_list(request):
     if 'event' not in request.GET:
         raise Http404('Event not specified')
@@ -634,7 +714,7 @@ def get_sign_in_sheet(request):
     destination = request.GET.get('dest', 'inline')
     if destination not in ('attachment', 'inline'):
         destination = 'attachment'
-    file_details = destination + '; filename="unpaid_delegate_list_' + \
+    file_details = destination + '; filename="CE_signin_' + \
         str(event.number) + '"'
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = file_details

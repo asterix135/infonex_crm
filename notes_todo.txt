@@ -4,6 +4,11 @@ next #: 69
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+TODO: xx) install openpyxl & update packages at home
+
+TODO: 72) Format radio buttons on report select panel
+          http://avtex.com/2015/02/bootstrap-radio-buttons-and-checkboxes-in-columns-with-contextual-text-fields/
+
 TODO: 71) Need a better way to deal with/look for/ validate existing companies
 
 TODO: 70) Delegate page - cxl info doesn't disappear when it should

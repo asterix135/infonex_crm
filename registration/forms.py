@@ -224,11 +224,35 @@ class ConferenceSelectForm(forms.Form):
 
 class AdminReportOptionsForm(forms.Form):
     report = forms.ChoiceField(
-        label='Select Report Type',
+        label='What kind of report do you want?',
         required=True,
-        initial='',
+        initial=ADMIN_REPORTS[0][0],
         choices=ADMIN_REPORTS,
-        widget=forms.RadioSelect(
-            attrs={'class': 'form-control'}
-        )
+        widget=forms.RadioSelect()
+    )
+    sort = forms.ChoiceField(
+        label='How should the records be sorted?',
+        required=True,
+        initial='name',
+        choices=(('name', 'by Name (Last name then First name)'),
+                 ('title', 'by Title'),
+                 ('company', 'by Company')),
+        widget=forms.RadioSelect()
+    )
+    destination = forms.ChoiceField(
+        label='How do you want to get the report?',
+        required=True,
+        initial='attachment',
+        choices=(('attachment', 'Download'),
+                 ('inline', 'New Window')),
+        widget=forms.RadioSelect()
+    )
+    report_format = forms.ChoiceField(
+        label="What format should the report be in?",
+        required=True,
+        initial='pdf',
+        choices=(('pdf', 'PDF'),
+                 ('csv', 'CSV (comma-delimted text)'),
+                 ('xlsx', 'Excel (.xlsx)')),
+        widget=forms.RadioSelect()
     )

@@ -307,10 +307,12 @@ def generate_reg_note(canv, reg_details, invoice=None):
             canv.drawRightString(6.0 * inch, 8.7 * inch - 13, 'Payment Method:')
             canv.drawRightString(6.0 * inch, 8.7 * inch - 25, 'Payment Date:')
             canv.setFont('Helvetica', 9)
-            canv.drawString(6.1 * inch, 8.7 * inch - 13,
-                            invoice.get_payment_method_display())
-            canv.drawString(6.1 * inch, 8.7 * inch - 25,
-                            invoice.payment_date.strftime('%-d %B, %Y'))
+            if invoice.payment_method:
+                canv.drawString(6.1 * inch, 8.7 * inch - 13,
+                                invoice.get_payment_method_display())
+            if invoice.payment_date:
+                canv.drawString(6.1 * inch, 8.7 * inch - 25,
+                                invoice.payment_date.strftime('%-d %B, %Y'))
         if reg_details.registration_status in CXL_VALUES:
             canv.setFont('Helvetica-Bold', 9)
             canv.drawRightString(6.0 * inch, 8.7 * inch - 37,

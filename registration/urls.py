@@ -38,6 +38,9 @@ urlpatterns = [
         name='update_venue_choices'),
 
     # Graphics & DOCUMENTS
+    url(r'^get_admin_reports/$', views.get_admin_reports,
+        name='get_admin_reports'),
+
     url(r'^get_badges/$', views.get_badges, name='get_badges'),
     url(r'^get_count_report/$', views.get_count_report,
         name='get_count_report'),

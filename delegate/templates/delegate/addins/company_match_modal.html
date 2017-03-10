@@ -1,0 +1,76 @@
+<div class="modal fade" id="companyMatchModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+        <h3 class="modal-title">Company Database Search</h3>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid bd-example-row">
+          <div class="row">
+            <div class="col-sm-12">
+              <p>
+                If this customer's company is already in the database, I can
+                save you some time by filling in the registration form with
+                the information I already have stored.
+              </p>
+            </div>
+          </div>
+
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              Enter Search Criteria
+            </div>
+            <div class="panel-body">
+              <p>
+                Enter as many or as few search criteria as you wish.  I'll do my
+                best to figure out possible matches.
+              </p>
+              <p>
+                <b>NOTE:</b>  You must enter at least one criterion.
+              </p>
+              <div class="row">
+                <div class="col-sm-12">
+                  <label for="company-name-match">Company Name</label>
+                  <input id="id-company-name-match" class="form-control" maxlength="100" name="company-name-match" type="text" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <label for="company-address-match">Address</label>
+                  <input id="id-company-address-match" class="form-control" maxlength="100" name="company-address-match" type="text" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <label for="company-city-match">City</label>
+                  <input id="id-company-city-match" class="form-control" maxlength="100" name="company-city-match" type="text"/>
+                </div>
+                <div class="col-sm-6">
+                  <label for="company-postal-code-match">Postal Code</label>
+                  <input id="id-company-postal-code-match" class="form-control" maxlength="25" name="company-postal-code-match" type="text" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <button type="button" class="btn btn-success col-sm-12 form-control" id="btn-search-for-company">Search</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="suggested-match-list">
+            {% include 'delegate/addins/company_suggestion_matches.html' %}
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary" id="choose-match-company">Select</button> -->
+      </div>
+    </div>
+  </div>
+</div>

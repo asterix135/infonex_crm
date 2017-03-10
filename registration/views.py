@@ -506,6 +506,19 @@ def get_admin_reports(request):
     if doc_format not in ('pdf', 'csv', 'xlsx'):
         doc_format = 'pdf'
     report_type = request.GET.get('report', '')
+    sort_orders = {
+        'name': ['registrant__last_name',
+                 'registrant__first_name',
+                 'registrant__company__name'],
+        'title': ['registrant__title',
+                  'registrant__company__name',
+                  'registrant__last_name',
+                  'registrant__first_name'],
+        'company': ['registrant__company__name',
+                    'registrant__title',
+                    'registrant__last_name',
+                    'registrant__first_name']
+    }
 
     if doc_format == 'pdf':
         buffr = BytesIO()
@@ -570,7 +583,12 @@ def get_admin_reports(request):
                 str(event.number) + '.csv"'
             response['Content-Disposition'] = file_details
             registration_qs = RegDetails.objects.filter(
-                conference=event).exclude(registration_status__in=CXL_VALUES)
+                conference=event
+            ).exclude(
+                registration_status__in=CXL_VALUES
+            ).order_by(
+                *sort_orders[sort]
+            )
             writer = csv.writer(response)
             writer.writerow(['Name', 'Title', 'Company'])
             for record in registration_qs:
@@ -583,11 +601,17 @@ def get_admin_reports(request):
             return response
 
         elif report_type == 'NoName':
+            sort = 'company' if sort == 'name' else sort
             file_details = destination + '; filename="delegate_list_' + \
                 str(event.number) + '.csv"'
             response['Content-Disposition'] = file_details
             registration_qs = RegDetails.objects.filter(
-                conference=event).exclude(registration_status__in=CXL_VALUES)
+                conference=event
+            ).exclude(
+                registration_status__in=CXL_VALUES
+            ).order_by(
+                *sort_orders[sort]
+            )
             writer = csv.writer(response)
             writer.writerow(['Title', 'Company'])
             for record in registration_qs:
@@ -603,8 +627,10 @@ def get_admin_reports(request):
                 str(event.number) + '.csv"'
             response['Content-Disposition'] = file_details
             registration_qs = RegDetails.objects.filter(
-                conference=event).exclude(
-                    registration_status__in=NO_CONFIRMATION_VALUES)
+                conference=event
+            ).exclude(
+                registration_status__in=NO_CONFIRMATION_VALUES
+            ).order_by(*sort_orders[sort])
             writer = csv.writer(response)
             writer.writerow(['Status', 'RegDate', 'InvoiceNumber',
                              'PreTaxPrice', 'Name', 'Title', 'Company',
@@ -638,8 +664,10 @@ def get_admin_reports(request):
                 str(event.number) + '.csv"'
             response['Content-Disposition'] = file_details
             registration_qs = RegDetails.objects.filter(
-                conference=event).exclude(
-                    registration_status__in=NON_INVOICE_VALUES)
+                conference=event
+            ).exclude(
+                registration_status__in=NON_INVOICE_VALUES
+            ).order_by(sort_orders[sort])
             writer = csv.writer(response)
             writer.writerow(['name', 'title', 'company', 'email', 'phone',
                              'city', 'stateProv', 'nameForLetters'])
@@ -675,7 +703,12 @@ def get_admin_reports(request):
                 str(event.number) + '.xlsx"'
             response['Content-Disposition'] = file_details
             registration_qs = RegDetails.objects.filter(
-                conference=event).exclude(registration_status__in=CXL_VALUES)
+                conference=event
+            ).exclude(
+                registration_status__in=CXL_VALUES
+            ).order_by(
+                *sort_orders[sort]
+            )
             ws.append(['Name', 'Title', 'Company'])
             for record in registration_qs:
                 registrant = record.registrant
@@ -688,11 +721,17 @@ def get_admin_reports(request):
             return response
 
         elif report_type == 'NoName':
+            sort = 'company' if sort == 'name' else sort
             file_details = destination + '; filename="delegate_list_' + \
                 str(event.number) + '.xlsx"'
             response['Content-Disposition'] = file_details
             registration_qs = RegDetails.objects.filter(
-                conference=event).exclude(registration_status__in=CXL_VALUES)
+                conference=event
+            ).exclude(
+                registration_status__in=CXL_VALUES
+            ).order_by(
+                *sort_orders[sort]
+            )
             ws.append(['Title', 'Company'])
             for record in registration_qs:
                 registrant = record.registrant
@@ -708,8 +747,10 @@ def get_admin_reports(request):
                 str(event.number) + '.xlsx"'
             response['Content-Disposition'] = file_details
             registration_qs = RegDetails.objects.filter(
-                conference=event).exclude(
-                    registration_status__in=NO_CONFIRMATION_VALUES)
+                conference=event
+            ).exclude(
+                registration_status__in=NO_CONFIRMATION_VALUES
+            ).order_by(*sort_orders[sort])
             ws.append(['Status', 'RegDate', 'InvoiceNumber', 'PreTaxPrice',
                        'Name', 'Title', 'Company', 'City', 'StateProv',
                        'SalesCredit'])
@@ -743,8 +784,10 @@ def get_admin_reports(request):
                 str(event.number) + '.xlsx"'
             response['Content-Disposition'] = file_details
             registration_qs = RegDetails.objects.filter(
-                conference=event).exclude(
-                    registration_status__in=NON_INVOICE_VALUES)
+                conference=event
+            ).exclude(
+                registration_status__in=NON_INVOICE_VALUES
+            ).order_by(sort_orders[sort])
             ws.append(['name', 'title', 'company', 'email', 'phone', 'city',
                        'stateProv', 'nameForLetters'])
             for record in registration_qs:

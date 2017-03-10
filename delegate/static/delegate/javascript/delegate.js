@@ -356,4 +356,10 @@ $(document).ready(function(){
     $('#registration-form').submit();
   })
 
+
+  // Trigger modal to look for matching company
+  $('body').on('click', '#search-for-company', function(){
+    $('#companyMatchModal').modal('show');
+  })
+
 });

@@ -15,6 +15,9 @@
 <div id="company-crm-modal">
   {% include 'delegate/addins/company_crm_modal.html' %}
 </div>
+<div id="company-match-modal">
+  {% include 'delegate/addins/company_match_modal.html' %}
+</div>
 <form action="/delegate/process_registration/" method="post" id="registration-form">
   <div id="stored-variables">
     <input type="hidden" id="current-registrant-id" name="current_registrant_id" value="{{ registrant.id }}" />
@@ -157,6 +160,8 @@
             Company Information
             {% if company %}
             <span id="toggle-company-edit" class="glyphicon glyphicon-chevron-down glyph-button float-right"></span>
+            {% else %}
+            <span id="search-for-company" class="glyphicon glyphicon-search glyph-button float-right"></span>
             {% endif %}
           </div>
           <div class="panel-body">

@@ -716,7 +716,8 @@ class ConferenceReportPdf:
             if badge_type == 'bigCompany':
                 badge_text = '<font size=18>' + reg.registrant.first_name + \
                     ' ' + reg.registrant.last_name + '</font><br/>' + \
-                    '<font size=24><b>' + reg.registrant.company.name + \
+                    '<font size=24><b>' + \
+                    reg.registrant.company.name_for_badges + \
                     '</b></font>'
             else:
                 badge_text = '<font size = 24>' + reg.registrant.first_name + \

@@ -1,0 +1,65 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    Possible Matches
+  </div>
+  <div class="panel-body">
+    <p>
+      Here are some suggestions for possible company matches.  If you
+      see one that matches this customer's company, please select that.
+      Otherwise, select 'No Match', or just close this pop-up to continue
+      editing.
+    </p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="col-sm-1">
+            Select?
+          </th>
+          <th class="col-sm-7">
+            Option
+          </th>
+          <th class="col-sm-4">
+            # of Customers at Location
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            {% if not company_best_guess %}
+            <input type="radio" name="company-select" value="new" checked />
+            {% else %}
+            <input type="radio" name="company-select" value="new" />
+            {% endif %}
+          </td>
+          <td>
+            <b>NO MATCH</b>
+          </td>
+          <td>
+            None
+          </td>
+        </tr>
+        {% for suggested_company in company_suggest_list %}
+        <tr>
+          <td>
+            {% if suggested_company == company_best_guess %}
+            <input type="radio" name="company-select" value="{{ suggested_company.pk }}" checked />
+            {% else %}
+            <input type="radio" name="company-select" value="{{ suggested_company.pk }}" />
+            {% endif %}
+          </td>
+          <td>
+            <b>{{ suggested_company.name }}</b><br />
+            {% if suggested_company.address1 %}{{ suggested_company.address1 }}<br />{% endif %}
+            {% if suggested_company.address2 %}{{ suggested_company.address2 }}<br />{% endif %}
+            {% if suggested_company.city %}{{ suggested_company.city }}, {%endif %}{% if suggested_company.state_prov %}{{ suggested_company.state_prov }}  {% endif %}{{ suggested_company.postal_code }}
+          </td>
+          <td>
+            {{ suggested_company.registrants_set.all|length }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

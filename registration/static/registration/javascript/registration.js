@@ -19,6 +19,40 @@ $(document).ready(function(){
 
 
   // Need logic to hide/disable radio buttons based on other selections
+  $('body').on('change', 'input[name=report]', function(){
+    var newReport = $(this).val();
+      switch (newReport) {
+        case 'Delegate':
+          console.log('you chose delegate');
+          $('input[name=sort][value=name]').attr('disabled', true)
+          break;
+        case 'NoName':
+          console.log('you chose noname');
+          $('input[name=sort][value=name]').attr('disabled', false);
+          break;
+        case 'Registration':
+          console.log('you chose registration');
+          break;
+        case 'Phone':
+          console.log('you chose phone');
+          break;
+        case 'Onsite':
+          console.log('you chose onsite');
+          break;
+        case 'Unpaid':
+          console.log('you chose unpaid');
+          break;
+        case 'CE':
+          console.log('you chose CE');
+          break;
+        case 'Badges':
+          console.log('you chose badges');
+          break;
+        case 'Counts':
+          console.log('you chose counts');
+          break;
+      }
+  });
 
   // Submit form generation request (admin)
   $('body').on('click', '#submit-admin-reports', function(){

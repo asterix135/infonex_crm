@@ -2,14 +2,13 @@ import os
 import pytz
 from functools import partial
 from itertools import zip_longest
-from math import ceil
 
 from django.db.models import Count, Sum
 from django.utils import timezone
 
 from .constants import *
 from delegate.constants import UNPAID_STATUS_VALUES
-from registration.models import RegDetails
+from registration.models import RegDetails, EventOptions
 from infonex_crm.settings import BASE_DIR
 
 from reportlab.lib import colors
@@ -712,9 +711,7 @@ class ConferenceReportPdf:
                  'registrant__first_name',
                  'registrant__company__name']
         reg_list = self._event.regdetails_set.all().order_by(*sorts)
-        num_rows = ceil(reg_list.count() / 2)
         badge_row = []
-        print('count: ', reg_list.count())
         for reg in reg_list:
             if badge_type == 'bigCompany':
                 badge_text = '<font size=18>' + reg.registrant.first_name + \
@@ -732,10 +729,12 @@ class ConferenceReportPdf:
             if len(badge_row) == 2:
                 table_data.append(badge_row)
                 badge_row = []
+        if len(badge_row) == 1:  # Case where we have an uneven # of badges
+            table_data.append(badge_row)
         if len(table_data) > 0:
             table = Table(table_data,
                           colWidths=[doc.width/2.0] * 2,
-                          rowHeights=[cm * 7]* num_rows)
+                          rowHeights=[cm * 7]* len(table_data))
             table.setStyle(TableStyle([
                 ('VALIGN', (0,0), (-1, -1), 'MIDDLE'),
                 ('TOPPADDING', (0,0), (-1, -1), inch),

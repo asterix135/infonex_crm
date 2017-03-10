@@ -1,3 +1,5 @@
+import csv
+import openpyxl
 from io import BytesIO
 
 from django.contrib.auth.decorators import login_required
@@ -13,11 +15,11 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate
 
-
 from .forms import *
 from .models import *
 from .pdfs import *
 from crm.models import Person, Event
+from delegate.constants import *
 
 ########################
 # HELPER FUNCTIONS
@@ -511,8 +513,8 @@ def get_admin_reports(request):
     destination = request.GET.get('destination', 'inline')
     if destination not in ('attachment', 'inline'):
         destination = 'attachment'
-    doc_format = request.GET.get('docformat', 'pdf')
-    if doc_format not in ('pdf', 'csv', 'xslx'):
+    doc_format = request.GET.get('doc_format', 'pdf')
+    if doc_format not in ('pdf', 'csv', 'xlsx'):
         doc_format = 'pdf'
     report_type = request.GET.get('report', '')
 
@@ -522,47 +524,47 @@ def get_admin_reports(request):
         response = HttpResponse(content_type='application/pdf')
         if report_type == 'Delegate':
             file_details = destination + '; filename="delegate_list_' + \
-                str(event.number) + '"'
+                str(event.number) + '.pdf"'
             response['Content-Disposition'] = file_details
             pdf = report.generate_delegate_list()
         elif report_type == 'NoName':
             file_details = destination + '; filename="delegate_list_' + \
-                str(event.number) + '"'
+                str(event.number) + '.pdf"'
             response['Content-Disposition'] = file_details
             pdf = report.generate_no_name_list()
         elif report_type == 'Registration':
             file_details = destination + '; filename="registration_list_' + \
-                str(event.number) + '"'
+                str(event.number) + '.pdf"'
             response['Content-Disposition'] = file_details
             pdf = report.generate_registration_list()
         elif report_type == 'Phone':
             file_details = destination + '; filename="phone_list_' + \
-                str(event.number) + '"'
+                str(event.number) + '.pdf"'
             response['Content-Disposition'] = file_details
             pdf = report.generate_phone_list()
         elif report_type == 'Onsite':
             file_details = destination + '; filename="onsite_delegate_list_' + \
-                str(event.number) + '"'
+                str(event.number) + '.pdf"'
             response['Content-Disposition'] = file_details
             pdf = report.generate_onsite_list()
         elif report_type == 'Unpaid':
             file_details = destination + '; filename="unpaid_delegate_list_' + \
-                str(event.number) + '"'
+                str(event.number) + '.pdf"'
             response['Content-Disposition'] = file_details
             pdf = report.generate_unpaid_list()
         elif report_type == 'CE':
             file_details = destination + '; filename="CE_signin_' + \
-                str(event.number) + '"'
+                str(event.number) + '.pdf"'
             response['Content-Disposition'] = file_details
             pdf = report.generate_ce_sign_in_sheet()
         elif report_type == 'Badges':
             file_details = destination + '; filename="badges_' + \
-                str(event.number) + '"'
+                str(event.number) + '.pdf"'
             response['Content-Disposition'] = file_details
             pdf = report.badges()
         elif report_type == 'Counts':
             file_details = destination + '; filename="count_report_' + \
-                str(event.number) + '"'
+                str(event.number) + '.pdf"'
             response['Content-Disposotion'] = file_details
             pdf = report.delegate_count()
         else:  # Invalid report type
@@ -572,9 +574,121 @@ def get_admin_reports(request):
         response.write(pdf)
         return response
     elif doc_format == 'csv':
-        raise Http404('Not Yet Coded')
+        response = HttpResponse(content_type='text/csv')
+        if report_type == 'Delegate':
+            file_details = destination + '; filename="delegate_list_' + \
+                str(event.number) + '.csv"'
+            response['Content-Disposition'] = file_details
+            registration_qs = RegDetails.objects.filter(
+                conference=event).exclude(registration_status__in=CXL_VALUES)
+            writer = csv.writer(response)
+            writer.writerow(['Name', 'Title', 'Company'])
+            for record in registration_qs:
+                registrant = record.registrant
+                writer.writerow([
+                    registrant.first_name + ' ' + registrant.last_name,
+                    registrant.title,
+                    registrant.company.name
+                ])
+            return response
+
+        elif report_type == 'NoName':
+            file_details = destination + '; filename="delegate_list_' + \
+                str(event.number) + '.csv"'
+            response['Content-Disposition'] = file_details
+            registration_qs = RegDetails.objects.filter(
+                conference=event).exclude(registration_status__in=CXL_VALUES)
+            writer = csv.writer(response)
+            writer.writerow(['Title', 'Company'])
+            for record in registration_qs:
+                registrant = record.registrant
+                writer.writerow([
+                    registrant.title,
+                    registrant.company.name
+                ])
+            return response
+
+        elif report_type == 'Registration':
+            file_details = destination + '; filename="registration_list_' + \
+                str(event.number) + '.csv"'
+            response['Content-Disposition'] = file_details
+            registration_qs = RegDetails.objects.filter(
+                conference=event).exclude(
+                    registration_status__in=NO_CONFIRMATION_VALUES)
+            writer = csv.writer(response)
+            writer.writerow(['Status', 'RegDate', 'InvoiceNumber',
+                             'PreTaxPrice', 'Name', 'Title', 'Company',
+                             'City', 'StateProv', 'SalesCredit'])
+            for record in registration_qs:
+                registrant = record.registrant
+                if record.invoice:
+                    invoice_num = record.invoice.pk
+                    pre_tax_price = record.invoice.pre_tax_price,
+                    sales_credit = record.invoice.sales_credit.username
+                else:
+                    invoice_num = ''
+                    pre_tax_price = 0
+                    sales_credit = ''
+                writer.writerow([
+                    record.registration_status,
+                    record.register_date,
+                    invoice_num,
+                    pre_tax_price,
+                    registrant.first_name + ' ' + registrant.last_name,
+                    registrant.title,
+                    registrant.company.name,
+                    registrant.company.city,
+                    registrant.company.state_prov,
+                    sales_credit,
+                ])
+            return response
+
+        elif report_type == 'Phone':
+            file_details = destination + '; filename="phone_list_' + \
+                str(event.number) + '.csv"'
+            response['Content-Disposition'] = file_details
+            writer = csv.writer(response)
+            writer.writerow(['name', 'title', 'company', 'email', 'phone',
+                             'city', 'stateProv'])
+            for record in registration_qs:
+                registrant = record.registrant
+                writer.writerow([
+                    registrant.first_name + ' ' + registrant.last_name,
+                    registrant.title,
+                    registrant.company.name,
+                    registrant.email1,
+                    registrant.phone1,
+                    registrant.company.city,
+                    registrant.company.state_prov,
+                ])
+            return response
+
+        raise Http404('Invalid Report Choice for CSV Export')
+
     elif doc_format == 'xlsx':
+        response = HttpResponse(content_type='application/vnd.ms-excel')
+        if report_type == 'Delegate':
+            file_details = destination + '; filename="delegate_list_' + \
+                str(event.number) + '.xlsx"'
+            response['Content-Disposition'] = file_details
+
+        elif report_type == 'NoName':
+            file_details = destination + '; filename="delegate_list_' + \
+                str(event.number) + '.xlsx"'
+            response['Content-Disposition'] = file_details
+
+        elif report_type == 'Registration':
+            file_details = destination + '; filename="registration_list_' + \
+                str(event.number) + '.xlsx"'
+            response['Content-Disposition'] = file_details
+
+        elif report_type == 'Phone':
+            file_details = destination + '; filename="phone_list_' + \
+                str(event.number) + '.xlsx"'
+            response['Content-Disposition'] = file_details
+
         raise Http404('Not Yet Coded')
+
     else:
         raise Http404('Invalid document format')
 

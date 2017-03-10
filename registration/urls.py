@@ -10,7 +10,6 @@ urlpatterns = [
         name='conference'),
     url(r'^new_delegate_search/$', views.new_delegate_search,
         name='new_delegate_search'),
-    url(r'^reports/$', views.reports, name="reports"),
 
     # AJAX Calls
     url(r'^add_event_option/$', views.add_event_option,
@@ -40,20 +39,4 @@ urlpatterns = [
     # Graphics & DOCUMENTS
     url(r'^get_admin_reports/$', views.get_admin_reports,
         name='get_admin_reports'),
-
-    url(r'^get_badges/$', views.get_badges, name='get_badges'),
-    url(r'^get_count_report/$', views.get_count_report,
-        name='get_count_report'),
-    url(r'^get_delegate_list/$', views.get_delegate_list,
-        name='get_delegate_list'),
-    url(r'^get_no_name_list/$', views.get_no_name_list,
-        name='get_no_name_list'),
-    url(r'^get_onsite_list/$', views.get_onsite_list, name='get_onsite_list'),
-    url(r'^get_phone_list/$', views.get_phone_list, name='get_phone_list'),
-    url(r'^get_registration_list/$', views.get_registration_list,
-        name='get_registration_list'),
-    url(r'^get_sign_in_sheet/$', views.get_sign_in_sheet,
-        name='get_sign_in_sheet'),
-    url(r'^get_unpaid_list/$', views.get_unpaid_list, name='get_unpaid_list'),
-
 ]

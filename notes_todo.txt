@@ -1,13 +1,17 @@
-next #: 69
+next #: 74
 
 !*!*!*!*!*!*
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-TODO: xx) install openpyxl & update packages at home
+TODO: 74) "I know this company is in there" on delegate registration page
+
+TODO: 75) On match - choose what goes where (fields to crm or company record)
+
+TODO: 73) Logic to parse postal codes on delegate entry page & search
 
 TODO: 72) Format radio buttons on report select panel
-          http://avtex.com/2015/02/bootstrap-radio-buttons-and-checkboxes-in-columns-with-contextual-text-fields/
+            http://avtex.com/2015/02/bootstrap-radio-buttons-and-checkboxes-in-columns-with-contextual-text-fields/
 
 TODO: 71) Need a better way to deal with/look for/ validate existing companies
 

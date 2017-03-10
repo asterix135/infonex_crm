@@ -1,6 +1,6 @@
 import csv
-import openpyxl
 from io import BytesIO
+from openpyxl import Workbook
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -575,6 +575,7 @@ def get_admin_reports(request):
         return response
     elif doc_format == 'csv':
         response = HttpResponse(content_type='text/csv')
+
         if report_type == 'Delegate':
             file_details = destination + '; filename="delegate_list_' + \
                 str(event.number) + '.csv"'
@@ -647,11 +648,20 @@ def get_admin_reports(request):
             file_details = destination + '; filename="phone_list_' + \
                 str(event.number) + '.csv"'
             response['Content-Disposition'] = file_details
+            registration_qs = RegDetails.objects.filter(
+                conference=event).exclude(
+                    registration_status__in=NON_INVOICE_VALUES)
             writer = csv.writer(response)
             writer.writerow(['name', 'title', 'company', 'email', 'phone',
-                             'city', 'stateProv'])
+                             'city', 'stateProv', 'nameForLetters'])
             for record in registration_qs:
                 registrant = record.registrant
+                letter_name = ''
+                if registrant.salutation:
+                    letter_name += registrant.salutation + ' '
+                else:
+                    letter_name += registrant.first_name + ' '
+                letter_name += registrant.last_name
                 writer.writerow([
                     registrant.first_name + ' ' + registrant.last_name,
                     registrant.title,
@@ -660,6 +670,7 @@ def get_admin_reports(request):
                     registrant.phone1,
                     registrant.company.city,
                     registrant.company.state_prov,
+                    letter_name,
                 ])
             return response
 
@@ -667,27 +678,108 @@ def get_admin_reports(request):
 
     elif doc_format == 'xlsx':
         response = HttpResponse(content_type='application/vnd.ms-excel')
+        wb = Workbook()
+        ws = wb.active
+
         if report_type == 'Delegate':
             file_details = destination + '; filename="delegate_list_' + \
                 str(event.number) + '.xlsx"'
             response['Content-Disposition'] = file_details
+            registration_qs = RegDetails.objects.filter(
+                conference=event).exclude(registration_status__in=CXL_VALUES)
+            ws.append(['Name', 'Title', 'Company'])
+            for record in registration_qs:
+                registrant = record.registrant
+                ws.append([
+                    registrant.first_name + ' ' + registrant.last_name,
+                    registrant.title,
+                    registrant.company.name
+                ])
+            wb.save(response)
+            return response
 
         elif report_type == 'NoName':
             file_details = destination + '; filename="delegate_list_' + \
                 str(event.number) + '.xlsx"'
             response['Content-Disposition'] = file_details
+            registration_qs = RegDetails.objects.filter(
+                conference=event).exclude(registration_status__in=CXL_VALUES)
+            ws.append(['Title', 'Company'])
+            for record in registration_qs:
+                registrant = record.registrant
+                ws.append([
+                    registrant.title,
+                    registrant.company.name
+                ])
+            wb.save(response)
+            return response
 
         elif report_type == 'Registration':
             file_details = destination + '; filename="registration_list_' + \
                 str(event.number) + '.xlsx"'
             response['Content-Disposition'] = file_details
+            registration_qs = RegDetails.objects.filter(
+                conference=event).exclude(
+                    registration_status__in=NO_CONFIRMATION_VALUES)
+            ws.append(['Status', 'RegDate', 'InvoiceNumber', 'PreTaxPrice',
+                       'Name', 'Title', 'Company', 'City', 'StateProv',
+                       'SalesCredit'])
+            for record in registration_qs:
+                registrant = record.registrant
+                if record.invoice:
+                    invoice_num = record.invoice.pk
+                    pre_tax_price = record.invoice.pre_tax_price,
+                    sales_credit = record.invoice.sales_credit.username
+                else:
+                    invoice_num = ''
+                    pre_tax_price = 0
+                    sales_credit = ''
+                ws.append([
+                    record.registration_status,
+                    record.register_date,
+                    invoice_num,
+                    pre_tax_price,
+                    registrant.first_name + ' ' + registrant.last_name,
+                    registrant.title,
+                    registrant.company.name,
+                    registrant.company.city,
+                    registrant.company.state_prov,
+                    sales_credit,
+                ])
+            wb.save(response)
+            return response
 
         elif report_type == 'Phone':
             file_details = destination + '; filename="phone_list_' + \
                 str(event.number) + '.xlsx"'
             response['Content-Disposition'] = file_details
+            registration_qs = RegDetails.objects.filter(
+                conference=event).exclude(
+                    registration_status__in=NON_INVOICE_VALUES)
+            ws.append(['name', 'title', 'company', 'email', 'phone', 'city',
+                       'stateProv', 'nameForLetters'])
+            for record in registration_qs:
+                registrant = record.registrant
+                letter_name = ''
+                if registrant.salutation:
+                    letter_name += registrant.salutation + ' '
+                else:
+                    letter_name += registrant.first_name + ' '
+                letter_name += registrant.last_name
+                ws.append([
+                    registrant.first_name + ' ' + registrant.last_name,
+                    registrant.title,
+                    registrant.company.name,
+                    registrant.email1,
+                    registrant.phone1,
+                    registrant.company.city,
+                    registrant.company.state_prov,
+                    letter_name,
+                ])
+            wb.save(response)
+            return response
 
-        raise Http404('Not Yet Coded')
+        raise Http404('Invalid Report Choice for Excel Export')
 
     else:
         raise Http404('Invalid document format')

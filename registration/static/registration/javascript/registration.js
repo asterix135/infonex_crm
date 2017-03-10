@@ -18,38 +18,60 @@ $(document).ready(function(){
   });
 
 
-  // Need logic to hide/disable radio buttons based on other selections
-  $('body').on('change', 'input[name=report]', function(){
+  function disableDataExport(){
+    var docFormat = $('input[name="report_format"]:checked').val();
+    if (docFormat != 'pdf') {
+      $('input[name="report_format"][value="pdf"]').prop('checked', true);
+    };
+    $('input[name="report_format"]').attr('disabled', true);
+  }
+
+  function disableSort(sortVal='name'){
+    var currentSortVal = $('input[name="sort"]:checked').val();
+    if (currentSortVal != sortVal) {
+      $('input[name="sort"][value="' + sortVal + ']').prop('checked', true);
+    };
+    $('input[name="sort"]').attr('disabled', true);
+  }
+
+  function enableAllRadios(){
+    $('input[type="radio"]').attr('disabled', false);
+  }
+
+
+  // Logic to hide/disable radio buttons based on other selections
+  $('body').on('change', 'input[name="report"]', function(){
     var newReport = $(this).val();
       switch (newReport) {
         case 'Delegate':
-          console.log('you chose delegate');
-          $('input[name=sort][value=name]').attr('disabled', true)
+        case 'Registration':
+        case 'Phone':
+          enableAllRadios();
           break;
         case 'NoName':
-          console.log('you chose noname');
-          $('input[name=sort][value=name]').attr('disabled', false);
-          break;
-        case 'Registration':
-          console.log('you chose registration');
-          break;
-        case 'Phone':
-          console.log('you chose phone');
-          break;
-        case 'Onsite':
-          console.log('you chose onsite');
+          enableAllRadios();
+          var currentSortVal = $('input[name="sort"]:checked').val();
+          if (currentSortVal == 'name') {
+            $('input[name="sort"][value="company"]').prop('checked', true);
+          }
+          $('input[name="sort"][value="name"]').attr('disabled', true);
           break;
         case 'Unpaid':
-          console.log('you chose unpaid');
+          enableAllRadios();
+          disableDataExport();
+          var currentSortVal = $('input[name="sort"]:checked').val();
+          if (currentSortVal == 'title') {
+            $('input[name="sort"][value="name"]').prop('checked', true);
+          }
+          $('input[name="sort"][value="title"]').attr('disabled', true);
           break;
+        case 'Onsite':
         case 'CE':
-          console.log('you chose CE');
-          break;
         case 'Badges':
-          console.log('you chose badges');
-          break;
         case 'Counts':
-          console.log('you chose counts');
+          enableAllRadios();
+          disableSort();
+          disableDataExport();
           break;
       }
   });

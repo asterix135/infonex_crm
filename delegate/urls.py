@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'^conf_has_regs/$', views.conf_has_regs, name='conf_has_regs'),
     url(r'^person_is_registered/$', views.person_is_registered,
         name='person_is_registered'),
+    url(r'^suggest_company_match/$', views.suggest_company_match,
+        name='suggest_company_match'),
     url(r'^update_conference_options/$', views.update_conference_options,
         name='update_conference_options'),
     url(r'^update_cxl_info/$', views.update_cxl_info, name='update_cxl_info'),

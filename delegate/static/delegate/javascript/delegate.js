@@ -359,7 +359,39 @@ $(document).ready(function(){
 
   // Trigger modal to look for matching company
   $('body').on('click', '#search-for-company', function(){
+    var currentCompanyName = $('#id_company_name').val();
+    $('#id-company-name-match').val(currentCompanyName);
+    var currentCompanyAddress = $('#id_address1').val();
+    $('#id-company-address-match').val(currentCompanyAddress);
+    var currentCompanyCity = $('#id_city').val();
+    $('#id-company-city-match').val(currentCompanyCity);
+    var currentCompanyPostalCode = $('#id_postal_code').val();
+    $('#id-company-postal-code-match').val(currentCompanyPostalCode);
     $('#companyMatchModal').modal('show');
-  })
+  });
+
+
+  // Submit search for company match from optional modal
+  $('body').on('click', '#btn-search-for-company', function(){
+    var companyName = $('#id-company-name-match').val();
+    var companyAddress = $('#id-company-address-match').val();
+    var companyCity = $('#id-company-city-match').val();
+    var companyPostalCode = $('#id-company-postal-code-match').val();
+    if (companyName || companyAddress || companyCity || companyPostalCode) {
+      $.ajax({
+        url: '/delegate/suggest_company_match/',
+        type: 'POST',
+        data: {
+          'company_name': companyName,
+          'postal_code': companyPostalCode,
+          'city': companyCity,
+          'address1': companyAddress,
+        },
+        success: function(data){
+          $('#suggested-match-list').html(data);
+        }
+      });
+    };
+  });
 
 });

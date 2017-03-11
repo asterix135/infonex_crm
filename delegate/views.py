@@ -219,6 +219,54 @@ def build_email_lists(reg_details, invoice):
     return to_list, list(cc_list), bcc_list
 
 
+def guess_company(company_name, postal_code, address1, city):
+    name_tokens = company_name.split()
+    company_best_guess = None
+    company_suggest_list = None
+    match0 = Company.objects.none()
+    match1 = Company.objects.filter(name=company_name,
+                                    postal_code=postal_code)
+    if match1.count() == 1:
+        company_best_guess = match1[0]
+    elif match1.count() > 1:
+        match0 = match1.filter(address1=address1)
+        if match0.count() > 0:  # Choose the first one if more than one
+            company_best_guess = match0[0]
+    match3 = Company.objects.filter(postal_code=postal_code)
+    if len(name_tokens) > 0:
+        queries = []
+        for token in name_tokens:
+            queries.append(Q(name__icontains=token))
+        query=queries.pop()
+        for item in queries:
+            query |= item
+        match2 = match3.filter(query)
+        if not company_best_guess and match2.count() > 0:
+            company_best_guess = match2[0]
+    else:
+        match2 = Company.objects.none()
+    company_suggest_list = match0 | match1 | match2
+    if company_suggest_list.count() < 10:
+        num_to_add = 10 - company_suggest_list.count()
+        company_suggest_list = list(set(list(company_suggest_list) +
+                                        list(match3[:num_to_add])))
+    if len(company_suggest_list) < 10:
+        match4 = Company.objects.filter(name=company_name, city=city)
+        num_to_add = 10 - len(company_suggest_list)
+        company_suggest_list = list(set(list(company_suggest_list) +
+                                        list(match4[:num_to_add])))
+        if not company_best_guess and match4.count() > 0:
+            company_best_guess = match4[0]
+    if len(company_suggest_list) < 10:
+        match5 = Company.objects.filter(name=company_name)
+        num_to_add = 10 - len(company_suggest_list)
+        company_suggest_list = list(set(list(company_suggest_list) +
+                                        list(match5[:num_to_add])))
+        if not company_best_guess and match5.count() > 0:
+            company_best_guess = match5[0]
+    return company_best_guess, company_suggest_list
+
+
 def process_complete_registration(request, assistant_data, company, crm_match,
                                   current_registration, reg_details_data,
                                   registrant, conference, option_list):
@@ -783,37 +831,13 @@ def company_crm_modal(request):
     email = request.POST['email']
 
     # generate company suggestions
-    name_tokens = company_name.split()
     if not company:
-        match0 = Company.objects.none()
-        match1 = Company.objects.filter(name=company_name,
-                                        postal_code=postal_code)
-        if match1.count() == 1:
-            company_best_guess = match1[0]
-        elif match1.count() > 1:
-            match0 = match1.filter(address1=address1)
-            if match0.count() > 0:  # Choose the first one if more than one
-                company_best_guess = match0[0]
-        match3 = Company.objects.filter(postal_code=postal_code)
-        if len(name_tokens) > 0:
-            queries = []
-            for token in name_tokens:
-                queries.append(Q(name__icontains=token))
-            query=queries.pop()
-            for item in queries:
-                query |= item
-            match2 = match3.filter(query)
-            if not company_best_guess and match2.count() > 0:
-                company_best_guess = match2[0]
-        else:
-            match2 = Company.objects.none()
-        company_suggest_list = match0 | match1 | match2
-        if company_suggest_list.count() < 10:
-            num_to_add = 10 - company_suggest_list.count()
-            company_suggest_list = list(set(list(company_suggest_list) + \
-                list(match3[:num_to_add])))
+        company_best_guess, company_suggest_list = guess_company(
+            company_name, postal_code, address1, city
+        )
 
     if not crm_match:
+        name_tokens = company_name.split()
         person_name = first_name + ' ' + last_name
         match0 = Person.objects.none()
         if email != '':
@@ -903,6 +927,25 @@ def person_is_registered(request):
                         'id="person-is-registered" ' \
                         'name="person-is-registered" value="' + \
                         str(reg_detail is not None) + '" />')
+
+
+@login_required
+def suggest_company_match(request):
+    if request.method != 'POST':
+        return HttpResponse('')
+    company_name = request.POST['company_name']
+    postal_code = request.POST['postal_code']
+    city = request.POST['city']
+    address1 = request.POST['address1']
+    company_best_guess, company_suggest_list = guess_company(
+        company_name, postal_code, address1, city
+    )
+    context = {
+        'company_suggest_list': company_suggest_list,
+        'company_best_guess': company_best_guess,
+    }
+    return render(request, 'delegate/addins/company_suggestion_matches.html',
+                  context)
 
 
 @login_required

@@ -7,8 +7,9 @@ REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 TODO: 74) "I know this company is in there" on delegate registration page
       a) DONE - Populate modal with form fields
       b) Trigger typeahead in company name field
-      c) Backend search logic for match
+      c) DONE - Backend search logic for match
       d) Frontend field population logic
+      e) Backend match logic??
 
 TODO: 75) On match - choose what goes where (fields to crm or company record)
 

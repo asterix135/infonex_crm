@@ -27,9 +27,9 @@
         <tr>
           <td>
             {% if not company_best_guess %}
-            <input type="radio" name="company-select" value="new" checked />
+            <input type="radio" name="company-match-select" value="new" checked />
             {% else %}
-            <input type="radio" name="company-select" value="new" />
+            <input type="radio" name="company-match-select" value="new" />
             {% endif %}
           </td>
           <td>
@@ -43,9 +43,9 @@
         <tr>
           <td>
             {% if suggested_company == company_best_guess %}
-            <input type="radio" name="company-select" value="{{ suggested_company.pk }}" checked />
+            <input type="radio" name="company-match-select" value="{{ suggested_company.pk }}" checked />
             {% else %}
-            <input type="radio" name="company-select" value="{{ suggested_company.pk }}" />
+            <input type="radio" name="company-match-select" value="{{ suggested_company.pk }}" />
             {% endif %}
           </td>
           <td>

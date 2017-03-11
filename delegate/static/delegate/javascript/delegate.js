@@ -394,4 +394,19 @@ $(document).ready(function(){
     };
   });
 
+
+  // When company is selected, populate registration fields
+  // TODO: Finish this!
+  $('body').on('click', '#btn-select-company-match', function(){
+    // 1 get value of selected company and make sure it's not new
+    var selectedCompanyId = $('input[name="company-match-select"]:checked').val();
+    if (selectedCompanyId != 'new') {
+      // 2 hit d/b to get values (in json)
+      var companyData = null;
+      // 3 populate main page
+    }
+    // 4 close modal
+    $('#companyMatchModal').modal('hide');
+  });
+
 });

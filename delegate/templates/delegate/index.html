@@ -5,6 +5,8 @@
 
 {% block script_includes %}
 <link href="{% static 'delegate/delegate.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'crm/typeahead.css' %}" rel="stylesheet" type="text/css" />
+<script type='text/javascript' src="http://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
 <script type="text/javascript" src="{% static 'delegate/javascript/delegate.js' %}"></script>
 {% endblock %}
 
@@ -18,6 +20,7 @@
 <div id="company-match-modal">
   {% include 'delegate/addins/company_match_modal.html' %}
 </div>
+
 <form action="/delegate/process_registration/" method="post" id="registration-form">
   <div id="stored-variables">
     <input type="hidden" id="current-registrant-id" name="current_registrant_id" value="{{ registrant.id }}" />

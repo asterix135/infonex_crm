@@ -151,6 +151,7 @@
                       {% endif %}
                     </td>
                     <td>
+                      <input type="hidden" id="crm_saved_company_name_{{ suggested_match.pk }}" value="{{ suggested_match.company }}" />
                       <b>{{ suggested_match.name }}</b><br />
                       {% if suggested_match.title %}{{ suggested_match.title }}<br />{% endif %}
                       {% if suggested_match.company %}{{ suggested_match.company }}<br />{% endif %}
@@ -160,6 +161,24 @@
                   {% endfor %}
                 </tbody>
               </table>
+              <div id="select-crm-company-name">
+                <hr />
+                <p>
+                  Please indicate which value should be used for the CRM record's company name:
+                </p>
+                <div class="radio">
+                  <label id="crm-new-name-label">
+                    <input id="crm_company_change_to_new" value="change" type="radio" name="crm-name-action" />
+                    New Name
+                  </label>
+                </div>
+                <div class="radio">
+                  <label id="crm-stet-name-label">
+                    <input id="crm_company_do_not_change" value="stet" type="radio" name="crm-name-action" checked />
+                    Old Name
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
           {% endif %}

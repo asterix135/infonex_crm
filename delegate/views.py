@@ -1,14 +1,18 @@
 import datetime
 from io import BytesIO
+import json
 import os
+import re
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
-from django.db.models import Q, Max
-from django.http import HttpResponse
+from django.db.models import Q, Max, Count
+from django.forms.models import model_to_dict
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.utils.datastructures import MultiValueDictKeyError
 
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -246,20 +250,20 @@ def guess_company(company_name, postal_code, address1, city):
     else:
         match2 = Company.objects.none()
     company_suggest_list = match0 | match1 | match2
-    if company_suggest_list.count() < 10:
-        num_to_add = 10 - company_suggest_list.count()
+    if company_suggest_list.count() < 20:
+        num_to_add = 20 - company_suggest_list.count()
         company_suggest_list = list(set(list(company_suggest_list) +
                                         list(match3[:num_to_add])))
-    if len(company_suggest_list) < 10:
+    if len(company_suggest_list) < 20:
         match4 = Company.objects.filter(name=company_name, city=city)
-        num_to_add = 10 - len(company_suggest_list)
+        num_to_add = 20 - len(company_suggest_list)
         company_suggest_list = list(set(list(company_suggest_list) +
                                         list(match4[:num_to_add])))
         if not company_best_guess and match4.count() > 0:
             company_best_guess = match4[0]
-    if len(company_suggest_list) < 10:
+    if len(company_suggest_list) < 20:
         match5 = Company.objects.filter(name=company_name)
-        num_to_add = 10 - len(company_suggest_list)
+        num_to_add = 20 - len(company_suggest_list)
         company_suggest_list = list(set(list(company_suggest_list) +
                                         list(match5[:num_to_add])))
         if not company_best_guess and match5.count() > 0:
@@ -303,7 +307,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     # c. update crm record with form values
     crm_match.name = request.POST['first_name'] + ' ' + request.POST['last_name']
     crm_match.title = request.POST['title']
-    crm_match.company = request.POST['name']
+    crm_match.company = request.POST['crm_company']
     crm_match.phone = request.POST['phone1']
     crm_match.email = request.POST['email1']
     crm_match.city = request.POST['city']
@@ -696,7 +700,7 @@ def process_registration(request):
                 name=request.POST['first_name'] + ' ' + \
                      request.POST['last_name'],
                 title=request.POST['title'],
-                company=company.name,
+                company=request.POST['crm_company'],
                 phone=request.POST['phone1'],
                 email=request.POST['email1'],
                 city=company.city,
@@ -907,6 +911,22 @@ def company_crm_modal(request):
 
 
 @login_required
+def get_company_details(request):
+    if 'company' not in request.GET:
+        company = None
+    else:
+        try:
+            company = Company.objects.get(pk=request.GET['company'])
+        except (Company.DoesNotExist, MultiValueDictKeyError):
+            company = None
+    if company:
+        company_data = model_to_dict(company)
+    else:
+        company_data = {'id': None}
+    return JsonResponse(company_data)
+
+
+@login_required
 def person_is_registered(request):
     """
     Checks whether the current delegate is registered for a conference
@@ -927,6 +947,27 @@ def person_is_registered(request):
                         'id="person-is-registered" ' \
                         'name="person-is-registered" value="' + \
                         str(reg_detail is not None) + '" />')
+
+
+@login_required
+def suggest_company(request):
+    """
+    Ajax call (I think?) - returns json of top 25 companies (by number in db)
+    that match entered string
+    """
+    query_term = request.GET.get('q', '')
+    print(query_term)
+    selects = Company.objects.filter(name__icontains=query_term) \
+        .values('name').annotate(total=Count('name')) \
+        .order_by('-total')[:25]
+    results = []
+    for select in selects:
+        select_json = {}
+        select_json['identifier'] = select['name']
+        results.append(select_json)
+    data = json.dumps(results)
+    mimetype = 'applications/json'
+    return HttpResponse(data, mimetype)
 
 
 @login_required

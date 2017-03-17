@@ -240,7 +240,9 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
         match0 = match1.filter(address1__iexact=address1)
         if match0.count() > 0:  # Choose the first one if more than one
             company_best_guess = match0[0]
-    if name_first:
+        else:
+            company_best_guess = match1[0]
+    if name_first and postal_code in ('', None):
         name_tokens = [x for x in name_tokens if x.lower() not in STOPWORDS2]
         match3 = Company.objects.all()
     else:
@@ -1001,7 +1003,6 @@ def suggest_company(request):
     that match entered string
     """
     query_term = request.GET.get('q', '')
-    print(query_term)
     selects = Company.objects.filter(name__icontains=query_term) \
         .values('name').annotate(total=Count('name')) \
         .order_by('-total')[:25]

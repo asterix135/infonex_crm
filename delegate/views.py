@@ -224,7 +224,8 @@ def build_email_lists(reg_details, invoice):
 
 
 def guess_company(company_name, postal_code, address1, city, name_first=False):
-    name_tokens = company_name.split()
+    name_tokens = list(filter(
+        lambda w: not w in STOPWORDS, company_name.split()))
     company_best_guess = None
     company_suggest_list = None
     match0 = Company.objects.none()

@@ -25,3 +25,6 @@ TRAINING_CXL_POLICY = 'Due to demand and limited enrollment, there are no ' \
     'our registration department so we can transfer your registration and be ' \
     'sure your colleague receives full access to the event materials, a name ' \
     'badge, and a seat reserved at the master class or training seminar.'
+
+STOPWORDS = ['a', 'an', 'and', 'by', 'for',
+             'from', 'in', 'of', 'on', 'or', 'the']

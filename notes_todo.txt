@@ -4,6 +4,8 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+TODO: 75) Fix company search modal to only show results after search
+
 TODO: 73) Logic to parse postal codes on delegate entry page & search
 
 TODO: 72) Format radio buttons on report select panel

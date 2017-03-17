@@ -447,7 +447,7 @@ $(document).ready(function(){
           $('#id_qst_exemption_number').val(data.qst_exemption_number);
           $('#id_gst_hst_exempt').prop('checked', data.gst_hst_exempt);
           $('#id_qst_exempt').prop('checked', data.qst_exempt);
-          $('#company-match-value').val(data.pk);
+          $('#company-match-value').val(data.id);
           // 3 Remove search icon from screen
           $('#search-for-company').remove();
         }

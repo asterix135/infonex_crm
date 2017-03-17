@@ -223,20 +223,27 @@ def build_email_lists(reg_details, invoice):
     return to_list, list(cc_list), bcc_list
 
 
-def guess_company(company_name, postal_code, address1, city):
+def guess_company(company_name, postal_code, address1, city, name_first=False):
     name_tokens = company_name.split()
     company_best_guess = None
     company_suggest_list = None
     match0 = Company.objects.none()
-    match1 = Company.objects.filter(name=company_name,
-                                    postal_code=postal_code)
+    if name_first:
+        match1 = Company.objects.filter(name=company_name)
+    else:
+        match1 = Company.objects.filter(name=company_name,
+                                        postal_code=postal_code)
     if match1.count() == 1:
         company_best_guess = match1[0]
     elif match1.count() > 1:
         match0 = match1.filter(address1=address1)
         if match0.count() > 0:  # Choose the first one if more than one
             company_best_guess = match0[0]
-    match3 = Company.objects.filter(postal_code=postal_code)
+    if name_first:
+        match3 = Company.objects.all()
+    else:
+        match3 = Company.objects.filter(postal_code=postal_code)
+
     if len(name_tokens) > 0:
         queries = []
         for token in name_tokens:
@@ -979,7 +986,7 @@ def suggest_company_match(request):
     city = request.POST['city']
     address1 = request.POST['address1']
     company_best_guess, company_suggest_list = guess_company(
-        company_name, postal_code, address1, city
+        company_name, postal_code, address1, city, name_first=True
     )
     context = {
         'company_suggest_list': company_suggest_list,

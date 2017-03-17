@@ -1,4 +1,4 @@
-next #: 74
+next #: 75
 
 !*!*!*!*!*!*
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
@@ -14,6 +14,8 @@ TODO: 70) Delegate page - cxl info doesn't disappear when it should
 TODO: 67) Need logic on delegate page to validate and deal with invoice changes
 
 TODO: 68) Make it possible to substitute a delegate
+
+TODO: 74) Make it possible to edit comments in CRM
 
 TODO: 56) pytz timezone conversion to reports (home page chart & call report)
           http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/

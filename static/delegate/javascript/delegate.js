@@ -135,8 +135,12 @@ $(document).ready(function(){
   $('body').on('change', '#id_company_name', function(){
     var companyName = $(this).val();
     var shortName = $('#id_name_for_badges').val();
+    var crmName = $('#id_crm_company').val();
     if (shortName == ''){
       $('#id_name_for_badges').val(companyName.slice(0,30))
+    }
+    if (crmName == '') {
+      $('#id_crm_company').val(companyName);
     }
   });
 
@@ -332,12 +336,34 @@ $(document).ready(function(){
         },
         success: function(data){
           $('#company-crm-modal').html(data);
+          var bestGuessCrmId = $('input[name="crm-select"]:checked', data).val();
+          if (bestGuessCrmId == 'new') {
+            var bestGuessCrmName = companyName;
+          } else {
+            var bestGuessCrmName = $('#crm_saved_company_name_' + bestGuessCrmId, data).val();
+          };
+          $('#crm-new-name-label').html('<input id="crm_company_change_to_new" value="change" type="radio" name="crm-name-action" />' + companyName);
+          $('#crm-stet-name-label').html('<input id="crm_company_do_not_change" value="stet" type="radio" name="crm-name-action" checked />' + bestGuessCrmName);
+          $('#id_crm_company').val(bestGuessCrmName);
           $('#companyCrmModal').modal('show');
         }
       });
     } else {
       $('#registration-form').submit();
     }
+  });
+
+
+  // Update Crm_stet value in modal when a different crm record is selected
+  $('body').on('change', 'input[name="crm-select"]', function(){
+    var selectedCrmRecordId = $(this).val();
+    if (selectedCrmRecordId == 'new'){
+      var stetCrmName = $('#id_company_name').val();
+    } else {
+      var stetCrmName = $('#crm_saved_company_name_' + selectedCrmRecordId).val();
+    };
+    $('#crm-stet-name-label').html('<input id="crm_company_do_not_change" value="stet" type="radio" name="crm-name-action" checked />' + stetCrmName);
+    $('#id_crm_company').val(stetCrmName);
   });
 
 
@@ -355,5 +381,117 @@ $(document).ready(function(){
     };
     $('#registration-form').submit();
   })
+
+
+  // Trigger modal to look for matching company
+  $('body').on('click', '#search-for-company', function(){
+    var currentCompanyName = $('#id_company_name').val();
+    $('#id-company-name-match').val(currentCompanyName);
+    var currentCompanyAddress = $('#id_address1').val();
+    $('#id-company-address-match').val(currentCompanyAddress);
+    var currentCompanyCity = $('#id_city').val();
+    $('#id-company-city-match').val(currentCompanyCity);
+    var currentCompanyPostalCode = $('#id_postal_code').val();
+    $('#id-company-postal-code-match').val(currentCompanyPostalCode);
+    $('#companyMatchModal').modal('show');
+  });
+
+
+  // Submit search for company match from optional modal
+  $('body').on('click', '#btn-search-for-company', function(){
+    var companyName = $('#id-company-name-match').val();
+    var companyAddress = $('#id-company-address-match').val();
+    var companyCity = $('#id-company-city-match').val();
+    var companyPostalCode = $('#id-company-postal-code-match').val();
+    if (companyName || companyAddress || companyCity || companyPostalCode) {
+      $.ajax({
+        url: '/delegate/suggest_company_match/',
+        type: 'POST',
+        data: {
+          'company_name': companyName,
+          'postal_code': companyPostalCode,
+          'city': companyCity,
+          'address1': companyAddress,
+        },
+        success: function(data){
+          $('#suggested-match-list').html(data);
+        }
+      });
+    };
+  });
+
+
+  // When company is selected, populate registration fields
+  // TODO: Finish this!
+  $('body').on('click', '#btn-select-company-match', function(){
+    // 1 get value of selected company and make sure it's not 'new'
+    var selectedCompanyId = $('input[name="company-match-select"]:checked').val();
+    // 2 hit d/b to get values (in json)
+    if (selectedCompanyId != 'new') {
+      $.ajax({
+        url: '/delegate/get_company_details/',
+        type: 'GET',
+        data: {
+          'company': selectedCompanyId,
+        },
+        success: function(data){
+          $('#id_company_name').val(data.name);
+          $('#id_name_for_badges').val(data.name_for_badges);
+          $('#id_address1').val(data.address1);
+          $('#id_address2').val(data.address2);
+          $('#id_city').val(data.city);
+          $('#id_state_prov').val(data.state_prov);
+          $('#id_postal_code').val(data.postal_code);
+          $('#id_country').val(data.country);
+          $('#id_gst_hst_exemption_number').val(data.gst_hst_exemption_number);
+          $('#id_qst_exemption_number').val(data.qst_exemption_number);
+          $('#id_gst_hst_exempt').prop('checked', data.gst_hst_exempt);
+          $('#id_qst_exempt').prop('checked', data.qst_exempt);
+          $('#company-match-value').val(data.pk);
+          // 3 Remove search icon from screen
+          $('#search-for-company').remove();
+        }
+      })
+    }
+    // 4 close modal
+    $('#companyMatchModal').modal('hide');
+  });
+
+
+  // Autocomplete for company name
+  var companySuggestionClass = new Bloodhound({
+    limit: 20,
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    remote: {
+      url: '/delegate/suggest_company/',
+      replace: function(url, query){
+        return url + '?q=' + query;
+      },
+      filter: function(my_Suggestion_class){
+        return $.map(my_Suggestion_class, function(data){
+          return {value: data.identifier};
+        })
+      }
+    }
+  });
+  companySuggestionClass.initialize();
+  $('#id_company_name').typeahead({
+    hint: true,
+    highligh: true,
+    minLength: 1
+  },
+  {
+    name: 'value',
+    displayKey: 'value',
+    source: companySuggestionClass.ttAdapter(),
+    templates: {
+      empty: [
+        '<div class="tt-suggestion">',
+        'No Items Found',
+        '</div>'
+      ].join('\n')
+    }
+  });
 
 });

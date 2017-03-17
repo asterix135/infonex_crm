@@ -26,5 +26,7 @@ TRAINING_CXL_POLICY = 'Due to demand and limited enrollment, there are no ' \
     'sure your colleague receives full access to the event materials, a name ' \
     'badge, and a seat reserved at the master class or training seminar.'
 
-STOPWORDS = ['a', 'an', 'and', 'by', 'for',
-             'from', 'in', 'of', 'on', 'or', 'the']
+STOPWORDS = ['a', 'an', 'and', 'by', 'for', 'from', 'in', 'of', 'on', 'or',
+             'the', 'llp', 'inc.', 'llp.']
+STOPWORDS2 = ['canada', 'ministry', 'bc', 'alberta', 'saskatchewan', 'manitoba',
+              'ontario', 'quebec', 'scotia', 'brunswick', 'newfoundland']

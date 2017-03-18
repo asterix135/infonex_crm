@@ -224,6 +224,8 @@ def build_email_lists(reg_details, invoice):
 
 
 def guess_company(company_name, postal_code, address1, city, name_first=False):
+    if re.match(r'\b\w\d\w\d\w\d\b', postal_code):  # no space in postal code
+        postal_code = postal_code.strip()[:3] + ' ' + postal_code.strip()[-3:]
     name_tokens = [x for x in company_name.split()
                    if x.lower() not in STOPWORDS]
     company_best_guess = None
@@ -350,6 +352,11 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     # b. Update company with form values
     company_select_form = CompanySelectForm(request.POST, instance=company)
     company_select_form.save()
+    if company.country and company.country.lower() not in ('', 'canada'):
+        if re.match(r'\b\w\d\w\d\w\d\b', company.postal_code):  # no space
+            new_pc = company.postal_code.strip()
+            copmany.postal_code = new_pc[:3] + ' ' + new_pc[-3:]
+            company.save()
 
     # c. update crm record with form values
     crm_match.name = request.POST['first_name'] + ' ' + request.POST['last_name']

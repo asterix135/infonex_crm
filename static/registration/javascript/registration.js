@@ -13,11 +13,15 @@ $(document).ready(function(){
       success: function(data) {
         $('#ajax-content').html(data);
         activePanel = ajaxPayload;
+        if (ajaxPayload == 'reg-search') {
+          startTypeAhead()
+        };
       }
     });
   });
 
 
+  // Next section of code is related to manipulation of admin reports search panel
   function disableDataExport(){
     var docFormat = $('input[name="report_format"]:checked').val();
     if (docFormat != 'pdf') {
@@ -37,7 +41,6 @@ $(document).ready(function(){
   function enableAllRadios(){
     $('input[type="radio"]').attr('disabled', false);
   }
-
 
   // Logic to hide/disable radio buttons based on other selections
   $('body').on('change', 'input[name="report"]', function(){
@@ -93,6 +96,124 @@ $(document).ready(function(){
     } else {
       console.log('not ok');
     };
-
   });
+
+
+  // Next section of code is related to search
+
+
+  // Code from here to end is related to typeahead for first_name, last_name and company
+  var firstNameSuggestionClass = new Bloodhound({
+    limit: 20,
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    remote: {
+      url: '/registration/suggest_first_name/',
+      replace: function(url, query){
+        return url + '?q=' + query;
+      },
+      filter: function(my_Suggestion_class) {
+        return $.map(my_Suggestion_class, function(data){
+          return {value: data.identifier};
+        });
+      }
+    }
+  });
+  firstNameSuggestionClass.initialize();
+
+
+  var lastNameSuggestionClass = new Bloodhound({
+    limit: 20,
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    remote: {
+      url: '/registration/suggest_last_name/',
+      replace: function(url, query){
+        return url + '?q=' + query;
+      },
+      filter: function(my_Suggestion_class) {
+        return $.map(my_Suggestion_class, function(data){
+          return {value: data.identifier};
+        });
+      }
+    }
+  });
+  lastNameSuggestionClass.initialize();
+
+
+  var companySuggestionClass = new Bloodhound({
+    limit: 20,
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    remote: {
+      url: '/delegate/suggest_company/',
+      replace: function(url, query){
+        return url + '?q=' + query;
+      },
+      filter: function(my_Suggestion_class){
+        return $.map(my_Suggestion_class, function(data){
+          return {value: data.identifier};
+        })
+      }
+    }
+  });
+  companySuggestionClass.initialize();
+
+
+  function startTypeAhead(){
+    $('#id_first_name').typeahead({
+      hint: true,
+      highlight: true,
+      minLength: 2
+    },
+    {
+      name: 'value',
+      displayKey: 'value',
+      source: firstNameSuggestionClass.ttAdapter(),
+      templates: {
+          empty: [
+              '<div class="tt-suggestion">',
+              'No Items Found',
+              '</div>'
+          ].join('\n')
+      }
+    });
+
+    $('#id_last_name').typeahead({
+      hint: true,
+      highlight: true,
+      minLength: 2
+    },
+    {
+      name: 'value',
+      displayKey: 'value',
+      source: lastNameSuggestionClass.ttAdapter(),
+      templates: {
+          empty: [
+              '<div class="tt-suggestion">',
+              'No Items Found',
+              '</div>'
+          ].join('\n')
+      }
+    });
+
+    $('#id_company').typeahead({
+      hint: true,
+      highlight: true,
+      minLength: 2
+    },
+    {
+      name: 'value',
+      displayKey: 'value',
+      source: companySuggestionClass.ttAdapter(),
+      templates: {
+          empty: [
+              '<div class="tt-suggestion">',
+              'No Items Found',
+              '</div>'
+          ].join('\n')
+      }
+    });
+  };
+
 });

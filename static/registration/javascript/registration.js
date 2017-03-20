@@ -20,8 +20,9 @@ $(document).ready(function(){
     });
   });
 
-
+  //////////////////////////
   // Next section of code is related to manipulation of admin reports search panel
+  //////////////////////////
   function disableDataExport(){
     var docFormat = $('input[name="report_format"]:checked').val();
     if (docFormat != 'pdf') {
@@ -99,10 +100,44 @@ $(document).ready(function(){
   });
 
 
+  ///////////////////////
   // Next section of code is related to search
+  ///////////////////////
+  $('body').on('click', '#submit-reg-search', function(){
+    var invoiceNumber = $('#invoice_number').val();
+    var confId = $('#id_event').val();
+    var firstName = $('#id_first_name').val();
+    var lastName = $('#id_last_name').val();
+    var company = $('#id_company').val();
+    if (invoiceNumber || confId || firstName || lastName || company) {
+      $.ajax({
+        url: '/registration/find_reg/',
+        type: 'POST',
+        data: {
+          'invoice_number': invoiceNumber,
+          'conf_id': confId,
+          'first_name': firstName,
+          'last_name': lastName,
+          'company': company
+        }
+        success: function(data, status, xhr){
+          var ct = xhr.getResponseHeader('content-type') || '';
+
+          if (ct.indexOf('html') > -1){
+            $('#reg-results').html(data);
+          }
+          if (ct.indexOf('json') > -1){
+            // redirect based on json info
+          }
+        }
+      });
+    }
+  });
 
 
+  ////////////////////////////
   // Code from here to end is related to typeahead for first_name, last_name and company
+  ////////////////////////////
   var firstNameSuggestionClass = new Bloodhound({
     limit: 20,
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),

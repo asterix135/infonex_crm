@@ -316,6 +316,99 @@ def filter_venue(request):
 
 
 @login_required
+def find_reg(request):
+    """
+    Ajax call to search for existing registrations;
+    called from registration.js from registration_search.html
+    """
+    # variable instantiation
+    failure_message = None
+    matched_reg = None
+    reg_pool = None
+    num_events = 0
+    if request.method != 'POST':
+        return HttpResponse('')
+    if request.POST['invoice_number'] != '':
+        try:
+            invoice = Invoice.objects.get(pk=request.POST['invoice_number'])
+        except Invoice.DoesNotExist:
+            invoice = None
+            failure_message = 'Invoice Does Not Exist'
+    else:
+        invoice = None
+    if request.POST['conf_id'] != '':
+        try:
+            conf = Event.objects.get(pk=request.POST['conf_id'])
+            num_events = 1
+        except Event.DoesNotExist:
+            conf = None
+            failure_message = 'Event Does Not Exist'
+    else:
+        conf = None
+    if request.POST['first_name'] != '':
+        first_name = request.POST['first_name']
+    else:
+        first_name = None
+    if request.POST['last_name'] != '':
+        last_name = request.POST['last_name']
+    else:
+        last_name = None
+    if request.POST['company'] != '':
+        company = request.POST['company']
+    else:
+        company = None
+
+    # conduct search
+    if invoice:
+        matched_reg = RegDetails.objects.get(invoice=invoice)
+
+    elif conf:
+        reg_pool = RegDetails.objects.filter(conference=event)
+        if reg_pool.count() == 0:
+            failure_message == 'No registrations yet for that event'
+        elif reg_pool.count() == 1 and not (first_name or last_name or company):
+            matched_reg = reg_pool[0]
+
+    if not matched_reg and not failure_message:
+        reg_pool = RegDetails.objects.all() if not reg_pool else reg_pool
+        kwargs = {
+            'first_name__icontains': first_name,
+            'last_name__icontains': last_name,
+            'company.name__icontains': company
+        }
+        reg_pool = reg_pool.filter(**kwargs)
+        if reg_pool.count() == 0:
+            failure_message = 'No registrations match your search criteria'
+        elif reg_pool.count() == 1:
+            matched_reg = reg_pool[0]
+
+    # Case 1: Only one match
+    if matched_reg:
+        data = json.dumps({'reg_id': matched_reg.pk})
+        mimetype = 'applications/json'
+        return HttpResponse(data, mimetype)
+    # Case 2: No matches
+    if failure_message:
+        context = {'failure_message': failure_message}
+        url = 'registration/index_panels/registration_search_results_one_event.html'
+    # Case 3: matches from only one or multiple conference
+    else:
+        if num_events == 0:
+            num_events = 1
+            event_match = reg_pool[0].event
+            for reg in reg_pool[1:]:
+                if reg.event != event_match:
+                    num_events = 2
+                    break
+        if num_events == 1:
+            url = 'registration/index_panels/registration_search_results_one_event.html'
+        else:
+            url = 'registration/index_panels/registration_search_results_multiple_events.html'
+        context = {'reg_match_list', reg_pool}
+    return render(request, url, context)
+
+
+@login_required
 def get_registration_history(request):
     """AJAX call to get reg history for past delegate"""
     context = RequestContext(request)

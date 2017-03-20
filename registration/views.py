@@ -1,5 +1,6 @@
 import csv
 from io import BytesIO
+import json
 from openpyxl import Workbook
 
 from django.contrib.auth.decorators import login_required
@@ -334,7 +335,7 @@ def index_panel(request):
     if 'panel' not in request.GET:
         return HttpResponse('')
     if request.GET['panel'] == 'admin-reports':
-        response_url = 'registration/addins/admin_reports.html'
+        response_url = 'registration/index_panels/admin_reports.html'
         conference_select_form = ConferenceSelectForm()
         conference_select_form.fields['event'].queryset = \
             Event.objects.all().order_by('-date_begins')
@@ -343,6 +344,17 @@ def index_panel(request):
             'conference_select_form': conference_select_form,
             'admin_report_options_form': admin_report_options_form,
         }
+    elif request.GET['panel'] == 'reg-search':
+        response_url = 'registration/index_panels/registration_search.html'
+        delegate_search_form = NewDelegateSearchForm()
+        delegate_search_form.fields['event'].queryset = \
+            Event.objects.all().order_by('-date_begins')
+        context = {
+            'delegate_search_form': delegate_search_form,
+        }
+
+    else:
+        raise Http404('Invalid panel name')
 
     return render(request, response_url, context)
 
@@ -454,6 +466,46 @@ def select_conference_to_edit(request):
     }
     return render(request, 'registration/addins/conference_edit_panel.html',
                   context)
+
+
+@login_required
+def suggest_first_name(request):
+    """
+    Ajax call - returns json of top 25 first names (by number in db) that
+    match entered string
+    """
+    query_term = request.GET.get('q', '')
+    selects = Registrants.objects.filter(first_name__icontains=query_term) \
+        .values('first_name').annotate(total=Count('first_name')) \
+        .order_by('-total')[:25]
+    results = []
+    for select in selects:
+        select_json = {}
+        select_json['identifier'] = select['first_name']
+        results.append(select_json)
+    data = json.dumps(results)
+    mimetype = 'applications/json'
+    return HttpResponse(data, mimetype)
+
+
+@login_required
+def suggest_last_name(request):
+    """
+    Ajax call - returns json of top 25 first names (by number in db) that
+    match entered string
+    """
+    query_term = request.GET.get('q', '')
+    selects = Registrants.objects.filter(last_name__icontains=query_term) \
+        .values('last_name').annotate(total=Count('last_name')) \
+        .order_by('-total')[:25]
+    results = []
+    for select in selects:
+        select_json = {}
+        select_json['identifier'] = select['last_name']
+        results.append(select_json)
+    data = json.dumps(results)
+    mimetype = 'applications/json'
+    return HttpResponse(data, mimetype)
 
 
 @login_required

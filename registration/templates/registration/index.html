@@ -3,6 +3,8 @@
 
 {% block script_includes %}
 <script type="text/javascript" src="{% static 'registration/javascript/registration.js' %}"></script>
+<link href="{% static 'crm/typeahead.css' %}" rel="stylesheet" type="text/css" />
+<script type='text/javascript' src="http://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -22,20 +24,7 @@
       <p>
         <a class="btn btn-default" href="new_delegate_search">New Registration &raquo;</a>
       </p>
-      <p>
-        <a href="#del-search" class="btn btn-default" data-toggle="collapse">
-          Find Registration &raquo;
-        </a>
-      </p>
-      <div id="del-search" class="collapse">
-        <label>Enter Invoice Number</label>
-        <div class="input-group">
-          <input type="number" class="form-control" name="invoice-number" id="invoice-number" />
-          <span class="input-group-btn">
-            <button class="btn btn-success" type="button" id="search-invoice-number">Go!</button>
-          </span>
-        </div>
-      </div>
+      <p><button class="btn btn-default ajax-load" type="button" ajax-target="reg-search">Find Registration &raquo;</button></p>
     </div>
 
     <div class="col-sm-4">

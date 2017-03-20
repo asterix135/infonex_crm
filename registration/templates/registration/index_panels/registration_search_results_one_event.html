@@ -1,0 +1,40 @@
+<!-- Inserted by ajax call into registration_search.html -->
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h2 class="panel-title h2">Matches</h2>
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped">
+      <thead class="thead-inverse">
+        <tr>
+          <th class="col-sm-2">
+            Select?
+          </th>
+          <th class="col-sm-10">
+            Registration Details
+          </th>
+        </tr>
+        {% for match in reg_match_list %}
+        <tr>
+          <td>
+            <button class="btn btn-success choose-reg" id="{{ match.pk }}">Select</button>
+          </td>
+          <td>
+            <h4>{{ match.first_name }}&nbsp;{{ match.last_name }}</h4>
+            <p class="person-detail">{{ match.title }}</p>
+            <p class="person-detail">{{ match.company.name }}</p>
+            <p class="person-detail">
+              {{ match.company.city }}{% if match.company.city and match.company.state_prov %},
+              {% endif %}
+              {{ match.company.state_prov }}
+            </p>
+            {% if match.phone1 %}<p class="person-detail">Tel: {{ match.phone1 }}</p>{% endif %}
+            {% if match.email1 %}<p class="person-detail">Email: {{ match.email1 }}</p>{% endif %}
+          </td>
+        </tr>
+
+      </thead>
+    </table>
+  </div>
+
+</div>

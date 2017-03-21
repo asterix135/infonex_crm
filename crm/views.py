@@ -1509,7 +1509,8 @@ def call_report(request):
     conf_details_text = event.number + ': ' + event.title + ' (' \
         + user.username+ ')'
     report_details.append(Paragraph(conf_details_text, styles['h2']))
-
+    report = SimpleDocTemplate(buffr, pagesize=letter,
+                               leftMargin=inch, rightMargin = inch)
     data = []
     for contact in contact_history:
         person = contact.person.name
@@ -1531,8 +1532,7 @@ def call_report(request):
     #                                             (-1, -1), 'TOP')]))
     #     report_details.append(call_detail_table)
 
-    report = SimpleDocTemplate(buffr, pagesize=letter,
-                               leftMargin=inch, rightMargin = inch)
+
     report.build(report_details)
 
     pdf = buffr.getvalue()

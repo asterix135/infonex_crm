@@ -1517,7 +1517,7 @@ def call_report(request):
             person = person + '<br/>' + contact.person.title
         if contact.person.company:
             person = person + '<br/>' + contact.person.company
-        date = Paragraph(contact.date_of_contact.date(), cell_style)
+        date = Paragraph(str(contact.date_of_contact.date()), cell_style)
         person = Paragraph(person, cell_style)
         notes = Paragraph(contact.notes, cell_style)
         data.append([date, person, notes])

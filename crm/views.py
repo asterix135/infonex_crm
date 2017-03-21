@@ -1521,6 +1521,9 @@ def call_report(request):
         person = Paragraph(person, cell_style)
         notes = Paragraph(contact.notes, cell_style)
         data.append([date, person, notes])
+        print([str(contact.date_of_contact.date()),
+               person,
+               contact.notes])
     if len(data) > 0:
         call_detail_table = Table(data, [inch, 2 * inch, 4.5 * inch])
         call_detail_table.setStyle(TableStyle([('VALIGN', (0,0),

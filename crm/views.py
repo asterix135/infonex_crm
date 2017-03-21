@@ -1515,9 +1515,9 @@ def call_report(request):
     for contact in contact_history:
         person = contact.person.name
         if contact.person.title:
-            person = person + '<br/>' + contact.person.title
+            person = person + '<br/>' + contact.person.title[:50]
         if contact.person.company:
-            person = person + '<br/>' + contact.person.company
+            person = person + '<br/>' + contact.person.company[:50]
         date = Paragraph(str(contact.date_of_contact.date()), cell_style)
         person = Paragraph(person, cell_style)
         notes = Paragraph(contact.notes, cell_style)

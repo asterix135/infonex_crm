@@ -439,6 +439,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
         current_registration.cancellation_date = None
     current_registration.registration_status = \
         request.POST['registration_status']
+    current_registration.registration_notes = request.POST['registration_notes']
     current_registration.modified_by = request.user
     current_registration.date_modified = timezone.now()
     current_registration.save()

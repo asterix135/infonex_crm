@@ -4,6 +4,8 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+Registration notes not showing on reg note
+
 TODO: 75) registration.js - line 113ish - how to respond to json w/ redirect
           (see http://stackoverflow.com/questions/29137910/redirecting-after-ajax-post-in-django)
 

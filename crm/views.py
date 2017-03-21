@@ -1521,14 +1521,15 @@ def call_report(request):
         person = Paragraph(person, cell_style)
         notes = Paragraph(contact.notes, cell_style)
         data.append([date, person, notes])
-        print([str(contact.date_of_contact.date()),
-               person,
-               contact.notes])
-    if len(data) > 0:
-        call_detail_table = Table(data, [inch, 2 * inch, 4.5 * inch])
-        call_detail_table.setStyle(TableStyle([('VALIGN', (0,0),
-                                                (-1, -1), 'TOP')]))
-        report_details.append(call_detail_table)
+        table = Table(data, [inch, 2 * inch, 4.5 * inch])
+        table.setStyle(TableStyle([('VALIGN', (0,0), (-1, -1), 'TOP')]))
+        report.details.append(table)
+        data = []
+    # if len(data) > 0:
+    #     call_detail_table = Table(data, [inch, 2 * inch, 4.5 * inch])
+    #     call_detail_table.setStyle(TableStyle([('VALIGN', (0,0),
+    #                                             (-1, -1), 'TOP')]))
+    #     report_details.append(call_detail_table)
 
     report = SimpleDocTemplate(buffr, pagesize=letter,
                                leftMargin=inch, rightMargin = inch)

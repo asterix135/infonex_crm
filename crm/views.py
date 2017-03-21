@@ -1510,7 +1510,7 @@ def call_report(request):
         + user.username+ ')'
     report_details.append(Paragraph(conf_details_text, styles['h2']))
     report = SimpleDocTemplate(buffr, pagesize=letter,
-                               leftMargin=inch, rightMargin = inch)
+                               leftMargin=inch/2, rightMargin = inch/2)
     data = []
     for contact in contact_history:
         person = contact.person.name
@@ -1522,7 +1522,7 @@ def call_report(request):
         person = Paragraph(person, cell_style)
         notes = Paragraph(contact.notes, cell_style)
         data.append([date, person, notes])
-        table = Table(data, [inch, 2 * inch, 4.5 * inch])
+        table = Table(data, [inch, 3 * inch, 4.5 * inch])
         table.setStyle(TableStyle([('VALIGN', (0,0), (-1, -1), 'TOP')]))
         report_details.append(table)
         data = []

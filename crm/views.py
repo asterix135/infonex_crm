@@ -1520,7 +1520,7 @@ def call_report(request):
             person = person + '<br/>' + contact.person.company
         date = Paragraph(str(contact.date_of_contact.date()), cell_style)
         person = Paragraph(person, cell_style)
-        notes = Paragraph(contact.notes[:2500], cell_style)
+        notes = Paragraph(contact.notes[:3500], cell_style)
         data.append([date, person, notes])
         table = Table(data, [inch, 3 * inch, 4.5 * inch])
         table.setStyle(TableStyle([('VALIGN', (0,0), (-1, -1), 'TOP')]))

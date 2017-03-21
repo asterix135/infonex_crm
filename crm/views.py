@@ -88,7 +88,7 @@ def add_to_recent_contacts(request, person_id):
         recent_contact_list = request.session['recent_contacts']
     if person_id not in recent_contact_list:
         recent_contact_list.insert(0, person_id)
-        recent_contact_list = recent_contact_list[:10]
+        recent_contact_list = recent_contact_list[:25]
     else:
         recent_contact_list.remove(person_id)
         recent_contact_list.insert(0, person_id)
@@ -1517,7 +1517,7 @@ def call_report(request):
             person = person + '<br/>' + contact.person.title
         if contact.person.company:
             person = person + '<br/>' + contact.person.company
-        date = contact.date_of_contact.date()
+        date = Paragraph(contact.date_of_contact.date(), cell_style)
         person = Paragraph(person, cell_style)
         notes = Paragraph(contact.notes, cell_style)
         data.append([date, person, notes])

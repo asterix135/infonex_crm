@@ -1,6 +1,5 @@
 import datetime
 from io import BytesIO
-import json
 import os
 import re
 
@@ -516,7 +515,14 @@ def confirmation_details(request):
 @login_required
 def index(request):
     """ renders base delegate/index.html page """
-    if request.method != 'POST':
+    if request.method == 'GET' and 'reg_id' in request.GET:
+        try:
+            current_registration = RegDetails.objects.get(
+                pk=request.GET['reg_id']
+            )
+        except RegDetails.DoesNotExist:
+            raise Http404('That Registration does not exist')
+    elif request.method != 'POST':
         return redirect('/registration/')
 
     # Instantiate stuff
@@ -527,7 +533,8 @@ def index(request):
     assistant_form = AssistantForm()
     conference_select_form = ConferenceSelectForm()
     reg_details_form = RegDetailsForm()
-    current_registration = None
+    if 'current_registration' not in locals():
+        current_registration = None
     conference = None
     conference_options = None  # Remove when form working
     registrant = None
@@ -1019,9 +1026,7 @@ def suggest_company(request):
         select_json = {}
         select_json['identifier'] = select['name']
         results.append(select_json)
-    data = json.dumps(results)
-    mimetype = 'applications/json'
-    return HttpResponse(data, mimetype)
+    return JsonResponse(results)
 
 
 @login_required

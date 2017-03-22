@@ -36,10 +36,11 @@
         {% endfor %}
         {% else %}
         <tr>
-          <td rowspan="2">
+          <td colspan="2">
             <h4>{{ failure_message }}</h4>
           </td>
         </tr>
+        {% endif %}
       </thead>
     </table>
   </div>

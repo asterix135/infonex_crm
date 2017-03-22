@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^delete_venue/$', views.delete_venue, name='delete_venue'),
     url(r'^edit_venue/$', views.edit_venue, name='edit_venue'),
     url(r'^filter_venue/$', views.filter_venue, name='filter_venue'),
+    url(r'^find_reg/$', views.find_reg, name='find_reg'),
     url(r'^get_registration_history/$', views.get_registration_history,
         name='get_registration_history'),
     url(r'^index_panel/$', views.index_panel, name='index_panel'),

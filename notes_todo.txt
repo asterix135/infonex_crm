@@ -9,7 +9,7 @@ Registration notes not showing on reg note
 TODO: 75) registration.js - line 113ish - how to respond to json w/ redirect
           (see http://stackoverflow.com/questions/29137910/redirecting-after-ajax-post-in-django)
 
-TODO: 76) delegate/index.py - rewrite to take a get request for a specific reg
+TODO: 76) delegate/index.py - rewrite to take a get request for a specific reg - start at line 548
 
 TODO: 72) Format radio buttons on report select panel
             http://avtex.com/2015/02/bootstrap-radio-buttons-and-checkboxes-in-columns-with-contextual-text-fields/

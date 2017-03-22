@@ -5,7 +5,8 @@ from openpyxl import Workbook
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404, \
+    JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import RequestContext
 from django.urls import reverse
@@ -384,9 +385,10 @@ def find_reg(request):
 
     # Case 1: Only one match
     if matched_reg:
-        data = json.dumps({'reg_id': matched_reg.pk})
-        mimetype = 'applications/json'
-        return HttpResponse(data, mimetype)
+        # data = json.dumps({'reg_id': matched_reg.pk})
+        # mimetype = 'applications/json'
+        # return HttpResponse(data, mimetype)
+        return JsonResponse({'reg_id': matched_reg.pk})
     # Case 2: No matches
     if failure_message:
         context = {'failure_message': failure_message}

@@ -226,18 +226,18 @@ $(document).ready(function(){
   // function to update tax and invoice total on screen
   function updateTaxAndInvoice() {
     var preTaxPrice = $('#id_pre_tax_price').val();
-    if ($('#id_gst_rate').val() != undefined){
-      var gstRate = $('#id_gst_rate').val();
+    if ($.inArray($('#id_gst_rate').val(), [undefined, '']) == -1){
+      var gstRate = parseFloat($('#id_gst_rate').val());
     } else {
       var gstRate = 0;
     };
-    if ($('#id_hst_rate').val() != undefined){
-      var hstRate = $('#id_hst_rate').val();
+    if ($.inArray($('#id_hst_rate').val(), [undefined, '']) == -1){
+      var hstRate = parseFloat($('#id_hst_rate').val());
     } else {
       var hstRate = 0;
     };
-    if ($('#id_qst_rate').val() != undefined) {
-      var qstRate = $('#id_qst_rate').val();
+    if ($.inArray($('#id_qst_rate').val(), [undefined, '']) == -1) {
+      var qstRate = parseFloat($('#id_qst_rate').val());
     } else {
       var qstRate = 0;
     };

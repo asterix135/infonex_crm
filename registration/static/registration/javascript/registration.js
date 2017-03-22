@@ -119,7 +119,7 @@ $(document).ready(function(){
           'first_name': firstName,
           'last_name': lastName,
           'company': company
-        }
+        },
         success: function(data, status, xhr){
           var ct = xhr.getResponseHeader('content-type') || '';
 

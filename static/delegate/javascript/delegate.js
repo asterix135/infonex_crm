@@ -2,6 +2,11 @@ $(document).ready(function(){
 
   // TODO: Format currency to 2 decimals & fx to 3 decimals
 
+  // Global variables
+  var defaultGstRate = $('#id_gst_rate').val();
+  var defaultHstRate = $('#id_hst_rate').val();
+  var defaultQstRate = $('#id_qst_rate').val();
+
   // Check & adjust display of reg details on page load/reload
   displayHideRegDetails();
   // Update display of tax and invoice
@@ -256,6 +261,29 @@ $(document).ready(function(){
   });
 
 
+  // Update tax rates when exemption box changes
+  $('body').on('change', '#id_gst_hst_exempt', function(){
+    var isGstExempt = $(this).prop('checked');
+    if (isGstExempt){
+      $('#id_gst_rate').val(0);
+      $('#id_hst_rate').val(0);
+    } else {
+      $('#id_gst_rate').val(defaultGstRate);
+      $('#id_hst_rate').val(defaultHstRate);
+    }
+    updateTaxAndInvoice();
+  });
+  $('body').on('change', '#id_qst_exempt', function(){
+    var isQstExempt = $(this).prop('checked');
+    if (isQstExempt){
+      $('#id_qst_rate').val(0);
+    } else {
+      $('#id_qst_rate').val(defaultQstRate);
+    }
+    updateTaxAndInvoice();
+  });
+
+
   // toggles whether company name is editable & change icon
   $('body').on('click', '#toggle-company-edit', function(){
     if ($(this).hasClass('glyphicon-chevron-down')){
@@ -447,6 +475,16 @@ $(document).ready(function(){
           $('#id_gst_hst_exempt').prop('checked', data.gst_hst_exempt);
           $('#id_qst_exempt').prop('checked', data.qst_exempt);
           $('#company-match-value').val(data.id);
+          // 3 Update tax rates
+          if (data.gst_hst_exempt){
+            $('#id_hst_rate').val(0);
+            $('#id_gst_rate').val(0);
+            updateTaxAndInvoice();
+          }
+          if (data.qst_exempt){
+            $('#id_qst_rate').val(0);
+            updateTaxAndInvoice();
+          }
           // 3 Remove search icon from screen
           $('#search-for-company').remove();
         }

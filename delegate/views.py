@@ -1,5 +1,6 @@
 import datetime
 from io import BytesIO
+import json
 import os
 import re
 
@@ -1026,7 +1027,9 @@ def suggest_company(request):
         select_json = {}
         select_json['identifier'] = select['name']
         results.append(select_json)
-    return JsonResponse(results)
+    data = json.dumps(results)
+    mimetype = 'applications/json'
+    return HttpResponse(data, mimetype)
 
 
 @login_required

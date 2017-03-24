@@ -477,13 +477,11 @@ $(document).ready(function(){
           $('#company-match-value').val(data.id);
           // 3 Update tax rates
           if (data.gst_hst_exempt){
-            console.log('gst exempt');
             $('#id_hst_rate').val(0);
             $('#id_gst_rate').val(0);
             updateTaxAndInvoice();
           }
           if (data.qst_exempt){
-            console.log('qst exempt');
             $('#id_qst_rate').val(0);
             updateTaxAndInvoice();
           }

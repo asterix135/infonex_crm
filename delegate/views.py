@@ -547,12 +547,21 @@ def index(request):
     data_source = None
 
     # Deal with passed data
-    conf_id = request.POST['conf_id']
-    conference = Event.objects.get(pk=conf_id)
+    if request.method == 'POST':
+        conf_id = request.POST['conf_id']
+        conference = Event.objects.get(pk=conf_id)
+        crm_id = request.POST['crm_id']
+        registrant_id = request.POST['registrant_id']
+    else:
+        conference = current_registration.conference
+        conf_id = conference.pk
+        try:
+            crm_id = current_registration.registrant.crm_person.pk
+        except AttributeError:
+            crm_id = None
+        registrant_id = current_registration.registrant.pk
     conference_options = conference.eventoptions_set.all()
     options_form = OptionsForm(conference)
-    crm_id = request.POST['crm_id']
-    registrant_id = request.POST['registrant_id']
     conference_select_form = ConferenceSelectForm({'event': conf_id})
     if registrant_id != '':
         registrant = Registrants.objects.get(pk=registrant_id)
@@ -565,9 +574,11 @@ def index(request):
         if registrant.crm_person:
             crm_match = Person.objects.get(pk=registrant.crm_person.id)
         try:
-            current_registration = RegDetails.objects.get(
-                registrant=registrant, conference=conference
-            )
+            if not current_registration:
+                current_registration = RegDetails.objects.get(
+                    registrant=registrant, conference=conference
+                )
+                data_source = 'delegate'
             reg_data = {
                 'register_date': current_registration.register_date,
                 'cancellation_date': current_registration.cancellation_date,

@@ -1,0 +1,61 @@
+<div class="modal fade" id="substituteSearchModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+        <h3 class="modal-title">Substitute Delegate</h3>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid bd-example-row">
+          <div class="row">
+            <div class="col-sm-12">
+              <p>
+                Let's see if the substitute is already in the database.
+              </p>
+              <p>
+                If not, you can enter the new person's details after you've searched.
+              </p>
+            </div>
+          </div>
+
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              Search Databases
+            </div>
+            <div class="panel-body">
+              <p>
+                Please enter the delegate's name below.  I will only search for people
+                with the same (or similar) company name as the current delegate.
+              </p>
+              <div class="row">
+                <div class="col-sm-6">
+                  <label for="substitute_first_name">First Name</label>
+                  <input id="id_substitute_first_name" class="form-control" maxlength="50" name="substitute_first_name" type="text" />
+                </div>
+                <div class="col-sm-6">
+                  <label for="susbtitute_last_name">Last Name</label>
+                  <input id="id_substitute_last_name" class="form-control" maxlength="50" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <button type="button" class="btn btn-success col-sm-12 form-control modal-search-btn" id="btn-search-for-substitute">Search</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="substitute-match-list">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary" id="choose-match-company">Select</button> -->
+      </div>
+    </div>
+  </div>
+</div>

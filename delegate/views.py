@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
 from django.db.models import Q, Max, Count
 from django.forms.models import model_to_dict
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
@@ -1059,6 +1059,26 @@ def suggest_company_match(request):
         'company_best_guess': company_best_guess,
     }
     return render(request, 'delegate/addins/company_suggestion_matches.html',
+                  context)
+
+
+@login_required
+def search_for_substitute(request):
+    if set(('conf_id', 'first_name', 'last_name', 'company_id')) > \
+        request.GET.keys():
+        return HttpResponse('')
+    try:
+        conference = Event.objects.get(pk=request.GET['conf_id'])
+    except Event.DoesNotExist:
+        raise Http404('Conference does not exist')
+    try:
+        company = Company.objects.get(pk=request.GET['company_id'])
+    except Company.DoesNotExist:
+        raise Http404('Company does not exist')
+    context = {
+        'foo': 0
+    }
+    return render(request, 'delegate/addins/substitute_match_list.html',
                   context)
 
 

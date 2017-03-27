@@ -472,7 +472,11 @@ def save_conference_changes(request):
             )
             if conference_edit_form.is_valid():
                 event = conference_edit_form.save()
-                return HttpResponse('')
+                return HttpResponse(
+                    '<div class="row text-center">' \
+                    '<a href="/registration/new_delegate_search/" class="btn btn-primary">Create New Registration</a>' \
+                    '</div>'
+                )
         except (Event.DoesNotExist, MultiValueDictKeyError):
             conference_edit_form = ConferenceEditForm(request.POST)
     context = {

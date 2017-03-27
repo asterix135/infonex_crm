@@ -127,8 +127,7 @@ $(document).ready(function(){
             $('#reg-results').html(data);
           }
           if (ct.indexOf('json') > -1){
-            console.log('json returned');
-            console.log(data.reg_id);
+            $(location).attr('href', '/delegate?reg_id=' + data.reg_id)
           }
         }
       });

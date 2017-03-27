@@ -531,4 +531,29 @@ $(document).ready(function(){
     }
   });
 
+  ////////////////////
+  // Code for delegate substitution
+  ///////////////////
+
+  // submit search from modal
+  $('body').on('click', '#btn-search-for-substitute', function(){
+    var confId = $('#selected-conference-id').val();
+    var firstName = $('#id_substitute_first_name').val();
+    var lastName = $('#id_substitute_last_name').val();
+    var companyId = $('#company-match-value').val();
+    $.ajax({
+      url: '/delegate/search_for_substitute/',
+      type: 'GET',
+      data: {
+        'conf_id': confId,
+        'first_name': firstName,
+        'last_name': lastName,
+        'company_id': companyId,
+      },
+      success: function(data){
+        $('#substitute-match-list').html(data);
+      }
+    });
+  });
+
 });

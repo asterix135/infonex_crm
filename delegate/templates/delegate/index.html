@@ -20,6 +20,9 @@
 <div id="company-match-modal">
   {% include 'delegate/addins/company_match_modal.html' %}
 </div>
+<div id="subsitute-search-modal">
+  {% include 'delegate/addins/substitute_search_modal.html' %}
+</div>
 
 <form action="/delegate/process_registration/" method="post" id="registration-form">
   <div id="stored-variables">
@@ -70,6 +73,11 @@
           <div class="panel-body h4">
             Invoice Number:
             {{ current_registration.invoice.pk }}
+            <span class="float-right">
+              <button type="button" class="btn btn-default" id="substitute-delegate" data-toggle="modal" data-target="#substituteSearchModal">
+                Substitute Delegate
+              </button>
+            </span>
           </div>
         </div>
         {% elif current_registration %}

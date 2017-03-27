@@ -4,7 +4,17 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-Registration notes not showing on reg note
+Invoice/reg note rendering failing on following sequence:
+  1) new registration
+  2) forget to confirm some detail so get taken back to index page (eg. put phone # in email field)
+  3) correct & submit
+  -- it appears the info is submitted correctly but there is a problem with the pdf render
+  -- pre-tax price not being required before submit
+
+TODO: revamp the way company match suggestions are made:
+  - see if they can be ordered better
+  - trigrams first?
+  - use city name?
 
 TODO: 72) Format radio buttons on report select panel
             http://avtex.com/2015/02/bootstrap-radio-buttons-and-checkboxes-in-columns-with-contextual-text-fields/

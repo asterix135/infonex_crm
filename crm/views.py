@@ -50,6 +50,10 @@ def add_change_record(person, change_action):
     :param person: Instance of Person Model pre-modification
     :param change_action: string indicating change (add/delete/update)
     """
+    if not person.date_created:
+        creation_date = timezone.now()
+    else:
+        creation_date = person.date_created
     change = Changes(
         action=change_action,
         orig_id=person.pk,
@@ -69,7 +73,7 @@ def add_change_record(person, change_action):
         main_category2=person.main_category2,
         division1=person.division1,
         division2=person.division2,
-        date_created=person.date_created,
+        date_created=creation_date,
         created_by=person.created_by,
         date_modified=timezone.now(),
         modified_by=person.created_by,

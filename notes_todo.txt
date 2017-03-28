@@ -10,6 +10,7 @@ Invoice/reg note rendering failing on following sequence:
   3) correct & submit
   -- it appears the info is submitted correctly but there is a problem with the pdf render
   -- pre-tax price not being required before submit
+  -- on choosing delegate free put $0 in price box
 
 TODO: revamp the way company match suggestions are made:
   - see if they can be ordered better

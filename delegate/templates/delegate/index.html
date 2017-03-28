@@ -1,4 +1,4 @@
-  {% extends 'registration/base.html' %}
+{% extends 'registration/base.html' %}
 {% load staticfiles %}
 
 {% block title %}Register Delegate | {% endblock %}
@@ -227,10 +227,7 @@
                   {{ reg_details_form.pre_tax_price.label_tag }}
                   <div class="input-group">
                     <span class="input-group-addon">$</span>
-                    <input type="number" id="id_pre_tax_price" class="form-control cost-field"
-                      name="pre_tax_price" min="0" required=""
-                      {% if current_registration.invoice %}value="{{ current_registration.invoice.pre_tax_price }}"{% endif %}
-                      />
+                    {{ reg_details_form.pre_tax_price }}
                   </div>
                 </div>
                 <div id="fx-details">

@@ -222,7 +222,10 @@ $(document).ready(function(){
         $('#id_payment_date').datepicker({
           dateFormat: 'yy-mm-dd'
         });
-        $('#id_payment_date')
+        if (newStatus == 'DF'){
+          $('#id_pre_tax_price').val(0);
+          updateTaxAndInvoice();
+        }
       }
     });
   });

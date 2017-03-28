@@ -4,18 +4,11 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-Invoice/reg note rendering failing on following sequence:
-  1) new registration
-  2) forget to confirm some detail so get taken back to index page (eg. put phone # in email field)
-  3) correct & submit
-  -- it appears the info is submitted correctly but there is a problem with the pdf render
-  -- pre-tax price not being required before submit
-  -- on choosing delegate free put $0 in price box
-
 TODO: revamp the way company match suggestions are made:
   - see if they can be ordered better
   - trigrams first?
   - use city name?
+  delegate/views.py - line 303ish - excludes not working properly or Q not working or something
 
 TODO: 72) Format radio buttons on report select panel
             http://avtex.com/2015/02/bootstrap-radio-buttons-and-checkboxes-in-columns-with-contextual-text-fields/
@@ -23,8 +16,6 @@ TODO: 72) Format radio buttons on report select panel
 TODO: 70) Delegate page - cxl info doesn't disappear when it should
 
 TODO: 67) Need logic on delegate page to validate and deal with invoice changes
-
-TODO: 68) Make it possible to substitute a delegate
 
 TODO: 74) Make it possible to edit comments in CRM
 
@@ -161,3 +152,11 @@ TODO: 73) DONE - Logic to parse postal codes on delegate entry page & search
 TODO: 75) DONE - Write sql routine to insert space into all postal codes where needed
 TODO: 75) DONE - registration.js - line 113ish - how to respond to json w/ redirect
 TODO: 76) DONE?? - delegate/index.py - rewrite to take a get request for a specific reg - start at line 548
+TODO: 68) DONE -  Make it possible to substitute a delegate
+DONE - Invoice/reg note rendering failing on following sequence:
+  1) new registration
+  2) forget to confirm some detail so get taken back to index page (eg. put phone # in email field)
+  3) correct & submit
+  -- it appears the info is submitted correctly but there is a problem with the pdf render
+  -- pre-tax price not being required before submit (lost on return to page with errors)
+  -- on choosing delegate free put $0 in price box

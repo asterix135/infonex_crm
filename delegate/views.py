@@ -241,16 +241,18 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
         match1 = Company.objects.filter(name__iexact=company_name,
                                         postal_code__iexact=postal_code)
     if match1.count() == 1:
+        print('one')
         company_best_guess = match1[0]
-        company_suggest_list.append(match1[0])
+        company_suggest_list.extend(list(match1))
+        print(company_suggest_list)
     elif match1.count() > 1:
+        print('more than one')
+        company_suggest_list.extend(list(match1))
         match0 = match1.filter(address1__iexact=address1)
         if match0.count() > 0:  # Choose the first one if more than one
             company_best_guess = match0[0]
-            company_suggest_list.append(match0)
         else:
             company_best_guess = match1[0]
-            company_suggest_list.append(match1)
     if name_first and postal_code in ('', None):
         name_tokens = [x for x in name_tokens if x.lower() not in STOPWORDS2]
         match_base = Company.objects.all()
@@ -276,10 +278,10 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
         for item in queries:
             query |= item
         match3 = match_base.filter(query)
-        match3 = match3.exclude(query1).exclude(query0)
+        match3 = match3.exclude(id__in=query1).exclude(id__in=query0)
         if not company_best_guess and match3.count() > 0:
             company_best_guess = match3[0]
-        company_suggest_list.append(match3[:15-len(company_suggest_list)])
+        company_suggest_list.extend(list(match3[:15-len(company_suggest_list)]))
 
     # search on bigrams if feasible/needed
     if len(company_name.split()) > 2 and len(company_suggest_list < 15):
@@ -294,10 +296,11 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
         for item in queries:
             query |= item
         match2 = match_base.filter(query)
-        match2 = match2.exclude(query0).exclude(query1).exclude(query3)
+        match2 = match2.exclude(id__in=query0).exclude(id__in=query1). \
+            exclude(id__in=query3)
         if not company_best_guess and match2.count() > 0:
             company_best_guess = match2[0]
-        company_suggest_list.append(match2[:15-len(company_suggest_list)])
+        company_suggest_list.extend(list(match2[:15-len(company_suggest_list)]))
 
     # search on tokens if still needed/feasible
     if len(name_tokens) > 0 and len(company_suggest_list) < 15:
@@ -310,10 +313,11 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
         for item in queries:
             query |= item
         match_token = match_base.filter(query)
-        match_token = match_token.exclude(match0).exclude(match1).exclude(match2).exclude(match3)
+        match_token = match_token.exclude(id__in=match0). \
+            exclude(id__in=match1).exclude(id__in=match2).exclude(id__in=match3)
         if not company_best_guess and match_token.count() > 0:
             company_best_guess = match_token[0]
-        company_suggest_list.append(match_token[:15-len(company_suggest_list)])
+        company_suggest_list.extend(list(match_token[:15-len(company_suggest_list)]))
 
     #     # if token name search is too large, search on bigrams
     #     if match2.count() > 20 and len(company_name.split()) > 1:

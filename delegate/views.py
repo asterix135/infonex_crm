@@ -278,7 +278,7 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
         for item in queries:
             query |= item
         match3 = match_base.filter(query)
-        match3 = match3.exclude(id__in=query1).exclude(id__in=query0)
+        match3 = match3.exclude(id__in=match1).exclude(id__in=match0)
         if not company_best_guess and match3.count() > 0:
             company_best_guess = match3[0]
         company_suggest_list.extend(list(match3[:15-len(company_suggest_list)]))
@@ -296,8 +296,8 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
         for item in queries:
             query |= item
         match2 = match_base.filter(query)
-        match2 = match2.exclude(id__in=query0).exclude(id__in=query1). \
-            exclude(id__in=query3)
+        match2 = match2.exclude(id__in=match0).exclude(id__in=match1). \
+            exclude(id__in=match3)
         if not company_best_guess and match2.count() > 0:
             company_best_guess = match2[0]
         company_suggest_list.extend(list(match2[:15-len(company_suggest_list)]))

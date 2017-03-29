@@ -4,16 +4,12 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-TODO: revamp the way company match suggestions are made:
-  - see if they can be ordered better
-  - trigrams first?
-  - use city name?
-  delegate/views.py - line 303ish - excludes not working properly or Q not working or something
+TODO: company suggest
+      a) name__icontains
+      b) deal with escaped characters in regex search
 
 TODO: 72) Format radio buttons on report select panel
             http://avtex.com/2015/02/bootstrap-radio-buttons-and-checkboxes-in-columns-with-contextual-text-fields/
-
-TODO: 70) Delegate page - cxl info doesn't disappear when it should
 
 TODO: 67) Need logic on delegate page to validate and deal with invoice changes
 
@@ -160,3 +156,8 @@ DONE - Invoice/reg note rendering failing on following sequence:
   -- it appears the info is submitted correctly but there is a problem with the pdf render
   -- pre-tax price not being required before submit (lost on return to page with errors)
   -- on choosing delegate free put $0 in price box
+TODO: 70) DONE - Delegate page - cxl info doesn't disappear when it should
+TODO: DONE - revamp the way company match suggestions are made:
+  - see if they can be ordered better
+  - trigrams first?
+  - use city name?

@@ -180,7 +180,7 @@ $(document).ready(function(){
       };
     } else {
       if (cxlDisplayed) {
-        $('$cancellation-panel').removeClass('in');
+        $('#cancellation-panel').removeClass('in');
       };
     };
   };

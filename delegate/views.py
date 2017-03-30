@@ -224,10 +224,14 @@ def build_email_lists(reg_details, invoice):
 
 
 def guess_company(company_name, postal_code, address1, city, name_first=False):
+    """
+    Helper function to guess company matches based on supplied info
+    :param company_name:
+    """
     if re.match(r'\b\w\d\w\d\w\d\b', postal_code):  # no space in postal code
         postal_code = postal_code.strip()[:3] + ' ' + postal_code.strip()[-3:]
-    company_name = re.sub('[!#?,.:";]', '', company_name)
-    name_tokens = [x for x in company_name.split()
+    company_name_no_punct = re.sub('[!#?,.:";()]', '', company_name)
+    name_tokens = [x for x in company_name_no_punct.split()
                    if x.lower() not in STOPWORDS]
     company_best_guess = None
     company_suggest_list = []
@@ -256,6 +260,15 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
     else:
         match_base = Company.objects.filter(postal_code=postal_code)
 
+    # search for companies containing company name text as is
+    match_contain = Company.objects.filter(name__icontains=company_name)
+    if match_contain.count() > 0:
+        if not company_best_guess:
+            company_best_guess = match_contain[0]
+        match_contain = match_contain.exclude(id__in=match1). \
+            exclude(id__in=match0)
+        company_suggest_list.extend(list(match_contain))
+
     # set up empty queries so things don't blowup
     match3 = Company.objects.none()
     match2 = Company.objects.none()
@@ -263,9 +276,9 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
     # first, search on trigrams if feasible:
     if len(company_name.split()) > 3 and len(company_suggest_list) < 15:
         queries = []
-        trigram_list = zip(company_name.split(),
-                           company_name.split()[1:],
-                           company_name.split()[2:])
+        trigram_list = zip(company_name_no_punct.split(),
+                           company_name_no_punct.split()[1:],
+                           company_name_no_punct.split()[2:])
         for trigram in trigram_list:
             regex_term = r'[[:<:]]' + trigram[0].lower() + '[[:space:]]' + \
                 trigram[1].lower() + '[[:space:]]' + trigram[2].lower()+ \
@@ -275,7 +288,8 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
         for item in queries:
             query |= item
         match3 = match_base.filter(query)
-        match3 = match3.exclude(id__in=match1).exclude(id__in=match0)
+        match3 = match3.exclude(id__in=match1).exclude(id__in=match0). \
+            exclude(id__in=match_contain)
         if not company_best_guess and match3.count() > 0:
             company_best_guess = match3[0]
         company_suggest_list.extend(list(match3[:15-len(company_suggest_list)]))
@@ -283,8 +297,8 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
     # search on bigrams if feasible/needed
     if len(company_name.split()) > 2 and len(company_suggest_list) < 15:
         queries = []
-        bigram_list = zip(company_name.split(),
-                          company_name.split()[1:])
+        bigram_list = zip(company_name_no_punct.split(),
+                          company_name_no_punct.split()[1:])
         for bigram in bigram_list:
             regex_term = r'[[:<:]]' + bigram[0].lower() + '[[:space:]]' + \
                 bigram[1].lower() + '[[:>:]]'
@@ -294,13 +308,13 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
             query |= item
         match2 = match_base.filter(query)
         match2 = match2.exclude(id__in=match0).exclude(id__in=match1). \
-            exclude(id__in=match3)
+            exclude(id__in=match3).exclude(id__in=match_contain)
         if not company_best_guess and match2.count() > 0:
             company_best_guess = match2[0]
         company_suggest_list.extend(list(match2[:15-len(company_suggest_list)]))
 
     # search on tokens if still needed/feasible
-    if len(name_tokens) > 0 and len(company_suggest_list) < 15:
+    if 3 > len(name_tokens) > 0 and len(company_suggest_list) < 15:
         queries = []
         for token in name_tokens:
             regex_term = r'[[:<:]]' + token.lower() + '[[:>:]]'
@@ -311,7 +325,8 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
             query |= item
         match_token = match_base.filter(query)
         match_token = match_token.exclude(id__in=match0). \
-            exclude(id__in=match1).exclude(id__in=match2).exclude(id__in=match3)
+            exclude(id__in=match1).exclude(id__in=match2). \
+            exclude(id__in=match3).exclude(id__in=match_contain)
         if not company_best_guess and match_token.count() > 0:
             company_best_guess = match_token[0]
         company_suggest_list.extend(list(match_token[:15-len(company_suggest_list)]))
@@ -1022,6 +1037,26 @@ def person_is_registered(request):
 
 
 @login_required
+def search_for_substitute(request):
+    if set(('conf_id', 'first_name', 'last_name', 'company_id')) > \
+        request.GET.keys():
+        return HttpResponse('')
+    try:
+        conference = Event.objects.get(pk=request.GET['conf_id'])
+    except Event.DoesNotExist:
+        raise Http404('Conference does not exist')
+    try:
+        company = Company.objects.get(pk=request.GET['company_id'])
+    except Company.DoesNotExist:
+        raise Http404('Company does not exist')
+    context = {
+        'foo': 0
+    }
+    return render(request, 'delegate/addins/substitute_match_list.html',
+                  context)
+
+
+@login_required
 def suggest_company(request):
     """
     Ajax call (I think?) - returns json of top 25 companies (by number in db)
@@ -1057,26 +1092,6 @@ def suggest_company_match(request):
         'company_best_guess': company_best_guess,
     }
     return render(request, 'delegate/addins/company_suggestion_matches.html',
-                  context)
-
-
-@login_required
-def search_for_substitute(request):
-    if set(('conf_id', 'first_name', 'last_name', 'company_id')) > \
-        request.GET.keys():
-        return HttpResponse('')
-    try:
-        conference = Event.objects.get(pk=request.GET['conf_id'])
-    except Event.DoesNotExist:
-        raise Http404('Conference does not exist')
-    try:
-        company = Company.objects.get(pk=request.GET['company_id'])
-    except Company.DoesNotExist:
-        raise Http404('Company does not exist')
-    context = {
-        'foo': 0
-    }
-    return render(request, 'delegate/addins/substitute_match_list.html',
                   context)
 
 

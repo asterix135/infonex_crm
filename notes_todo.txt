@@ -4,9 +4,8 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-TODO: company suggest
-      a) name__icontains
-      b) deal with escaped characters in regex search
+TODO: Selecting registration by criteria
+    registration/views.py - line 375 - kwargs don't apply to reg_details
 
 TODO: 72) Format radio buttons on report select panel
             http://avtex.com/2015/02/bootstrap-radio-buttons-and-checkboxes-in-columns-with-contextual-text-fields/
@@ -161,3 +160,6 @@ TODO: DONE - revamp the way company match suggestions are made:
   - see if they can be ordered better
   - trigrams first?
   - use city name?
+TODO: DONE - company suggest
+      a) name__icontains
+      b) deal with escaped characters in regex search

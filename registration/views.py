@@ -364,7 +364,7 @@ def find_reg(request):
         matched_reg = RegDetails.objects.get(invoice=invoice)
 
     elif conf:
-        reg_pool = RegDetails.objects.filter(conference=event)
+        reg_pool = RegDetails.objects.filter(conference=conf)
         if reg_pool.count() == 0:
             failure_message == 'No registrations yet for that event'
         elif reg_pool.count() == 1 and not (first_name or last_name or company):

@@ -4,6 +4,8 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+TODO: Salesperson email not appearing on sponsor bookings?
+
 TODO: Selecting registration by criteria
     registration/views.py - line 375 - kwargs don't apply to reg_details
 

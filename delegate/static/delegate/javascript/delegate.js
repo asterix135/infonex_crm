@@ -347,6 +347,11 @@ $(document).ready(function(){
     var lastName = $('#id_last_name').val();
     var title = $('#id_title').val();
     var email = $('#id_email1').val();
+    var regStatus = $('#id_registration_status').val();
+    if (regStatus.slice(-1) != 'X'){
+      $('#id_cancellation_date').val('');
+    }
+
     if (crmMatchId=='' || companyMatchId == '') {
       $.ajax({
         url: '/delegate/company_crm_modal/',

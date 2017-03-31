@@ -346,18 +346,9 @@ def find_reg(request):
             failure_message = 'Event Does Not Exist'
     else:
         conf = None
-    if request.POST['first_name'] != '':
-        first_name = request.POST['first_name']
-    else:
-        first_name = None
-    if request.POST['last_name'] != '':
-        last_name = request.POST['last_name']
-    else:
-        last_name = None
-    if request.POST['company'] != '':
-        company = request.POST['company']
-    else:
-        company = None
+    first_name = request.POST['first_name']
+    last_name = request.POST['last_name']
+    company = request.POST['company']
 
     # conduct search
     if invoice:
@@ -371,11 +362,12 @@ def find_reg(request):
             matched_reg = reg_pool[0]
 
     if not matched_reg and not failure_message:
-        reg_pool = RegDetails.objects.all() if not reg_pool else reg_pool
+        print(reg_pool.count())
+        reg_pool = RegDetails.objects.all() if reg_pool is None else reg_pool
         kwargs = {
-            'first_name__icontains': first_name,
-            'last_name__icontains': last_name,
-            'company.name__icontains': company
+            'registrant__first_name__icontains': first_name,
+            'registrant__last_name__icontains': last_name,
+            'registrant__company__name__icontains': company
         }
         reg_pool = reg_pool.filter(**kwargs)
         if reg_pool.count() == 0:
@@ -385,29 +377,19 @@ def find_reg(request):
 
     # Case 1: Only one match
     if matched_reg:
-        # data = json.dumps({'reg_id': matched_reg.pk})
-        # mimetype = 'applications/json'
-        # return HttpResponse(data, mimetype)
         return JsonResponse({'reg_id': matched_reg.pk})
     # Case 2: No matches
     if failure_message:
         context = {'failure_message': failure_message}
-        url = 'registration/index_panels/registration_search_results_one_event.html'
     # Case 3: matches from only one or multiple conference
     else:
-        if num_events == 0:
-            num_events = 1
-            event_match = reg_pool[0].event
-            for reg in reg_pool[1:]:
-                if reg.event != event_match:
-                    num_events = 2
-                    break
-        if num_events == 1:
-            url = 'registration/index_panels/registration_search_results_one_event.html'
-        else:
-            url = 'registration/index_panels/registration_search_results_multiple_events.html'
-        context = {'reg_match_list', reg_pool}
-    return render(request, url, context)
+        reg_pool = reg_pool.order_by('-conference__date_begins',
+                                     'registrant__last_name',
+                                     'registrant__first_name')
+        context = {'reg_match_list': reg_pool}
+    return render(request,
+                  'registration/index_panels/registration_search_results.html',
+                  context)
 
 
 @login_required

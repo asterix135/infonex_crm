@@ -1,0 +1,66 @@
+<!-- Inserted by ajax call into registration_search.html -->
+{% load humanize %}
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h2 class="panel-title h2">Matches</h2>
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped">
+      <thead class="thead-inverse">
+        <tr>
+          <th class="col-sm-2">
+            Select?
+          </th>
+          <th class="col-sm-5">
+            Person Details
+          </th>
+          <th class="col-sm-5">
+            Event Details
+          </th>
+        </tr>
+        {% if reg_match_list %}
+        {% for match in reg_match_list %}
+        <tr>
+          <td>
+            <a href="/delegate?reg_id={{ match.pk }}" class="btn btn-success">Select</a>
+          </td>
+          <td>
+            <h4>{{ match.registrant.first_name }}&nbsp;{{ match.registrant.last_name }}</h4>
+            <p class="person-detail">{{ match.registrant.title }}</p>
+            <p class="person-detail">{{ match.registrant.company.name }}</p>
+            <p class="person-detail">
+              {{ match.registrant.company.city }}{% if match.registrant.company.city and match.registrant.company.state_prov %},
+              {% endif %}
+              {{ match.registrant.company.state_prov }}
+            </p>
+            {% if match.registrant.phone1 %}<p class="person-detail">Tel: {{ match.registrant.phone1 }}</p>{% endif %}
+            {% if match.registrant.email1 %}<p class="person-detail">Email: {{ match.registrant.email1 }}</p>{% endif %}
+          </td>
+          <td>
+            <h4>{{ match.conference.number }} - {{ match.conference.title }}, {{ match.conference.city }}</h4>
+            <p class="person-detail">
+              {{ match.get_registration_status_display }}
+            </p>
+            {% if match.invoice %}
+            <p class="person-detail">
+              Pre-Tax Invoice Amount: ${{ match.invoice.pre_tax_price|floatformat:'2'|intcomma }}
+            </p>
+            <p class="person-detail">
+              Registration Date: {{ match.register_date }}
+            </p>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+          <td colspan="2">
+            <h4>{{ failure_message }}</h4>
+          </td>
+        </tr>
+        {% endif %}
+      </thead>
+    </table>
+  </div>
+
+</div>

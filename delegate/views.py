@@ -203,7 +203,10 @@ def build_email_lists(reg_details, invoice):
         assistant_email = None
     sales_rep_email = None
     if invoice and invoice.sales_credit:
-        if invoice.sales_credit.groups.filter(name='sales').exists():
+        if (
+            invoice.sales_credit.groups.filter(name='sales').exists() or
+            invoice.sales_credit.groups.filter(name='sponsorship').exists()
+        ):
             sales_rep_email = invoice.sales_credit.email
     registrar_email = reg_details.conference.registrar.email
     to_list = []

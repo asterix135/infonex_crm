@@ -101,7 +101,7 @@ $(document).ready(function(){
 
 
   ///////////////////////
-  // Next section of code is related to search
+  // Next section of code is related to invoice/registration search
   ///////////////////////
   $('body').on('click', '#submit-reg-search', function(){
     var invoiceNumber = $('#invoice_number').val();

@@ -4,10 +4,7 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-TODO: Salesperson email not appearing on sponsor bookings?
-
-TODO: Selecting registration by criteria
-    registration/views.py - line 375 - kwargs don't apply to reg_details
+TODO: 68) Make it possible to substitute a delegate - need work on modal & logic
 
 TODO: 72) Format radio buttons on report select panel
             http://avtex.com/2015/02/bootstrap-radio-buttons-and-checkboxes-in-columns-with-contextual-text-fields/
@@ -149,7 +146,6 @@ TODO: 73) DONE - Logic to parse postal codes on delegate entry page & search
 TODO: 75) DONE - Write sql routine to insert space into all postal codes where needed
 TODO: 75) DONE - registration.js - line 113ish - how to respond to json w/ redirect
 TODO: 76) DONE?? - delegate/index.py - rewrite to take a get request for a specific reg - start at line 548
-TODO: 68) DONE -  Make it possible to substitute a delegate
 DONE - Invoice/reg note rendering failing on following sequence:
   1) new registration
   2) forget to confirm some detail so get taken back to index page (eg. put phone # in email field)
@@ -165,3 +161,6 @@ TODO: DONE - revamp the way company match suggestions are made:
 TODO: DONE - company suggest
       a) name__icontains
       b) deal with escaped characters in regex search
+TODO: Salesperson email not appearing on sponsor bookings?
+TODO: DONE - Selecting registration by criteria
+    registration/views.py - line 375 - kwargs don't apply to reg_details

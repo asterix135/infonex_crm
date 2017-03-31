@@ -4,6 +4,12 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+TODO: Post-submit modal on company match overwrites everything - should not
+
+TODO: Maybe don't remove apostrophes from company name whens searching
+
+TODO: Keep search icon on screen after select
+
 TODO: 68) Make it possible to substitute a delegate - need work on modal & logic
 
 TODO: 72) Format radio buttons on report select panel

@@ -350,8 +350,7 @@ $(document).ready(function(){
     var regStatus = $('#id_registration_status').val();
     if (regStatus.slice(-1) != 'X'){
       $('#id_cancellation_date').val('');
-    }
-
+    };
     if (crmMatchId=='' || companyMatchId == '') {
       $.ajax({
         url: '/delegate/company_crm_modal/',

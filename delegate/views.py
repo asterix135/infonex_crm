@@ -709,7 +709,6 @@ def process_registration(request):
     assistant_missing = None
     option_selection_needed = None
     option_list = []
-
     # 2. verify that it's a POST and define objects based on POST data
     if request.method == 'POST':
         # Populate forms with appropriate data

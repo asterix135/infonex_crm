@@ -5,6 +5,11 @@ REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
 TODO: Post-submit modal on company match overwrites everything - should not
+      1) After selecting company on modal, do an AJAX call that returns a JSON with saved company values
+      2) Compare JSON values with values in form
+      3) If there is a difference, close current modal and open a new modal forcing user to choose between differing values
+      4) On new modal have submit form option
+      5) If there are no differences between modal and form, submit form with company value updated
 
 TODO: Maybe don't remove apostrophes from company name whens searching
 

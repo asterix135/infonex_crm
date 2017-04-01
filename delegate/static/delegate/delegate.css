@@ -34,3 +34,6 @@ body {
 .modal-search-btn {
   margin-top: 15px;
 }
+#companyFieldCompareModal {
+  overflow-y: scroll;
+}

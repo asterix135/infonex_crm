@@ -402,8 +402,35 @@ $(document).ready(function(){
   });
 
 
+  // function to create field comparison to be inserted into company_field_compare_modal
+  function buildComparison(dataPointName, formValue, databaseValue){
+    var sectionTitle = dataPointName.replace(/_/g, ' ');
+    sectionTitle = sectionTitle.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+    return `
+    <div class="col-sm-12">
+      <div class="row">
+        <label>${sectionTitle}</label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="${dataPointName}" value="form" />
+          ${formValue}
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name=${dataPointName}" value="database" />
+          ${databaseValue}
+        </label>
+      </div>
+      <hr>
+    </div>
+    `;
+  };
+
   // Submit registration for processing from modal
   $('body').on('click', '#register-from-crm-modal', function(){
+    var okToSubmit = true;
     var crmId = $('#crm-match-value').val();
     if (crmId == '') {
       crmId = $('input[name=crm-select]:checked').val();
@@ -411,11 +438,56 @@ $(document).ready(function(){
     };
     var companyId = $('#company-match-value').val();
     if (companyId == '') {
+      okToSubmit = false;
+      // Make sure that values match up - if not send to another modal to choose
       companyId = $('input[name=company-select]:checked').val();
       $('#company-match-value').val(companyId);
+      $.ajax({
+        url: '/delegate/get_company_details/',
+        type: 'GET',
+        data: {
+          'company': companyId,
+        },
+        success: function(data){
+          comparisonHtml = '';
+          $.each(data, function(key,value){
+            var dataPointName = key;
+            if (dataPointName == 'name'){
+              dataPointName = 'company_name';
+            }
+            if ($('#id_'+dataPointName).is(':checkbox')){
+              var formValue = $('#id_'+dataPointName).prop('checked');
+            } else {
+              var formValue = $('#id_'+dataPointName).val();
+            }
+            var databaseValue = value;
+            // trim whitespace from string values
+            if (typeof formValue === 'string'){
+              formValue = formValue.trim();
+            }
+            if (typeof databaseValue === 'string'){
+              databaseValue = databaseValue.trim();
+            }
+            if (formValue != databaseValue && dataPointName != 'id'){
+              comparisonHtml += buildComparison(
+                dataPointName, formValue, databaseValue
+              );
+            }
+          });
+          if (comparisonHtml.length > 0){
+            $('#company-field-selectors').html(comparisonHtml);
+            $('#companyCrmModal').modal('hide');
+            $('#companyFieldCompareModal').modal('show');
+          } else {
+            $('#registration-form').submit();
+          }
+        },
+      });
     };
-    $('#registration-form').submit();
-  })
+    if (okToSubmit){
+      $('#registration-form').submit();
+    };
+  });
 
 
   // Trigger modal to look for matching company

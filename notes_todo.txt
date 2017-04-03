@@ -5,15 +5,14 @@ REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
 TODO: Post-submit modal on company match overwrites everything - should not
-      1) After selecting company on modal, do an AJAX call that returns a JSON with saved company values
-      2) Compare JSON values with values in form
-      3) If there is a difference, close current modal and open a new modal forcing user to choose between differing values
-      4) On new modal have submit form option
+      1) DONE - After selecting company on modal, do an AJAX call that returns a JSON with saved company values
+      2) DONE - Compare JSON values with values in form
+      3) DONE - If there is a difference, close current modal and open a new modal forcing user to choose between differing values
+      4) DONE - On new modal have submit form option
       5) If there are no differences between modal and form, submit form with company value updated
+      6) Make sure submit (views.py) doesn't overwrite existing values or find a way to show diffs
 
-TODO: Maybe don't remove apostrophes from company name whens searching
-
-TODO: Keep search icon on screen after select
+TODO: How to deal with apostrophes from company name whens searching (regex issue)
 
 TODO: 68) Make it possible to substitute a delegate - need work on modal & logic
 
@@ -30,8 +29,6 @@ TODO: 56) pytz timezone conversion to reports (home page chart & call report)
 TODO: 70) Intake/queueing system for registrations to be processed (so they don’t get lost)
 
 TODO: 57) Add phone number field to auth.User (this seems complicated) and add to email confirmation etc
-
-TODO: 46) STARTED - PD/Sales report page on notes (works but ugly)
 
 TODO: 41) Add title filter to territory creation page
 
@@ -175,3 +172,5 @@ TODO: DONE - company suggest
 TODO: Salesperson email not appearing on sponsor bookings?
 TODO: DONE - Selecting registration by criteria
     registration/views.py - line 375 - kwargs don't apply to reg_details
+TODO: DONE - Keep search icon on screen after select
+TODO: 46) DONE - PD/Sales report page on notes (works but ugly)

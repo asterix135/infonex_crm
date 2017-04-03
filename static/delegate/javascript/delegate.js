@@ -6,6 +6,7 @@ $(document).ready(function(){
   var defaultGstRate = $('#id_gst_rate').val();
   var defaultHstRate = $('#id_hst_rate').val();
   var defaultQstRate = $('#id_qst_rate').val();
+  var companyDatabaseValues = {};
 
   // Check & adjust display of reg details on page load/reload
   displayHideRegDetails();
@@ -419,7 +420,7 @@ $(document).ready(function(){
       </div>
       <div class="radio">
         <label>
-          <input type="radio" name=${dataPointName}" value="database" />
+          <input type="radio" name="${dataPointName}" value="database" />
           ${databaseValue}
         </label>
       </div>
@@ -449,6 +450,7 @@ $(document).ready(function(){
           'company': companyId,
         },
         success: function(data){
+          companyDatabaseValues = data;
           comparisonHtml = '';
           $.each(data, function(key,value){
             var dataPointName = key;
@@ -487,6 +489,40 @@ $(document).ready(function(){
     if (okToSubmit){
       $('#registration-form').submit();
     };
+  });
+
+
+  // Called from company_field_compare_modal - update form & submit
+  $('body').on('click', '#register-from-field-compare-modal', function(){
+    var allInputs = $('#company-field-selectors :input');
+    var inputNames = new Set();
+    allInputs.each(function(index, elm){
+      inputNames.add($(elm).prop('name'));
+    });
+    var okToSubmit = true;
+    for (let name of inputNames){
+      console.log(name);
+      var currentOption = $('input[name='+name+']:checked').val();
+      if (!currentOption){
+        okToSubmit = false;
+
+        // Need to highlight error on page
+        console.log('need to add error message for '+name);
+
+      } else {
+        if (currentOption == 'database'){
+          // $('#id_'+name).val(companyDatabaseValues.name);
+          console.log(companyDatabaseValues[name]);
+        }
+      }
+    };
+    if (okToSubmit){
+      $('#registration-form').submit();
+    } else {
+
+      console.log('need to scroll modal to error');
+
+    }
   });
 
 
@@ -559,13 +595,11 @@ $(document).ready(function(){
             $('#id_hst_rate').val(0);
             $('#id_gst_rate').val(0);
             updateTaxAndInvoice();
-          }
+          };
           if (data.qst_exempt){
             $('#id_qst_rate').val(0);
             updateTaxAndInvoice();
-          }
-          // 3 Remove search icon from screen
-          $('#search-for-company').remove();
+          };
         }
       })
     }

@@ -738,12 +738,6 @@ def process_registration(request):
                 request.POST else None,
             'payment_method': request.POST['payment_method'] if \
                 'payment_method' in request.POST else None,
-            # 'deposit_amount': request.POST['deposit_amount'] if \
-            #     'deposit_amount' in request.POST else None,
-            # 'deposit_date': request.POST['deposit_date'] if 'deposit_date' in \
-            #     request.POST else None,
-            # 'deposit_method': request.POST['deposit_method'] if \
-            #     'deposit_method' in request.POST else None,
             'fx_conversion_rate': request.POST['fx_conversion_rate'] if \
                 'fx_conversion_rate' in request.POST else 1,
             'register_date': request.POST['register_date'] if (
@@ -1007,7 +1001,7 @@ def get_company_details(request):
     else:
         try:
             company = Company.objects.get(pk=request.GET['company'])
-        except (Company.DoesNotExist, MultiValueDictKeyError):
+        except (Company.DoesNotExist, MultiValueDictKeyError, ValueError):
             company = None
     if company:
         company_data = model_to_dict(company)

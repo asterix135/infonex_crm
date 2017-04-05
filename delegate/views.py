@@ -344,7 +344,6 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     Helper function, called from process_registration once request data
     has been verified
     """
-    print('\n\ngot to process_complete_registration')
     # 1. create database records if not present
     # a. assistant
     if request.POST['assistant_match_value']:
@@ -352,6 +351,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
             pk=request.POST['assistant_match_value']
         )
         assistant_form = AssistantForm(assistant_data, instance=assistant)
+        print(assistant)
         assistant_form.save()
     elif assistant_data:
         # Check to make sure record not already in the database
@@ -394,6 +394,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     if registrant:
         delegate_form = NewDelegateForm(request.POST, instance=registrant)
         delegate_form.save()
+        registrant.assistant = assistant
         registrant.modified_by = request.user
         registrant.date_modified = timezone.now()
         registrant.save()
@@ -408,6 +409,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
             registrant = registrant_db_check[0]
             delegate_form = NewDelegateForm(request.POST, instance=registrant)
             delegate_form.save()
+            registrant.assistant = assistant
             registrant.modified_by = request.user
             registrant.date_modified = timezone.now()
             registrant.save()

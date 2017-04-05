@@ -344,6 +344,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     Helper function, called from process_registration once request data
     has been verified
     """
+    print('\n\ngot to process_complete_registration')
     # 1. create database records if not present
     # a. assistant
     if request.POST['assistant_match_value']:
@@ -352,7 +353,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
         )
         assistant_form = AssistantForm(assistant_data, instance=assistant)
         assistant_form.save()
-    else:
+    elif assistant_data:
         # Check to make sure record not already in the database
         assistant_db_check = Assistant.objects.filter(
             first_name=assistant_data['first_name'],
@@ -365,6 +366,8 @@ def process_complete_registration(request, assistant_data, company, crm_match,
             assistant_form.save()
         else:
             assistant = AssistantForm(assistant_data).save()
+    else:
+        assistant = None
 
     # b. Update company with form values
     company_select_form = CompanySelectForm(request.POST, instance=company)
@@ -694,6 +697,7 @@ def process_registration(request):
     company_select_form = CompanySelectForm()
     new_company_form = NewCompanyForm()
     company_match_list = None
+    assistant_data = None
     assistant_form = AssistantForm()
     conference_select_form = ConferenceSelectForm()
     reg_details_form = RegDetailsForm()
@@ -715,15 +719,20 @@ def process_registration(request):
         # Populate forms with appropriate data
         new_delegate_form = NewDelegateForm(request.POST)
         company_select_form = CompanySelectForm(request.POST)
-        assistant_data = {
-            'salutation': request.POST['assistant_salutation'],
-            'first_name': request.POST['assistant_first_name'],
-            'last_name': request.POST['assistant_last_name'],
-            'title': request.POST['assistant_title'],
-            'email': request.POST['assistant_email'],
-            'phone': request.POST['assistant_phone'],
-        }
-        assistant_form = AssistantForm(assistant_data)
+        if (request.POST['assistant_first_name'] != '' or
+            request.POST['assistant_last_name'] != '' or
+            request.POST['assistant_title'] != '' or
+            request.POST['assistant_email'] != '' or
+            request.POST['assistant_phone'] != ''):
+            assistant_data = {
+                'salutation': request.POST['assistant_salutation'],
+                'first_name': request.POST['assistant_first_name'],
+                'last_name': request.POST['assistant_last_name'],
+                'title': request.POST['assistant_title'],
+                'email': request.POST['assistant_email'],
+                'phone': request.POST['assistant_phone'],
+            }
+            assistant_form = AssistantForm(assistant_data)
         current_time = timezone.now()
         reg_details_data = {
             'sales_credit': request.POST['sales_credit'],
@@ -820,7 +829,8 @@ def process_registration(request):
 
         # ensure everything is valid, then process registration
         if new_delegate_form.is_valid() and company_select_form.is_valid() \
-            and assistant_form.is_valid() and reg_details_form.is_valid() \
+            and (not assistant_data or assistant_form.is_valid()) \
+            and reg_details_form.is_valid() \
             and not company_error and not assistant_missing \
             and not option_selection_needed and conference:
 

@@ -412,6 +412,8 @@ $(document).ready(function(){
       <div class="row">
         <label>${sectionTitle}</label>
       </div>
+      <div class="row errorlist" id="error-message-${dataPointName}">
+      </div>
       <div class="radio">
         <label>
           <input type="radio" name="${dataPointName}" value="form" />
@@ -429,7 +431,7 @@ $(document).ready(function(){
     `;
   };
 
-  // Submit registration for processing from modal
+  // Submit registration for processing from company-crm modal
   $('body').on('click', '#register-from-crm-modal', function(){
     var okToSubmit = true;
     var crmId = $('#crm-match-value').val();
@@ -505,11 +507,12 @@ $(document).ready(function(){
       var currentOption = $('input[name='+name+']:checked').val();
       if (!currentOption){
         okToSubmit = false;
-
-        // Need to highlight error on page
-        console.log('need to add error message for '+name);
-
+        $('#error-message-'+name).text('You have to choose one of the options');
+        if (typeof scrollToError == 'undefined'){
+          var scrollToError = name;
+        }
       } else {
+        $('#error-message-'+name).text('');
         if (currentOption == 'database'){
           // $('#id_'+name).val(companyDatabaseValues.name);
           console.log(companyDatabaseValues[name]);

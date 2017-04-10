@@ -233,7 +233,8 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
     """
     if re.match(r'\b\w\d\w\d\w\d\b', postal_code):  # no space in postal code
         postal_code = postal_code.strip()[:3] + ' ' + postal_code.strip()[-3:]
-    company_name_no_punct = re.sub('[!#?,.:";()]', '', company_name)
+        postal_code = postal_code.upper()
+    company_name_no_punct = re.sub('[!#?,.:";()]-', '', company_name)
     company_name = company_name.strip()
     name_tokens = [x for x in company_name_no_punct.split()
                    if x.lower() not in STOPWORDS]

@@ -25,19 +25,6 @@ from .constants import *
 from registration.forms import ConferenceSelectForm, ConferenceEditForm
 
 
-#########################
-#  Global Variables
-#########################
-TERRITORY_RECORDS_PER_PAGE = 50
-TERRITORY_TAGS = [('geo', False),  # T/F indicates whether loose (text) match
-                  ('main_category', False),
-                  ('main_category2', False),
-                  ('division1', False),
-                  ('division2', False),
-                  ('company', True),
-                  ('industry', True)]
-
-
 ##################
 # HELPER FUNCTIONS
 ##################
@@ -576,8 +563,12 @@ def search(request):
             request.POST['company']
         search_prov = request.session['search_prov'] = \
             request.POST['state_province']
-        search_customer = request.session['search_customer'] = \
-            request.POST['past_customer']
+        if request.POST['past_customer'] == 'True':
+            search_customer = request.session['search_customer'] = True
+        elif request.POST['past_customer'] == 'False':
+            search_customer = request.session['search_customer'] = False
+        else:
+            search_customer = request.session['search_customer'] = None
 
     # if no GET parameters, assume it's a new search and set all values to None
     if request.method == 'GET' and ('page' not in request.GET
@@ -615,7 +606,11 @@ def search(request):
         search_list = Person.objects.filter(query)
 
     # execute advanced search
-    elif search_name or search_title or search_company or search_prov:
+    elif search_name not in ('', None) or \
+        search_title not in ('', None) or \
+        search_company not in ('', None) \
+        or search_prov not in ('', None):
+
         search_list = Person.objects.filter(name__icontains=search_name,
                                             title__icontains=search_title,
                                             company__icontains=search_company,
@@ -627,7 +622,7 @@ def search(request):
                     regex_val += '^' + area_code + '|^\(' + area_code + '|'
             regex_val = regex_val[:-1]
             search_list = search_list.filter(phone__regex=regex_val)
-        if search_customer is not None:
+        if search_customer not in('', None):
             search_list = search_list.filter(
                 registrants__isnull=not search_customer)
 

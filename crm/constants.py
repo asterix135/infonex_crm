@@ -1,3 +1,5 @@
+TERRITORY_RECORDS_PER_PAGE = 50
+
 COMPANY_OPTIONS = (('IC', 'Infonex Inc'),
                    ('IT', 'INX-Training'),
                    ('IU', 'Infonex (USA) Inc.'))

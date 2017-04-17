@@ -19,10 +19,6 @@ TODO: Post-submit modal on company match overwrites everything - should not
 
 TODO: How to deal with apostrophes from company name whens searching (regex issue)
 
-TODO: Advanced search on CRM is broken
-
-TODO: Make it possible to submit invoice number search with return
-
 TODO: 68) Make it possible to substitute a delegate - need work on modal & logic
 
 TODO: 72) Format radio buttons on report select panel
@@ -184,3 +180,5 @@ TODO: DONE - Selecting registration by criteria
 TODO: DONE - Keep search icon on screen after select
 TODO: 46) DONE - PD/Sales report page on notes (works but ugly)
 TODO: DONE - Date select for registration page chooses wrong date
+TODO: DONE - Make it possible to submit invoice number search with return
+TODO: DONE - Advanced search on CRM is broken

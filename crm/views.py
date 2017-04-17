@@ -606,7 +606,7 @@ def search(request):
         search_list = Person.objects.filter(query)
 
     # execute advanced search
-    elif (search name and search_name not in ('', None)) or \
+    elif (search_name and search_name not in ('', None)) or \
         (search_title and search_title not in ('', None)) or \
         (search_company and search_company not in ('', None)) or \
         (search_prov and search_prov not in ('', None)):

@@ -103,7 +103,8 @@ $(document).ready(function(){
   ///////////////////////
   // Next section of code is related to invoice/registration search
   ///////////////////////
-  $('body').on('click', '#submit-reg-search', function(){
+  function findRegistration(){
+    console.log('finding registration');
     var invoiceNumber = $('#invoice_number').val();
     var confId = $('#id_event').val();
     var firstName = $('#id_first_name').val();
@@ -131,6 +132,18 @@ $(document).ready(function(){
           }
         }
       });
+    }
+  };
+
+  $('body').on('click', '#submit-reg-search', function(){
+    findRegistration();
+  });
+  $('body').on('keypress', '#invoice_number', function(e){
+    var key = e.which;
+    console.log(key);
+    if (key == 13) {
+      console.log('enter pushed');
+      findRegistration();
     }
   });
 

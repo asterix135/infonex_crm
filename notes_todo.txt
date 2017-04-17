@@ -21,8 +21,6 @@ TODO: How to deal with apostrophes from company name whens searching (regex issu
 
 TODO: Advanced search on CRM is broken
 
-TODO: Date select for registration page chooses wrong date
-
 TODO: Make it possible to submit invoice number search with return
 
 TODO: 68) Make it possible to substitute a delegate - need work on modal & logic
@@ -185,3 +183,4 @@ TODO: DONE - Selecting registration by criteria
     registration/views.py - line 375 - kwargs don't apply to reg_details
 TODO: DONE - Keep search icon on screen after select
 TODO: 46) DONE - PD/Sales report page on notes (works but ugly)
+TODO: DONE - Date select for registration page chooses wrong date

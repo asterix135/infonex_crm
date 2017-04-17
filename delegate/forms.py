@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -148,7 +150,7 @@ class NewCompanyForm(CompanySelectForm):
 
 class RegDetailsForm(forms.ModelForm):
     register_date = forms.DateField(
-        initial = timezone.now(),
+        initial = datetime.date.today,
         widget = forms.DateInput(
             attrs={'class': 'form-control',
                    'placeholder': 'yyyy-mm-dd'}

@@ -30,3 +30,9 @@ STOPWORDS = ['a', 'an', 'and', 'by', 'for', 'from', 'in', 'of', 'on', 'or',
              'the', 'llp', 'inc.', 'llp.', 'inc']
 STOPWORDS2 = ['canada', 'ministry', 'bc', 'alberta', 'saskatchewan', 'manitoba',
               'ontario', 'quebec', 'scotia', 'brunswick', 'newfoundland']
+
+SEARCH_SUBSTITUTIONS = {
+    '&': 'and',
+    'RCMP': 'Royal Canadian Mounted Police',
+    'R.C.M.P.': 'Royal Canadian Mounted Police'
+}

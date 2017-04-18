@@ -34,5 +34,8 @@ STOPWORDS2 = ['canada', 'ministry', 'bc', 'alberta', 'saskatchewan', 'manitoba',
 SEARCH_SUBSTITUTIONS = {
     '&': 'and',
     'RCMP': 'Royal Canadian Mounted Police',
-    'R.C.M.P.': 'Royal Canadian Mounted Police'
+    'BMO': 'Bank of Montreal',
+    'DND': 'Department of National Defence',
+    'Defense': 'Defense',
+    'TBS': 'Treasury Board Secretariat',
 }

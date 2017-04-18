@@ -1,4 +1,4 @@
-from .constants import STOPWORDS, STOPWORDS2, SEARCH_SUBSTITUTIONS
+from .constants import STOPWORDS, SEARCH_SUBSTITUTIONS
 from registration.models import *
 from django.db.models import Count, Q
 import re

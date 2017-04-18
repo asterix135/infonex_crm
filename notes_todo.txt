@@ -4,10 +4,7 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-TODO: Need to rework the company search function - screws up when dealing with
-      punctuation (commas, slashes, hyphens, etc).
-      Also, plural/singular (first nation vs first nations)
-      Consider TF/IDF (need to figure out how to best implement this)
+TODO: consider updating company search to deal with singular/plural (first nation vs first nations)
 
 TODO: Post-submit modal on company match overwrites everything - should not
       1) DONE - After selecting company on modal, do an AJAX call that returns a JSON with saved company values
@@ -16,8 +13,6 @@ TODO: Post-submit modal on company match overwrites everything - should not
       4) DONE - On new modal have submit form option
       5) If there are no differences between modal and form, submit form with company value updated
       6) Make sure submit (views.py) doesn't overwrite existing values or find a way to show diffs
-
-TODO: How to deal with apostrophes from company name whens searching (regex issue)
 
 TODO: 68) Make it possible to substitute a delegate - need work on modal & logic
 
@@ -76,6 +71,9 @@ TODO: 28) if no admin access, set error page for accessing admin page
 TODO: 42) See what other flags a person has???
 
 TODO: 66) Pre-populate new delegate form based on search criteria
+
+TODO: Consider automating stopwords in delegate.constants.py
+      some kind of database-driven function
 
 See avoiding race conditions using F()
     might be an issue with some records and should be implemented
@@ -182,3 +180,8 @@ TODO: 46) DONE - PD/Sales report page on notes (works but ugly)
 TODO: DONE - Date select for registration page chooses wrong date
 TODO: DONE - Make it possible to submit invoice number search with return
 TODO: DONE - Advanced search on CRM is broken
+TODO: DONE - Need to rework the company search function - screws up when dealing with
+      punctuation (commas, slashes, hyphens, etc).
+      Also, plural/singular (first nation vs first nations)
+      Consider TF/IDF (need to figure out how to best implement this)
+TODO: DONE - How to deal with apostrophes from company name whens searching (regex issue)

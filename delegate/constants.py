@@ -93,8 +93,6 @@ STOPWORDS = ['&',
              'university',
             ]
 
-STOPWORDS2 = []
-
 SEARCH_SUBSTITUTIONS = (
     ('&', 'and'),
     ('AANDC', 'Indigenous and Norther Affairs'),

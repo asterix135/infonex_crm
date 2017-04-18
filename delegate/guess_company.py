@@ -74,9 +74,7 @@ def guess_company(company_name, postal_code, address1, city, name_first=False):
     if match3.count() > 0:
         match3 = match3.exclude(id__in=match1).exclude(id__in=match2)
         ordered_list = order_list_by_registrants(match3)
-        company_suggest_list.extend(list(
-            ordered_list[:15-len(company_suggest_list)]
-        ))
+        company_suggest_list.extend(list(ordered_list))
 
     # set up stuff
     if name_first and postal_code in ('', None):

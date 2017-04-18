@@ -375,7 +375,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     company_select_form = CompanySelectForm(request.POST, instance=company)
     company_select_form.save()
     if company.country and company.country.lower() not in ('', 'canada'):
-        if re.match(r'\b\w\d\w\d\w\d\b', company.postal_code):  # no space
+        if re.search(r'\b\w\d\w\d\w\d\b', company.postal_code):  # no space
             new_pc = company.postal_code.strip()
             copmany.postal_code = new_pc[:3] + ' ' + new_pc[-3:]
             company.save()

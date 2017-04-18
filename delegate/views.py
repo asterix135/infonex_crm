@@ -20,6 +20,7 @@ from reportlab.pdfgen import canvas
 from .forms import *
 from .constants import *
 from .pdfs import *
+from .guess_company import guess_company
 from crm.models import Person, Changes
 from crm.views import add_change_record
 from infonex_crm.settings import BASE_DIR
@@ -226,116 +227,116 @@ def build_email_lists(reg_details, invoice):
     return to_list, list(cc_list), bcc_list
 
 
-def guess_company(company_name, postal_code, address1, city, name_first=False):
-    """
-    Helper function to guess company matches based on supplied info
-    :param company_name:
-    """
-    if re.match(r'\b\w\d\w\d\w\d\b', postal_code):  # no space in postal code
-        postal_code = postal_code.strip()[:3] + ' ' + postal_code.strip()[-3:]
-        postal_code = postal_code.upper()
-    company_name_no_punct = re.sub('[!#?,.:";()]-', '', company_name)
-    company_name = company_name.strip()
-    name_tokens = [x for x in company_name_no_punct.split()
-                   if x.lower() not in STOPWORDS]
-    company_best_guess = None
-    company_suggest_list = []
-    match0 = Company.objects.none()
-    if name_first and postal_code in('', None) and city in ('', None):
-        match1 = Company.objects.filter(name__iexact=company_name)
-    elif name_first and city not in ('', None):
-        match1 = Company.objects.filter(name__iexact=company_name,
-                                        city__iexact=city)
-    else:
-        match1 = Company.objects.filter(name__iexact=company_name,
-                                        postal_code__iexact=postal_code)
-    if match1.count() == 1:
-        company_best_guess = match1[0]
-        company_suggest_list.extend(list(match1))
-    elif match1.count() > 1:
-        company_suggest_list.extend(list(match1))
-        match0 = match1.filter(address1__iexact=address1)
-        if match0.count() > 0:  # Choose the first one if more than one
-            company_best_guess = match0[0]
-        else:
-            company_best_guess = match1[0]
-    if name_first and postal_code in ('', None):
-        name_tokens = [x for x in name_tokens if x.lower() not in STOPWORDS2]
-        match_base = Company.objects.all()
-    else:
-        match_base = Company.objects.filter(postal_code=postal_code)
-
-    # search for companies containing company name text as is
-    match_contain = Company.objects.filter(name__icontains=company_name)
-    if match_contain.count() > 0:
-        if not company_best_guess:
-            company_best_guess = match_contain[0]
-        match_contain = match_contain.exclude(id__in=match1). \
-            exclude(id__in=match0)
-        company_suggest_list.extend(list(match_contain))
-
-    # set up empty queries so things don't blowup
-    match3 = Company.objects.none()
-    match2 = Company.objects.none()
-
-    # first, search on trigrams if feasible:
-    if len(company_name.split()) > 3 and len(company_suggest_list) < 15:
-        queries = []
-        trigram_list = zip(company_name_no_punct.split(),
-                           company_name_no_punct.split()[1:],
-                           company_name_no_punct.split()[2:])
-        for trigram in trigram_list:
-            regex_term = r'[[:<:]]' + trigram[0].lower() + '[[:space:]]' + \
-                trigram[1].lower() + '[[:space:]]' + trigram[2].lower()+ \
-                '[[:>:]]'
-            queries.append(Q(name__iregex=regex_term))
-        query = queries.pop()
-        for item in queries:
-            query |= item
-        match3 = match_base.filter(query)
-        match3 = match3.exclude(id__in=match1).exclude(id__in=match0). \
-            exclude(id__in=match_contain)
-        if not company_best_guess and match3.count() > 0:
-            company_best_guess = match3[0]
-        company_suggest_list.extend(list(match3[:15-len(company_suggest_list)]))
-
-    # search on bigrams if feasible/needed
-    if len(company_name.split()) > 2 and len(company_suggest_list) < 15:
-        queries = []
-        bigram_list = zip(company_name_no_punct.split(),
-                          company_name_no_punct.split()[1:])
-        for bigram in bigram_list:
-            regex_term = r'[[:<:]]' + bigram[0].lower() + '[[:space:]]' + \
-                bigram[1].lower() + '[[:>:]]'
-            queries.append(Q(name__iregex=regex_term))
-        query = queries.pop()
-        for item in queries:
-            query |= item
-        match2 = match_base.filter(query)
-        match2 = match2.exclude(id__in=match0).exclude(id__in=match1). \
-            exclude(id__in=match3).exclude(id__in=match_contain)
-        if not company_best_guess and match2.count() > 0:
-            company_best_guess = match2[0]
-        company_suggest_list.extend(list(match2[:15-len(company_suggest_list)]))
-
-    # search on tokens if still needed/feasible
-    if 3 > len(name_tokens) > 0 and len(company_suggest_list) < 15:
-        queries = []
-        for token in name_tokens:
-            regex_term = r'[[:<:]]' + token.lower() + '[[:>:]]'
-            # queries.append(Q(name__icontain=token))
-            queries.append(Q(name__iregex=regex_term))
-        query=queries.pop()
-        for item in queries:
-            query |= item
-        match_token = match_base.filter(query)
-        match_token = match_token.exclude(id__in=match0). \
-            exclude(id__in=match1).exclude(id__in=match2). \
-            exclude(id__in=match3).exclude(id__in=match_contain)
-        if not company_best_guess and match_token.count() > 0:
-            company_best_guess = match_token[0]
-        company_suggest_list.extend(list(match_token[:15-len(company_suggest_list)]))
-    return company_best_guess, company_suggest_list
+# def guess_company(company_name, postal_code, address1, city, name_first=False):
+#     """
+#     Helper function to guess company matches based on supplied info
+#     :param company_name:
+#     """
+#     if re.match(r'\b\w\d\w\d\w\d\b', postal_code):  # no space in postal code
+#         postal_code = postal_code.strip()[:3] + ' ' + postal_code.strip()[-3:]
+#         postal_code = postal_code.upper()
+#     company_name_no_punct = re.sub('[!#?,.:";()]-', '', company_name)
+#     company_name = company_name.strip()
+#     name_tokens = [x for x in company_name_no_punct.split()
+#                    if x.lower() not in STOPWORDS]
+#     company_best_guess = None
+#     company_suggest_list = []
+#     match0 = Company.objects.none()
+#     if name_first and postal_code in('', None) and city in ('', None):
+#         match1 = Company.objects.filter(name__iexact=company_name)
+#     elif name_first and city not in ('', None):
+#         match1 = Company.objects.filter(name__iexact=company_name,
+#                                         city__iexact=city)
+#     else:
+#         match1 = Company.objects.filter(name__iexact=company_name,
+#                                         postal_code__iexact=postal_code)
+#     if match1.count() == 1:
+#         company_best_guess = match1[0]
+#         company_suggest_list.extend(list(match1))
+#     elif match1.count() > 1:
+#         company_suggest_list.extend(list(match1))
+#         match0 = match1.filter(address1__iexact=address1)
+#         if match0.count() > 0:  # Choose the first one if more than one
+#             company_best_guess = match0[0]
+#         else:
+#             company_best_guess = match1[0]
+#     if name_first and postal_code in ('', None):
+#         name_tokens = [x for x in name_tokens if x.lower() not in STOPWORDS2]
+#         match_base = Company.objects.all()
+#     else:
+#         match_base = Company.objects.filter(postal_code=postal_code)
+#
+#     # search for companies containing company name text as is
+#     match_contain = Company.objects.filter(name__icontains=company_name)
+#     if match_contain.count() > 0:
+#         if not company_best_guess:
+#             company_best_guess = match_contain[0]
+#         match_contain = match_contain.exclude(id__in=match1). \
+#             exclude(id__in=match0)
+#         company_suggest_list.extend(list(match_contain))
+#
+#     # set up empty queries so things don't blowup
+#     match3 = Company.objects.none()
+#     match2 = Company.objects.none()
+#
+#     # first, search on trigrams if feasible:
+#     if len(company_name.split()) > 3 and len(company_suggest_list) < 15:
+#         queries = []
+#         trigram_list = zip(company_name_no_punct.split(),
+#                            company_name_no_punct.split()[1:],
+#                            company_name_no_punct.split()[2:])
+#         for trigram in trigram_list:
+#             regex_term = r'[[:<:]]' + trigram[0].lower() + '[[:space:]]' + \
+#                 trigram[1].lower() + '[[:space:]]' + trigram[2].lower()+ \
+#                 '[[:>:]]'
+#             queries.append(Q(name__iregex=regex_term))
+#         query = queries.pop()
+#         for item in queries:
+#             query |= item
+#         match3 = match_base.filter(query)
+#         match3 = match3.exclude(id__in=match1).exclude(id__in=match0). \
+#             exclude(id__in=match_contain)
+#         if not company_best_guess and match3.count() > 0:
+#             company_best_guess = match3[0]
+#         company_suggest_list.extend(list(match3[:15-len(company_suggest_list)]))
+#
+#     # search on bigrams if feasible/needed
+#     if len(company_name.split()) > 2 and len(company_suggest_list) < 15:
+#         queries = []
+#         bigram_list = zip(company_name_no_punct.split(),
+#                           company_name_no_punct.split()[1:])
+#         for bigram in bigram_list:
+#             regex_term = r'[[:<:]]' + bigram[0].lower() + '[[:space:]]' + \
+#                 bigram[1].lower() + '[[:>:]]'
+#             queries.append(Q(name__iregex=regex_term))
+#         query = queries.pop()
+#         for item in queries:
+#             query |= item
+#         match2 = match_base.filter(query)
+#         match2 = match2.exclude(id__in=match0).exclude(id__in=match1). \
+#             exclude(id__in=match3).exclude(id__in=match_contain)
+#         if not company_best_guess and match2.count() > 0:
+#             company_best_guess = match2[0]
+#         company_suggest_list.extend(list(match2[:15-len(company_suggest_list)]))
+#
+#     # search on tokens if still needed/feasible
+#     if 3 > len(name_tokens) > 0 and len(company_suggest_list) < 15:
+#         queries = []
+#         for token in name_tokens:
+#             regex_term = r'[[:<:]]' + token.lower() + '[[:>:]]'
+#             # queries.append(Q(name__icontain=token))
+#             queries.append(Q(name__iregex=regex_term))
+#         query=queries.pop()
+#         for item in queries:
+#             query |= item
+#         match_token = match_base.filter(query)
+#         match_token = match_token.exclude(id__in=match0). \
+#             exclude(id__in=match1).exclude(id__in=match2). \
+#             exclude(id__in=match3).exclude(id__in=match_contain)
+#         if not company_best_guess and match_token.count() > 0:
+#             company_best_guess = match_token[0]
+#         company_suggest_list.extend(list(match_token[:15-len(company_suggest_list)]))
+#     return company_best_guess, company_suggest_list
 
 
 def process_complete_registration(request, assistant_data, company, crm_match,

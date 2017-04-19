@@ -50,7 +50,7 @@ def generate_invoice(canv, reg_details, invoice):
                     'Please Make Cheques Payable to Infonex Inc.')
     canv.setFont('Helvetica-Bold', 8)
     canv.drawString(0.45 * inch, 0.5 * inch,
-                    'GST/HST No: R134050012')
+                    'GST/HST No: 13405 0012 RT0001')
     y = 0.75 *inch
     for line in company_address:
         canv.drawRightString(8.2 * inch, y, line)

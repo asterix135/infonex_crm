@@ -528,18 +528,28 @@ $(document).ready(function(){
     }
   });
 
+  //////////////////////
+  // Following code deals with matching current company to a d/b record onscreen
+  //////////////////////
+
 
   // Trigger modal to look for matching company
-  $('body').on('click', '#search-for-company', function(){
-    var currentCompanyName = $('#id_company_name').val();
-    $('#id-company-name-match').val(currentCompanyName);
-    var currentCompanyAddress = $('#id_address1').val();
-    $('#id-company-address-match').val(currentCompanyAddress);
-    var currentCompanyCity = $('#id_city').val();
-    $('#id-company-city-match').val(currentCompanyCity);
-    var currentCompanyPostalCode = $('#id_postal_code').val();
-    $('#id-company-postal-code-match').val(currentCompanyPostalCode);
+  function triggerCompanySearchModal() {
+    $('#id-company-name-match').val($('#id_company_name').val());
+    $('#id-company-address-match').val($('#id_address1').val());
+    $('#id-company-city-match').val($('#id_city').val());
+    $('#id-company-postal-code-match').val($('#id_postal_code').val());
     $('#companyMatchModal').modal('show');
+  };
+  $('body').on('click', '#search-for-company', function(){
+    triggerCompanySearchModal();
+  });
+  $('body').on('keypress', '#id_company_name', function(e){
+    var key = e.which;
+    var companyMatch = $('#company-match-value').val();
+    if (key == 13 && companyMatch == '') {
+      triggerCompanySearchModal();
+    }
   });
 
 
@@ -609,6 +619,11 @@ $(document).ready(function(){
     // 4 close modal
     $('#companyMatchModal').modal('hide');
   });
+
+
+  ////////////////////
+  // End previous section
+  ///////////////////
 
 
   // Autocomplete for company name

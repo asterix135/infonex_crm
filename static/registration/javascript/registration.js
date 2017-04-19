@@ -140,9 +140,7 @@ $(document).ready(function(){
   });
   $('body').on('keypress', '#invoice_number', function(e){
     var key = e.which;
-    console.log(key);
     if (key == 13) {
-      console.log('enter pushed');
       findRegistration();
     }
   });

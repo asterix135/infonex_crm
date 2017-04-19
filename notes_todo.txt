@@ -4,6 +4,8 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+TODO: increase the confidence for recommending crm match
+
 TODO: consider updating company search to deal with singular/plural (first nation vs first nations)
 
 TODO: Post-submit modal on company match overwrites everything - should not
@@ -185,3 +187,4 @@ TODO: DONE - Need to rework the company search function - screws up when dealing
       Also, plural/singular (first nation vs first nations)
       Consider TF/IDF (need to figure out how to best implement this)
 TODO: DONE - How to deal with apostrophes from company name whens searching (regex issue)
+TODO: DONE - if ! company_match, call modal when pressing enter in company name

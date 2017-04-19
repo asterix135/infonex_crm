@@ -800,7 +800,7 @@ def get_admin_reports(request):
                 conference=event
             ).exclude(
                 registration_status__in=NON_INVOICE_VALUES
-            ).order_by(sort_orders[sort])
+            ).order_by(*sort_orders[sort])
             writer = csv.writer(response)
             writer.writerow(['name', 'title', 'company', 'email', 'phone',
                              'city', 'stateProv', 'nameForLetters'])
@@ -821,6 +821,45 @@ def get_admin_reports(request):
                     registrant.company.city,
                     registrant.company.state_prov,
                     letter_name,
+                ])
+            return response
+
+        elif report_type == 'Speaker':
+            file_details = destination + '; filename="speaker_list_' + \
+                str(event.number) + '.csv"'
+            response['Content-Disposition'] = file_details
+            registration_qs = RegDetails.objects.filter(
+                conference=event, registration_status='K'
+            ).order_by(*sort_orders[sort])
+            writer = csv.writer(response)
+            writer.writerow(['salutation', 'firstName', 'lastName', 'name',
+                             'nameForLetters', 'title', 'company', 'address1',
+                             'address2', 'city', 'stateProv', 'postalCode',
+                             'country', 'phone', 'email'])
+            for record in registration_qs:
+                registrant = record.registrant
+                letter_name = ''
+                if registrant.salutation:
+                    letter_name += registrant.salutation + ' '
+                else:
+                    letter_name += registrant.first_name + ' '
+                letter_name += registrant.last_name
+                writer.writerow([
+                    registrant.salutation,
+                    registrant.first_name,
+                    registrant.last_name,
+                    registrant.first_name + ' ' + registrant.last_name,
+                    letter_name,
+                    registrant.title,
+                    registrant.company.name,
+                    registrant.company.address1,
+                    registrant.company.address2,
+                    registrant.company.city,
+                    registrant.company.state_prov,
+                    registrant.company.postal_code,
+                    registrant.company.country,
+                    registrant.phone1,
+                    registrant.email1,
                 ])
             return response
 
@@ -920,7 +959,7 @@ def get_admin_reports(request):
                 conference=event
             ).exclude(
                 registration_status__in=NON_INVOICE_VALUES
-            ).order_by(sort_orders[sort])
+            ).order_by(*sort_orders[sort])
             ws.append(['name', 'title', 'company', 'email', 'phone', 'city',
                        'stateProv', 'nameForLetters'])
             for record in registration_qs:
@@ -940,6 +979,45 @@ def get_admin_reports(request):
                     registrant.company.city,
                     registrant.company.state_prov,
                     letter_name,
+                ])
+            wb.save(response)
+            return response
+
+        elif report_type == 'Speaker':
+            file_details = destination + '; filename="speaker_list_' + \
+                str(event.number) + '.xlsx"'
+            response['Content-Disposition'] = file_details
+            registration_qs = RegDetails.objects.filter(
+                conference=event, registration_status='K'
+            ).order_by(*sort_orders[sort])
+            ws.append(['salutation', 'firstName', 'lastName', 'name',
+                       'nameForLetters', 'title', 'company', 'address1',
+                       'address2', 'city', 'stateProv', 'postalCode',
+                       'country', 'phone', 'email'])
+            for record in registration_qs:
+                registrant = record.registrant
+                letter_name = ''
+                if registrant.salutation:
+                    letter_name += registrant.salutation + ' '
+                else:
+                    letter_name += registrant.first_name + ' '
+                letter_name += registrant.last_name
+                ws.append([
+                    registrant.salutation,
+                    registrant.first_name,
+                    registrant.last_name,
+                    registrant.first_name + ' ' + registrant.last_name,
+                    letter_name,
+                    registrant.title,
+                    registrant.company.name,
+                    registrant.company.address1,
+                    registrant.company.address2,
+                    registrant.company.city,
+                    registrant.company.state_prov,
+                    registrant.company.postal_code,
+                    registrant.company.country,
+                    registrant.phone1,
+                    registrant.email1,
                 ])
             wb.save(response)
             return response

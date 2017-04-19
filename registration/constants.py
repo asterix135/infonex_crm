@@ -34,4 +34,5 @@ ADMIN_REPORTS = (('Delegate', 'Delegate List'),
                  ('Unpaid', 'Unpaid Delegate List'),
                  ('CE', 'CE Sign-in Sheet'),
                  ('Badges', 'Badges'),
-                 ('Counts', 'Registration Counts'),)
+                 ('Counts', 'Registration Counts'),
+                 ('Speaker', 'Speaker List'),)

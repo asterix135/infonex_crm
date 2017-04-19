@@ -31,6 +31,14 @@ $(document).ready(function(){
     $('input[name="report_format"]').attr('disabled', true);
   }
 
+  function disablePdf(){
+    var docFormat = $('input[name="report_format"]:checked').val();
+    if (docFormat == 'pdf') {
+      $('input[name="report_format"][value="csv"]').prop('checked', true);
+    };
+    $('input[name="report_format"]').attr('disabled', true);
+  }
+
   function disableSort(sortVal='name'){
     var currentSortVal = $('input[name="sort"]:checked').val();
     if (currentSortVal != sortVal) {
@@ -76,6 +84,10 @@ $(document).ready(function(){
           enableAllRadios();
           disableSort();
           disableDataExport();
+          break;
+        case "Speaker":
+          enableAllRadios();
+          disablePdf();
           break;
       }
   });

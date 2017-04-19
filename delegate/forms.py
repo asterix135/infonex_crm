@@ -237,6 +237,9 @@ class RegDetailsForm(forms.ModelForm):
             ),
         }
 
+    def clean(self):
+        super(RegDetailsForm, self).clean()
+        
 
 class AssistantForm(forms.ModelForm):
 

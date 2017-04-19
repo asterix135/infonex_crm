@@ -860,8 +860,6 @@ def company_crm_modal(request):
             name_qs2 = Person.objects.filter(name__icontains=last_name,
                                              company=company_name)
             crm_suggest_list = crm_suggest_list | name_qs1 | name_qs2
-            if not crm_best_guess and crm_suggest_list.count() > 0:
-                crm_best_guess = crm_suggest_list[0]
         if crm_suggest_list.count() < 10 and len(name_tokens) > 0:
             match3 = Person.objects.filter(name=person_name)
             queries = []
@@ -871,8 +869,6 @@ def company_crm_modal(request):
             for item in queries:
                 query |= item
             match3 = match3.filter(query)
-            if not crm_best_guess and match3.count() > 0:
-                crm_best_guess = match3[0]
             crm_suggest_list = crm_suggest_list | match3[:10]
         if crm_suggest_list.count() < 10 and len(name_tokens) > 0:
             match4_a = Person.objects.filter(name__icontains=first_name)

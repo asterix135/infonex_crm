@@ -530,8 +530,8 @@ $(document).ready(function(){
 
   //////////////////////
   // Following code deals with matching current company to a d/b record onscreen
+  // Used to facilitate data entry/matching
   //////////////////////
-
 
   // Trigger modal to look for matching company
   function triggerCompanySearchModal() {

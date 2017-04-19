@@ -128,6 +128,7 @@ SEARCH_SUBSTITUTIONS = (
     ('MCYS', 'Ministry of Children and Youth Services'),
     ('MNP', 'Meyers Norris Penny'),
     ('MOT', 'Ministry of Transportation'),
+    ('nation', 'nations'),
     ('NEB', 'National Energy Board'),
     ('NRC', 'National Research Council'),
     ('OEB', 'Ontario Energy Board'),

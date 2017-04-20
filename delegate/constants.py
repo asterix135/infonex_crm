@@ -120,6 +120,7 @@ SEARCH_SUBSTITUTIONS = (
     ('DND', 'Department of National Defence'),
     ('Environment Canada', 'Environment and Climate Change Canada'),
     ('ESDC', 'Employment and Social Development Canada'),
+    ('EY', 'Ernst & Young'),
     ('IESO', 'Independent Electricity System Opreator'),
     ('IRB', 'Immigration and Refugee Board'),
     ('INAC', 'Indigenous and Northern Affairs Canada'),

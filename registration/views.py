@@ -429,6 +429,27 @@ def index_panel(request):
         context = {
             'delegate_search_form': delegate_search_form,
         }
+    elif request.GET['panel'] == 'invoice-quick-search':
+        invoice_number = request.GET.get('invoice_number', 0)
+        response_url = 'registration/index_panels/invoice_details.html'
+        try:
+            invoice = Invoice.objects.get(id=invoice_number)
+        except Invoice.DoesNotExist:
+            invoice = None
+        if invoice:
+            taxes = invoice.pre_tax_price * invoice.gst_rate
+            taxes += invoice.pre_tax_price * invoice.hst_rate
+            taxes += (invoice.pre_tax_price * invoice.gst_rate +
+                      invoice.pre_tax_price) * invoice.qst_rate
+            total_invoice = invoice.pre_tax_price + taxes
+        else:
+            taxes = None
+            total_invoice = None
+        context = {
+            'invoice': invoice,
+            'taxes': taxes,
+            'total_invoice': total_invoice,
+        }
 
     else:
         raise Http404('Invalid panel name')

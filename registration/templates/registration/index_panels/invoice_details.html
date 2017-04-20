@@ -1,0 +1,102 @@
+<!-- AJAX insert into registration/index.html -->
+{% load humanize %}
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h2 class="panel-title h2">Invoice Details</h2>
+  </div>
+  <div class="panel-body">
+    <table class="table">
+      {% if invoice %}
+      <tr>
+        <td class="col-sm-2 text-right">
+          <label>Invoice Number</label>
+        </td>
+        <td class="col-sm-10" colspan="2">
+          {{ invoice.id }}
+        </td>
+      </tr>
+      <tr>
+        <td class="col-sm-2 text-right">
+          <label>Event</label>
+        </td>
+        <td class="col-sm-10" colspan="2">
+          {{ invoice.reg_details.conference.number }}&nbsp;-&nbsp;{{ invoice.reg_details.conference.title }}<br />
+          {{ invoice.reg_details.conference.date_begins }}<br />
+          {{ invoice.reg_details.conference.city }},&nbsp;{{ invoice.reg_details.conference.state_prov }}
+        </td>
+      </tr>
+      <tr>
+        <td class="col-sm-2 text-right">
+          <label>Registration Status</label>
+        </td>
+        <td class="col-sm-10" colspan="2">
+          {{ invoice.reg_details.get_registration_status_display }}
+        </td>
+      </tr>
+      <tr>
+        <td class="col-sm-2 text-right" rowspan="3">
+          <label>Invoice Amount</label>
+        </td>
+        <td class="col-sm-2 text-right">
+          <b>Base Amount</b>:
+        </td>
+        <td class="col-sm-8">
+          ${{ invoice.pre_tax_price|floatformat:'2'|intcomma }}<br />
+        </td>
+      </tr>
+      <tr>
+        <td class="col-sm-2 text-right">
+          <b>Taxes (all)</b>:
+        </td>
+        <td class="col-sm-8">
+          ${{ taxes|floatformat:'2'|intcomma }}<br />
+        </td>
+      </tr>
+      <tr>
+        <td class="col-sm-2 text-right">
+          <b>Total Invoice:</b>
+        </td>
+        <td class="col-sm-8">
+          ${{ total_invoice|floatformat:'2'|intcomma }}
+        </td>
+      </tr>
+      <tr>
+        <td class="col-sm-2 text-right">
+          <label>Delegate</label>
+        </td>
+        <td class="col-sm-10" colspan="2">
+          {% if invoice.reg_details.registrant.salutation %}
+          {{ invoice.reg_details.registrant.salutation }}
+          {% endif %}
+          {{ invoice.reg_details.registrant.first_name }}&nbsp;{{ invoice.reg_details.registrant.last_name }}<br />
+          {% if invoice.reg_details.registrant.title %}
+          {{ invoice.reg_details.registrant.title }}<br />
+          {% endif %}
+          {% if invoice.reg_details.registrant.company.name %}
+          {{ invoice.reg_details.registrant.company.name }}<br />
+          {% endif %}
+          {% if invoice.reg_details.registrant.company.address1 %}
+          {{ invoice.reg_details.registrant.company.address1 }}<br />
+          {% endif %}
+          {% if invoice.reg_details.registrant.company.address2 %}
+          {{ invoice.reg_details.registrant.company.address2 }}<br />
+          {% endif %}
+          {% if invoice.reg_details.registrant.company.city %}
+          {{ invoice.reg_details.registrant.company.city }},&nbsp;
+          {% endif %}
+          {% if invoice.reg_details.registrant.company.state_prov %}
+          {{ invoice.reg_details.registrant.company.state_prov }}&nbsp;
+          {% endif %}
+          {{ invoice.reg_details.registrant.company.postal_code }}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td class="col-sm-12">
+          <h4>No matching invoice</h4>
+        </td>
+      </tr>
+      {% endif %}
+    </table>
+  </div>
+</div>

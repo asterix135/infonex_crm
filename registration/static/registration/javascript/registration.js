@@ -20,6 +20,31 @@ $(document).ready(function(){
     });
   });
 
+  // Load invoice search ajax panel
+  function invoiceQuickSearch(){
+    var invoiceNumber = $('#invoice-search-box').val();
+    $.ajax({
+      url: '/registration/index_panel',
+      type: 'GET',
+      data: {
+        'panel': 'invoice-quick-search',
+        'invoice_number': invoiceNumber,
+      },
+      success: function(data){
+        $('#ajax-content').html(data);
+      }
+    });
+  };
+  $('body').on('click', '#invoice-search-btn', function(){
+    invoiceQuickSearch();
+  });
+  $('body').on('keypress', '#invoice-search-box', function(e){
+    var key = e.which;
+    if (key == 13){
+      invoiceQuickSearch();
+    }
+  })
+
   //////////////////////////
   // Next section of code is related to manipulation of admin reports search panel
   //////////////////////////

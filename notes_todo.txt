@@ -4,7 +4,7 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-TODO: Pull speakers only
+TODO: Allow report selection to include/exclude on various categories
 
 TODO: Post-submit modal on company match overwrites everything - should not
       1) DONE - After selecting company on modal, do an AJAX call that returns a JSON with saved company values
@@ -188,3 +188,4 @@ TODO: DONE - How to deal with apostrophes from company name whens searching (reg
 TODO: DONE - if ! company_match, call modal when pressing enter in company name
 TODO: DONE - increase the confidence for recommending crm match
 TODO: DONE - consider updating company search to deal with singular/plural (first nation vs first nations)
+TODO: DONE - Pull speakers only

@@ -16,7 +16,10 @@ $(document).ready(function() {
     })
   }
 
-  function startdateDatepicker(startDateMin = null){
+  function startdateDatepicker(startDateMin){
+    if (startDateMin === undefined){
+      startDateMin = null
+    }
     var dateBeginsVal = $('#id_date_begins').val();
     if (dateBeginsVal != undefined && dateBeginsVal.match(dateRegEx) != null) {
       var dateBeginsDate = new Date($('#id_date_begins').val());

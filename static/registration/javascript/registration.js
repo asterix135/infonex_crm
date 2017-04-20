@@ -64,13 +64,16 @@ $(document).ready(function(){
     $('input[name="report_format"]').attr('disabled', true);
   }
 
-  function disableSort(sortVal='name'){
+  function disableSort(sortVal){
+    if (sortVal === undefined){
+      sortVal='name';
+    }
     var currentSortVal = $('input[name="sort"]:checked').val();
     if (currentSortVal != sortVal) {
       $('input[name="sort"][value="' + sortVal + ']').prop('checked', true);
     };
     $('input[name="sort"]').attr('disabled', true);
-  }
+  };
 
   function enableAllRadios(){
     $('input[type="radio"]').attr('disabled', false);

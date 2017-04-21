@@ -25,7 +25,10 @@ def iteratively_replace_and_guess_name(company_name):
 
     queries = []
     for name in alternate_names:
-        queries.append(Q(name__icontains=name))
+        if len(name) > 2:
+            queries.append(Q(name__icontains=name))
+        else:
+            queries.append(Q(name__iexact=name))
     if len(queries) > 0:
         query = queries.pop()
         for item in queries:

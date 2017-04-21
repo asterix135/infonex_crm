@@ -4,6 +4,8 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+TODO: delegate search doesn't work (other than invoice #)
+
 TODO: Allow report selection to include/exclude on various categories (lower priority)
 
 TODO: Post-submit modal on company match overwrites everything - should not

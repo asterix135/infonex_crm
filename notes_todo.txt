@@ -4,7 +4,7 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-TODO: Allow report selection to include/exclude on various categories
+TODO: Allow report selection to include/exclude on various categories (lower priority)
 
 TODO: Post-submit modal on company match overwrites everything - should not
       1) DONE - After selecting company on modal, do an AJAX call that returns a JSON with saved company values

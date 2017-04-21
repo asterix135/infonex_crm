@@ -12,7 +12,7 @@
           <label>Invoice Number</label>
         </td>
         <td class="col-sm-10" colspan="2">
-          {{ invoice.id }}
+          <a href="{% url 'delegate:index' %}?reg_id={{ invoice.reg_details.id }}">{{ invoice.id }}</a>
         </td>
       </tr>
       <tr>

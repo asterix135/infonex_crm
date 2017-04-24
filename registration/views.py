@@ -362,7 +362,7 @@ def find_reg(request):
             matched_reg = reg_pool[0]
 
     if not matched_reg and not failure_message:
-        print(reg_pool.count())
+        # print(reg_pool.count())
         reg_pool = RegDetails.objects.all() if reg_pool is None else reg_pool
         kwargs = {
             'registrant__first_name__icontains': first_name,

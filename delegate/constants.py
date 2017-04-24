@@ -97,6 +97,7 @@ STOPWORDS = ['&',
 SEARCH_SUBSTITUTIONS = (
     ('&', 'and'),
     ('AANDC', 'Indigenous and Norther Affairs'),
+    ('ACOA', 'Atlantic Canada Opportunities Agency'),
     ('AESO', 'Alberta Electrical System Operator'),
     ('AMF', 'Autorité des marchés financiers'),
     ('BLG', 'Borden Ladner Gervais'),

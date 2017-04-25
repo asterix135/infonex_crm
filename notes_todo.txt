@@ -4,7 +4,8 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-TODO: delegate search doesn't work (other than invoice #)
+TODO: Update email message content for changing to paid;
+      Also, after a conference has run
 
 TODO: Allow report selection to include/exclude on various categories (lower priority)
 
@@ -191,3 +192,4 @@ TODO: DONE - if ! company_match, call modal when pressing enter in company name
 TODO: DONE - increase the confidence for recommending crm match
 TODO: DONE - consider updating company search to deal with singular/plural (first nation vs first nations)
 TODO: DONE - Pull speakers only
+TODO: DONE - delegate search doesn't work (other than invoice #)

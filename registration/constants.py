@@ -9,8 +9,8 @@ PAYMENT_METHODS = (('V', 'Visa'),
                    ('O', 'Other method'))
 
 REG_STATUS_OPTIONS = (('', '-----------'),
-                      ('DP', 'Delegate Paid'),
                       ('DU', 'Delegate Unpaid'),
+                      ('DP', 'Delegate Paid'),
                       ('DF', 'Delegate Free'),
                       ('K', 'Speaker'),
                       ('SP', 'Sponsor Paid'),

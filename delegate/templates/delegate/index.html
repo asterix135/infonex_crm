@@ -317,7 +317,11 @@
 
         <div id="process-registration-section">
           <button type="button" class="btn btn-success col-sm-12" id="process-registration-button">
+            {% if current_registration %}
+            Update Registration details
+            {% else %}
             Process registration
+            {% endif %}
           </button>
         </div>
 

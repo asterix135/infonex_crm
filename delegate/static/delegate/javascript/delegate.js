@@ -7,6 +7,7 @@ $(document).ready(function(){
   var defaultHstRate = $('#id_hst_rate').val();
   var defaultQstRate = $('#id_qst_rate').val();
   var companyDatabaseValues = {};
+  var matchedCompanyId = null;
 
   // Check & adjust display of reg details on page load/reload
   displayHideRegDetails();
@@ -444,7 +445,7 @@ $(document).ready(function(){
       okToSubmit = false;
       // Make sure that values match up - if not send to another modal to choose
       companyId = $('input[name=company-select]:checked').val();
-      $('#company-match-value').val(companyId);
+      matchedCompanyId = companyId;
       $.ajax({
         url: '/delegate/get_company_details/',
         type: 'GET',
@@ -483,6 +484,7 @@ $(document).ready(function(){
             $('#companyCrmModal').modal('hide');
             $('#companyFieldCompareModal').modal('show');
           } else {
+            $('#company-match-value').val(companyId);
             $('#registration-form').submit();
           }
         },
@@ -503,7 +505,6 @@ $(document).ready(function(){
     });
     var okToSubmit = true;
     for (let name of inputNames){
-      console.log(name);
       var currentOption = $('input[name='+name+']:checked').val();
       if (!currentOption){
         okToSubmit = false;
@@ -514,17 +515,17 @@ $(document).ready(function(){
       } else {
         $('#error-message-'+name).text('');
         if (currentOption == 'database'){
-          // $('#id_'+name).val(companyDatabaseValues.name);
-          console.log(companyDatabaseValues[name]);
+          $('#id_'+name).val(companyDatabaseValues[name]);
         }
       }
     };
     if (okToSubmit){
+      $('#company-match-value').val(matchedCompanyId);
       $('#registration-form').submit();
     } else {
-
-      console.log('need to scroll modal to error');
-
+      $('#company-field-compare-modal').animate({
+        scrollTop: $('input[name='+scrollToError+']').offset().top
+      }, 500);
     }
   });
 

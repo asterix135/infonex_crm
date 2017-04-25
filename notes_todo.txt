@@ -4,6 +4,12 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+TODO: Cancellations - status for refund, credit note, Unpaid
+
+TODO: Cancellation - verify that there is a cxl date
+
+TODO: Maybe?? allow invoice updating from ajax lookup panel
+
 TODO: Update email message content for changing to paid;
       Also, after a conference has run
 
@@ -14,7 +20,7 @@ TODO: Post-submit modal on company match overwrites everything - should not
       2) DONE - Compare JSON values with values in form
       3) DONE - If there is a difference, close current modal and open a new modal forcing user to choose between differing values
       4) DONE - On new modal have submit form option
-      5) If there are no differences between modal and form, submit form with company value updated
+      5) DONE - If there are no differences between modal and form, submit form with company value updated
       6) Make sure submit (views.py) doesn't overwrite existing values or find a way to show diffs
 
 TODO: 68) Make it possible to substitute a delegate - need work on modal & logic
@@ -74,6 +80,9 @@ TODO: 28) if no admin access, set error page for accessing admin page
 TODO: 42) See what other flags a person has???
 
 TODO: 66) Pre-populate new delegate form based on search criteria
+
+TODO: (low priority) - scroll to error in company-field-compare-modal doesn't
+      work in delegate.js script
 
 TODO: Consider automating stopwords in delegate.constants.py
       some kind of database-driven function

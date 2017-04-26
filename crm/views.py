@@ -546,12 +546,20 @@ def search(request):
     search_string = ''
     search_terms = None
     search_type = request.session.get('last_search_type')
+    conference_select_form = ConferenceSelectForm()
+    conference_select_form.fields['event'].queryset = \
+        Event.objects.all().order_by('-number')
+    conference_select_form.fields['event'].required = True
 
     # if new search, parse relevant variables and identify search type
     if request.method == 'POST' and 'search_terms' in request.POST:
         search_type = request.session['last_search_type'] = 'quick'
         search_string = request.session['search_string'] = \
             request.POST['search_terms']
+    elif request.method == 'POST' and 'event' in request.POST:
+        search_type = request.session['last_search_type'] = 'attendee'
+        conference_select_form = ConferenceSelectForm(request.POST)
+        conf_id = request.session['search_conf_id'] = request.POST['event']
     elif request.method == 'POST':
         search_form = SearchForm(request.POST)
         search_type = request.session['last_search_type'] = 'advanced'
@@ -589,6 +597,7 @@ def search(request):
         search_company = request.session.get('search_company')
         search_prov = request.session.get('search_prov')
         search_customer = request.session.get('search_customer')
+        conf_id = request.session.get('search_conf_id')
 
     # execute quick search
     if search_type == 'quick' and len(search_string.strip()) > 0 :
@@ -604,6 +613,15 @@ def search(request):
             query |= item
         # Query the model
         search_list = Person.objects.filter(query)
+
+    # execute delegate list search
+    elif search_type == 'attendee':
+        search_list = Person.objects.filter(
+            registrants__regdetails__conference__id=conf_id
+        )
+        conference_select_form = ConferenceSelectForm(
+            {'event': conf_id}
+        )
 
     # execute advanced search
     elif (search_name and search_name not in ('', None)) or \
@@ -688,6 +706,7 @@ def search(request):
         'has_plus3': int(page) + 3 <= paginator.num_pages,
         'plus3': str(int(page) + 3),
         'has_plus4': int(page) + 4 <= paginator.num_pages,
+        'conference_select_form': conference_select_form,
     }
     return render(request, 'crm/search.html', context)
 

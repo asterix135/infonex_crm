@@ -9,9 +9,9 @@
   </h2>
 </div>
 {% if show_advanced %}
-<div class="panel-body collapse in" id="search-panel">
+<div class="panel-body collapse in advanced-search-panel" id="search-panel">
 {% else %}
-<div class="panel-body collapse" id="search-panel">
+<div class="panel-body collapse advanced-search-panel" id="search-panel">
 {% endif %}
   <form action="{% url 'crm:search' %}" method="post">
     {% csrf_token %}
@@ -53,9 +53,30 @@
     </div>
   </form>
 </div>
-<div class="panel-heading collapse in advanced-search">
-  Past Registrants
+{% if show_advanced %}
+<div class="panel-heading collapse in advanced-search-panel">
+{% else %}
+<div class="panel-heading collapse advanced-search-panel">
+{% endif %}
+  Past Attendees
 </div>
-<div class="panel-body collapse in advanced-search">
-  <h1>del list search goes here</h1>
+{% if show_advanced %}
+<div class="panel-body collapse in advanced-search-panel">
+{% else %}
+<div class="panel-body collapse advanced-search-panel">
+{% endif %}
+  <form action="{% url 'crm:search' %}" method="post">
+    {% csrf_token %}
+    <div class="form-group row col-sm-12">
+      {{ conference_select_form }}
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-offset-1 col-sm-4">
+        <button type="submit" class="btn btn-primary" name="option" value="del-list">
+          Show Attendee List
+        </button>
+      </div>
+    </div>
+
+  </form>
 </div>

@@ -4,6 +4,8 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+TODO: Ability to select past delegate lists on crm advanced search
+
 TODO: Cancellations - status for refund, credit note, Unpaid
 
 TODO: Cancellation - verify that there is a cxl date
@@ -14,14 +16,6 @@ TODO: Update email message content for changing to paid;
       Also, after a conference has run
 
 TODO: Allow report selection to include/exclude on various categories (lower priority)
-
-TODO: Post-submit modal on company match overwrites everything - should not
-      1) DONE - After selecting company on modal, do an AJAX call that returns a JSON with saved company values
-      2) DONE - Compare JSON values with values in form
-      3) DONE - If there is a difference, close current modal and open a new modal forcing user to choose between differing values
-      4) DONE - On new modal have submit form option
-      5) DONE - If there are no differences between modal and form, submit form with company value updated
-      6) Make sure submit (views.py) doesn't overwrite existing values or find a way to show diffs
 
 TODO: 68) Make it possible to substitute a delegate - need work on modal & logic
 
@@ -202,3 +196,10 @@ TODO: DONE - increase the confidence for recommending crm match
 TODO: DONE - consider updating company search to deal with singular/plural (first nation vs first nations)
 TODO: DONE - Pull speakers only
 TODO: DONE - delegate search doesn't work (other than invoice #)
+TODO: Post-submit modal on company match overwrites everything - should not
+      1) DONE - After selecting company on modal, do an AJAX call that returns a JSON with saved company values
+      2) DONE - Compare JSON values with values in form
+      3) DONE - If there is a difference, close current modal and open a new modal forcing user to choose between differing values
+      4) DONE - On new modal have submit form option
+      5) DONE - If there are no differences between modal and form, submit form with company value updated
+      6) DONE - Make sure submit (views.py) doesn't overwrite existing values or find a way to show diffs

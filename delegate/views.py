@@ -234,6 +234,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     Helper function, called from process_registration once request data
     has been verified
     """
+    print('\n\nprocessing complete registration\n\n')
     # 1. create database records if not present
     # a. assistant
     if request.POST['assistant_match_value']:
@@ -582,6 +583,7 @@ def index(request):
 
 @login_required
 def process_registration(request):
+    print('\n\nprocessing submission\n\n')
     """ form submission """
     # 1. instantiate various Nones
     current_registration = None

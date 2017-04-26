@@ -734,6 +734,7 @@ def process_registration(request):
             request.session['current_registration'] = current_registration.pk
             request.session['registrant'] = registrant.pk
             request.session['assistant'] = assistant.pk if assistant else None
+            print('\n\nredirecting\n\n')
             return redirect('/delegate/confirmation_details')
 
     context = {

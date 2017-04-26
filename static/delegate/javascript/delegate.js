@@ -504,7 +504,8 @@ $(document).ready(function(){
       inputNames.add($(elm).prop('name'));
     });
     var okToSubmit = true;
-    for (let name of inputNames){
+    var name = null;
+    for (name of inputNames){
       var currentOption = $('input[name='+name+']:checked').val();
       if (!currentOption){
         okToSubmit = false;

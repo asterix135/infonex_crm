@@ -117,7 +117,7 @@ class Person(models.Model):
                 if not reg_list:
                     reg_list = registrant.regdetails_set.all()
                 else:
-                    reg_list = reg_list | registrant.regdetails.set.all()
+                    reg_list = reg_list | registrant.regdetails_set.all()
             if len(reg_list) == 0:
                 reg_history_exists = False
             else:

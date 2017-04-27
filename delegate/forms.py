@@ -1,4 +1,5 @@
 import datetime
+import re
 
 from django import forms
 from django.contrib.auth.models import User
@@ -9,7 +10,9 @@ from registration.models import *
 from crm.models import Event
 from crm.constants import *
 
-
+######################
+# Widget stuff
+######################
 def set_field_html_name(cls, new_name):
     """
     This creates wrapper around the normal widget rendering,
@@ -22,6 +25,9 @@ def set_field_html_name(cls, new_name):
     cls.widget.render = _widget_render_wrapper
 
 
+##################
+# forms
+##################
 class NewDelegateForm(forms.ModelForm):
 
     class Meta():
@@ -64,6 +70,8 @@ class NewDelegateForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
         }
+    # def clean_salutation(self):
+    #     return self.cleaned_data.get('salutation', '').strip()
 
 
 class CompanySelectForm(forms.ModelForm):
@@ -123,6 +131,20 @@ class CompanySelectForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
         }
+    def clean_name(self):
+        return self.cleaned_data.get('name', '').strip()
+    def clean_name_for_badges(self):
+        return self.cleaned_data.get('name_for_badges', '').strip()
+    def clean_city(self):
+        return self.cleaned_data.get('city', '').strip()
+    def clean_country(self):
+        return self.cleaned_data.get('country', '').strip()
+    def clean_postal_code(self):
+        pc = self.cleaned_data.get('postal_code', '').strip()
+        if re.match(r'\b\w\d\w\d\w\d\b', pc):
+            mtch = re.match(r'\b\w\d\w\d\w\d\b', pc).group(0)
+            pc = mtch[:3] + ' ' + mtch[-3:]
+        return pc
 
 
 class NewCompanyForm(CompanySelectForm):
@@ -239,7 +261,7 @@ class RegDetailsForm(forms.ModelForm):
 
     def clean(self):
         super(RegDetailsForm, self).clean()
-        
+
 
 class AssistantForm(forms.ModelForm):
 
@@ -290,6 +312,19 @@ class AssistantForm(forms.ModelForm):
                        'id': 'assistant_address'}
             )
         }
+
+    def clean_salutation(self):
+        return self.cleaned_data.get('salutation', '').strip()
+    def clean_first_name(self):
+        return self.cleaned_data.get('first_name', '').strip()
+    def clean_last_name(self):
+        return self.cleaned_data.get('last_name', '').strip()
+    def clean_title(self):
+        return self.cleaned_data.get('title', '').strip()
+    def clean_email(self):
+        return self.cleaned_data.get('email', '').strip()
+    def clean_phone(self):
+        return self.cleaned_data.get('phone', '').strip()
 
 
 class OptionsForm(forms.Form):

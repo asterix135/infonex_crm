@@ -234,7 +234,6 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     Helper function, called from process_registration once request data
     has been verified
     """
-    print('\n\nprocessing complete registration\n\n')
     # 1. create database records if not present
     # a. assistant
     if request.POST['assistant_match_value']:
@@ -270,12 +269,13 @@ def process_complete_registration(request, assistant_data, company, crm_match,
             company.save()
 
     # c. update crm record with form values
-    crm_match.name = request.POST['first_name'] + ' ' + request.POST['last_name']
-    crm_match.title = request.POST['title']
-    crm_match.company = request.POST['crm_company']
-    crm_match.phone = request.POST['phone1']
-    crm_match.email = request.POST['email1']
-    crm_match.city = request.POST['city']
+    crm_match.name = request.POST['first_name'].strip() + ' ' + \
+        request.POST['last_name'].strip()
+    crm_match.title = request.POST['title'].strip()
+    crm_match.company = request.POST['crm_company'].strip()
+    crm_match.phone = request.POST['phone1'].strip()
+    crm_match.email = request.POST['email1'].strip()
+    crm_match.city = request.POST['city'].strip()
     crm_match.date_modified = timezone.now()
     crm_match.modified_by = request.user
     crm_match.save()
@@ -292,9 +292,9 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     else:
         registrant_db_check = Registrants.objects.filter(
             company=company,
-            first_name=request.POST['first_name'],
-            last_name=request.POST['last_name'],
-            email1=request.POST['email1']
+            first_name=request.POST['first_name'].strip(),
+            last_name=request.POST['last_name'].strip(),
+            email1=request.POST['email1'].strip()
         )
         if registrant_db_check.count() > 0:
             registrant = registrant_db_check[0]
@@ -309,14 +309,14 @@ def process_complete_registration(request, assistant_data, company, crm_match,
                 crm_person=crm_match,
                 assistant=assistant,
                 company=company,
-                salutation=request.POST['salutation'],
-                first_name=request.POST['first_name'],
-                last_name=request.POST['last_name'],
-                title=request.POST['title'],
-                email1=request.POST['email1'],
-                email2=request.POST['email2'],
-                phone1=request.POST['phone1'],
-                phone2=request.POST['phone2'],
+                salutation=request.POST['salutation'].strip(),
+                first_name=request.POST['first_name'].strip(),
+                last_name=request.POST['last_name'].strip(),
+                title=request.POST['title'].strip(),
+                email1=request.POST['email1'].strip(),
+                email2=request.POST['email2'].strip(),
+                phone1=request.POST['phone1'].strip(),
+                phone2=request.POST['phone2'].strip(),
                 contact_option=request.POST['contact_option'],
                 # delegate_notes=request.POST['delegate_notes'],
                 created_by=request.user,
@@ -583,7 +583,6 @@ def index(request):
 
 @login_required
 def process_registration(request):
-    print('\n\nprocessing submission\n\n')
     """ form submission """
     # 1. instantiate various Nones
     current_registration = None
@@ -619,12 +618,12 @@ def process_registration(request):
             request.POST['assistant_email'] != '' or
             request.POST['assistant_phone'] != ''):
             assistant_data = {
-                'salutation': request.POST['assistant_salutation'],
-                'first_name': request.POST['assistant_first_name'],
-                'last_name': request.POST['assistant_last_name'],
-                'title': request.POST['assistant_title'],
-                'email': request.POST['assistant_email'],
-                'phone': request.POST['assistant_phone'],
+                'salutation': request.POST['assistant_salutation'].strip(),
+                'first_name': request.POST['assistant_first_name'].strip(),
+                'last_name': request.POST['assistant_last_name'].strip(),
+                'title': request.POST['assistant_title'].strip(),
+                'email': request.POST['assistant_email'].strip(),
+                'phone': request.POST['assistant_phone'].strip(),
             }
             assistant_form = AssistantForm(assistant_data)
         current_time = timezone.now()
@@ -684,12 +683,12 @@ def process_registration(request):
             crm_match = Person.objects.get(pk=request.POST['crm_match_value'])
         else:
             crm_match = Person(
-                name=request.POST['first_name'] + ' ' + \
-                     request.POST['last_name'],
-                title=request.POST['title'],
-                company=request.POST['crm_company'],
-                phone=request.POST['phone1'],
-                email=request.POST['email1'],
+                name=request.POST['first_name'].strip() + ' ' + \
+                     request.POST['last_name'].strip(),
+                title=request.POST['title'].strip(),
+                company=request.POST['crm_company'].strip(),
+                phone=request.POST['phone1'].strip(),
+                email=request.POST['email1'].strip(),
                 city=company.city,
                 date_created=timezone.now(),
                 created_by=request.user,
@@ -736,7 +735,6 @@ def process_registration(request):
             request.session['current_registration'] = current_registration.pk
             request.session['registrant'] = registrant.pk
             request.session['assistant'] = assistant.pk if assistant else None
-            print('\n\nredirecting\n\n')
             return redirect('/delegate/confirmation_details')
 
     context = {

@@ -4,6 +4,8 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+TODO: Update paid date when switching status on invoice
+
 TODO: Ability to select past delegate lists on crm advanced search
 
 TODO: Cancellations - status for refund, credit note, Unpaid

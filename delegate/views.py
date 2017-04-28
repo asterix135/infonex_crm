@@ -1480,11 +1480,12 @@ def test_peter2(request):
             option_list.append(conference.eventoptions_set.all()[0])
 
         # ensure everything is valid, then process registration
-        if new_delegate_form.is_valid() and company_select_form.is_valid() \
-            and (not assistant_data or assistant_form.is_valid()) \
-            and reg_details_form.is_valid() \
-            and not company_error and not assistant_missing \
-            and not option_selection_needed and conference:
+        if new_delegate_form.is_valid():
+        # if new_delegate_form.is_valid() and company_select_form.is_valid() \
+        #     and (not assistant_data or assistant_form.is_valid()) \
+        #     and reg_details_form.is_valid() \
+        #     and not company_error and not assistant_missing \
+        #     and not option_selection_needed and conference:
 
             # current_registration, registrant, assistant = \
             #     process_complete_registration(request, assistant_data, company,

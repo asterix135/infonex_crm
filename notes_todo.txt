@@ -4,6 +4,11 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+TODO: FIX Issue with Peter's computer
+      1) delegate.views.py/test_peter
+      2) templates test_peter.html
+      3) url.py pointer
+
 TODO: Update paid date when switching status on invoice
 
 TODO: Ability to select past delegate lists on crm advanced search

@@ -6,6 +6,7 @@ import re
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.db.models import Q, Max, Count
 from django.forms.models import model_to_dict
@@ -225,6 +226,18 @@ def build_email_lists(reg_details, invoice):
         cc_list.add(sales_rep_email)
     bcc_list.append(registrar_email)
     return to_list, list(cc_list), bcc_list
+
+
+def get_valid_sales_rep_id(request):
+    if request.user.groups.filter(name='sales').exists():
+        return request.user.pk
+    if request.user.groups.filter(name='sponsorship').exists():
+        return request.user.pk
+    if User.objects.filter(name__iexact='marketing').exists():
+        user = User.objects.filter(name__iexact='marketing')[0]
+        return user.pk
+    user = User.objects.filter(groups__name__iexact='sales')[0]
+    return user.pk
 
 
 def process_complete_registration(request, assistant_data, company, crm_match,
@@ -655,7 +668,7 @@ def process_registration(request):
                 if 'sponsorship_description' in request.POST else None
         }
         if request.POST['registration_status'] in NON_INVOICE_VALUES:
-            reg_details_data['sales_credit'] = request.user.pk
+            reg_details_data['sales_credit'] = get_valid_sales_rep_id(request)
         reg_details_form = RegDetailsForm(reg_details_data)
         if request.POST['current_regdetail_id']:
             current_registration = RegDetails.objects.get(

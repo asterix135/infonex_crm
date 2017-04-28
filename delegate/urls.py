@@ -40,10 +40,4 @@ urlpatterns = [
 
     url(r'^send_conf_email/$', views.send_conf_email, name='send_conf_email'),
 
-    ####################
-    # DELETE - FOR TESTING
-    ####################
-    url(r'^peter/$', views.test_peter, name='peter'),
-    url(r'^peter2/$', views.test_peter2, name='peter2'),
-    url(r'^peter_start/$', views.test_peter_start, name='peter_start'),
 ]

@@ -4,11 +4,6 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-TODO: FIX Issue with Peter's computer
-      1) delegate.views.py/test_peter
-      2) templates test_peter.html
-      3) url.py pointer
-
 TODO: Update paid date when switching status on invoice
 
 TODO: Ability to select past delegate lists on crm advanced search
@@ -210,3 +205,7 @@ TODO: Post-submit modal on company match overwrites everything - should not
       4) DONE - On new modal have submit form option
       5) DONE - If there are no differences between modal and form, submit form with company value updated
       6) DONE - Make sure submit (views.py) doesn't overwrite existing values or find a way to show diffs
+TODO: DONE - FIX Issue with Peter's computer
+      1) delegate.views.py/test_peter
+      2) templates test_peter.html
+      3) url.py pointer

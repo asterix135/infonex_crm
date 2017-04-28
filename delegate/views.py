@@ -1575,4 +1575,4 @@ def test_peter2(request):
         'assistant_missing': assistant_missing,
         'option_selection_needed': option_selection_needed,
     }
-    return render(request, 'delegate/index.html', context)
+    return render(request, 'delegate/peter.html', context)

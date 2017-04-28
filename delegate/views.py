@@ -234,7 +234,7 @@ def get_valid_sales_rep_id(request):
     if request.user.groups.filter(name='sponsorship').exists():
         return request.user.pk
     if User.objects.filter(name__iexact='marketing').exists():
-        user = User.objects.filter(name__iexact='marketing')[0]
+        user = User.objects.filter(username__iexact='marketing')[0]
         return user.pk
     user = User.objects.filter(groups__name__iexact='sales')[0]
     return user.pk

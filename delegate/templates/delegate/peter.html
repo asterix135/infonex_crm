@@ -325,6 +325,13 @@
           </button>
         </div>
 
+        <div class="row">
+          {% for error in form_error_list %}
+          <h2>{{ error }}</h2>
+          {% endfor %}
+        </div>
+
+
       </div>
     </div>
   </div>

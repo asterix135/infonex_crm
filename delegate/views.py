@@ -1480,12 +1480,11 @@ def test_peter2(request):
             option_list.append(conference.eventoptions_set.all()[0])
 
         # ensure everything is valid, then process registration
-        if new_delegate_form.is_valid():
-        # if new_delegate_form.is_valid() and company_select_form.is_valid() \
-        #     and (not assistant_data or assistant_form.is_valid()) \
-        #     and reg_details_form.is_valid() \
-        #     and not company_error and not assistant_missing \
-        #     and not option_selection_needed and conference:
+        if new_delegate_form.is_valid() and company_select_form.is_valid() \
+            and (not assistant_data or assistant_form.is_valid()) \
+            and reg_details_form.is_valid() \
+            and not company_error and not assistant_missing \
+            and not option_selection_needed and conference:
 
             # current_registration, registrant, assistant = \
             #     process_complete_registration(request, assistant_data, company,
@@ -1506,8 +1505,32 @@ def test_peter2(request):
             request.session['assistant'] = None
 
             return redirect('/delegate/confirmation_details')
+        else:
+            form_error_list = []
+            if not new_delegate_form.is_valid():
+                form_error_list.append('new_delegate_form failed')
+            if not company_select_form.is_valid():
+                form_error_list.append('company_select_form failed')
+            if assistant_data:
+                form_error_list.append('assistant data')
+            if not assistant_form.is_valid():
+                form_error_list.append('assistant_form failed')
+            if not reg_details_form.is_valid():
+                form_error_list.append('reg_details_form failed')
+            if company_error:
+                form_error_list.append('company error')
+            if assistant_missing:
+                form_error_list.append('assistant missing')
+            if option_selection_needed:
+                form_error_list.append('option_selection_needed')
+            if not conference:
+                form_error_list.append('conference missing')
+    if 'form_error_list' not in locals():
+        form_error_list = None
 
     context = {
+        'form_error_list': form_error_list,
+
         'current_registration': current_registration,
         'new_delegate_form': new_delegate_form,
         'company_select_form': company_select_form,

@@ -44,4 +44,5 @@ urlpatterns = [
     # DELETE - FOR TESTING
     ####################
     url(r'^peter/$', views.test_peter, name='peter'),
+    url(r'^peter2/$', views.test_peter2, name='peter2'),
 ]

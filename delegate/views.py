@@ -1187,7 +1187,75 @@ def send_conf_email(request):
 # TESTING - DELETE this
 ##########################
 def test_peter(request):
-    request.session['current_registration'] = 3043  # 47  # 3043
-    request.session['registrant'] = 2744  # 37
+    # Instantiate stuff
+    new_delegate_form = NewDelegateForm()
+    company_select_form = CompanySelectForm()
+    new_company_form = NewCompanyForm()
+    company_match_list = None
+    assistant_form = AssistantForm()
+    conference_select_form = ConferenceSelectForm()
+    reg_details_form = RegDetailsForm()
+    if 'current_registration' not in locals():
+        current_registration = None
+    conference = None
+    conference_options = None  # Remove when form working
+    registrant = None
+    company = None
+    assistant = None
+    crm_match = None
+    crm_match_list = None
+    options_form = None
+    data_source = None
+
+    conf_id = 354
+    conference = Event.objects.get(pk=conf_id)
+    crm_id = 2
+    registrant_id = 10
+    conference_options = conference.eventoptions_set.all()
+    options_form = OptionsForm(conference)
+    conference_select_form = ConferenceSelectForm({'event': conf_id})
+
+    # if registrant_id != ''
+    registrant = Registrants.objects.get(pk=registrant_id)
+    new_delegate_form = NewDelegateForm(instance=registrant)
+    company = registrant.company
+    company_select_form = CompanySelectForm(instance=company)
+    crm_match = Person.objects.get(pk=registrant.crm_person.id)
+
+    context = {
+        'current_registration': current_registration,
+        'new_delegate_form': new_delegate_form,
+        'company_select_form': company_select_form,
+        'new_company_form': new_company_form,
+        'assistant_form': assistant_form,
+        'conference_select_form': conference_select_form,
+        'reg_details_form': reg_details_form,
+        'conference': conference,
+        'conference_options': conference_options,  # remove when form working
+        'options_form': options_form,
+        'registrant': registrant,
+        'company': company,
+        'assistant': assistant,
+        'crm_match': crm_match,
+        'paid_status_values': PAID_STATUS_VALUES,
+        'cxl_values': CXL_VALUES,
+        'non_invoice_values': NON_INVOICE_VALUES,
+        'data_source': data_source,
+        'total_tax_amount': None,
+        'total_invoice_amount': None,
+    }
+    return render(request, 'delegate/peter.html', context)
+
+def test_peter2(request):
+    try:
+        foo = RegDetails.objects.get(pk=3043)
+        request.session['current_registration'] = 3043
+        request.session['registrant'] = 2744
+    except:
+        request.session['current_registration'] = 47
+        request.session['registrant'] = 37
+    # request.session['current_registration'] = 3043  # 47  # 3043
+    # request.session['registrant'] = 2744  # 37
     request.session['assistant'] = None
+    print(request.session['current_registration'])
     return redirect('/delegate/confirmation_details')

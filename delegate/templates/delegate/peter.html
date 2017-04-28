@@ -1,0 +1,332 @@
+{% extends 'registration/base.html' %}
+{% load staticfiles %}
+
+{% block title %}Register Delegate | {% endblock %}
+
+{% block script_includes %}
+<link href="{% static 'delegate/delegate.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'crm/typeahead.css' %}" rel="stylesheet" type="text/css" />
+<script type='text/javascript' src="http://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
+<script type="text/javascript" src="{% static 'delegate/javascript/delegate.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div id="first-registration-modal">
+  {% include 'delegate/addins/conf_setup_modal.html' %}
+</div>
+<div id="company-crm-modal">
+  {% include 'delegate/addins/company_crm_modal.html' %}
+</div>
+<div id="company-match-modal">
+  {% include 'delegate/addins/company_match_modal.html' %}
+</div>
+<div id="subsitute-search-modal">
+  {% include 'delegate/addins/substitute_search_modal.html' %}
+</div>
+<div id="company-field-compare-modal">
+  {% include 'delegate/addins/company_field_compare_modal.html' %}
+</div>
+
+<form action="/delegate/peter2/" method="post" id="registration-form">
+  <div id="stored-variables">
+    <input type="hidden" id="current-registrant-id" name="current_registrant_id" value="{{ registrant.id }}" />
+    <input type="hidden" id="current-regdetail-id" name="current_regdetail_id" value="{{ current_registration.id }}" />
+    <input type="hidden" id="selected-conference-id" name="selected_conference_id" value="{{ conference.id }}" />
+    <input type="hidden" id="crm-match-value" name="crm_match_value" value="{{ crm_match.id }}" />
+    <input type="hidden" id="company-match-value" name="company_match_value" value="{{ company.id }}" />
+    <input type="hidden" id="assistant-match-value" name="assistant_match_value" value="{{ assistant.id }}" />
+    {% csrf_token %}
+  </div>
+  <div class="container-fluid fill">
+    <div class="row fill">
+      <div class="col-sm-12">
+        <div id="conference-selection">
+          <h3>Registration for
+            <span class="h1" id="displayed-conf-name">
+              {{ conference }}
+            </span>
+            {% if not current_registration %}
+            <a href="#conference-details"
+              class="btn btn-warning btn-sm crm-list-action" data-toggle="collapse">
+                Change Event
+            </a>
+            {% endif %}
+          </h3>
+          <div class="row collapse" id="conference-details">
+            <div class="col-sm-12">
+              {{ conference_select_form.event.errors }}
+            </div>
+            <div class="col-sm-12">
+              {{ conference_select_form.event.label_tag }}
+            </div>
+            <div class="col-sm-10">
+              {{ conference_select_form.event }}
+            </div>
+            <div class="col-sm-2">
+              <button type="button" class="btn btn-primary btn-sm"
+                id="change-conference">
+                Change
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {% if current_registration and current_registration.invoice %}
+        <div class="panel panel-primary invoice-status-box">
+          <div class="panel-body h4">
+            Invoice Number:
+            {{ current_registration.invoice.pk }}
+            <span class="float-right">
+              <button type="button" class="btn btn-default" id="substitute-delegate" data-toggle="modal" data-target="#substituteSearchModal">
+                Substitute Delegate
+              </button>
+            </span>
+          </div>
+        </div>
+        {% elif current_registration %}
+        <div class="panel panel-primary invoice-status-box">
+          <div class="panel-body h4">
+            Non-Invoice Registration
+          </div>
+        </div>
+        {% else %}
+        <div class="panel panel-primary invoice-status-box">
+          <div class="panel-body h4">
+            New Registration
+          </div>
+        </div>
+        {% endif %}
+
+        <div id="conference-options">
+          {% include 'delegate/addins/conference_options.html' %}
+        </div>
+
+        <div id="delegate-info" class="panel panel-primary">
+          <div class="panel-heading">
+            Delegate Information
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-2">
+                {{ new_delegate_form.salutation.errors }}
+                {{ new_delegate_form.salutation.label_tag }}
+                {{ new_delegate_form.salutation }}
+              </div>
+              <div class="col-sm-5">
+                {{ new_delegate_form.first_name.errors }}
+                {{ new_delegate_form.first_name.label_tag }}
+                {{ new_delegate_form.first_name }}
+              </div>
+              <div class="col-sm-5">
+                {{ new_delegate_form.last_name.errors }}
+                {{ new_delegate_form.last_name.label_tag }}
+                {{ new_delegate_form.last_name }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                {{ new_delegate_form.title.errors }}
+                {{ new_delegate_form.title.label_tag }}
+                {{ new_delegate_form.title }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                {{ new_delegate_form.email1.errors }}
+                {{ new_delegate_form.email1.label_tag }}
+                {{ new_delegate_form.email1 }}
+              </div>
+              <div class="col-sm-6">
+                {{ new_delegate_form.email2.errors }}
+                {{ new_delegate_form.email2.label_tag }}
+                {{ new_delegate_form.email2 }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                {{ new_delegate_form.phone1.errors }}
+                {{ new_delegate_form.phone1.label_tag }}
+                {{ new_delegate_form.phone1 }}
+              </div>
+              <div class="col-sm-6">
+                {{ new_delegate_form.phone2.errors }}
+                {{ new_delegate_form.phone2.label_tag }}
+                {{ new_delegate_form.phone2 }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                {% if assistant_missing %}
+                <div class="errorlist">
+                  <h3>You must fill in Assistant Contact Information with this Choice</h3>
+                </div>
+                {% endif %}
+                {{ new_delegate_form.contact_option.errors }}
+                {{ new_delegate_form.contact_option.label_tag }}
+                {{ new_delegate_form.contact_option }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="company-info" class="panel panel-primary">
+          <div class="panel-heading">
+            Company Information
+            {% if company %}
+            <span id="toggle-company-edit" class="glyphicon glyphicon-chevron-down glyph-button float-right"></span>
+            {% else %}
+            <span id="search-for-company" class="glyphicon glyphicon-search glyph-button float-right"></span>
+            {% endif %}
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-12">
+                {{ company_select_form.name.label_tag }}
+                <input type="text" id="id_company_name" class="form-control" name="name" maxlength="255"
+                  {% if company %}value="{{ company.name }}" readonly="true"
+                  {% elif crm_match %}value="{{ crm_match.company }}"
+                  {% endif %} />
+              </div>
+            </div>
+            {% if company %}
+            <div class="collapse" id="company-details">
+            {% else %}
+            <div class="collapse in" id="company-details">
+            {% endif %}
+              {% include 'delegate/addins/company_detail_editable.html' %}
+            </div>
+          </div>
+        </div>
+
+        <div id="reg-details" class="panel panel-primary">
+          <div class="panel-heading">
+            Registration/Invoice details
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-3">
+                {{ reg_details_form.registration_status.label_tag }}
+                {{ reg_details_form.registration_status.errors }}
+                {{ reg_details_form.registration_status }}
+              </div>
+              <div class="col-sm-3">
+                {{ reg_details_form.register_date.label_tag }}
+                {{ reg_details_form.register_date.errors }}
+                {{ reg_details_form.register_date }}
+              </div>
+              <div id="cancellation-details">
+                {% include 'delegate/addins/cancellation_details.html' %}
+              </div>
+            </div>
+
+            {% if reg_details_form.registration_status.value in non_invoice_values %}
+            <div id="invoice-details" class="collapse">
+            {% else %}
+            <div id="invoice-details" class="collapse in">
+            {% endif %}
+              <div class="row">
+                <div class="col-sm-3">
+                  {{ reg_details_form.pre_tax_price.errors }}
+                  {{ reg_details_form.pre_tax_price.label_tag }}
+                  <div class="input-group">
+                    <span class="input-group-addon">$</span>
+                    {{ reg_details_form.pre_tax_price }}
+                  </div>
+                </div>
+                <div id="fx-details">
+                  {% include 'delegate/addins/fx_details.html' %}
+                </div>
+                <div class="col-sm-3">
+                  {{ reg_details_form.sales_credit.errors }}
+                  {{ reg_details_form.sales_credit.label_tag }}
+                  {{ reg_details_form.sales_credit }}
+                </div>
+              </div>
+              <div class="row" id="registration-tax-information">
+                {% include 'delegate/addins/delegate_tax_information.html' %}
+              </div>
+              <div id="status-based-reg-fields">
+                {% include 'delegate/addins/status_based_reg_fields.html' %}
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  {{ reg_details_form.invoice_notes.errors }}
+                  {{ reg_details_form.invoice_notes.label_tag }}
+                  {{ reg_details_form.invoice_notes }}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                {{ reg_details_form.registration_notes.errors }}
+                {{ reg_details_form.registration_notes.label_tag }}
+                {{ reg_details_form.registration_notes }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="assistant-info" class="panel panel-primary">
+          <div class="panel-heading">
+            Assistant Information
+            <span id="toggle-assistant-details" class="glyphicon glyphicon-chevron-down glyph-button float-right"></span>
+          </div>
+          {% if assistant %}
+          <div class="panel-body collapse in" id="assistant-details">
+          {% else %}
+          <div class="panel-body collapse" id="assistant-details">
+          {% endif %}
+            <div class="row">
+              <div class="col-sm-2">
+                {{ assistant_form.salutation.errors }}
+                {{ assistant_form.salutation.label_tag }}
+                {{ assistant_form.salutation }}
+              </div>
+              <div class="col-sm-5">
+                {{ assistant_form.first_name.errors }}
+                {{ assistant_form.first_name.label_tag }}
+                {{ assistant_form.first_name }}
+              </div>
+              <div class="col-sm-5">
+                {{ assistant_form.last_name.errors }}
+                {{ assistant_form.last_name.label_tag }}
+                {{ assistant_form.last_name }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                {{ assistant_form.title.errors }}
+                {{ assistant_form.title.label_tag }}
+                {{ assistant_form.title }}
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                  {{ assistant_form.email.errors }}
+                  {{ assistant_form.email.label_tag }}
+                  {{ assistant_form.email }}
+                </div>
+                <div class="col-sm-6">
+                  {{ assistant_form.phone.errors }}
+                  {{ assistant_form.phone.label_tag }}
+                  {{ assistant_form.phone }}
+                </div>
+              </div>
+          </div>
+        </div>
+
+        <div id="process-registration-section">
+          <button type="button" class="btn btn-success col-sm-12" id="process-registration-button">
+            {% if current_registration %}
+            Update Registration details
+            {% else %}
+            Process registration
+            {% endif %}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

@@ -333,9 +333,11 @@
         <div class="row">
           {% if reg_details_form.errors %}
         	<ul>
-        	  {% for field in reg_details_form %}
-        	    <li>{{ field.errors|striptags }}</li>
-          	{% endfor %}
+            {% for field,error in reg_details_form.errors.items %}
+            <li>
+              {{field}} - {{ error|striptags }}
+            </li>
+            {% endfor %}
         	</ul>
           {% endif %}
 

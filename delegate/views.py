@@ -1514,35 +1514,36 @@ def test_peter2(request):
             return redirect('/delegate/confirmation_details')
         else:
             if new_delegate_form.is_valid():
-                form_error_list.append('new_delegate_form ok')
+                pass
             else:
                 form_error_list.append('new_delegate_form FAILED')
             if company_select_form.is_valid():
-                form_error_list.append('company_select_form ok')
+                pass
             else:
                 form_error_list.append('company_select_form FAILED')
             if (not assistant_data or assistant_form.is_valid()):
-                form_error_list.append('assistant data ok')
+                pass
             else:
                 form_error_list.append('assistant_data FAILED')
             if reg_details_form.is_valid():
-                form_error_list.append('reg_details_form ok')
+                pass
             else:
                 form_error_list.append('reg_details_form FAILED')
+                # list form errors
             if not company_error:
-                form_error_list.append('company_error ok')
+                pass
             else:
                 form_error_list.append('company_error FAILED')
             if not assistant_missing:
-                form_error_list.append('assistant_missing ok')
+                pass
             else:
                 form_error_list.append('assistant_missing FAILED')
             if not option_selection_needed:
-                form_error_list.append('option_selection_needed ok')
+                pass
             else:
                 form_error_list.append('option_selection_needed FAILED')
             if conference:
-                form_error_list.append('conference ok')
+                pass
             else:
                 form_error_list.append('conferenced FAILED')
     if len(form_error_list) == 0:

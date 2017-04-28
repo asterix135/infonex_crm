@@ -39,4 +39,9 @@ urlpatterns = [
     url(r'^get_reg_note/$', views.get_reg_note, name='get_reg_note'),
 
     url(r'^send_conf_email/$', views.send_conf_email, name='send_conf_email'),
+
+    ####################
+    # DELETE - FOR TESTING
+    ####################
+    url(r'^peter/$', views.test_peter, name='peter'),
 ]

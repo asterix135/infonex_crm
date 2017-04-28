@@ -1181,3 +1181,13 @@ def send_conf_email(request):
     email.content_subtype = 'html'
     # email.send()
     return HttpResponse(status=204)
+
+
+##########################
+# TESTING - DELETE this
+##########################
+def test_peter(request):
+    request.session['current_registration'] = 3043  # 47  # 3043
+    request.session['registrant'] = 2744  # 37
+    request.session['assistant'] = None
+    return redirect('/delegate/confirmation_details')

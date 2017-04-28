@@ -1186,7 +1186,20 @@ def send_conf_email(request):
 ##########################
 # TESTING - DELETE this
 ##########################
+def test_peter_start(request):
+    return render(request, 'delegate/peter_start.html')
+
 def test_peter(request):
+    if request.method == 'GET' and 'reg_id' in request.GET:
+        try:
+            current_registration = RegDetails.objects.get(
+                pk=request.GET['reg_id']
+            )
+        except RegDetails.DoesNotExist:
+            raise Http404('That Registration does not exist')
+    elif request.method != 'POST':
+        return redirect('/registration/')
+
     # Instantiate stuff
     new_delegate_form = NewDelegateForm()
     company_select_form = CompanySelectForm()
@@ -1207,21 +1220,103 @@ def test_peter(request):
     options_form = None
     data_source = None
 
-    conf_id = 354
-    conference = Event.objects.get(pk=conf_id)
-    crm_id = 2
-    registrant_id = 10
+    # Deal with passed data
+    if request.method == 'POST':
+        conf_id = request.POST['conf_id']
+        conference = Event.objects.get(pk=conf_id)
+        crm_id = request.POST['crm_id']
+        registrant_id = request.POST['registrant_id']
+    else:
+        conference = current_registration.conference
+        conf_id = conference.pk
+        try:
+            crm_id = current_registration.registrant.crm_person.pk
+        except AttributeError:
+            crm_id = None
+        registrant_id = current_registration.registrant.pk
     conference_options = conference.eventoptions_set.all()
     options_form = OptionsForm(conference)
     conference_select_form = ConferenceSelectForm({'event': conf_id})
-
-    # if registrant_id != ''
-    registrant = Registrants.objects.get(pk=registrant_id)
-    new_delegate_form = NewDelegateForm(instance=registrant)
-    company = registrant.company
-    company_select_form = CompanySelectForm(instance=company)
-    crm_match = Person.objects.get(pk=registrant.crm_person.id)
-
+    if registrant_id != '':
+        registrant = Registrants.objects.get(pk=registrant_id)
+        new_delegate_form = NewDelegateForm(instance=registrant)
+        company = registrant.company
+        company_select_form = CompanySelectForm(instance=company)
+        assistant = registrant.assistant
+        if assistant:
+            assistant_form = AssistantForm(instance=assistant)
+        if registrant.crm_person:
+            crm_match = Person.objects.get(pk=registrant.crm_person.id)
+        try:
+            if not current_registration:
+                current_registration = RegDetails.objects.get(
+                    registrant=registrant, conference=conference
+                )
+                data_source = 'delegate'
+            reg_data = {
+                'register_date': current_registration.register_date,
+                'cancellation_date': current_registration.cancellation_date,
+                'registration_status': current_registration.registration_status,
+                'registration_notes': current_registration.registration_notes,
+            }
+            if hasattr(current_registration, 'invoice'):
+                invoice = current_registration.invoice
+                reg_data['sales_credit'] = invoice.sales_credit
+                reg_data['pre_tax_price'] = invoice.pre_tax_price
+                reg_data['gst_rate'] = invoice.gst_rate
+                reg_data['hst_rate'] = invoice.hst_rate
+                reg_data['qst_rate'] = invoice.qst_rate
+                reg_data['payment_date'] = invoice.payment_date
+                reg_data['payment_method'] = invoice.payment_method
+                reg_data['fx_conversion_rate'] = invoice.fx_conversion_rate
+                reg_data['invoice_notes'] = invoice.invoice_notes
+                reg_data['sponsorship_description'] = \
+                    invoice.sponsorship_description
+            else:
+                if registrant.company.gst_hst_exempt:
+                    reg_data['gst_rate'] = 0
+                    reg_data['hst_rate'] = 0
+                if registrant.company.qst_exempt:
+                    reg_data['qst_rate'] = 0
+            reg_details_form = RegDetailsForm(initial=reg_data)
+        except RegDetails.DoesNotExist:
+            reg_data = {}
+            if registrant.company.gst_hst_exempt:
+                reg_data['gst_rate'] = 0
+                reg_data['hst_rate'] = 0
+            if registrant.company.qst_exempt:
+                reg_data['qst_rate'] = 0
+            if len(reg_data) > 0:
+                reg_details_form = RegDetailsForm(initial = reg_data)
+        data_source = 'delegate'
+    elif crm_id != '':  # No registrant, so try CRM
+        crm_match = Person.objects.get(pk=crm_id)
+        name_tokens = crm_match.name.split()
+        if len(name_tokens) == 1:
+            first_name_guess = ''
+            last_name_guess = name_tokens[0]
+        elif len(name_tokens) > 1:
+            first_name_guess = name_tokens[0]
+            last_name_guess = ' '.join(name_tokens[1:])
+        else:
+            first_name_guess = last_name_guess = ''
+        form_data = {'first_name': first_name_guess,
+                     'last_name': last_name_guess,
+                     'title': crm_match.title,
+                     'email1': crm_match.email,
+                     'phone1': crm_match.phone,
+                     'contact_option': 'D',
+        }
+        new_delegate_form = NewDelegateForm(initial=form_data)
+        company_select_form = CompanySelectForm(
+            initial={'name': crm_match.company,
+                     'name_for_badges': crm_match.company[:30],
+                      'city': crm_match.city,
+                     }
+        )
+        data_source = 'crm'
+    else:  # neither reg_id or crm_id means new Person
+        data_source = 'new'
     context = {
         'current_registration': current_registration,
         'new_delegate_form': new_delegate_form,

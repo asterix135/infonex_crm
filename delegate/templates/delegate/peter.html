@@ -330,6 +330,16 @@
           <h1>{{ error }}</h1>
           {% endfor %}
         </div>
+        <div class="row">
+          {% if reg_details_form.errors %}
+        	<ul>
+        	  {% for field in reg_details_form %}
+        	    <li>{{ field.errors|striptags }}</li>
+          	{% endfor %}
+        	</ul>
+          {% endif %}
+
+        </div>
 
 
       </div>

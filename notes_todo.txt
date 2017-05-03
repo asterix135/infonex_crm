@@ -4,6 +4,10 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
+TODO: Count report doesn't work
+
+TODO: Speaker Cancellation forms/page logic doesn't work
+
 TODO: Update paid date when switching status on invoice
 
 TODO: Ability to select past delegate lists on crm advanced search

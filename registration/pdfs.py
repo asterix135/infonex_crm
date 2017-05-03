@@ -795,10 +795,13 @@ class ConferenceReportPdf:
             for option in EventOptions.objects.filter(event=self._event):
                 counts_by_option.append(
                     [option.name,
-                     RegDetails.objects.filter(eventoptions=option).annotate(
+                     RegDetails.objects.filter(
+                         regeventoptions__option=option
+                     ).annotate(
                          total=Count('registration_status')
                      ).order_by('-total')]
                 )
+            print('hello')
         else:
             counts_by_option.append([
                 'Conference',

@@ -817,11 +817,11 @@ class ConferenceReportPdf:
             total_people = 0
             if count[1].count() > 0:
                 for reg_detail in count[1]:
-                    labels += option_dict[reg_detail['registration_status']]
+                    labels += option_dict[reg_detail.registration_status]
                     labels += ':&nbsp;&nbsp;&nbsp;<br/>'
-                    counts += str(reg_detail['total']) + '<br/>'
-                    if reg_detail['registration_status'][-1] != 'X':
-                        total_people += reg_detail['total']
+                    counts += str(reg_detail.total) + '<br/>'
+                    if reg_detail.registration_status[-1] != 'X':
+                        total_people += reg_detail.total
             else:
                 labels = 'No Delegates:&nbsp;&nbsp;&nbsp;<br/>'
                 counts = '0<br/>'

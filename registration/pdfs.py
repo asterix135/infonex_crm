@@ -797,11 +797,10 @@ class ConferenceReportPdf:
                     [option.name,
                      RegDetails.objects.filter(
                          regeventoptions__option=option
-                     ).annotate(
+                     ).values('registration_status').annotate(
                          total=Count('registration_status')
                      ).order_by('-total')]
                 )
-            print('hello')
         else:
             counts_by_option.append([
                 'Conference',
@@ -811,17 +810,29 @@ class ConferenceReportPdf:
                     total=Count('registration_status')
                 ).order_by('-total')
             ])
+        print('\n\n\n')
+        print(counts_by_option)
+        print('\n\n\n')
+
         for count in counts_by_option:
             labels=''
             counts=''
             total_people = 0
             if count[1].count() > 0:
                 for reg_detail in count[1]:
-                    labels += option_dict[reg_detail.registration_status]
+                    try:
+                        labels += option_dict[reg_detail['registration_status']]
+                    except AttributeError:
+                        labels += option_dict[reg_detail.registration_status]
                     labels += ':&nbsp;&nbsp;&nbsp;<br/>'
-                    counts += str(reg_detail.total) + '<br/>'
-                    if reg_detail.registration_status[-1] != 'X':
-                        total_people += reg_detail.total
+                    try:
+                        counts += str(reg_detail['total']) + '<br/>'
+                        if reg_detail['registration_status'][-1] != 'X':
+                            total_people += reg_detail['total']
+                    except AttributeError:
+                        counts += str(reg_detail.total) + '<br/>'
+                        if reg_detail.registration_status[-1] != 'X':
+                            total_people += reg_detail.total
             else:
                 labels = 'No Delegates:&nbsp;&nbsp;&nbsp;<br/>'
                 counts = '0<br/>'

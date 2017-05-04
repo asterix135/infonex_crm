@@ -4,8 +4,6 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-TODO: Speaker Cancellation forms/page logic doesn't work
-
 TODO: Update paid date when switching status on invoice
 
 TODO: Cancellations - status for refund, credit note, Unpaid

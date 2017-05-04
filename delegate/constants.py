@@ -1,4 +1,4 @@
-PAID_STATUS_VALUES = ['DP', 'SP', 'DX', 'SX',]
+PAID_STATUS_VALUES = ['DP', 'SP']
 UNPAID_STATUS_VALUES = ['DU', 'SU']
 CXL_VALUES = ['DX', 'SX', 'KX']
 NON_INVOICE_VALUES = ['K', 'KX', 'SD', 'SE', 'G', '']

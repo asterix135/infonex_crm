@@ -390,11 +390,15 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     # g. Event Options (if applicable)
     if len(option_list) > 0:
         for option in option_list:
-            new_option = RegEventOptions(
+            if not RegEventOptions.objects.filter(
                 reg=current_registration,
                 option=option
-            )
-            new_option.save()
+            ).exists:
+                new_option = RegEventOptions(
+                    reg=current_registration,
+                    option=option
+                )
+                new_option.save()
 
     return current_registration, registrant, assistant
 

@@ -4,13 +4,9 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-TODO: Count report doesn't work
-
 TODO: Speaker Cancellation forms/page logic doesn't work
 
 TODO: Update paid date when switching status on invoice
-
-TODO: Ability to select past delegate lists on crm advanced search
 
 TODO: Cancellations - status for refund, credit note, Unpaid
 
@@ -213,3 +209,5 @@ TODO: DONE - FIX Issue with Peter's computer
       1) delegate.views.py/test_peter
       2) templates test_peter.html
       3) url.py pointer
+TODO: DONE - Ability to select past delegate lists on crm advanced search
+TODO: DONE - Count report doesn't work

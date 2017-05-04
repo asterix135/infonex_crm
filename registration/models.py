@@ -164,3 +164,6 @@ class RegEventOptions(models.Model):
     """
     reg = models.ForeignKey(RegDetails, on_delete=models.CASCADE)
     option = models.ForeignKey(EventOptions, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('reg', 'option')

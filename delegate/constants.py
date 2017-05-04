@@ -140,6 +140,7 @@ SEARCH_SUBSTITUTIONS = (
     ('OSFI', 'Office of the Superintendent of Financial Institutions'),
     ('PSPC', 'Public Service and Procurement Canada'),
     ('PwC', 'PricewaterhouseCoopers'),
+    ('PwC', 'Pricewaterhouse Coopers'),
     ('RBC', 'Royal Bank'),
     ('RCMP', 'Royal Canadian Mounted Police'),
     ('ServiceOntario', 'Service Ontario'),

@@ -42,12 +42,6 @@ TODO: 65) Create various reports for registration dept
 
 TODO: 65) Export data http://djangotricks.blogspot.ca/2013/12/how-to-export-data-as-excel.html
 
-TODO: 43) Upload current registration information and link to CRM records
-          a) DONE - upload company files
-          b) upload last 2 years of person records
-          c) split and upload last 2 years of invoice data (2015-present)
-          d) figure out how to auto-link person & crm
-
 TODO: 34) registration/forms.py/ConferenceEditForm.clean()
 
 TODO: 11) Search and update registration information
@@ -208,3 +202,8 @@ TODO: DONE - FIX Issue with Peter's computer
 TODO: DONE - Ability to select past delegate lists on crm advanced search
 TODO: DONE - Count report doesn't work
 TODO: DONE - update paid date when switching status on invoice
+TODO: DONE - 43) Upload current registration information and link to CRM records
+          a) DONE - upload company files
+          b) upload last 2 years of person records
+          c) split and upload last 2 years of invoice data (2015-present)
+          d) figure out how to auto-link person & crm

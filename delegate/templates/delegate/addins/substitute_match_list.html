@@ -3,7 +3,12 @@
     Delegate Matches
   </div>
   <div class="panel-body">
-    match info here
+    {% for registrant in registrant_list %}
+    {{ registrant.first_name }} {{ registrant.last_name }}<br />
+    {{ registrant.title }}<br />
+    {{ registrant.company }}<br />
+    {{ registrant.email1 }}
+    {% endfor %}
   </div>
   <div class="panel-heading">
     CRM Matches

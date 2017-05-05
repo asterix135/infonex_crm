@@ -18,9 +18,11 @@ REG_STATUS_OPTIONS = (('', '-----------'),
                       ('SD', 'Sponsor Delegate'),
                       ('SE', 'Sponsor Exhibitor'),
                       ('G', 'Guest'),
-                      ('DX', 'Delegate cancelled'),
+                      ('DX', 'Delegate cancelled - paid'),
+                      ('UX', 'Delegate cancelled - unpaid'),
                       ('SX', 'Sponsor cancelled'),
-                      ('KX', 'Speaker cancelled'))
+                      ('KX', 'Speaker cancelled'),
+                      ('B', 'Substituted Out'))
 
 CONTACT_OPTIONS = (('D', 'Attention: delegate'),
                    ('A', 'Attention: assistant'),

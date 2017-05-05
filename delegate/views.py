@@ -965,8 +965,17 @@ def search_for_substitute(request):
         company = Company.objects.get(pk=request.GET['company_id'])
     except Company.DoesNotExist:
         raise Http404('Company does not exist')
+    # Search for person in same company - MAX 10
+    registrant_list = []
+    reg_query1 = Registrants.objects.filter(
+        first_name__icontains=request.GET['first_name'],
+        last_name__icontains=request.GET['last_name'],
+        company=company
+    )
+    registrant_list.extend(list(reg_query1))
+
     context = {
-        'foo': 0
+        'registrant_list': registrant_list,
     }
     return render(request, 'delegate/addins/substitute_match_list.html',
                   context)

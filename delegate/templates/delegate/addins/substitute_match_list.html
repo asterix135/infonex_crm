@@ -1,14 +1,42 @@
 <div class="panel panel-primary">
   <div class="panel-heading">
-    Delegate Matches
+    Delegate Matches (Only at the same company)
   </div>
   <div class="panel-body">
-    {% for registrant in registrant_list %}
-    {{ registrant.first_name }} {{ registrant.last_name }}<br />
-    {{ registrant.title }}<br />
-    {{ registrant.company }}<br />
-    {{ registrant.email1 }}
-    {% endfor %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="col-sm-1">
+            Select?
+          </th>
+          <th class="col-sm-11">
+            Individual
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for registrant in registrant_list %}
+        <tr>
+          <td>
+            <input type="radio" name="sub-reg-select" value="{{ registrant.pk }}" />
+          </td>
+          <td>
+            <b>{{ registrant.first_name }} {{ registrant.last_name }}</b>
+            {% for regdetail in registrant.regdetails_set.all %}
+            {% if regdetail.conference == conference %}
+            <span class="errorlist"> ATTN: This Person is Already Registered!!</span>
+            {% endif %}
+            {% endfor %}
+            <br />
+            {% if registrant.title %}{{ registrant.title }}<br />{% endif %}
+            {% if registrant.company.name %}{{ registrant.company.name }}<br />{% endif %}
+            {% if registrant.company.city %}{{ registrant.company.city }}, {% endif %}{% if registrant.company.state_prov %}{{ registrant.company.state_prov }}{% endif %}<br />
+            <b>Email: </b>{% if registrant.email1 %}{{ registrant.email1 }}{% else %}Unknown{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
   <div class="panel-heading">
     CRM Matches

@@ -207,3 +207,4 @@ TODO: DONE - 43) Upload current registration information and link to CRM records
           b) upload last 2 years of person records
           c) split and upload last 2 years of invoice data (2015-present)
           d) figure out how to auto-link person & crm
+TODO: DONE - New Statuses - Paid cxl, unpaid cxl, substituted out

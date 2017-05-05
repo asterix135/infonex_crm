@@ -8,6 +8,8 @@ $(document).ready(function(){
   var defaultQstRate = $('#id_qst_rate').val();
   var companyDatabaseValues = {};
   var matchedCompanyId = null;
+  var nonInvoiceVals = ['G', 'K', 'KX', 'SD', 'SE', 'B', ''];
+  var cxlVals = ['DX', 'SX', 'KX', 'B'];
 
   // Check & adjust display of reg details on page load/reload
   displayHideRegDetails();
@@ -162,8 +164,6 @@ $(document).ready(function(){
 
   // function to ensure proper display/hide of reg details
   function displayHideRegDetails(){
-    var nonInvoiceVals = ['G', 'K', 'KX', 'SD', 'SE', ''];
-    var cxlVals = ['DX', 'SX', 'KX'];
     var regStatus = $('#id_registration_status').val();
     var detailsDisplayed = $('#invoice-details').hasClass('in');
     var cxlDisplayed = $('#cancellation-panel').hasClass('in');
@@ -681,6 +681,7 @@ $(document).ready(function(){
     var firstName = $('#id_substitute_first_name').val();
     var lastName = $('#id_substitute_last_name').val();
     var companyId = $('#company-match-value').val();
+    var currentRegistrantId = $('#current-registrant-id').val();
     $.ajax({
       url: '/delegate/search_for_substitute/',
       type: 'GET',
@@ -689,6 +690,7 @@ $(document).ready(function(){
         'first_name': firstName,
         'last_name': lastName,
         'company_id': companyId,
+        'current_registrant': currentRegistrantId,
       },
       success: function(data){
         $('#substitute-match-list').html(data);

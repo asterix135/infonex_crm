@@ -954,8 +954,8 @@ def person_is_registered(request):
 
 @login_required
 def search_for_substitute(request):
-    if set(('conf_id', 'first_name', 'last_name', 'company_id')) > \
-        request.GET.keys():
+    if set(('conf_id', 'first_name', 'last_name', 'company_id',
+            'current_registrant')) > request.GET.keys():
         return HttpResponse('')
     try:
         conference = Event.objects.get(pk=request.GET['conf_id'])
@@ -965,17 +965,40 @@ def search_for_substitute(request):
         company = Company.objects.get(pk=request.GET['company_id'])
     except Company.DoesNotExist:
         raise Http404('Company does not exist')
-    # Search for person in same company - MAX 10
+    try:
+        registrant = Registrants.objects.get(
+            pk=request.GET['current_registrant']
+        )
+    except Registrants.DoesNotExist:
+        raise Http404('Delegate does not exist')
+    # Search for registrant in same company
     registrant_list = []
     reg_query1 = Registrants.objects.filter(
-        first_name__icontains=request.GET['first_name'],
-        last_name__icontains=request.GET['last_name'],
+        first_name__icontains=request.GET['first_name'].strip(),
+        last_name__icontains=request.GET['last_name'].strip(),
         company=company
-    )
+    ).order_by('last_name', 'first_name').exclude(pk=registrant.pk)
     registrant_list.extend(list(reg_query1))
+    reg_query2 = Registrants.objects.filter(
+        first_name__icontains=request.GET['first_name'].strip(),
+        last_name__icontains=request.GET['last_name'].strip(),
+        company__name__icontains=company.name,
+    ).exclude(id__in=reg_query1).order_by('last_name', 'first_name').exclude(
+        pk=registrant.pk
+    )
+    registrant_list.extend(list(reg_query2))
+
+    # Search for matching CRM records
+    crm_list = []
+    crm_query1 = Person.objects.filter(
+        Q(name__icontains=request.POST['first_name'].strip()) &
+        Q(name__icontains=request.POST['last_name'].strip()) &
+        Q(company__icontains=company.name)
+    )
 
     context = {
         'registrant_list': registrant_list,
+        'conference': conference,
     }
     return render(request, 'delegate/addins/substitute_match_list.html',
                   context)

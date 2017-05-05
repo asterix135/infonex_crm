@@ -681,6 +681,7 @@ $(document).ready(function(){
     var firstName = $('#id_substitute_first_name').val();
     var lastName = $('#id_substitute_last_name').val();
     var companyId = $('#company-match-value').val();
+    var currentRegistrantId = $('#current-registrant-id').val();
     $.ajax({
       url: '/delegate/search_for_substitute/',
       type: 'GET',
@@ -689,6 +690,7 @@ $(document).ready(function(){
         'first_name': firstName,
         'last_name': lastName,
         'company_id': companyId,
+        'current_registrant': currentRegistrantId,
       },
       success: function(data){
         $('#substitute-match-list').html(data);

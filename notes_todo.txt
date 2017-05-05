@@ -4,8 +4,6 @@ next #: 75
 REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 !*!*!*!*!*!*
 
-TODO: Update paid date when switching status on invoice
-
 TODO: Cancellations - status for refund, credit note, Unpaid
 
 TODO: Cancellation - verify that there is a cxl date
@@ -209,3 +207,4 @@ TODO: DONE - FIX Issue with Peter's computer
       3) url.py pointer
 TODO: DONE - Ability to select past delegate lists on crm advanced search
 TODO: DONE - Count report doesn't work
+TODO: DONE - update paid date when switching status on invoice

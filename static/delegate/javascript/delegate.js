@@ -179,6 +179,10 @@ $(document).ready(function(){
     if (jQuery.inArray(regStatus, cxlVals) >= 0){
       if (!cxlDisplayed) {
         $('#cancellation-panel').addClass('in');
+        $('#id_cancellation_date').datepicker({
+          dateFormat: 'yy-mm-dd'
+        });
+
       };
     } else {
       if (cxlDisplayed) {
@@ -210,6 +214,9 @@ $(document).ready(function(){
       },
       success: function(data){
         $('#cancellation-details').html(data);
+        $('#id_cancellation_date').datepicker({
+          dateFormat: 'yy-mm-dd'
+        });
       }
     });
     $.ajax({

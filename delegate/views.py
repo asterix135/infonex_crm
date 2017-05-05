@@ -1075,15 +1075,18 @@ def update_payment_details(request):
             current_reg = RegDetails.objects.get(
                 pk=request.POST['regdetail_id']
             )
-            if current_reg.invoice:
-                form_data['sponsorship_description'] = \
-                    current_reg.invoice.sponsorship_description
-                form_data['payment_date'] = current_reg.invoice.payment_date
-                form_data['payment_method'] = \
-                    current_reg.invoice.payment_method
-                reg_details_form = RegDetailsForm(
-                    form_data, instance=current_reg.invoice
-                )
+            try:
+                if current_reg.invoice:
+                    # form_data['sponsorship_description'] = \
+                    #     current_reg.invoice.sponsorship_description
+                    form_data['payment_date'] = current_reg.invoice.payment_date
+                    form_data['payment_method'] = \
+                        current_reg.invoice.payment_method
+                    reg_details_form = RegDetailsForm(
+                        form_data, instance=current_reg.invoice
+                    )
+            except Invoice.DoesNotExist:
+                reg_details_form = RegDetailsForm(form_data)
         else:
             reg_details_form = RegDetailsForm(form_data)
     context = {

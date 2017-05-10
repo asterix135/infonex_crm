@@ -1216,6 +1216,8 @@ def send_conf_email(request):
         invoice_pdf.save()
         pdf = buffr.getvalue()
         buffr.close()
+    else:
+        pdf = None
 
     email_body = request.POST['email_message']
     email_body = email_body.replace('\n', '<br/>')

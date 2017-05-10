@@ -810,9 +810,6 @@ class ConferenceReportPdf:
                     total=Count('registration_status')
                 ).order_by('-total')
             ])
-        print('\n\n\n')
-        print(counts_by_option)
-        print('\n\n\n')
 
         for count in counts_by_option:
             labels=''

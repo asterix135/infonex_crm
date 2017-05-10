@@ -393,7 +393,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
             if not RegEventOptions.objects.filter(
                 reg=current_registration,
                 option=option
-            ).exists:
+            ).exists():
                 new_option = RegEventOptions(
                     reg=current_registration,
                     option=option

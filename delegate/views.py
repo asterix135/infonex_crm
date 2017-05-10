@@ -1234,5 +1234,5 @@ def send_conf_email(request):
         filename = 'invoice-' + str(invoice.pk) + '.pdf'
         email.attach(filename, pdf, 'application/pdf')
     email.content_subtype = 'html'
-    # email.send()
+    email.send()
     return HttpResponse(status=204)

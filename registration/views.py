@@ -825,7 +825,7 @@ def get_admin_reports(request):
             registration_qs = RegDetails.objects.filter(
                 conference=event
             ).exclude(
-                registration_status__in=NON_INVOICE_VALUES
+                registration_status__in=CXL_VALUES
             ).order_by(*sort_orders[sort])
             writer = csv.writer(response)
             writer.writerow(['name', 'title', 'company', 'email', 'phone',
@@ -984,7 +984,7 @@ def get_admin_reports(request):
             registration_qs = RegDetails.objects.filter(
                 conference=event
             ).exclude(
-                registration_status__in=NON_INVOICE_VALUES
+                registration_status__in=CXL_VALUES
             ).order_by(*sort_orders[sort])
             ws.append(['name', 'title', 'company', 'email', 'phone', 'city',
                        'stateProv', 'nameForLetters'])
@@ -1052,3 +1052,21 @@ def get_admin_reports(request):
 
     else:
         raise Http404('Invalid document format')
+
+
+@login_required
+def get_sales_reports(request):
+    if 'date' not in request.GET:
+        raise Http404('Date not specified')
+    sales_form = SalesReportOptionsForm(request.GET)
+    if sales_form.is_valid():
+        print('valid')
+        print(sales_form.report_date)
+    else:
+        print('not valid')
+        print(sales_form.report_date)
+
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    wb = Workbook()
+    ws = wb.active
+    return HttpResponse('')

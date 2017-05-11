@@ -796,11 +796,11 @@ def get_admin_reports(request):
                              'City', 'StateProv', 'SalesCredit'])
             for record in registration_qs:
                 registrant = record.registrant
-                if record.invoice:
+                try:
                     invoice_num = record.invoice.pk
-                    pre_tax_price = record.invoice.pre_tax_price,
+                    pre_tax_price = record.invoice.pre_tax_price
                     sales_credit = record.invoice.sales_credit.username
-                else:
+                except Invoice.DoesNotExist:
                     invoice_num = ''
                     pre_tax_price = 0
                     sales_credit = ''
@@ -954,11 +954,11 @@ def get_admin_reports(request):
                        'SalesCredit'])
             for record in registration_qs:
                 registrant = record.registrant
-                if record.invoice:
+                try:
                     invoice_num = record.invoice.pk
-                    pre_tax_price = record.invoice.pre_tax_price,
+                    pre_tax_price = record.invoice.pre_tax_price
                     sales_credit = record.invoice.sales_credit.username
-                else:
+                except Invoice.DoesNotExist:
                     invoice_num = ''
                     pre_tax_price = 0
                     sales_credit = ''

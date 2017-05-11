@@ -7,6 +7,7 @@ from django.db.models import Count, Sum
 from django.utils import timezone
 
 from .constants import *
+from .models import RegEventOptions
 from delegate.constants import UNPAID_STATUS_VALUES
 from registration.models import RegDetails, EventOptions
 from infonex_crm.settings import BASE_DIR

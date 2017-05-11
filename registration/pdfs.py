@@ -966,5 +966,5 @@ class ConferenceReportPdf:
                     self._line_groups.append(total_lines_for_day)
                 else:
                     self._label += option.name + 'Arr:<br/><br/>' + \
-                        'Dep:</br><br/><br/>'
+                        'Dep:<br/><br/><br/>'
                     self._line_groups.append(2)

@@ -954,7 +954,9 @@ class ConferenceReportPdf:
         event_options = self._event.eventoptions_set.all()
         for option in event_options:
             date_diff = (option.enddate - option.startdate).days
-            if RegEventOptions(reg=reg_detail, option=option).exists():
+            if RegEventOptions.objects.filter(
+                reg=reg_detail, option=option
+            ).exists():
                 if date_diff > 0:
                     total_lines_for_day = 0
                     for num in range(date_diff):

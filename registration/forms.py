@@ -4,10 +4,14 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from .models import *
+from .widgets import MonthYearWidget
 from crm.models import Event
 from crm.constants import STATE_PROV_TUPLE, COMPANY_OPTIONS, BILLING_CURRENCY
 
 
+#######################
+# FORMS
+#######################
 class NewDelegateSearchForm(forms.Form):
     first_name = forms.CharField(label='First Name',
                                  max_length=100,
@@ -255,4 +259,14 @@ class AdminReportOptionsForm(forms.Form):
                  ('csv', 'CSV (comma-delimted text)'),
                  ('xlsx', 'Excel (.xlsx)')),
         widget=forms.RadioSelect()
+    )
+
+
+class SalesReportOptionsForm(forms.Form):
+    report_date = forms.DateField(
+        label='Select the Report Month and Year',
+        required = True,
+        widget=MonthYearWidget(
+            attrs={'class': 'form-control col-sm-4'}
+        )
     )

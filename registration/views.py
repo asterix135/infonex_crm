@@ -449,6 +449,12 @@ def index_panel(request):
             'taxes': taxes,
             'total_invoice': total_invoice,
         }
+    elif request.GET['panel'] == 'sales-reports':
+        response_url = 'registration/index_panels/sales_reports.html'
+        select_form = SalesReportOptionsForm()
+        context = {
+            'select_form': select_form
+        }
 
     else:
         raise Http404('Invalid panel name')

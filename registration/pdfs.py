@@ -959,7 +959,7 @@ class ConferenceReportPdf:
             ).exists():
                 if date_diff > 0:
                     total_lines_for_day = 0
-                    for num in range(date_diff):
+                    for num in range(date_diff + 1):
                         self._label += option.name + ' Day ' + str(num + 1) \
                             + ' Arr:<br/><br/>Dep:<br/><br/><br/>'
                         total_lines_for_day += 2

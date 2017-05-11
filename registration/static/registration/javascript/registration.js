@@ -134,8 +134,6 @@ $(document).ready(function(){
       url += '&doc_format=' + docFormat;
       url += '&report=' + reportType;
       window.open(url, '_blank');
-    } else {
-      console.log('not ok');
     };
   });
 

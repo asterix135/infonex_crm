@@ -726,7 +726,7 @@ def get_admin_reports(request):
         elif report_type == 'Counts':
             file_details = destination + '; filename="count_report_' + \
                 str(event.number) + '.pdf"'
-            response['Content-Disposotion'] = file_details
+            response['Content-Disposition'] = file_details
             pdf = report.delegate_count()
         else:  # Invalid report type
             buffr.close()

@@ -7,7 +7,7 @@ from openpyxl.styles import Font
 from string import ascii_uppercase
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.http import HttpResponseRedirect, HttpResponse, Http404, \
     JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -40,12 +40,12 @@ def create_temp_conf_number():
         counter += 1
 
 
-def format_sales_report_header_row(ws):
+def format_sales_report_header_row(ws, row_num=1):
     """
-    Sets first 26 columns in row 1 of worksheet to bold
+    Sets first 26 columns of specified row in worksheet to bold
     """
     for letter in ascii_uppercase:
-        cell = ws[letter + '1']
+        cell = ws[letter + str(row_num)]
         cell.font = Font(bold=True)
 
 
@@ -469,8 +469,8 @@ def index_panel(request):
     if request.GET['panel'] == 'admin-reports':
         response_url = 'registration/index_panels/admin_reports.html'
         conference_select_form = ConferenceSelectForm()
-        conference_select_form.fields['event'].queryset = \
-            Event.objects.all().order_by('-date_begins')
+        # conference_select_form.fields['event'].queryset = \
+        #     Event.objects.all().order_by('-date_begins')
         admin_report_options_form = AdminReportOptionsForm()
         context = {
             'conference_select_form': conference_select_form,
@@ -479,8 +479,8 @@ def index_panel(request):
     elif request.GET['panel'] == 'reg-search':
         response_url = 'registration/index_panels/registration_search.html'
         delegate_search_form = NewDelegateSearchForm()
-        delegate_search_form.fields['event'].queryset = \
-            Event.objects.all().order_by('-date_begins')
+        # delegate_search_form.fields['event'].queryset = \
+        #     Event.objects.all().order_by('-date_begins')
         context = {
             'delegate_search_form': delegate_search_form,
         }
@@ -510,6 +510,14 @@ def index_panel(request):
         select_form = SalesReportOptionsForm()
         context = {
             'select_form': select_form
+        }
+    elif request.GET['panel'] == 'event-revenue':
+        response_url = 'registration/index_panels/event_revenue.html'
+        conference_select_form = ConferenceSelectForm()
+        options_form = AdminReportOptionsForm()
+        context = {
+            'select_form': conference_select_form,
+            'options_form': options_form
         }
 
     else:
@@ -1119,6 +1127,99 @@ def get_admin_reports(request):
 
     else:
         raise Http404('Invalid document format')
+
+
+@login_required
+def event_revenue(request):
+    if 'event' not in request.GET:
+        raise Http404('Event not specified')
+    event = get_object_or_404(Event, pk=request.GET['event'])
+    destination = request.GET.get('destination', 'attachment')
+    if destination not in ('attachment', 'inline'):
+        destination = 'attachment'
+    doc_format = request.GET.get('doc_format', 'pdf')
+    if doc_format not in ('pdf', 'csv', 'xlsx'):
+        doc_format = 'pdf'
+    revenue_qs = Invoice.objects.filter(
+        reg_details__conference=event
+    ).exclude(
+        reg_details__registration_status__in=NON_INVOICE_VALUES
+    ).order_by('pk')
+
+    if doc_format == 'xlsx':
+        response = HttpResponse(content_type='application/vnd.ms-excel')
+        wb = Workbook()
+        ws = wb.active
+        ws.name = 'Event Revenue for ' + event.number
+        file_details = destination + '; filename="revenue_report_' + \
+            str(event.number) + '.xlsx"'
+        response['Content-Disposition'] = file_details
+        ws.append(['Conference Revenue Report - ' + event.number + ' - ' +
+                   event.title])
+        format_sales_report_header_row(ws, 1)
+        ws.append(['InvoiceNumber',
+                   'Company',
+                   'Sales Credit',
+                   'Pre-Tax Price',
+                   'CDN Equivalent'])
+        format_sales_report_header_row(ws, 2)
+        num_rows = 2
+        for record in revenue_qs:
+            if record.sales_credit.first_name or record.sales_credit.last_name:
+                sales_credit = record.sales_credit.first_name + ' ' + \
+                    record.sales_credit.last_name
+            else:
+                sales_credit = record.sales_credit.username
+            ws.append([record.pk,
+                       record.reg_details.registrant.company.name,
+                       sales_credit,
+                       record.pre_tax_price,
+                       record.pre_tax_price * record.fx_conversion_rate])
+            num_rows += 1
+        ws.append(['Totals',
+                   '',
+                   '',
+                   '=SUM(D3:D' + str(num_rows) + ')'
+                   '=SUM(E3:E' + str(num_rows) + ')'])
+        format_sales_report_header_row(ws, num_rows + 1)
+        wb.save(response)
+        return response
+
+
+    elif doc_format == 'csv':
+        response = HttpResponse(content_type='text/csv')
+        file_details = destination + '; filename="revenue_report_' + \
+            str(event.number) + '.csv"'
+        response['Content-Disposition'] = file_details
+        writer = csv.writer(response)
+        writer.writerow(['InvoiceNumber',
+                         'Company',
+                         'Sales Credit',
+                         'Pre-Tax Price',
+                         'CDN Equivalent'])
+        for record in revenue_qs:
+            if record.sales_credit.first_name or record.sales_credit.last_name:
+                sales_credit = record.sales_credit.first_name + ' ' + \
+                    record.sales_credit.last_name
+            else:
+                sales_credit = record.sales_credit.username
+            writer.writerow([record.pk,
+                             record.reg_details.registrant.company.name,
+                             sales_credit,
+                             record.pre_tax_price,
+                             record.pre_tax_price * record.fx_conversion_rate])
+        writer.writerow(['',
+                         '',
+                         '',
+                         revenue_qs.aggregate(Sum(
+                             'pre_tax_price'
+                         ))['pre_tax_price__sum']])
+        return response
+
+    else:  # doc_format = 'pdf'
+        pass
+
+    return HttpResponse('<h1>Not Coded yet</h1>')
 
 
 @login_required

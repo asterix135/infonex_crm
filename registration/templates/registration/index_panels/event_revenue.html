@@ -1,0 +1,40 @@
+<!-- AJAX insert into registration/index.html -->
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h2 class="panel-title h2">Get Revenue Report</h2>
+  </div>
+  <div class="panel-body">
+    <div class="form-group row col-sm-12">
+      {{ select_form.event.errors }}
+      {{ select_form.event.label_tag }}
+      {{ select_form.event }}
+    </div>
+
+    <div class="form-group row col-sm-12">
+      {{ options_form.destination.errors }}
+      {{ options_form.destination.label_tag }}
+      {% for choice in options_form.destination %}
+      <div class="radio">
+        {{ choice }}
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="form-group row col-sm-12">
+      {{ options_form.report_format.errors }}
+      {{ options_form.report_format.label_tag }}
+      {% for choice in options_form.report_format %}
+      <div class="radio">
+        {{ choice }}
+      </div>
+      {% endfor %}
+    </div>
+
+
+    <div class="form-group row col-sm-12">
+      <button type="button" id="submit-event-revenue" class="btn btn-primary col-sm-12">Go!</button>
+    </div>
+
+
+  </div>
+</div>

@@ -152,6 +152,22 @@ $(document).ready(function(){
   });
 
 
+  ////////////////////////
+  // Code related to event revenue report
+  ////////////////////////
+  $('body').on('click', '#submit-event-revenue', function(){
+    var confId = $('#id_event').val();
+    var destination = $('input[name=destination]:checked').val();
+    var docFormat = $('input[name=report_format]:checked').val();
+    if (confId && destination && docFormat){
+      var url = '/registration/event_revenue?event=' + confId;
+      url += '&destination=' + destination;
+      url += '&doc_format=' + docFormat;
+      window.open(url, '_blank');
+    };
+  });
+
+
   ///////////////////////
   // Next section of code is related to invoice/registration search
   ///////////////////////

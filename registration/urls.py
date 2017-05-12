@@ -42,6 +42,8 @@ urlpatterns = [
         name='update_venue_choices'),
 
     # Graphics & DOCUMENTS
+    url(r'^event_revenue/$', views.event_revenue,
+        name='event_revenue'),
     url(r'^get_admin_reports/$', views.get_admin_reports,
         name='get_admin_reports'),
     url(r'^get_sales_reports/$', views.get_sales_reports,

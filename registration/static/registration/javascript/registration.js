@@ -138,9 +138,9 @@ $(document).ready(function(){
   });
 
 
-  ///////////////////////
+  ////////////////////////
   // Code related to sales reports
-  ///////////////////////
+  ////////////////////////
   $('body').on('click', '#submit-sales-reports', function(){
     var reportDateMonth = $('#id_report_date_month').val();
     var reportDateYear = $('#id_report_date_year').val();

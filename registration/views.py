@@ -1,7 +1,10 @@
 import csv
+import datetime
 from io import BytesIO
 import json
 from openpyxl import Workbook
+from openpyxl.styles import Font
+from string import ascii_uppercase
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -35,6 +38,59 @@ def create_temp_conf_number():
         if Event.objects.filter(number=event_number).count() == 0:
             return event_number
         counter += 1
+
+
+def format_sales_report_header_row(ws):
+    """
+    Sets first 26 columns in row 1 of worksheet to bold
+    """
+    for letter in ascii_uppercase:
+        cell = ws[letter + '1']
+        cell.font = Font(bold=True)
+
+
+def sales_report_row(regdetail):
+    """
+    takes a RegDetail object as param
+    returns list of values to be inserted into sales report spreadsheet
+    """
+    registrant = regdetail.registrant
+    try:
+        invoice_num = regdetail.invoice.pk
+        pre_tax_price = regdetail.invoice.pre_tax_price
+        pay_date = regdetail.invoice.payment_date
+        pay_method = regdetail.invoice.get_payment_method_display()
+        fx_rate = regdetail.invoice.fx_conversion_rate
+        if regdetail.invoice.sales_credit.first_name or \
+            regdetail.invoice.sales_credit.last_name:
+            sales_credit = regdetail.invoice.sales_credit.first_name + ' ' + \
+                regdetail.invoice.sales_credit.last_name
+        else:
+            sales_credit = regdetail.invoice.sales_credit.username
+
+    except Invoice.DoesNotExist:
+        invoice_num = ''
+        pre_tax_price = 0
+        pay_date = ''
+        pay_method = ''
+        fx_rate = 1.0
+        sales_credit = ''
+
+    return [sales_credit,
+            invoice_num,
+            regdetail.conference.number,
+            regdetail.conference.title,
+            regdetail.get_registration_status_display(),
+            registrant.first_name + ' ' + registrant.last_name,
+            registrant.company.name,
+            regdetail.register_date,
+            pay_date,
+            pay_method,
+            regdetail.cancellation_date,
+            pre_tax_price,
+            regdetail.conference.billing_currency,
+            fx_rate,
+            pre_tax_price * fx_rate]
 
 
 ########################
@@ -799,7 +855,12 @@ def get_admin_reports(request):
                 try:
                     invoice_num = record.invoice.pk
                     pre_tax_price = record.invoice.pre_tax_price
-                    sales_credit = record.invoice.sales_credit.username
+                    if record.invoice.sales_credit.first_name or \
+                        record.invoice.sales_credit.last_name:
+                        sales_credit = record.invoice.sales_credit.first_name \
+                            + ' ' + record.invoice.sales_credit.last_name
+                    else:
+                        sales_credit = record.invoice.sales_credit.username
                 except Invoice.DoesNotExist:
                     invoice_num = ''
                     pre_tax_price = 0
@@ -957,13 +1018,19 @@ def get_admin_reports(request):
                 try:
                     invoice_num = record.invoice.pk
                     pre_tax_price = record.invoice.pre_tax_price
-                    sales_credit = record.invoice.sales_credit.username
+                    if record.invoice.sales_credit.first_name or \
+                        record.invoice.sales_credit.last_name:
+                        sales_credit = record.invoice.sales_credit.first_name \
+                            + ' ' + record.invoice.sales_credit.last_name
+                    else:
+                        sales_credit = record.invoice.sales_credit.username
+
                 except Invoice.DoesNotExist:
                     invoice_num = ''
                     pre_tax_price = 0
                     sales_credit = ''
                 ws.append([
-                    record.registration_status,
+                    record.get_registration_status_display(),
                     record.register_date,
                     invoice_num,
                     pre_tax_price,
@@ -1056,17 +1123,89 @@ def get_admin_reports(request):
 
 @login_required
 def get_sales_reports(request):
-    if 'date' not in request.GET:
+    if 'report_date_month' not in request.GET or \
+        'report_date_year' not in request.GET:
         raise Http404('Date not specified')
     sales_form = SalesReportOptionsForm(request.GET)
-    if sales_form.is_valid():
-        print('valid')
-        print(sales_form.report_date)
-    else:
-        print('not valid')
-        print(sales_form.report_date)
+    if not sales_form.is_valid():
+        raise Http404('Invalid Date Information')
+    report_date = sales_form.cleaned_data.get('report_date')
+    report_year = report_date.year
+    report_month = report_date.month
+    month_text = report_date.strftime('%B')
 
     response = HttpResponse(content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="sales_data_' + \
+        month_text + '_' + str(report_year) + '.xlsx"'
     wb = Workbook()
-    ws = wb.active
-    return HttpResponse('')
+    column_names = ['Sales Credit',
+                    'Invoice Number',
+                    'Event Number',
+                    'Event Name',
+                    'Registration Status',
+                    'Delegate Name',
+                    'Company',
+                    'Register Date',
+                    'Payment Date',
+                    'Payment Method',
+                    'Cancellation Date',
+                    'Pre-Tax Price',
+                    'Billing Currency',
+                    'FX Conversion Rate',
+                    'CDN Equivalent']
+
+    # Save monthly booking info
+    ws1 = wb.active
+    ws1.title = 'Monthly Sales for ' + month_text
+    ws1.append(column_names)
+    format_sales_report_header_row(ws1)
+    monthly_bookings = RegDetails.objects.filter(
+        register_date__year=report_year, register_date__month=report_month
+    ).exclude(registration_status__in=NON_INVOICE_VALUES).order_by(
+        'invoice__sales_credit', 'register_date', 'date_created'
+    )
+    for record in monthly_bookings:
+        ws1.append(sales_report_row(record))
+
+    # Save paid information
+    ws2 = wb.create_sheet('Payments Received in ' + month_text)
+    ws2.append(column_names)
+    format_sales_report_header_row(ws2)
+    monthly_payments = RegDetails.objects.filter(
+        invoice__payment_date__year=report_year,
+        invoice__payment_date__month=report_month
+    ).order_by('invoice__sales_credit',
+               'invoice__payment_date',
+               'register_date',
+               'date_created'
+    )
+    for record in monthly_payments:
+        ws2.append(sales_report_row(record))
+
+    # Save Unpaid List
+    ws3 = wb.create_sheet('Unpaid (as of %s)' % str(datetime.date.today()))
+    ws3.append(column_names)
+    format_sales_report_header_row(ws3)
+    unpaid_regs = RegDetails.objects.filter(
+        registration_status__in=UNPAID_STATUS_VALUES
+    ).order_by(
+        'invoice__sales_credit', 'register_date', 'date_created'
+    )
+    for record in unpaid_regs:
+        ws3.append(sales_report_row(record))
+
+    # Save cancellations
+    ws4 = wb.create_sheet('Cancellations in ' + month_text)
+    ws4.append(column_names)
+    format_sales_report_header_row(ws4)
+    monthly_cancellations = RegDetails.objects.filter(
+        cancellation_date__year=report_year,
+        cancellation_date__month=report_month
+    ).exclude(registration_status__in=NON_INVOICE_VALUES).order_by(
+        'invoice__sales_credit', 'cancellation_date', 'register_date'
+    )
+    for record in monthly_cancellations:
+        ws4.append(sales_report_row(record))
+
+    wb.save(response)
+    return response

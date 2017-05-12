@@ -44,4 +44,6 @@ urlpatterns = [
     # Graphics & DOCUMENTS
     url(r'^get_admin_reports/$', views.get_admin_reports,
         name='get_admin_reports'),
+    url(r'^get_sales_reports/$', views.get_sales_reports,
+        name='get_sales_reports'),
 ]

@@ -139,6 +139,20 @@ $(document).ready(function(){
 
 
   ///////////////////////
+  // Code related to sales reports
+  ///////////////////////
+  $('body').on('click', '#submit-sales-reports', function(){
+    var reportDateMonth = $('#id_report_date_month').val();
+    var reportDateYear = $('#id_report_date_year').val();
+    if (reportDateMonth && reportDateYear) {
+      var url = '/registration/get_sales_reports?report_date_month=';
+      url += reportDateMonth + '&report_date_year=' + reportDateYear;
+      window.open(url, '_blank');
+    };
+  });
+
+
+  ///////////////////////
   // Next section of code is related to invoice/registration search
   ///////////////////////
   function findRegistration(){

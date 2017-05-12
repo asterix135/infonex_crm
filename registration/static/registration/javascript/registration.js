@@ -156,7 +156,6 @@ $(document).ready(function(){
   // Next section of code is related to invoice/registration search
   ///////////////////////
   function findRegistration(){
-    console.log('finding registration');
     var invoiceNumber = $('#invoice_number').val();
     var confId = $('#id_event').val();
     var firstName = $('#id_first_name').val();

@@ -254,7 +254,6 @@ def process_complete_registration(request, assistant_data, company, crm_match,
             pk=request.POST['assistant_match_value']
         )
         assistant_form = AssistantForm(assistant_data, instance=assistant)
-        print(assistant)
         assistant_form.save()
     elif assistant_data:
         # Check to make sure record not already in the database

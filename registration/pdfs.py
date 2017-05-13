@@ -870,6 +870,85 @@ class ConferenceReportPdf:
         pdf = buffer.getvalue()
         return pdf
 
+    def event_revenue(self, queryset):
+        report_name = 'Event Revenue Report'
+        buffer = self._buffer
+        styles = getSampleStyleSheet()
+        doc = SimpleDocTemplate(buffer,
+                                rightMargin=inch/2,
+                                leftMargin=inch/2,
+                                topMargin=1.6 * inch,
+                                bottom_margin=inch*0.75,
+                                pagesize=self._pagesize)
+        elements = []
+        table_data = []
+        header_style = styles['h4']
+        header_style.alignment = TA_LEFT
+        cell_style = styles['BodyText']
+        cell_style.alignment = TA_LEFT
+        table_data.append([
+            Paragraph('Invoice Number', header_style),
+            Paragraph('Company', header_style),
+            Paragraph('Sales Credit', header_style),
+            Paragraph('Pre-Tax Price', header_style),
+            Paragraph('CDN Equivalent', header_style)
+        ])
+        pre_tax_total = 0
+        cdn_equiv_total = 0
+        for record in queryset:
+            if record.sales_credit.first_name or record.sales_credit.last_name:
+                sales_credit = record.sales_credit.first_name + ' ' + \
+                    record.sales_credit.last_name
+            else:
+                sales_credit = record.sales_credit.username
+            invoice_num = Paragraph(str(record.pk), cell_style)
+            company = Paragraph(record.reg_details.registrant.company.name,
+                                cell_style)
+            sales_credit = Paragraph(sales_credit, cell_style)
+            pre_tax_price = Paragraph(
+                str('${:,.2f}'.format(record.pre_tax_price)), cell_style
+            )
+            cdn_equiv = Paragraph(
+                str('${:,.2f}'.format(
+                    record.pre_tax_price * record.fx_conversion_rate
+                )), cell_style
+            )
+            table_data.append([
+                invoice_num,
+                company,
+                sales_credit,
+                pre_tax_price,
+                cdn_equiv,
+            ])
+            pre_tax_total += record.pre_tax_price
+            cdn_equiv_total += record.pre_tax_price * record.fx_conversion_rate
+        table_data.append([
+            Paragraph('Totals:', header_style),
+            Paragraph('', cell_style),
+            Paragraph('', cell_style),
+            Paragraph(str('${:,.2f}'.format(pre_tax_total)), header_style),
+            Paragraph(str('${:,.2f}'.format(cdn_equiv_total)), header_style)
+        ])
+        table = Table(table_data,
+                      colWidths=[doc.width/5]*5,
+                      repeatRows=1)
+        table.setStyle(TableStyle([
+            ('LINEABOVE', (0,0), (-1, 0), 2, colors.black),
+            ('LINEBELOW', (0,0), (-1, 0), 1, colors.black),
+            ('VALIGN', (0,0), (-1, -1), 'TOP'),
+        ]))
+        elements.append(table)
+        doc.build(elements,
+                  onFirstPage=partial(self._header, event=self._event,
+                                      report_title = report_name),
+                  onLaterPages=partial(self._header, event=self._event,
+                                       report_title = report_name),
+                  canvasmaker=NumberedCanvas)
+
+        pdf = buffer.getvalue()
+        return pdf
+
+
     @staticmethod
     def _header(canvas, doc, event, report_title):
         canvas.saveState()

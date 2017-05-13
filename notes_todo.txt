@@ -1,6 +1,4 @@
 
-TODO: Code PDF for event_revenue
-
 TODO: Set delegate response to not send email automatically when updating
 
 TODO: Cancellations - status for refund, credit note, Unpaid
@@ -208,3 +206,4 @@ TODO: DONE - 43) Upload current registration information and link to CRM records
           d) figure out how to auto-link person & crm
 TODO: DONE - New Statuses - Paid cxl, unpaid cxl, substituted out
 TODO: DONE - REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
+TODO: DONE - Code PDF for event_revenue

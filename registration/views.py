@@ -1185,7 +1185,6 @@ def event_revenue(request):
         wb.save(response)
         return response
 
-
     elif doc_format == 'csv':
         response = HttpResponse(content_type='text/csv')
         file_details = destination + '; filename="revenue_report_' + \
@@ -1217,9 +1216,16 @@ def event_revenue(request):
         return response
 
     else:  # doc_format = 'pdf'
-        pass
-
-    return HttpResponse('<h1>Not Coded yet</h1>')
+        buffr = BytesIO()
+        report = ConferenceReportPdf(buffr, event)
+        response = HttpResponse(content_type='application/pdf')
+        file_details = destination + '; filename="delegate_list_' + \
+            str(event.number) + '.pdf"'
+        response['Content-Disposition'] = file_details
+        pdf = report.event_revenue(revenue_qs)
+        buffr.close()
+        response.write(pdf)
+        return response
 
 
 @login_required

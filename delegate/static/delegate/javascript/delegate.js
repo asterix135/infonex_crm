@@ -698,4 +698,25 @@ $(document).ready(function(){
     });
   });
 
+  // Update record when user clicks on substitute choice
+  $('body').on('click', '.btn-select-sub', function(){
+    var subType = $(this).attr('sub-value').slice(0,3);
+    var originalDelegate = $('#current-registrant-id').val();
+    $('#original-registrant-id').val(originalDelegate);
+    $('#crm-match-value').val('');
+    $('#assistant-match-value').val('');
+    if (subType == 'del'){
+      var delId = $(this).attr('sub-value').slice(3);
+      console.log('process delegate replacement');
+      console.log(delId);
+    } else if (subType == 'crm') {
+      var crmId = $(this).attr('sub-value').slice(3);
+      console.log('process crm replacement');
+      console.log(crmId);
+    } else {
+      console.log('process new delegate');
+    }
+    $('#substitute-delegate').detach();  // remove button
+  });
+
 });

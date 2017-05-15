@@ -3,6 +3,7 @@
     Delegate Matches (Only at the same company)
   </div>
   <div class="panel-body">
+    {% if registrant_list %}
     <table class="table">
       <thead>
         <tr>
@@ -18,7 +19,7 @@
         {% for registrant in registrant_list %}
         <tr>
           <td>
-            <input type="radio" name="sub-reg-select" value="{{ registrant.pk }}" />
+            <button type="button" class="btn btn-success btn-select-sub" sub-value="del{{ registrant.pk }}" >Select</button>
           </td>
           <td>
             <b>{{ registrant.first_name }} {{ registrant.last_name }}</b>
@@ -37,18 +38,50 @@
         {% endfor %}
       </tbody>
     </table>
+    {% else %}
+    <h3>No Previous Delegates Match</h3>
+    {% endif %}
   </div>
   <div class="panel-heading">
     CRM Matches
   </div>
   <div class="panel-body">
-    match info here
+    {% if crm_list %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="col-sm-1">
+            Select?
+          </th>
+          <th class="col-sm-11">
+            Individual
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for contact in crm_list %}
+        <tr>
+          <td>
+            <button type="button" class="btn btn-success btn-select-sub" sub-value="crm{{ contact.pk }}" >Select</button>
+          </td>
+          <td>
+            <b>{{ contact.name }}</b><br />
+            {% if contact.title %}{{ contact.title }}<br />{% endif %}
+            {% if contact.company %}{{ contact.company }}<br />{% endif %}
+            <b>Email: </b>{% if contact.email %}{{ contact.email }}{% else %}Not available{% endif %}<br />
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <h3>No matching CRM Records</h3>
+    {% endif %}
   </div>
   <div class="panel-heading">
     Delegate Information
-    <span class="float-right glyphicon glyphicon-chevron-down glyph-button"></span>
   </div>
-  <div class="panel-body collapse in">
-    New delegate fields here
+  <div class="panel-body">
+    <button class="btn btn-info col-sm-12 btn-select-sub" sub-value="new">Create New Customer</button>
   </div>
 </div>

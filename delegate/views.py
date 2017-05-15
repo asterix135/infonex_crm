@@ -981,7 +981,7 @@ def search_for_substitute(request):
     reg_query2 = Registrants.objects.filter(
         first_name__icontains=request.GET['first_name'].strip(),
         last_name__icontains=request.GET['last_name'].strip(),
-        company__name__icontains=company.name,
+        company__name__icontains=company.name.strip(),
     ).exclude(id__in=reg_query1).order_by('last_name', 'first_name').exclude(
         pk=registrant.pk
     )
@@ -990,14 +990,40 @@ def search_for_substitute(request):
     # Search for matching CRM records
     crm_list = []
     crm_query1 = Person.objects.filter(
-        Q(name__icontains=request.POST['first_name'].strip()) &
-        Q(name__icontains=request.POST['last_name'].strip()) &
-        Q(company__icontains=company.name)
+        Q(name__icontains=request.GET['first_name'].strip()) &
+        Q(name__icontains=request.GET['last_name'].strip()) &
+        Q(company__icontains=company.name.strip())
     )
+    crm_list.extend(list(crm_query1))
+    if crm_query1.count() < 10:
+        if request.GET['last_name'] != '' and request.GET['first_name'] != '':
+            crm_query2 = Person.objects.filter(
+                (Q(name__icontains=request.GET['first_name'].strip()) |
+                 Q(name__icontains=request.GET['last_name'].strip)) &
+                Q(company__icontains=company.name.strip())
+            )
+        elif request.GET['last_name'] == '' and request.GET['first_name'] != '':
+            crm_query2 = Person.objects.filter(
+                Q(name__icontains=request.GET['first_name'].strip) &
+                Q(company__icontains=company.name.strip())
+            )
+        elif request.GET['last_name'] != '' and request.GET['first_name'] == '':
+            crm_query2 = Person.objects.filter(
+                Q(name__icontains=request.GET['last_name'].strip) &
+                Q(company__icontains=company.name.strip())
+            )
+        else:
+            crm_query2 = Person.objects.none()
+        crm_list.extend(list(crm_query2))
+    print(crm_list)
+
+
+    print(company.name.strip())
 
     context = {
         'registrant_list': registrant_list,
         'conference': conference,
+        'crm_list': crm_list,
     }
     return render(request, 'delegate/addins/substitute_match_list.html',
                   context)

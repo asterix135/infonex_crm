@@ -469,8 +469,8 @@ def index_panel(request):
     if request.GET['panel'] == 'admin-reports':
         response_url = 'registration/index_panels/admin_reports.html'
         conference_select_form = ConferenceSelectForm()
-        # conference_select_form.fields['event'].queryset = \
-        #     Event.objects.all().order_by('-date_begins')
+        conference_select_form.fields['event'].queryset = \
+            Event.objects.all().order_by('-number')
         admin_report_options_form = AdminReportOptionsForm()
         context = {
             'conference_select_form': conference_select_form,

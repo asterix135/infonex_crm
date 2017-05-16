@@ -284,7 +284,10 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     crm_match.name = request.POST['first_name'].strip() + ' ' + \
         request.POST['last_name'].strip()
     crm_match.title = request.POST['title'].strip()
-    crm_match.company = request.POST['crm_company'].strip()
+    if request.POST['crm_company'].strip() != '':
+        crm_match.company = request.POST['crm_company'].strip()
+    else:
+        crm_match.company = request.POST['name'].strip()
     crm_match.phone = request.POST['phone1'].strip()
     crm_match.email = request.POST['email1'].strip()
     crm_match.city = request.POST['city'].strip()

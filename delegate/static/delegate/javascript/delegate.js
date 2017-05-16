@@ -705,17 +705,23 @@ $(document).ready(function(){
     $('#original-registrant-id').val(originalDelegate);
     $('#crm-match-value').val('');
     $('#assistant-match-value').val('');
-    if (subType == 'del'){
-      var delId = $(this).attr('sub-value').slice(3);
-      console.log('process delegate replacement');
-      console.log(delId);
-    } else if (subType == 'crm') {
-      var crmId = $(this).attr('sub-value').slice(3);
-      console.log('process crm replacement');
-      console.log(crmId);
+    if (subType == 'del' || subType == 'crm'){
+      var subId = $(this).attr('sub-value').slice(3);
     } else {
-      console.log('process new delegate');
+      var subId = '';
     }
+    $.ajax({
+      url: '/delegate/get_substitute_details/',
+      type: 'GET',
+      data: {
+        'sub_type': subType,
+        'sub_id': subId,
+        'orig_del': originalDelegate,
+      },
+      success: function(data){
+        console.log(data);
+      }
+    })
     $('#substitute-delegate').detach();  // remove button
   });
 

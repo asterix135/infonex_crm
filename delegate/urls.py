@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'^conf_has_regs/$', views.conf_has_regs, name='conf_has_regs'),
     url(r'^get_company_details/$', views.get_company_details,
         name='get_company_details'),
+    url(r'^get_substitute_details/', views.get_substitute_details,
+        name='get_substitute_details'),
     url(r'^person_is_registered/$', views.person_is_registered,
         name='person_is_registered'),
     url(r'^search_for_substitute/$', views.search_for_substitute,

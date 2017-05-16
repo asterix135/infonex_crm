@@ -940,9 +940,9 @@ def get_substitute_details(request):
         raise Http404('Substitute not specified')
     if 'orig_del' not in request.GET:
         raise Http404('Original delegate not specified')
-    orig_del = get_object_or_404(pk=request.GET['orig_del'])
+    orig_del = get_object_or_404(Registrants, pk=request.GET['orig_del'])
     if request.GET['sub_type'] == 'crm':
-        crm_sub = get_object_or_404(pk=request.GET['sub_id'])
+        crm_sub = get_object_or_404(Person, pk=request.GET['sub_id'])
         name_tokens = crm_sub.name.split()
         if len(name_tokens) > 1:
             first_name = name_tokens[0]
@@ -961,7 +961,7 @@ def get_substitute_details(request):
             assistant_title = orig_del.assistant.title
             assistant_email = orig_del.assistant.email
             assistant_phone = orig_del.assistant.phone
-        except Assistant.DoesNotExist:
+        except (Assistant.DoesNotExist, AttributeError):
             assistant_id = None
             assistant_salutation = None
             assistant_first_name = None
@@ -979,25 +979,27 @@ def get_substitute_details(request):
             'email2': None,
             'phone1': crm_sub.phone,
             'phone2': None,
-            'asstId': None,
-            'asstSalutation': None,
-            'asstFirstName': None,
-            'asstLastName': None,
-            'asstTitle': None,
-            'asstEmail': None,
-            'asstPhone': None,
+            'asstId': assistant_id,
+            'asstSalutation': assistant_salutation,
+            'asstFirstName': assistant_first_name,
+            'asstLastName': assistant_last_name,
+            'asstTitle': assistant_title,
+            'asstEmail': assistant_email,
+            'asstPhone': assistant_phone,
         }
     elif request.GET['sub_type'] == 'del':
-        del_sub = get_object_or_404(pk=request.GET['sub_id'])
+        del_sub = get_object_or_404(Registrants, pk=request.GET['sub_id'])
         try:
             assistant_id = del_sub.assistant.pk
+            assistant_salutation = del_sub.assistant.salutation
             assistant_first_name = del_sub.assistant.first_name
             assistant_last_name = del_sub.assistant.last_name
             assistant_title = del_sub.assistant.title
             assistant_email = del_sub.assistant.email
             assistant_phone = del_sub.assistant.phone
-        except Assistant.DoesNotExist:
+        except (Assistant.DoesNotExist, AttributeError):
             assistant_id = None
+            assistant_salutation = None
             assistant_first_name = None
             assistant_last_name = None
             assistant_title = None
@@ -1015,11 +1017,11 @@ def get_substitute_details(request):
             'phone2': del_sub.phone2,
             'asstId': assistant_id,
             'asstSal': assistant_salutation,
-            'asstFirstName': assistant.first_name,
-            'asstLastName': assistant.last_name,
-            'asstTitle': assistant.title,
-            'asstEmail': assistant.email,
-            'asstPhone': assistant.phone,
+            'asstFirstName': assistant_first_name,
+            'asstLastName': assistant_last_name,
+            'asstTitle': assistant_title,
+            'asstEmail': assistant_email,
+            'asstPhone': assistant_phone,
         }
     else:  # Assume it's a new delegate
         sub_details = {
@@ -1036,9 +1038,9 @@ def get_substitute_details(request):
             'asstSal': None,
             'asstFirstName': None,
             'asstLastName': None,
-            'asstTitle': assistant.title,
-            'asstEmail': assistant.email,
-            'asstPhone': assistant.phone,
+            'asstTitle': None,
+            'asstEmail': None,
+            'asstPhone': None,
         }
 
 

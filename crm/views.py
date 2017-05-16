@@ -729,7 +729,7 @@ def territory(request):
         if 'filter_prov' in request.session:
             form_data['state_province'] = request.session['filter_prov']
         if 'filter_customer' in request.session:
-            form_data['past_customer'] = request.sessoin['filter_customer']
+            form_data['past_customer'] = request.session['filter_customer']
         filter_form = SearchForm(form_data)
     event_assignment = get_object_or_404(EventAssignment,
                                          pk=request.session['assignment_id'])

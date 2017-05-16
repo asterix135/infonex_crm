@@ -1,5 +1,8 @@
+TODO: Registration processing page - if matching deleate exists, need a pop-up to say same or new or additional invoice
 
 TODO: Set delegate response to not send email automatically when updating
+
+TODO: Change confirmation letter when inside of 2 weeks
 
 TODO: Cancellations - status for refund, credit note, Unpaid
 

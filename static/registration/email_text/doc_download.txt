@@ -1,0 +1,34 @@
+Good Afternoon  %s,
+
+Thank you for your participation in the conference %s taking place %s in %s, %s.
+
+Presentation Download
+Copies of speaker presentations are available for download from our website.
+Below are the instructions on how to access our online library to get your own copy of the presentations for the conference.
+
+Download presentations by using the following link:
+http://www.infonex.ca/main/downloads.shtml
+
+Select "%s"
+
+USER NAME:  %s
+PASSWORD:   %s
+Both user name and password are case sensitive
+
+Please note: Infonex will not provide hard copies of these presentations at the conference.
+Some presentations are unavailable as they have yet to be provided to Infonex.
+At the conclusion of the conference all collected presentations will be posted on this site for you to download.
+Presentations are the property of Infonex Inc. and its speakers.  Unauthorized distribution of any downloads off the website is strictly prohibited.
+
+Venue Information
+Registration & Continental Breakfast will be available at %s.
+Opening Remarks begin promptly at %s.
+The Conference will be held at the following location
+
+%s
+
+If you have any questions please contact Infonex's delegate support team at 416-971-4177
+
+Thank you,
+
+Infonex Registration Department

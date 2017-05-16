@@ -1,0 +1,13 @@
+Good afternoon %s,
+
+We have confirmed the venue for our upcoming %s conference being held in %s, %s on %s.
+
+The venue is as follows:
+
+%s
+
+The hotel is able to offer our guests a special guest room rate of %s per night plus tax. Please call %s directly to book your room and quote %s.
+
+Thank you,
+
+Infonex Registration Department

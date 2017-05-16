@@ -929,6 +929,120 @@ def get_company_details(request):
 
 
 @login_required
+def get_substitute_details(request):
+    if 'sub_type' not in request.GET or (
+        request.GET['sub_type'] in ['crm', 'del']
+        and 'sub_id' not in request.GET
+    ):
+        raise Http404('Substitute not specified')
+    if 'orig_del' not in request.GET:
+        raise Http404('Original delegate not specified')
+    orig_del = get_object_or_404(pk=request.GET['orig_del'])
+    if request.GET['sub_type'] == 'crm':
+        crm_sub = get_object_or_404(pk=request.GET['sub_id'])
+        name_tokens = crm_sub.name.split()
+        if len(name_tokens) > 1:
+            first_name = name_tokens[0]
+            last_name = name_tokens[1:]
+        elif len(name_tokens) == 1:
+            first_name = name_tokens[0]
+            last_name = ''
+        else:
+            first_name = ''
+            last_name = ''
+        try:
+            assistant_id = orig_del.assistant.pk
+            assistant_salutation = orig_del.assistant.salutation
+            assistant_first_name = orig_del.assistant.first_name
+            assistant_last_name = orig_del.assistant.last_name
+            assistant_title = orig_del.assistant.title
+            assistant_email = orig_del.assistant.email
+            assistant_phone = orig_del.assistant.phone
+        except Assistant.DoesNotExist:
+            assistant_id = None
+            assistant_salutation = None
+            assistant_first_name = None
+            assistant_last_name = None
+            assistant_title = None
+            assistant_email = None
+            assistant_phone = None
+        sub_details = {
+            'newRegistrantId': None,
+            'newCrmId': crm_sub.pk,
+            'firstName': first_name,
+            'lastName': last_name,
+            'title': crm_sub.title,
+            'email1': crm_sub.email,
+            'email2': None,
+            'phone1': crm_sub.phone,
+            'phone2': None,
+            'asstId': None,
+            'asstSalutation': None,
+            'asstFirstName': None,
+            'asstLastName': None,
+            'asstTitle': None,
+            'asstEmail': None,
+            'asstPhone': None,
+        }
+    elif request.GET['sub_type'] == 'del':
+        del_sub = get_object_or_404(pk=request.GET['sub_id'])
+        try:
+            assistant_id = del_sub.assistant.pk
+            assistant_first_name = del_sub.assistant.first_name
+            assistant_last_name = del_sub.assistant.last_name
+            assistant_title = del_sub.assistant.title
+            assistant_email = del_sub.assistant.email
+            assistant_phone = del_sub.assistant.phone
+        except Assistant.DoesNotExist:
+            assistant_id = None
+            assistant_first_name = None
+            assistant_last_name = None
+            assistant_title = None
+            assistant_email = None
+            assistant_phone = None
+        sub_details = {
+            'newRegistrantId': del_sub.pk,
+            'newCrmId': del_sub.crm_person.pk,
+            'firstName': del_sub.first_name,
+            'lastName': del_sub.last_name,
+            'title': del_sub.title,
+            'email1': del_sub.email1,
+            'email2': del_sub.email2,
+            'phone1': del_sub.phone1,
+            'phone2': del_sub.phone2,
+            'asstId': assistant_id,
+            'asstSal': assistant_salutation,
+            'asstFirstName': assistant.first_name,
+            'asstLastName': assistant.last_name,
+            'asstTitle': assistant.title,
+            'asstEmail': assistant.email,
+            'asstPhone': assistant.phone,
+        }
+    else:  # Assume it's a new delegate
+        sub_details = {
+            'newRegistrantId': None,
+            'newCrmId': None,
+            'firstName': None,
+            'lastName': None,
+            'title': None,
+            'email1': None,
+            'email2': None,
+            'phone1': None,
+            'phone2': None,
+            'asstId': None,
+            'asstSal': None,
+            'asstFirstName': None,
+            'asstLastName': None,
+            'asstTitle': assistant.title,
+            'asstEmail': assistant.email,
+            'asstPhone': assistant.phone,
+        }
+
+
+    return JsonResponse({})
+
+
+@login_required
 def person_is_registered(request):
     """
     Checks whether the current delegate is registered for a conference

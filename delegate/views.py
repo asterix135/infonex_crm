@@ -247,8 +247,13 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     Helper function, called from process_registration once request data
     has been verified
     """
+    # 0. Get info to process substitution
+    if current_registration and request.POST['action_type'] == 'sub':
+        original_registrant = current_registration.registrant
+
     # 1. create database records if not present
     # a. assistant
+
     if request.POST['assistant_match_value']:
         assistant = Assistant.objects.get(
             pk=request.POST['assistant_match_value']
@@ -256,18 +261,18 @@ def process_complete_registration(request, assistant_data, company, crm_match,
         assistant_form = AssistantForm(assistant_data, instance=assistant)
         assistant_form.save()
     elif assistant_data:
-        # Check to make sure record not already in the database
-        assistant_db_check = Assistant.objects.filter(
-            first_name=assistant_data['first_name'],
-            last_name=assistant_data['last_name'],
-            email=assistant_data['email'],
-        )
-        if assistant_db_check.count() > 0:
-            assistant=assistant_db_check[0]
-            assistant_form = AssistantForm(assistant_data, instance=assistant)
-            assistant_form.save()
-        else:
-            assistant = AssistantForm(assistant_data).save()
+        # # Check to make sure record not already in the database
+        # assistant_db_check = Assistant.objects.filter(
+        #     first_name=assistant_data['first_name'],
+        #     last_name=assistant_data['last_name'],
+        #     email=assistant_data['email'],
+        # )
+        # if assistant_db_check.count() > 0:
+        #     assistant=assistant_db_check[0]
+        #     assistant_form = AssistantForm(assistant_data, instance=assistant)
+        #     assistant_form.save()
+        # else:
+        assistant = AssistantForm(assistant_data).save()
     else:
         assistant = None
 
@@ -305,41 +310,41 @@ def process_complete_registration(request, assistant_data, company, crm_match,
         registrant.date_modified = timezone.now()
         registrant.save()
     else:
-        registrant_db_check = Registrants.objects.filter(
+        # registrant_db_check = Registrants.objects.filter(
+        #     company=company,
+        #     first_name=request.POST['first_name'].strip(),
+        #     last_name=request.POST['last_name'].strip(),
+        #     email1=request.POST['email1'].strip()
+        # )
+        # if registrant_db_check.count() > 0:
+        #     registrant = registrant_db_check[0]
+        #     delegate_form = NewDelegateForm(request.POST, instance=registrant)
+        #     delegate_form.save()
+        #     registrant.assistant = assistant
+        #     registrant.modified_by = request.user
+        #     registrant.date_modified = timezone.now()
+        #     registrant.save()
+        # else:
+        registrant = Registrants(
+            crm_person=crm_match,
+            assistant=assistant,
             company=company,
+            salutation=request.POST['salutation'].strip(),
             first_name=request.POST['first_name'].strip(),
             last_name=request.POST['last_name'].strip(),
-            email1=request.POST['email1'].strip()
+            title=request.POST['title'].strip(),
+            email1=request.POST['email1'].strip(),
+            email2=request.POST['email2'].strip(),
+            phone1=request.POST['phone1'].strip(),
+            phone2=request.POST['phone2'].strip(),
+            contact_option=request.POST['contact_option'],
+            # delegate_notes=request.POST['delegate_notes'],
+            created_by=request.user,
+            date_created=timezone.now(),
+            modified_by=request.user,
+            date_modified=timezone.now(),
         )
-        if registrant_db_check.count() > 0:
-            registrant = registrant_db_check[0]
-            delegate_form = NewDelegateForm(request.POST, instance=registrant)
-            delegate_form.save()
-            registrant.assistant = assistant
-            registrant.modified_by = request.user
-            registrant.date_modified = timezone.now()
-            registrant.save()
-        else:
-            registrant = Registrants(
-                crm_person=crm_match,
-                assistant=assistant,
-                company=company,
-                salutation=request.POST['salutation'].strip(),
-                first_name=request.POST['first_name'].strip(),
-                last_name=request.POST['last_name'].strip(),
-                title=request.POST['title'].strip(),
-                email1=request.POST['email1'].strip(),
-                email2=request.POST['email2'].strip(),
-                phone1=request.POST['phone1'].strip(),
-                phone2=request.POST['phone2'].strip(),
-                contact_option=request.POST['contact_option'],
-                # delegate_notes=request.POST['delegate_notes'],
-                created_by=request.user,
-                date_created=timezone.now(),
-                modified_by=request.user,
-                date_modified=timezone.now(),
-            )
-            registrant.save()
+        registrant.save()
 
     # e. reg_details
     if not current_registration:
@@ -359,6 +364,8 @@ def process_complete_registration(request, assistant_data, company, crm_match,
         current_registration.registrant = registrant
     elif conference != current_registration.conference:
         raise ValueError('\nConference changed for registration\n')
+    elif request.POST['action_type'] == 'sub':
+        process_substitution(current_registration, registrant)
     current_registration.register_date = request.POST['register_date']
     if request.POST['cancellation_date'] != '':
         current_registration.cancellation_date = \
@@ -405,6 +412,30 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     return current_registration, registrant, assistant
 
 
+def process_substitution(reg_record, substitute_registrant):
+    """
+    Called from process_registration
+    Creates 'SU' record for original registrant and transfers
+    existing regdetails to new registrant
+    """
+    original_registrant = reg_record.registrant
+    reg_record.registrant = substitute_registrant
+    reg_record.save()
+    substitute_reg_record = RegDetails(
+        conference = reg_record.conference,
+        registrant = original_registrant,
+        register_date = reg_record.register_date,
+        cancellation_date = reg_record.cancellation_date,
+        registration_status = 'B',
+        registration_notes = reg_record.registration_notes,
+        created_by = request.user,
+        date_created = timezone.now(),
+        modified_by = request.user,
+        date_modified = timezone.now()
+    )
+    substitute_reg_record.save()
+
+
 #############################
 # VIEW FUNCTIONS
 #############################
@@ -441,6 +472,7 @@ def confirmation_details(request):
         'cc_list': cc_list,
         'bcc_list': bcc_list,
         'invoice': invoice,
+        'reg_action': request.session['reg_action'],
     }
     return render(request, 'delegate/confirmation_details.html', context)
 
@@ -448,11 +480,13 @@ def confirmation_details(request):
 @login_required
 def index(request):
     """ renders base delegate/index.html page """
+    action_type = 'new'
     if request.method == 'GET' and 'reg_id' in request.GET:
         try:
             current_registration = RegDetails.objects.get(
                 pk=request.GET['reg_id']
             )
+            action_type='edit'
         except RegDetails.DoesNotExist:
             raise Http404('That Registration does not exist')
     elif request.method != 'POST':
@@ -492,6 +526,7 @@ def index(request):
         except AttributeError:
             crm_id = None
         registrant_id = current_registration.registrant.pk
+        action_type = 'edit'
     conference_options = conference.eventoptions_set.all()
     options_form = OptionsForm(conference)
     conference_select_form = ConferenceSelectForm({'event': conf_id})
@@ -510,6 +545,7 @@ def index(request):
                 current_registration = RegDetails.objects.get(
                     registrant=registrant, conference=conference
                 )
+                action_type = 'edit'
                 data_source = 'delegate'
             reg_data = {
                 'register_date': current_registration.register_date,
@@ -596,6 +632,7 @@ def index(request):
         'data_source': data_source,
         'total_tax_amount': None,
         'total_invoice_amount': None,
+        'action_type': action_type,
     }
     return render(request, 'delegate/index.html', context)
 
@@ -626,6 +663,7 @@ def process_registration(request):
     assistant_missing = None
     option_selection_needed = None
     option_list = []
+    action_type = 'new'
     # 2. verify that it's a POST and define objects based on POST data
     if request.method == 'POST':
         # Populate forms with appropriate data
@@ -701,11 +739,15 @@ def process_registration(request):
             not company_error:
             crm_match = Person.objects.get(pk=request.POST['crm_match_value'])
         else:
+            if request.POST['crm_company'].strip() not in ('', None):
+                crm_company_name = request.POST['crm_company'].strip()
+            else:
+                crm_company_name = request.POST['name'].strip()
             crm_match = Person(
                 name=request.POST['first_name'].strip() + ' ' + \
                      request.POST['last_name'].strip(),
                 title=request.POST['title'].strip(),
-                company=request.POST['crm_company'].strip(),
+                company=crm_company_name,
                 phone=request.POST['phone1'].strip(),
                 email=request.POST['email1'].strip(),
                 city=company.city,
@@ -757,6 +799,7 @@ def process_registration(request):
             request.session['current_registration'] = current_registration.pk
             request.session['registrant'] = registrant.pk
             request.session['assistant'] = assistant.pk if assistant else None
+            request.session['reg_action'] = request.POST['action_type']
             return redirect('/delegate/confirmation_details')
 
     context = {
@@ -783,6 +826,7 @@ def process_registration(request):
         'company_error': company_error,
         'assistant_missing': assistant_missing,
         'option_selection_needed': option_selection_needed,
+        'action_type': action_type,
     }
     return render(request, 'delegate/index.html', context)
 
@@ -933,6 +977,10 @@ def get_company_details(request):
 
 @login_required
 def get_substitute_details(request):
+    """
+    called from substitute_match_list.html (modal)
+    returns JSON of details of subtitute to be inserted into index.html
+    """
     if 'sub_type' not in request.GET or (
         request.GET['sub_type'] in ['crm', 'del']
         and 'sub_id' not in request.GET
@@ -946,7 +994,7 @@ def get_substitute_details(request):
         name_tokens = crm_sub.name.split()
         if len(name_tokens) > 1:
             first_name = name_tokens[0]
-            last_name = name_tokens[1:]
+            last_name = ' '.join(name_tokens[1:])
         elif len(name_tokens) == 1:
             first_name = name_tokens[0]
             last_name = ''
@@ -972,6 +1020,7 @@ def get_substitute_details(request):
         sub_details = {
             'newRegistrantId': None,
             'newCrmId': crm_sub.pk,
+            'salutation': None,
             'firstName': first_name,
             'lastName': last_name,
             'title': crm_sub.title,
@@ -1008,6 +1057,7 @@ def get_substitute_details(request):
         sub_details = {
             'newRegistrantId': del_sub.pk,
             'newCrmId': del_sub.crm_person.pk,
+            'salutation': del_sub.salutation,
             'firstName': del_sub.first_name,
             'lastName': del_sub.last_name,
             'title': del_sub.title,
@@ -1027,6 +1077,7 @@ def get_substitute_details(request):
         sub_details = {
             'newRegistrantId': None,
             'newCrmId': None,
+            'salutation': None,
             'firstName': None,
             'lastName': None,
             'title': None,
@@ -1042,9 +1093,7 @@ def get_substitute_details(request):
             'asstEmail': None,
             'asstPhone': None,
         }
-
-
-    return JsonResponse({})
+    return JsonResponse(sub_details)
 
 
 @login_required

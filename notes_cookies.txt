@@ -45,6 +45,7 @@ Delegate processing (see delegate.views.py)
   current_registration: ??
   registrant:
   assistant:
+  action_type: sub, new or edit - directs stuff on confirmation page
 
 ################
 # Review and/or delete

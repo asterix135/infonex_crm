@@ -36,6 +36,7 @@
     <input type="hidden" id="crm-match-value" name="crm_match_value" value="{{ crm_match.id }}" />
     <input type="hidden" id="company-match-value" name="company_match_value" value="{{ company.id }}" />
     <input type="hidden" id="assistant-match-value" name="assistant_match_value" value="{{ assistant.id }}" />
+    <input type="hidden" id="action-type" name="action_type" value="{{ action_type }}" />
     {% csrf_token %}
   </div>
   <div class="container-fluid fill">
@@ -82,12 +83,18 @@
                 Substitute Delegate
               </button>
             </span>
+            <div class="errorlist">
+              <h4>You are editing an existing registration</h4>
+            </div>
           </div>
         </div>
         {% elif current_registration %}
         <div class="panel panel-primary invoice-status-box">
           <div class="panel-body h4">
             Non-Invoice Registration
+          </div>
+          <div class="errorlist">
+            <h4>You are editing an existing registration</h4>
           </div>
         </div>
         {% else %}

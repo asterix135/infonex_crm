@@ -702,9 +702,6 @@ $(document).ready(function(){
   $('body').on('click', '.btn-select-sub', function(){
     var subType = $(this).attr('sub-value').slice(0,3);
     var originalDelegate = $('#current-registrant-id').val();
-    $('#original-registrant-id').val(originalDelegate);
-    $('#crm-match-value').val('');
-    $('#assistant-match-value').val('');
     if (subType == 'del' || subType == 'crm'){
       var subId = $(this).attr('sub-value').slice(3);
     } else {
@@ -720,9 +717,33 @@ $(document).ready(function(){
       },
       success: function(data){
         console.log(data);
+        console.log(data.lastName);
+        console.log(data.email1);
+        $('#original-registrant-id').val(originalDelegate);
+        $('#current-registrant-id').val(data.newRegistrantId);
+        $('#crm-match-value').val(data.newCrmId);
+        $('#assistant-match-value').val(data.asstId);
+        $('#action-type').val('sub');
+        $('#id_salutation').val(data.salutation);
+        $('#id_first_name').val(data.firstName);
+        $('#id_last_name').val(data.lastName);
+        $('#id_title').val(data.title);
+        $('#id_email1').val(data.email1);
+        $('#id_email2').val(data.email2);
+        $('#id_phone1').val(data.phone1);
+        $('#id_phone2').val(data.phone2);
+        $('#assistant_salutation').val(data.asstSalutation);
+        $('#assistant_first_name').val(data.asstFirstName);
+        $('#assistant_last_name').val(data.asstLastName);
+        $('#assistant_title').val(data.asstTitle);
+        $('#assistant_email').val(data.asstEmail);
+        $('#assistant_phone').val(data.asstPhone);
+        $('#process-registration-button').text('Process Substitution');
+
+        $('#substituteSearchModal').modal('hide');
       }
     })
-    $('#substitute-delegate').detach();  // remove button
+    // $('#substitute-delegate').detach();  // remove button
   });
 
 });

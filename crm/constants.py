@@ -19,7 +19,6 @@ CONTACT_CHOICES = (
     ('Research', 'PD Research Call')
 )
 
-
 AC_DICT = {
     '201': 'NJ',
     '202': 'DC',

@@ -4,6 +4,8 @@ TODO: Set delegate response to not send email automatically when updating
 
 TODO: Change confirmation letter when inside of 2 weeks
 
+TODO: add ass't info to crm.person
+
 TODO: Cancellations - status for refund, credit note, Unpaid
 
 TODO: Cancellation - verify that there is a cxl date

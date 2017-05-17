@@ -7,6 +7,19 @@ COMPANY_OPTIONS = (('IC', 'Infonex Inc'),
 BILLING_CURRENCY = (('CAD', 'CAD'),
                     ('USD', 'USD'))
 
+CONTACT_CHOICES = (
+    ('Pitch', 'Sales Pitch (Phone)'),
+    ('EPitch', 'Sales Pitch (Email)'),
+    ('Followup', 'Follow-up Call'),
+    ('Email', 'Follow-up Email'),
+    ('Marketing', 'Marketing Email'),
+    ('Registration', 'Delegate registration'),
+    ('Speaker', 'Speaker confirmation'),
+    ('Sponsor', 'Sponsor booking'),
+    ('Research', 'PD Research Call')
+)
+
+
 AC_DICT = {
     '201': 'NJ',
     '202': 'DC',

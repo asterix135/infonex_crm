@@ -238,16 +238,6 @@ class Contact(models.Model):
     author = models.ForeignKey('auth.User', default=1)
     date_of_contact = models.DateTimeField('date of contact')
     notes = models.TextField()
-    CONTACT_CHOICES = (
-        ('Pitch', 'Sales Pitch (Phone)'),
-        ('Followup', 'Follow-up Call'),
-        ('Email', 'Follow-up Email'),
-        ('Marketing', 'Marketing Email'),
-        ('Registration', 'Delegate registration'),
-        ('Speaker', 'Speaker confirmation'),
-        ('Sponsor', 'Sponsor booking'),
-        ('Research', 'PD Research Call')
-    )
     method = models.CharField(max_length=20,
                               choices=CONTACT_CHOICES,
                               default='Pitch')

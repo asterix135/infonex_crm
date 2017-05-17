@@ -485,7 +485,7 @@ def new(request):
                     for field_name in master_fields:
                         if getattr(select, field_name) not in ('', None):
                             form_data[field_name] = getattr(select, field_name)
-                            master_fields.pop(field_name)
+                            master_fields.remove(field_name)
                         if len(master_fields) == 0:
                             break
                     if len(master_fields) == 0:

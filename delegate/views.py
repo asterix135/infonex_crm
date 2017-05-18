@@ -364,8 +364,12 @@ def process_complete_registration(request, assistant_data, company, crm_match,
         current_registration.registrant = registrant
     elif conference != current_registration.conference:
         raise ValueError('\nConference changed for registration\n')
+
     elif request.POST['action_type'] == 'sub':
-        process_substitution(current_registration, registrant)
+        current_registration = process_substitution(request,
+                                                    current_registration,
+                                                    registrant)
+
     current_registration.register_date = request.POST['register_date']
     if request.POST['cancellation_date'] != '':
         current_registration.cancellation_date = \
@@ -412,7 +416,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     return current_registration, registrant, assistant
 
 
-def process_substitution(reg_record, substitute_registrant):
+def process_substitution(request, reg_record, substitute_registrant):
     """
     Called from process_registration
     Creates 'SU' record for original registrant and transfers
@@ -434,6 +438,7 @@ def process_substitution(reg_record, substitute_registrant):
         date_modified = timezone.now()
     )
     substitute_reg_record.save()
+    return reg_record
 
 
 #############################
@@ -664,6 +669,7 @@ def process_registration(request):
     option_selection_needed = None
     option_list = []
     action_type = 'new'
+    original_registrant = None
     # 2. verify that it's a POST and define objects based on POST data
     if request.method == 'POST':
         # Populate forms with appropriate data
@@ -718,6 +724,16 @@ def process_registration(request):
             current_registration = RegDetails.objects.get(
                 pk=request.POST['current_regdetail_id']
             )
+        # set values for edit/substitution consistency
+        action_type = request.POST['action_type']
+        if action_type == 'sub' and \
+            request.POST['original_registrant_id'] not in ('', None):
+            try:
+                original_registrant = Registrants.objects.get(
+                    pk=request.POST['original_registrant_id']
+                )
+            except Registrants.DoesNotExist:
+                pass
 
         # set up various objects if present in form
         if request.POST['current_registrant_id']:
@@ -827,6 +843,7 @@ def process_registration(request):
         'assistant_missing': assistant_missing,
         'option_selection_needed': option_selection_needed,
         'action_type': action_type,
+        'original_registrant': original_registrant,
     }
     return render(request, 'delegate/index.html', context)
 
@@ -1183,10 +1200,6 @@ def search_for_substitute(request):
         else:
             crm_query2 = Person.objects.none()
         crm_list.extend(list(crm_query2))
-    print(crm_list)
-
-
-    print(company.name.strip())
 
     context = {
         'registrant_list': registrant_list,

@@ -29,7 +29,7 @@
 
 <form action="/delegate/process_registration/" method="post" id="registration-form">
   <div id="stored-variables">
-    <input type="hidden" id="original-registrant-id" name="original_registrant_id" value="" />
+    <input type="hidden" id="original-registrant-id" name="original_registrant_id" value="{{ original_registrant.id }}" />
     <input type="hidden" id="current-registrant-id" name="current_registrant_id" value="{{ registrant.id }}" />
     <input type="hidden" id="current-regdetail-id" name="current_regdetail_id" value="{{ current_registration.id }}" />
     <input type="hidden" id="selected-conference-id" name="selected_conference_id" value="{{ conference.id }}" />

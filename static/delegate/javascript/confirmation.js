@@ -12,7 +12,7 @@ $(document).ready(function(){
   // Show email modal on page load
   var regStatus = $('#registration-type').val();
   var regAction = $('#reg-action-type').val();
-  if (regStatus != 'K' && regStatus != 'KX' && regAction == 'new') {
+  if (regStatus != 'K' && regStatus != 'KX' && regAction != 'edit') {
     $('#email-confirmation-modal').modal('show');
   };
 

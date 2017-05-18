@@ -10,6 +10,12 @@ $(document).ready(function(){
   var matchedCompanyId = null;
   var nonInvoiceVals = ['G', 'K', 'KX', 'SD', 'SE', 'B', ''];
   var cxlVals = ['DX', 'SX', 'KX', 'B'];
+  if ($.inArray($('#original-registrant-id').val(), [undefined, '']) == -1){
+    var originalDelegate = $('#original-registrant-id').val();
+  } else {
+    var originalDelegate = $('#current-registrant-id').val();
+  };
+
 
   // Check & adjust display of reg details on page load/reload
   displayHideRegDetails();
@@ -701,7 +707,6 @@ $(document).ready(function(){
   // Update record when user clicks on substitute choice
   $('body').on('click', '.btn-select-sub', function(){
     var subType = $(this).attr('sub-value').slice(0,3);
-    var originalDelegate = $('#current-registrant-id').val();
     if (subType == 'del' || subType == 'crm'){
       var subId = $(this).attr('sub-value').slice(3);
     } else {
@@ -716,10 +721,9 @@ $(document).ready(function(){
         'orig_del': originalDelegate,
       },
       success: function(data){
-        console.log(data);
-        console.log(data.lastName);
-        console.log(data.email1);
-        $('#original-registrant-id').val(originalDelegate);
+        if ($('#original_registrant_id').val() == '') {
+          $('#original-registrant-id').val(originalDelegate);
+        }
         $('#current-registrant-id').val(data.newRegistrantId);
         $('#crm-match-value').val(data.newCrmId);
         $('#assistant-match-value').val(data.asstId);

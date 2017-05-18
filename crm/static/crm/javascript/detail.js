@@ -347,11 +347,17 @@ $(document).ready(function() {
         };
       };
     };
+    var emailStringArray = originalEmail.split("@");
+    var domainStringLocation = emailStringArray.length -1;
+    var emailDomain = emailStringArray[domainStringLocation];
+    if (emailDomain.length > 0) {emailDomain = '@' + emailDomain};
     var formHtml = '<form action="/crm/new/" method="post">' +
                    '<input name="csrfmiddlewaretoken" value="' + csrfToken +'" type="hidden"/>' +
                    '<input type="hidden" name="dept" value="' + originalCatDept + '"/>' +
                    '<input type="hidden" name="company" value="' + originalCompany + '"/>' +
                    '<input type="hidden" name="city" value="' + originalCity + '"/>' +
+                   '<input type="hidden" name="phone" value="' + originalPhone + '"/>' +
+                   '<input type="hidden" name="email" value="' + emailDomain + '"/>' +
                    '<input type="hidden" name="phone_main" value="' + originalPhoneMain + '"/>' +
                    '<input type="hidden" name="url" value="' + originalUrl + '"/>' +
                    '<input type="hidden" name="industry" value="' + originalIndustry + '"/>' +

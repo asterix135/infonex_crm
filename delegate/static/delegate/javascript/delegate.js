@@ -700,6 +700,10 @@ $(document).ready(function(){
       },
       success: function(data){
         $('#substitute-match-list').html(data);
+        $('.reg-warning').each(function(){
+          var warnId = $(this).attr('warning-for');
+          $('#del-sub-btn-' + warnId).prop('disabled', true);
+        })
       }
     });
   });

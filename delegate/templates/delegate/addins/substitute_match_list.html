@@ -19,13 +19,13 @@
         {% for registrant in registrant_list %}
         <tr>
           <td>
-            <button type="button" class="btn btn-success btn-select-sub" sub-value="del{{ registrant.pk }}" >Select</button>
+            <button type="button" class="btn btn-success btn-select-sub" sub-value="del{{ registrant.pk }}" id="del-sub-btn-{{ registrant.pk }}">Select</button>
           </td>
           <td>
             <b>{{ registrant.first_name }} {{ registrant.last_name }}</b>
             {% for regdetail in registrant.regdetails_set.all %}
             {% if regdetail.conference == conference %}
-            <span class="errorlist"> ATTN: This Person is Already Registered!!</span>
+            <span class="errorlist reg-warning" warning-for="{{ registrant.pk }}"> ATTN: This Person is Already Registered!!</span>
             {% endif %}
             {% endfor %}
             <br />

@@ -17,6 +17,8 @@ TODO: Update email message content for changing to paid;
 
 TODO: Allow report selection to include/exclude on various categories (lower priority)
 
+TODO: Substitution - allow to substitute cxl'd or subbed-out people
+
 TODO: 68) Make it possible to substitute a delegate - need work on modal & logic
 
 TODO: 72) Format radio buttons on report select panel

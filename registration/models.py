@@ -4,7 +4,6 @@ from django.db import models
 from django.utils import timezone
 
 from .constants import *
-from crm.constants import STATE_PROV_TUPLE
 
 
 class Assistant(models.Model):

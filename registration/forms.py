@@ -6,7 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 from .models import *
 from .widgets import MonthYearWidget
 from crm.models import Event
-from crm.constants import STATE_PROV_TUPLE, COMPANY_OPTIONS, BILLING_CURRENCY
+from crm.constants import COMPANY_OPTIONS, BILLING_CURRENCY
+from .constants import *
 
 
 #######################

@@ -253,6 +253,7 @@ $(document).ready(function() {
       url: '/crm/save_category_changes/',
       type: 'POST',
       data: {
+        'person_id': personId,
         'dept': dept,
         'geo': geo,
         'main_category': mainCategory,

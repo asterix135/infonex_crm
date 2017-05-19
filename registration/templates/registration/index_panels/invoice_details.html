@@ -100,6 +100,15 @@
           {{ invoice.reg_details.registrant.phone1 }}
         </td>
       </tr>
+      <tr>
+        <li>
+          <a href="/delegate/get_reg_note?reg={{ invoice.reg_details.pk }}" target="_blank">Download internal record sheet</a>
+        </li>
+        <li>
+          <a href="/delegate/get_invoice?reg={{ invoice.reg_details.pk }}" target="_blank">Download copy of invoice</a>
+        </li>
+
+      </tr>
       {% else %}
       <tr>
         <td class="col-sm-12">

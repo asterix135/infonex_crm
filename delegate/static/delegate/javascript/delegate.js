@@ -200,6 +200,12 @@ $(document).ready(function(){
 
   // updates payment displays when registration status changes
   $('body').on('change', '#id_registration_status', function(){
+    // change action status on page if editing existing
+    var actionType = $('#action-type').val();
+    if (actionType == 'edit') {
+      $('#action-type').val('update');
+    }
+
     displayHideRegDetails();
     var newStatus = $(this).val();
     var currentRegDetailId = $('#current-regdetail-id').val();

@@ -1,8 +1,8 @@
 TODO: Registration processing page - if matching deleate exists, need a pop-up to say same or new or additional invoice
 
-TODO: Set delegate response to not send email automatically when updating
+TODO: DONE - Set delegate response to not send email automatically when updating
 
-TODO: Change confirmation letter when inside of 2 weeks
+TODO: Make it possible to mass-delete people from territory
 
 TODO: add ass't info to crm.person
 
@@ -10,16 +10,13 @@ TODO: Cancellations - status for refund, credit note, Unpaid
 
 TODO: Cancellation - verify that there is a cxl date
 
-TODO: Maybe?? allow invoice updating from ajax lookup panel
-
 TODO: Update email message content for changing to paid;
       Also, after a conference has run
+      Also, when registering/paying inside of 2 weeks
 
 TODO: Allow report selection to include/exclude on various categories (lower priority)
 
 TODO: Substitution - allow to substitute cxl'd or subbed-out people
-
-TODO: 68) Make it possible to substitute a delegate - need work on modal & logic
 
 TODO: 72) Format radio buttons on report select panel
             http://avtex.com/2015/02/bootstrap-radio-buttons-and-checkboxes-in-columns-with-contextual-text-fields/
@@ -214,3 +211,5 @@ TODO: DONE - 43) Upload current registration information and link to CRM records
 TODO: DONE - New Statuses - Paid cxl, unpaid cxl, substituted out
 TODO: DONE - REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 TODO: DONE - Code PDF for event_revenue
+TODO: DONE - Set delegate response to not send email automatically when updating
+TODO: DONE - 68) Make it possible to substitute a delegate - need work on modal & logic

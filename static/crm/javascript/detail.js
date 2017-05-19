@@ -246,9 +246,9 @@ $(document).ready(function() {
     var dept = $('#person-category-form-fields #id_dept').val();
     var geo = $('#id_geo').val();
     var mainCategory = $('#id_main_category').val();
-    var mainCategory2 = $('id_main_category2').val();
-    var division1 = $('id_division1').val();
-    var division2 = $('id_division2').val();
+    var mainCategory2 = $('#id_main_category2').val();
+    var division1 = $('#id_division1').val();
+    var division2 = $('#id_division2').val();
     $.ajax({
       url: '/crm/save_category_changes/',
       type: 'POST',

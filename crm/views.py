@@ -1288,7 +1288,7 @@ def load_staff_member_selects(request):
 @login_required
 def save_category_changes(request):
     updated_category_success = None
-    category_form = PersonCategoryUpdateForm
+    category_form = PersonCategoryUpdateForm()
     if request.method == 'POST':
         try:
             person = Person.objects.get(pk=request.POST['person_id'])
@@ -1298,6 +1298,11 @@ def save_category_changes(request):
             if category_form.is_valid():
                 category_form.save()
                 updated_category_success = True
+            else:
+                print(category_form.errors)
+                print(request.POST['main_category2'])
+                print(request.POST['division1'])
+                print()
         except (Person.DoesNotExist, MultiValueDictKeyError):
             raise Http404('Sorry, this person seems to have been deleted ' \
                           'from the database.')

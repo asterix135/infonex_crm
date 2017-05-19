@@ -101,13 +101,16 @@
         </td>
       </tr>
       <tr>
-        <li>
-          <a href="/delegate/get_reg_note?reg={{ invoice.reg_details.pk }}" target="_blank">Download internal record sheet</a>
-        </li>
-        <li>
-          <a href="/delegate/get_invoice?reg={{ invoice.reg_details.pk }}" target="_blank">Download copy of invoice</a>
-        </li>
-
+        <td colspan="3">
+          <ul class="list-group">
+            <li class="list-group-item">
+              <a href="/delegate/get_reg_note?reg={{ invoice.reg_details.pk }}" target="_blank">Download internal record sheet</a>
+            </li>
+            <li class="list-group-item">
+              <a href="/delegate/get_invoice?reg={{ invoice.reg_details.pk }}" target="_blank">Download copy of invoice</a>
+            </li>
+          </ul>
+        </td>
       </tr>
       {% else %}
       <tr>

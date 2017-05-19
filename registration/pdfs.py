@@ -736,7 +736,7 @@ class ConferenceReportPdf:
         if len(table_data) > 0:
             table = Table(table_data,
                           colWidths=[doc.width/2.0] * 2,
-                          rowHeights=[cm * 7]* len(table_data))
+                          rowHeights=[cm * 6.8]* len(table_data))
             table.setStyle(TableStyle([
                 ('VALIGN', (0,0), (-1, -1), 'MIDDLE'),
                 ('TOPPADDING', (0,0), (-1, -1), inch),

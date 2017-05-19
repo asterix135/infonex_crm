@@ -1,7 +1,5 @@
 TODO: Registration processing page - if matching deleate exists, need a pop-up to say same or new or additional invoice
 
-TODO: DONE - Set delegate response to not send email automatically when updating
-
 TODO: Make it possible to mass-delete people from territory
 
 TODO: add ass't info to crm.person
@@ -37,9 +35,6 @@ TODO: 41) Add title filter to territory creation page
 TODO: 69) Add Delegate lists to territory selections
 
 TODO: 47) Edit venue button doesn't work when calling a conference to edit (update - seems ok, but monitor)
-
-TODO: 65) Create various reports for registration dept
-       a) Badge report seems off
 
 TODO: 65) Export data http://djangotricks.blogspot.ca/2013/12/how-to-export-data-as-excel.html
 
@@ -213,3 +208,6 @@ TODO: DONE - REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
 TODO: DONE - Code PDF for event_revenue
 TODO: DONE - Set delegate response to not send email automatically when updating
 TODO: DONE - 68) Make it possible to substitute a delegate - need work on modal & logic
+TODO: DONE - Set delegate response to not send email automatically when updating
+TODO: DONE - 65) Create various reports for registration dept
+       a) Badge report seems off

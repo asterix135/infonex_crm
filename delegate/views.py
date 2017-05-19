@@ -21,7 +21,7 @@ from reportlab.pdfgen import canvas
 from .forms import *
 from .constants import *
 from .pdfs import *
-from .guess_company import guess_company
+from .guess_company import guess_company, iteratively_replace_and_guess_name
 from crm.models import Person, Changes
 from crm.views import add_change_record
 from infonex_crm.settings import BASE_DIR
@@ -240,6 +240,57 @@ def get_valid_sales_rep_id(request):
     return user.pk
 
 
+def guess_by_ngrams(company_name):
+    """
+    generates list of companies that match current company by n-grams
+    """
+    company_name = ' '.join(company_name.lower().strip().split())
+    match_set = Company.objects.none()
+    if len(company_name.split()) > 3:
+        queries = []
+        trigram_list = zip(company_name.split(),
+                           company_name.split()[1:],
+                           company_name.split()[2:])
+        for trigram in trigram_list:
+            if trigram[0] not in STOPWORDS \
+                or trigram[1] not in STOPWORDS \
+                or trigram[2] not in STOPWORDS:
+                    search_term = ' '.join(trigram)
+                    queries.append(Q(name__icontains=search_term))
+        if len(queries) > 0:
+            query = queries.pop()
+            for item in queries:
+                query |= item
+            match_set = Company.objects.filter(query)
+    if len(company_name.split()) > 2 and match_set.count() < 15:
+        queries = []
+        bigram_list = zip(company_name.split(),
+                          company_name.split()[1:])
+        for bigram in bigram_list:
+            if bigram[0] not in STOPWORDS \
+                or bigram[1] not in STOPWORDS:
+                search_term = ' '.join(bigram)
+                queries.append(Q(name__icontains=search_term))
+        if len(queries) > 0:
+            query = queries.pop()
+            for item in queries:
+                query |= item
+            bigram_set = Company.objects.filter(query)
+            match_set = match_set | bigram_set
+    if match_set.count() < 15:
+        queries = []
+        name_tokens = [x for x in company_name.split() if x not in STOPWORDS]
+        for token in name_tokens:
+            queries.append(Q(name__icontains=token))
+        if len(queries) > 0:
+            query = queries.pop()
+            for item in queries:
+                query |= item
+            keyword_set = Company.objects.filter(query)
+            match_set = match_set | keyword_set
+    return match_set
+
+
 def process_complete_registration(request, assistant_data, company, crm_match,
                                   current_registration, reg_details_data,
                                   registrant, conference, option_list):
@@ -261,17 +312,6 @@ def process_complete_registration(request, assistant_data, company, crm_match,
         assistant_form = AssistantForm(assistant_data, instance=assistant)
         assistant_form.save()
     elif assistant_data:
-        # # Check to make sure record not already in the database
-        # assistant_db_check = Assistant.objects.filter(
-        #     first_name=assistant_data['first_name'],
-        #     last_name=assistant_data['last_name'],
-        #     email=assistant_data['email'],
-        # )
-        # if assistant_db_check.count() > 0:
-        #     assistant=assistant_db_check[0]
-        #     assistant_form = AssistantForm(assistant_data, instance=assistant)
-        #     assistant_form.save()
-        # else:
         assistant = AssistantForm(assistant_data).save()
     else:
         assistant = None
@@ -310,21 +350,6 @@ def process_complete_registration(request, assistant_data, company, crm_match,
         registrant.date_modified = timezone.now()
         registrant.save()
     else:
-        # registrant_db_check = Registrants.objects.filter(
-        #     company=company,
-        #     first_name=request.POST['first_name'].strip(),
-        #     last_name=request.POST['last_name'].strip(),
-        #     email1=request.POST['email1'].strip()
-        # )
-        # if registrant_db_check.count() > 0:
-        #     registrant = registrant_db_check[0]
-        #     delegate_form = NewDelegateForm(request.POST, instance=registrant)
-        #     delegate_form.save()
-        #     registrant.assistant = assistant
-        #     registrant.modified_by = request.user
-        #     registrant.date_modified = timezone.now()
-        #     registrant.save()
-        # else:
         registrant = Registrants(
             crm_person=crm_match,
             assistant=assistant,
@@ -1171,6 +1196,26 @@ def search_for_substitute(request):
         pk=registrant.pk
     )
     registrant_list.extend(list(reg_query2))
+    # search for soft matches
+    company_soft_match1 = iteratively_replace_and_guess_name(company.name)
+    reg_query3 = Registrants.objects.filter(
+        first_name__icontains=request.GET['first_name'].strip(),
+        last_name__icontains=request.GET['last_name'].strip(),
+        company__in=company_soft_match1
+    ).exclude(id__in=reg_query1).exclude(id__in=reg_query2).order_by(
+        'last_name', 'first_name'
+    ).exclude(pk=registrant.pk)
+    registrant_list.extend(list(reg_query3))
+    company_soft_match2 = guess_by_ngrams(company.name)
+    reg_query4 = Registrants.objects.filter(
+        first_name__icontains=request.GET['first_name'].strip(),
+        last_name__icontains=request.GET['last_name'].strip(),
+        company__in=company_soft_match2
+    ).exclude(id__in=reg_query1).exclude(id__in=reg_query2).exclude(
+        id__in=reg_query3
+    ).order_by('last_name', 'first_name').exclude(pk=registrant.pk)
+    registrant_list.extend(list(reg_query4))
+
 
     # Search for matching CRM records
     crm_list = []
@@ -1180,26 +1225,69 @@ def search_for_substitute(request):
         Q(company__icontains=company.name.strip())
     )
     crm_list.extend(list(crm_query1))
+    soft_match_list1 = company_soft_match1.values_list('name',
+                                                       flat=True).distinct()
+    soft_match_list2 = company_soft_match2.values_list('name',
+                                                       flat=True).distinct()
     if crm_query1.count() < 10:
         if request.GET['last_name'] != '' and request.GET['first_name'] != '':
             crm_query2 = Person.objects.filter(
                 (Q(name__icontains=request.GET['first_name'].strip()) |
-                 Q(name__icontains=request.GET['last_name'].strip)) &
+                 Q(name__icontains=request.GET['last_name'].strip())) &
                 Q(company__icontains=company.name.strip())
-            )
+            ).exclude(id__in=crm_query1)
+            crm_query3 = Person.objects.filter(
+                (Q(name__icontains=request.GET['first_name'].strip()) |
+                 Q(name__icontains=request.GET['last_name'].strip())) &
+                Q(company__in=soft_match_list1)  # mySQL queryset case insensitive
+            ).exclude(id__in=crm_query1).exclude(id__in=crm_query2)
+            crm_query4 = Person.objects.filter(
+                (Q(name__icontains=request.GET['first_name'].strip()) |
+                 Q(name__icontains=request.GET['last_name'].strip())) &
+                Q(company__in=soft_match_list2)
+            ).exclude(id__in=crm_query1).exclude(
+                id__in=crm_query2
+            ).exclude(id__in=crm_query3)
         elif request.GET['last_name'] == '' and request.GET['first_name'] != '':
             crm_query2 = Person.objects.filter(
-                Q(name__icontains=request.GET['first_name'].strip) &
+                Q(name__icontains=request.GET['first_name'].strip()) &
                 Q(company__icontains=company.name.strip())
-            )
+            ).exclude(id__in=crm_query1)
+            crm_query3 = Person.objects.filter(
+                Q(name__icontains=request.GET['first_name'].strip()) &
+                Q(company__in=soft_match_list1)
+            ).exclude(id__in=crm_query1).exclude(id__in=crm_query2)
+            crm_query4 = Person.objects.filter(
+                Q(name__icontains=request.GET['first_name'].strip()) &
+                Q(company__in=soft_match_list2)
+            ).exclude(id__in=crm_query1).exclude(
+                id__in=crm_query2
+            ).exclude(id__in=crm_query3)
         elif request.GET['last_name'] != '' and request.GET['first_name'] == '':
             crm_query2 = Person.objects.filter(
-                Q(name__icontains=request.GET['last_name'].strip) &
+                Q(name__icontains=request.GET['last_name'].strip()) &
                 Q(company__icontains=company.name.strip())
-            )
+            ).exclude(id__in=crm_query1)
+            crm_query3 = Person.objects.filter(
+                Q(name__icontains=request.GET['last_name'].strip()) &
+                Q(company__in=soft_match_list1)
+            ).exclude(id__in=crm_query1).exclude(id__in=crm_query2)
+            crm_query4 = Person.objects.filter(
+                Q(name__icontains=request.GET['last_name'].strip()) &
+                Q(company__in=soft_match_list2)
+            ).exclude(id__in=crm_query1).exclude(
+                id__in=crm_query2
+            ).exclude(id__in=crm_query3)
         else:
             crm_query2 = Person.objects.none()
+            crm_query3 = Person.objects.none()
+            crm_query4 = Person.objects.none()
+
         crm_list.extend(list(crm_query2))
+        if len(crm_list) < 15:
+            crm_list.extend(list(crm_query3))
+        if len(crm_list) < 15:
+            crm_list.extend(list(crm_query4))
 
     context = {
         'registrant_list': registrant_list,

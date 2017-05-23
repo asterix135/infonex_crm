@@ -12,7 +12,7 @@ US_WEBSITE = 'www.infonex.com'
 
 CANADA_CXL_POLICY = 'Substitutions are welcome at any time.  If you have to ' \
     'cancel more than 14 days prior to the first day of the event, you will ' \
-    'receive a credit voucher for the full amount, redeemable against any '\
+    'receive a credit voucher for the full amount, redeemable against any ' \
     'other Infonex course.  If you cancel less than 14 days prior to the ' \
     'first day of the event, you will not be eligible to receive any credits ' \
     'and are liable for the entire registration fees.  All cancellations ' \
@@ -25,6 +25,11 @@ TRAINING_CXL_POLICY = 'Due to demand and limited enrollment, there are no ' \
     'our registration department so we can transfer your registration and be ' \
     'sure your colleague receives full access to the event materials, a name ' \
     'badge, and a seat reserved at the master class or training seminar.'
+TWO_WEEK_CXL_POLICY = 'Substitutions are welcome at any time.  Please note ' \
+    'that since the conference begins in less than two weeks, no ' \
+    'cancellations can be made at this point, and you are responsible for ' \
+    'the entire registration fee, irrespective of your actual attendance at ' \
+    'the conference.'
 
 STOPWORDS = ['&',
              '-',

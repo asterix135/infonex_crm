@@ -1,0 +1,9 @@
+Dear {salutation}:
+
+Attached, please find a copy of the invoice for {whose_registration} registration at {event_name} which was held in {city}{venue_name}.
+
+Thank you for your registration, and hope that you found this course useful and informative.
+
+Best Regards,
+
+{registrar_details}

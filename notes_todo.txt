@@ -1,20 +1,14 @@
-TODO: Registration processing page - if matching deleate exists, need a pop-up to say same or new or additional invoice
+TODO: Registration processing page - if matching delegate exists, need a pop-up to say same or new or additional invoice
 
 TODO: Make it possible to mass-delete people from territory
 
 TODO: add ass't info to crm.person
 
-TODO: Cancellations - status for refund, credit note, Unpaid
-
 TODO: Cancellation - verify that there is a cxl date
 
-TODO: Update email message content for changing to paid;
-      Also, after a conference has run
-      Also, when registering/paying inside of 2 weeks
+TODO: delegate/views.py/build_email_message - need to get rid of Alona being hard coded
 
 TODO: Allow report selection to include/exclude on various categories (lower priority)
-
-TODO: Substitution - allow to substitute cxl'd or subbed-out people
 
 TODO: 72) Format radio buttons on report select panel
             http://avtex.com/2015/02/bootstrap-radio-buttons-and-checkboxes-in-columns-with-contextual-text-fields/
@@ -211,3 +205,7 @@ TODO: DONE - 68) Make it possible to substitute a delegate - need work on modal 
 TODO: DONE - Set delegate response to not send email automatically when updating
 TODO: DONE - 65) Create various reports for registration dept
        a) Badge report seems off
+TODO: DONE - Cancellations - status for refund, credit note, Unpaid
+TODO: DONE - Update email message content for changing to paid;
+      Also, after a conference has run
+      Also, when registering/paying inside of 2 weeks

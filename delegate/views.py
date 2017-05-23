@@ -135,6 +135,9 @@ def build_email_message(reg_details, invoice):
 
     if reg_details.conference.company_brand == 'IT':
         email_merge_fields['cxl_policy'] = TRAINING_CXL_POLICY
+    elif reg_details.conference.date_begins - datetime.timedelta(weeks=4) <= \
+        datetime.date.today():
+        email_merge_fields['cxl_policy'] = TWO_WEEK_CXL_POLICY
     elif reg_details.conference.company_brand == 'IU':
         email_merge_fields['cxl_policy'] = USA_CXL_POLICY
 
@@ -171,6 +174,11 @@ def build_email_message(reg_details, invoice):
         email_body_path = os.path.join(
             BASE_DIR,
             'delegate/static/delegate/email_copy/sponsor_confirmation.txt'
+        )
+    elif datetime.date.today() >= reg_details.conference.date_begins:
+        email_body_path = os.path.join(
+            BASE_DIR,
+            'delegate/static/delegate/email_copy/post_event_confirmation.txt'
         )
     else:
         email_body_path = os.path.join(

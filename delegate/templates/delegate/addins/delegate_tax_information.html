@@ -1,7 +1,7 @@
 {% if conference.gst_charged %}
 <div class="col-sm-3">
-  {{ reg_details_form.gst_rate.errors }}
   {{ reg_details_form.gst_rate.label_tag }}
+  {{ reg_details_form.gst_rate.errors }}
   <div class="input-group">
     <input id="id_gst_rate" class="form-control cost-field" name="gst_rate" step="0.01"
       required="" type="number" value="{{ conference.gst_rate }}" />
@@ -11,8 +11,8 @@
 {% endif %}
 {% if conference.hst_charged %}
 <div class="col-sm-3">
-  {{ reg_details_form.hst_rate.errors }}
   {{ reg_details_form.hst_rate.label_tag }}
+  {{ reg_details_form.hst_rate.errors }}
   <div class="input-group">
     <input id="id_hst_rate" class="form-control cost-field" name="hst_rate" step="0.01"
       required="" type="number" value="{{ conference.hst_rate }}"/>
@@ -22,8 +22,8 @@
 {% endif %}
 {% if conference.qst_charged %}
 <div class="col-sm-3">
-  {{ reg_details_form.qst_rate.errors }}
   {{ reg_details_form.qst_rate.label_tag }}
+  {{ reg_details_form.qst_rate.errors }}
   <div class="input-group">
     <input id="id_qst_rate" class="form-control cost-field" name="qst_rate" step="0.001"
       required="" type="number" value="{{ conference.qst_rate }}" />

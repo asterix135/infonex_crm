@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from .constants import *
 from registration.models import *
 from crm.models import Event
 from crm.constants import *
@@ -272,7 +273,28 @@ class RegDetailsForm(forms.ModelForm):
         }
 
     def clean(self):
-        super(RegDetailsForm, self).clean()
+        cleaned_data = super(RegDetailsForm, self).clean()
+        reg_status = cleaned_data['registration_status']
+        cxl_date = cleaned_data['cancellation_date']
+        pre_tax_price = cleaned_data['pre_tax_price']
+        payment_date = cleaned_data['payment_date']
+        payment_method = cleaned_data['payment_method']
+
+        if reg_status and reg_status in CXL_VALUES:
+            if not cxl_date:
+                self.add_error('cancellation_date',
+                               'Cancellation Date Required')
+        if reg_status and reg_status not in NON_INVOICE_VALUES:
+            if not pre_tax_price:
+                self.add_error('pre_tax_price',
+                               'You must indicate the registration fee')
+        if reg_status and reg_status in PAID_STATUS_VALUES:
+            if not payment_date:
+                self.add_error('payment_date',
+                               'You must indicate payment date')
+            if not payment_method:
+                self.add_error('payment_method',
+                               'You must indicate method of payment')
 
 
 class AssistantForm(forms.ModelForm):

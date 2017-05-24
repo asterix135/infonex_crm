@@ -1,7 +1,7 @@
 {% if conference.billing_currency != 'CAD' %}
 <div class="col-sm-3">
-  {{ reg_details_form.fx_conversion_rate.errors }}
   {{ reg_details_form.fx_conversion_rate.label_tag }}
+  {{ reg_details_form.fx_conversion_rate.errors }}
   {{ reg_details_form.fx_conversion_rate }}
 </div>
 {% endif %}

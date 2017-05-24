@@ -1,3 +1,7 @@
+TODO: Make it possible to edit any past conference (button on edit page?)
+
+TODO: Auto-code crm from registration
+
 TODO: Registration processing page - if matching delegate exists, need a pop-up to say same or new or additional invoice
 
 TODO: Make it possible to mass-delete people from territory
@@ -10,8 +14,6 @@ TODO: Allow report selection to include/exclude on various categories (lower pri
 
 TODO: 72) Format radio buttons on report select panel
             http://avtex.com/2015/02/bootstrap-radio-buttons-and-checkboxes-in-columns-with-contextual-text-fields/
-
-TODO: 67) Need logic on delegate page to validate and deal with invoice changes
 
 TODO: 74) Make it possible to edit comments in CRM
 
@@ -29,10 +31,6 @@ TODO: 69) Add Delegate lists to territory selections
 TODO: 47) Edit venue button doesn't work when calling a conference to edit (update - seems ok, but monitor)
 
 TODO: 65) Export data http://djangotricks.blogspot.ca/2013/12/how-to-export-data-as-excel.html
-
-TODO: 34) registration/forms.py/ConferenceEditForm.clean()
-
-TODO: 12) Report generation
 
 TODO: 20) STARTED - Charts & data on welcome page
 
@@ -208,3 +206,6 @@ TODO: DONE - Update email message content for changing to paid;
       Also, when registering/paying inside of 2 weeks
 TODO: 11) DONE - Search and update registration information
 TODO: DONE - Cancellation - verify that there is a cxl date
+TODO: DONE - 67) Need logic on delegate page to validate and deal with invoice changes
+TODO: DONE - 34) registration/forms.py/ConferenceEditForm.clean()
+TODO: DONE - 12) Report generation

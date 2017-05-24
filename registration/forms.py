@@ -75,11 +75,15 @@ class ConferenceEditForm(forms.ModelForm):
                   'hotel', 'registrar', 'developer', 'company_brand',
                   'gst_charged', 'hst_charged', 'qst_charged',
                   'gst_rate', 'hst_rate', 'qst_rate', 'billing_currency',
-                  'event_web_site']
+                  'event_web_site', 'default_dept', 'default_cat1',
+                  'default_cat2']
         labels = {
             'number': _('Event Number'),
             'title': _('Event Title'),
             'date_begins': _('Event Start Date'),
+            'default_dept': _('Default Department for CRM'),
+            'default_cat1': _('Default CRM Category(1)'),
+            'default_cat2': _('Default CRM Category(2)'),
         }
         widgets = {
             'number': forms.TextInput(
@@ -137,12 +141,49 @@ class ConferenceEditForm(forms.ModelForm):
             'event_web_site': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
+            'default_dept': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'default_cat1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'default_cat2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
         }
 
-        def clean(self):
-            super(ContactForm, self).clean()
-            # https://docs.djangoproject.com/en/1.10/ref/forms/validation/#cleaning-and-validating-fields-that-depend-on-each-other
-            # deal with GST/HST/QST matching fields here
+    def clean(self):
+        cleaned_data = super(ConferenceEditForm, self).clean()
+        gst_charged = cleaned_data.get('gst_charged')
+        gst_rate = cleaned_data.get('gst_rate')
+        hst_charged = cleaned_data.get('hst_charged')
+        hst_rate = cleaned_data.get('hst_rate')
+        qst_charged = cleaned_data.get('qst_charged')
+        qst_rate = cleaned_data.get('qst_rate')
+
+        if gst_charged:
+            if not gst_rate:
+                self.add_error('gst_rate',
+                               'You forgot to enter the GST Rate')
+        elif not gst_rate:
+            self.cleaned_data['gst_rate'] = 0
+        if hst_charged:
+            if not hst_rate:
+                self.add_error('hst_rate',
+                               'You forgot to enter the HST Rate')
+        elif not hst_rate:
+            self.cleaned_data['hst_rate'] = 0
+        if qst_charged:
+            if not qst_rate:
+                self.add_error('qst_rate',
+                               'You forgot to enter the QST Rate')
+        elif not qst_rate:
+            self.cleaned_data['qst_rate'] = 0
+        if gst_charged and hst_charged:
+            self.add_error('gst_charged',
+                           'You cannot charge both GST and HST')
+            self.add_error('hst_charged',
+                           'You cannot charge both GST and HST')
 
 
 class ConferenceOptionForm(forms.ModelForm):

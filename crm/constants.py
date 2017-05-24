@@ -19,6 +19,44 @@ CONTACT_CHOICES = (
     ('Research', 'PD Research Call')
 )
 
+GEO_CHOICES = (
+    ('East', 'East'),
+    ('West', 'West'),
+    ('Maritimes/East', 'Maritimes'),
+    ('USA', 'USA'),
+    ('Other', 'Other Foreign'),
+    ('Unknown', 'Unknown'),
+)
+
+CAT_CHOICES = (
+    ('HR', 'HR'),
+    ('FIN', 'FIN'),
+    ('Industry', 'Industry'),
+    ('Aboriginal', 'Aboriginal'),
+    ('Gov', 'Gov'),
+    ('USA', 'USA'),
+    ('NA', 'None'),
+)
+
+DIV_CHOICES = (
+    ('1', '1 - Misc'),
+    ('2', '2 - Misc'),
+    ('3', '3 - Misc'),
+    ('4', '4 - Misc'),
+    ('5', '5 - Misc'),
+    ('6', '6 - Misc'),
+    ('A1', '1 - Accounting'),
+    ('A2', '2 - Accounting'),
+    ('A3', '3 - Accounting'),
+    ('Aboriginal', 'Aboriginal'),
+    ('FED 1', 'FED 1'),
+    ('FED 2', 'FED 2'),
+    ('FED 3', 'FED 3'),
+    ('FED 4', 'FED 4'),
+    ('USA', 'USA'),
+    ('NA', 'Not Determined'),
+)
+
 AC_DICT = {
     '201': 'NJ',
     '202': 'DC',

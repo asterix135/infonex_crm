@@ -24,50 +24,15 @@ class Person(models.Model):
     city = models.CharField(max_length=50, blank=True)
     dept = models.CharField(max_length=50, blank=True, null=True)  # General area of job
     industry = models.TextField(blank=True)  # free-form descripton
-    GEO_CHOICES = (
-        ('East', 'East'),
-        ('West', 'West'),
-        ('Maritimes/East', 'Maritimes'),
-        ('USA', 'USA'),
-        ('Other', 'Other Foreign'),
-        ('Unknown', 'Unknown'),
-    )
     geo = models.CharField(max_length=20,
                            choices=GEO_CHOICES,
                            default='Unknown')
-    CAT_CHOICES = (
-        ('HR', 'HR'),
-        ('FIN', 'FIN'),
-        ('Industry', 'Industry'),
-        ('Aboriginal', 'Aboriginal'),
-        ('Gov', 'Gov'),
-        ('USA', 'USA'),
-        ('NA', 'None'),
-    )
     main_category = models.CharField(max_length=25,
                                      choices=CAT_CHOICES,
                                      default='Industry')  # f1 in original db
     main_category2 = models.CharField(max_length=15,
                                       choices=CAT_CHOICES,
                                       default='NA')
-    DIV_CHOICES = (
-        ('1', '1 - Misc'),
-        ('2', '2 - Misc'),
-        ('3', '3 - Misc'),
-        ('4', '4 - Misc'),
-        ('5', '5 - Misc'),
-        ('6', '6 - Misc'),
-        ('A1', '1 - Accounting'),
-        ('A2', '2 - Accounting'),
-        ('A3', '3 - Accounting'),
-        ('Aboriginal', 'Aboriginal'),
-        ('FED 1', 'FED 1'),
-        ('FED 2', 'FED 2'),
-        ('FED 3', 'FED 3'),
-        ('FED 4', 'FED 4'),
-        ('USA', 'USA'),
-        ('NA', 'Not Determined'),
-    )
     division1 = models.CharField(max_length=20,
                                  choices=DIV_CHOICES,
                                  default='NA')  # for splitting leads
@@ -202,6 +167,17 @@ class Event(models.Model):
     modified_by = models.ForeignKey('auth.User',
                                     default=1,
                                     related_name='event_modifed_by')
+    default_dept = models.CharField(max_length=50, blank=True, null=True)
+    default_cat1 = models.CharField(max_length=25,
+                                    choices=CAT_CHOICES,
+                                    default='Industry',
+                                    blank=True,
+                                    null=True)
+    default_cat2 = models.CharField(max_length=15,
+                                    choices=CAT_CHOICES,
+                                    default='NA',
+                                    blank=True,
+                                    null=True)
 
 
     def __str__(self):

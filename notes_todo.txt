@@ -34,7 +34,6 @@ TODO: 65) Export data http://djangotricks.blogspot.ca/2013/12/how-to-export-data
 
 TODO: 34) registration/forms.py/ConferenceEditForm.clean()
 
-TODO: 11) Search and update registration information
 TODO: 12) Report generation
 
 TODO: 20) STARTED - Charts & data on welcome page
@@ -209,3 +208,4 @@ TODO: DONE - Cancellations - status for refund, credit note, Unpaid
 TODO: DONE - Update email message content for changing to paid;
       Also, after a conference has run
       Also, when registering/paying inside of 2 weeks
+TODO: 11) DONE - Search and update registration information

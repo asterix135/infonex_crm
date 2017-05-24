@@ -70,8 +70,20 @@ class NewDelegateForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
         }
-    # def clean_salutation(self):
-    #     return self.cleaned_data.get('salutation', '').strip()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        contact_option = cleaned_data.get('contact_option')
+        email = cleaned_data.get('email1')
+
+        if contact_option and contact_option in ('D', 'C'):
+            if not email:
+                msg = "You must indicate an email address for invoicing"
+                self.add_error('contact_option',
+                               'You must indicate a delegate email address ' \
+                               'with this choice')
+                self.add_error('email1',
+                               'You must indicate an email address for invoicing')
 
 
 class CompanySelectForm(forms.ModelForm):

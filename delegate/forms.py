@@ -284,10 +284,16 @@ class RegDetailsForm(forms.ModelForm):
             if not cxl_date:
                 self.add_error('cancellation_date',
                                'Cancellation Date Required')
-        if reg_status and reg_status not in NON_INVOICE_VALUES:
+        if reg_status and reg_status not in ZERO_INVOICE_OK:
             if not pre_tax_price:
-                self.add_error('pre_tax_price',
-                               'You must indicate the registration fee')
+                if reg_status in PAID_STATUS_VALUES:
+                    if payment_method and payment_method != 'N':
+                        self.add_error('pre_tax_price',
+                                       'You must indicate the registration fee')
+                else:
+                    self.add_error('pre_tax_price',
+                                   'You must indicate the registration fee')
+
         if reg_status and reg_status in PAID_STATUS_VALUES:
             if not payment_date:
                 self.add_error('payment_date',

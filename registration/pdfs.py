@@ -715,16 +715,16 @@ class ConferenceReportPdf:
         badge_row = []
         for reg in reg_list:
             if badge_type == 'bigCompany':
-                badge_text = '<font size=18>' + reg.registrant.first_name + \
+                badge_text = '<font size="18">' + reg.registrant.first_name + \
                     ' ' + reg.registrant.last_name + '</font><br/>' + \
-                    '<font size=24><b>' + \
+                    '<font size="22"><b>' + \
                     reg.registrant.company.name_for_badges + \
                     '</b></font>'
             else:
-                badge_text = '<font size = 24>' + reg.registrant.first_name + \
+                badge_text = '<font size = "22">' + reg.registrant.first_name + \
                     '</font><br/>' + reg.registrant.last_name + '<br/>'
                 if reg.registrant.company.name:
-                    badge_text += '<font size=14>' + \
+                    badge_text += '<font size="14">' + \
                         reg.registrant.company.name + '</font>'
             badge = Paragraph(badge_text, badge_style)
             badge_row.append(badge)
@@ -736,7 +736,7 @@ class ConferenceReportPdf:
         if len(table_data) > 0:
             table = Table(table_data,
                           colWidths=[doc.width/2.0] * 2,
-                          rowHeights=[cm * 6.8]* len(table_data))
+                          rowHeights=[cm * 6.81]* len(table_data))
             table.setStyle(TableStyle([
                 ('VALIGN', (0,0), (-1, -1), 'MIDDLE'),
                 ('TOPPADDING', (0,0), (-1, -1), inch),

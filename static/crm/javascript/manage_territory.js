@@ -1,6 +1,11 @@
 // Javascript for manage_territory.html page
 $(document).ready(function() {
 
+  // Load modal typeahead when button pushed to add Conference
+  $('body').on('click', '#add-new-conference', function(){
+    startTypeAhead();
+  })
+
   // Activate datepicker widget
   $('#id_date_begins').datepicker({
     dateFormat: 'yy-mm-dd'
@@ -244,7 +249,7 @@ $(document).ready(function() {
 
   // function that will start the typeahead (needs to be called after each ajax)
   function startTypeAhead(){
-    $('#master #id_dept, #person-select-options #id_dept').typeahead({
+    $('#master #id_dept, #person-select-options #id_dept, #id_default_dept').typeahead({
         hint: true,
         highlight: true,
         minLength: 1

@@ -210,6 +210,7 @@ $(document).ready(function() {
           datebeginsDatepicker();
           startdateDatepicker();
           enddateDatePicker();
+          startTypeAhead();
           }
         }
       });
@@ -222,6 +223,7 @@ $(document).ready(function() {
           datebeginsDatepicker();
           startdateDatepicker();
           enddateDatePicker();
+          startTypeAhead();
         }
       })
     }
@@ -288,28 +290,34 @@ $(document).ready(function() {
     var hstRate = $('#conference-edit-panel #id_hst_rate').val();
     var qstRate = $('#conference-edit-panel #id_qst_rate').val();
     var billingCurrency = $('#conference-edit-panel #id_billing_currency').val();
+    var defaultDept = $('#id_default_dept').val();
+    var defaultCat1 = $('#id_default_cat1').val();
+    var defaultCat2 = $('#id_default_cat2').val();
     $.ajax({
       url: '/registration/save_conference_changes/',
       type: 'POST',
       data: {
-        event_id: eventId,
-        number: number,
-        title: title,
-        city: city,
-        date_begins: dateBegins,
+        'event_id': eventId,
+        'number': number,
+        'title': title,
+        'city': city,
+        'date_begins': dateBegins,
         'event_web_site': eventUrl,
-        state_prov: stateProv,
-        hotel: hotel,
-        registrar: registrar,
-        developer: developer,
-        company_brand: companyBrand,
-        gst_charged: gstCharged,
-        hst_charged: hstCharged,
-        qst_charged: qstCharged,
-        gst_rate: gstRate,
-        hst_rate: hstRate,
-        qst_rate: qstRate,
-        billing_currency: billingCurrency,
+        'state_prov': stateProv,
+        'hotel': hotel,
+        'registrar': registrar,
+        'developer': developer,
+        'company_brand': companyBrand,
+        'gst_charged': gstCharged,
+        'hst_charged': hstCharged,
+        'qst_charged': qstCharged,
+        'gst_rate': gstRate,
+        'hst_rate': hstRate,
+        'qst_rate': qstRate,
+        'billing_currency': billingCurrency,
+        'default_dept': defaultDept,
+        'default_cat1': defaultCat1,
+        'default_cat2': defaultCat2,
       },
       success: function(data) {
         $('#conference-edit-panel').html(data);
@@ -419,5 +427,44 @@ $(document).ready(function() {
     var venueId = $(this).attr('venue-id');
     $('#id_hotel').val(venueId);
   })
+
+
+  // Typeahead for default_dept
+  var deptSuggestionClass = new Bloodhound({
+      limit: 20,
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      remote: {
+        url: '/crm/suggest_dept/',
+        replace: function(url, query){
+          return url + "?q=" + query;
+        },
+        filter: function(my_Suggestion_class) {
+          return $.map(my_Suggestion_class, function(data){
+            return {value: data.identifier};
+          });
+        }
+      }
+  });
+  deptSuggestionClass.initialize();
+  function startTypeAhead(){
+    $('#id_default_dept').typeahead({
+      hint: true,
+      highlight: true,
+      minLength: 1
+    },
+    {
+      name: 'value',
+      displayKey: 'value',
+      source: deptSuggestionClass.ttAdapter(),
+      templates: {
+        empty: [
+          '<div class="tt-suggestion">',
+          'No Items Found',
+          '</div>'
+        ].join('\n')
+      }
+    });
+  };
 
 });

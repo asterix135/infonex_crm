@@ -81,6 +81,33 @@
             </div>
           </div>
 
+          <div class="panel panel-warning event-options-box">
+            <div class="panel-heading">
+              <h2 class="panel-title h2">Default Values for CRM</h2>
+            </div>
+            <div class="panel-body" id="default-crm-values">
+              <div class="row">
+                <div class="col-sm-12">
+                  {{ new_conference_form.default_dept.label_tag }}
+                  {{ new_conference_form.default_dept.errors }}
+                  {{ new_conference_form.default_dept }}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  {{ new_conference_form.default_cat1.label_tag }}
+                  {{ new_conference_form.default_cat1.errors }}
+                  {{ new_conference_form.default_cat1 }}
+                </div>
+                <div class="col-sm-6">
+                  {{ new_conference_form.default_cat2.label_tag }}
+                  {{ new_conference_form.default_cat2.errors }}
+                  {{ new_conference_form.default_cat2 }}
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 

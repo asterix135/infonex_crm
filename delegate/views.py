@@ -346,6 +346,8 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     crm_match.city = request.POST['city'].strip()
     crm_match.date_modified = timezone.now()
     crm_match.modified_by = request.user
+    if not crm_match.dept:
+        crm_match.dept = conference.default_dept
     crm_match.save()
     add_change_record(crm_match, 'update')
 
@@ -784,6 +786,11 @@ def process_registration(request):
         else:
             company_error = True
 
+        if request.POST['selected_conference_id']:
+            conference = Event.objects.get(
+                pk=request.POST['selected_conference_id']
+            )
+
         if request.POST['crm_match_value'] not in ('', 'new') and \
             not company_error:
             crm_match = Person.objects.get(pk=request.POST['crm_match_value'])
@@ -805,12 +812,15 @@ def process_registration(request):
                 date_modified=timezone.now(),
                 modified_by=request.user,
             )
+            if conference:
+                if conference.default_dept:
+                    crm_match.dept = conference.default_dept
+                if conference.default_cat1:
+                    crm_match.main_category = conference.default_cat1
+                if conference.default_cat2:
+                    crm_match.main_category2 = conference.default_cat2
             crm_match.save()
             add_change_record(crm_match, 'reg_add')
-        if request.POST['selected_conference_id']:
-            conference = Event.objects.get(
-                pk=request.POST['selected_conference_id']
-            )
         if request.POST['assistant_match_value']:
             assistant = Assistant.objects.get(
                 pk=request.POST['assistant_match_value']

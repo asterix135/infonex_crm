@@ -1,7 +1,5 @@
 TODO: Make it possible to edit any past conference (button on edit page?)
 
-TODO: Auto-code crm from registration
-
 TODO: Registration processing page - if matching delegate exists, need a pop-up to say same or new or additional invoice
 
 TODO: Make it possible to mass-delete people from territory
@@ -211,3 +209,4 @@ TODO: DONE - Cancellation - verify that there is a cxl date
 TODO: DONE - 67) Need logic on delegate page to validate and deal with invoice changes
 TODO: DONE - 34) registration/forms.py/ConferenceEditForm.clean()
 TODO: DONE - 12) Report generation
+TODO: DONE - Auto-code crm from registration

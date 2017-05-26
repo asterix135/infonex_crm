@@ -851,7 +851,7 @@ class ConferenceReportPdf:
             elements.append(Paragraph(count[0], title_style))
             table_data.append([cell1, cell2])
             table = Table(table_data,
-                          colWidths=[inch * 3, inch / 2])
+                          colWidths=[inch * 2.6, inch / 2])
             table.setStyle(TableStyle([
                 ('VALIGN', (0,0), (-1,-1), 'TOP'),
                 ('TOPPADDING', (0,0), (-1,-1), cm),

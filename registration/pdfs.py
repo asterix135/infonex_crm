@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from .constants import *
 from .models import RegEventOptions
-from delegate.constants import UNPAID_STATUS_VALUES
+from delegate.constants import UNPAID_STATUS_VALUES, CXL_VALUES
 from registration.models import RegDetails, EventOptions
 from infonex_crm.settings import BASE_DIR
 
@@ -107,7 +107,9 @@ class ConferenceReportPdf:
                      'registrant__title',
                      'registrant__last_name',
                      'registrant__first_name']
-        reg_list = self._event.regdetails_set.all().order_by(*sorts)
+        reg_list = self._event.regdetails_set.exclude(
+            registration_status__in=CXL_VALUES
+        ).order_by(*sorts)
         for i, reg_detail in enumerate(reg_list):
             name = Paragraph(
                 reg_detail.registrant.first_name + ' ' + \
@@ -168,7 +170,9 @@ class ConferenceReportPdf:
         else:
             sorts = ['registrant__company__name',
                      'registrant__title']
-        reg_list = self._event.regdetails_set.all().order_by(*sorts)
+        reg_list = self._event.regdetails_set.exclude(
+            registration_status__in=CXL_VALUES
+        ).order_by(*sorts)
         for i, reg_detail in enumerate(reg_list):
             title = Paragraph(
                 reg_detail.registrant.title,
@@ -361,6 +365,8 @@ class ConferenceReportPdf:
                      'registrant__first_name']
         reg_list = self._event.regdetails_set.filter(
             invoice__isnull=False
+        ).exclude(
+            registration_status__in=CXL_VALUES
         ).order_by(*sorts)
         elements = []
         elements.append(
@@ -536,7 +542,9 @@ class ConferenceReportPdf:
         sorts = ['registrant__last_name',
                  'registrant__first_name',
                  'registrant__company__name']
-        reg_list = self._event.regdetails_set.all().order_by(*sorts)
+        reg_list = self._event.regdetails_set.exclude(
+            registration_status__in=CXL_VALUES
+        ).order_by(*sorts)
         max_height = inch * 0.2
         for i, reg_detail in enumerate(reg_list):
             name = Paragraph(
@@ -627,7 +635,9 @@ class ConferenceReportPdf:
         sorts = ['registrant__last_name',
                  'registrant__first_name',
                  'registrant__company__name']
-        reg_list = self._event.regdetails_set.all().order_by(*sorts)
+        reg_list = self._event.regdetails_set.exclude(
+            registration_status__in=CXL_VALUES
+        ).order_by(*sorts)
         max_height = inch * 0.2
         for i, reg_detail in enumerate(reg_list):
             person_name = '<b>' + reg_detail.registrant.first_name + ' ' + \
@@ -711,7 +721,9 @@ class ConferenceReportPdf:
         sorts = ['registrant__last_name',
                  'registrant__first_name',
                  'registrant__company__name']
-        reg_list = self._event.regdetails_set.all().order_by(*sorts)
+        reg_list = self._event.regdetails_set.exclude(
+            registration_status__in=CXL_VALUES
+        ).order_by(*sorts)
         badge_row = []
         for reg in reg_list:
             if badge_type == 'bigCompany':
@@ -799,7 +811,11 @@ class ConferenceReportPdf:
                     [option.name,
                      RegDetails.objects.filter(
                          regeventoptions__option=option
-                     ).values('registration_status').annotate(
+                     ).exclude(
+                         registration_status__in=CXL_VALUES
+                     ).values(
+                         'registration_status'
+                     ).annotate(
                          total=Count('registration_status')
                      ).order_by('-total')]
                 )
@@ -808,6 +824,8 @@ class ConferenceReportPdf:
                 'Conference',
                 RegDetails.objects.filter(
                     conference=self._event
+                ).exclude(
+                    registration_status__in=CXL_VALUES
                 ).values('registration_status').annotate(
                     total=Count('registration_status')
                 ).order_by('-total')

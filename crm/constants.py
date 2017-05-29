@@ -12,6 +12,7 @@ CONTACT_CHOICES = (
     ('EPitch', 'Sales Pitch (Email)'),
     ('Followup', 'Follow-up Call'),
     ('Email', 'Follow-up Email'),
+    ('NA', 'Not Available'),
     ('Marketing', 'Marketing Email'),
     ('Registration', 'Delegate registration'),
     ('Speaker', 'Speaker confirmation'),

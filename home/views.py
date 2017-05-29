@@ -27,7 +27,6 @@ def get_sales_data(request):
         )
     else:
         user_bookings = Invoice.objects.all()
-
     month_bookings = user_bookings.filter(
         reg_details__register_date__month=current_month,
         reg_details__register_date__year=current_year
@@ -56,7 +55,6 @@ def index(request):
 
     # test stuff for showing sales data
     month_sales, month_payments = get_sales_data(request)
-    print(month_payments)
 
     context = {'reg_permission_ok': reg_permission_ok,
                'today_contacts': today_contacts,

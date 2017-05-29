@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load staticfiles %}
 {% load crm_extras %}
+{% load humanize %}
 
 <html lang="en">
   <head>
@@ -17,6 +18,12 @@
     <link href="{% static 'crm/style.css' %}" rel="stylesheet" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- For testing Chartist integration -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <!-- End Chartist CDN links -->
+
     <title>Infonex Employee Portal</title>
   </head>
 
@@ -78,7 +85,8 @@
       </div>
       <div class="row">
         <div class="col-sm-6">
-          <h4>Your Sales this month:</h4>
+          <h4>Your Sales this month:&nbsp;${{ month_sales|floatformat:'2'|intcomma }}</h4>
+          <h4>Payments recevied this month:&nbsp;${{ month_payments|floatformat:'2'|intcomma }}</h4>
         </div>
         <p>
           Additional information will appear here as the system improves.

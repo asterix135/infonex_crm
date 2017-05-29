@@ -1,15 +1,47 @@
 import datetime
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Sum
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 from django.utils import timezone
 
 from crm.models import Contact
+from registration.models import RegDetails, Invoice
 from . import charts
 
+#############################
+# helper functions
+#############################
+def get_sales_data(request):
+    current_month = datetime.datetime.today().month
+    current_year = datetime.datetime.today().year
+    user = request.user
+    if (user.groups.filter(name='sales').exists() or
+        user.groups.filter(name='sponsorship').exists()):
+        user_bookings = Invoice.objects.filter(sales_credit=user)
+    elif user.groups.filter(name='conference_developer').exists():
+        user_bookings = Invoice.objects.filter(
+            reg_details__conference__developer=user
+        )
+    else:
+        user_bookings = Invoice.objects.all()
 
+    month_bookings = user_bookings.filter(
+        reg_details__register_date__month=current_month,
+        reg_details__register_date__year=current_year
+    ).aggregate(Sum('pre_tax_price'))['pre_tax_price__sum']
+    monthly_payments = user_bookings.filter(
+        payment_date__month=current_month,
+        payment_date__year=current_year
+    ).aggregate(Sum('pre_tax_price'))['pre_tax_price__sum']
+    return month_bookings, monthly_payments
+
+
+#############################
+# page view functions
+#############################
 @login_required
 def index(request):
     user = request.user
@@ -21,11 +53,20 @@ def index(request):
         author=user,
         date_of_contact__date=datetime.datetime.today().date()
     ).count()
+
+    # test stuff for showing sales data
+    month_sales, month_payments = get_sales_data(request)
+    print(month_payments)
+
     context = {'reg_permission_ok': reg_permission_ok,
-               'today_contacts': today_contacts}
+               'today_contacts': today_contacts,
+               'month_sales': month_sales,
+               'month_payments': month_payments}
     return render(request, 'home/index.html', context)
 
-
+###########################
+# Page elements
+###########################
 @login_required
 def recent_contact_chart(request):
     user = request.user

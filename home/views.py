@@ -25,8 +25,10 @@ def get_sales_data(request):
         user_bookings = Invoice.objects.filter(
             reg_details__conference__developer=user
         )
-    else:
+    elif (user.groups.filter(name='management').exists or user.is_superuser):
         user_bookings = Invoice.objects.all()
+    else:
+        user_bookings = Invoice.objects.none()
     month_bookings = user_bookings.filter(
         reg_details__register_date__month=current_month,
         reg_details__register_date__year=current_year
@@ -35,6 +37,10 @@ def get_sales_data(request):
         payment_date__month=current_month,
         payment_date__year=current_year
     ).aggregate(Sum('pre_tax_price'))['pre_tax_price__sum']
+    if not month_bookings:
+        month_bookings = 0
+    if not monthly_payments:
+        monthly_payments = 0
     return month_bookings, monthly_payments
 
 

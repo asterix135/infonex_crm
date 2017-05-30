@@ -266,6 +266,8 @@ def generate_reg_note(canv, reg_details, invoice=None):
     canv.drawString(1.7 * inch, 9.52 * inch - 13,
                     reg_details.conference.date_begins.strftime('%-d %B, %Y'))
     location_string = reg_details.conference.city
+    if reg_details.conference.state_prov:
+        location_string += ', ' + reg_details.conference.state_prov
     if reg_details.conference.hotel:
         location_string += ' at the ' + reg_details.conference.hotel.name
     canv.drawString(1.7 * inch, 9.52 * inch - 24, location_string)

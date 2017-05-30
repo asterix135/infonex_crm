@@ -1,15 +1,18 @@
 import datetime
 import re
 
+from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
+
 from .constants import *
 
 
-# OK PER OVERHAUL
 class Person(models.Model):
     """
-    Basic person model
+    Basic person model for CRM
     """
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, blank=True)
@@ -95,7 +98,6 @@ class Person(models.Model):
     show_person_url.allow_tags = True
 
 
-# OK PER OVERHAUL
 class Changes(models.Model):
     """
     Archive of changes/additions/deletions to database
@@ -128,7 +130,6 @@ class Changes(models.Model):
                                     related_name='orig_person_modifed_by')
 
 
-# OK PER OVERHAUL
 class Event(models.Model):
     """
     Events being sold/worked on
@@ -187,7 +188,6 @@ class Event(models.Model):
         return self.start_date < timezone.now().date()
 
 
-# OK PER OVERHAUL
 class EventAssignment(models.Model):
     user = models.ForeignKey('auth.User')
     event = models.ForeignKey(Event)
@@ -204,7 +204,6 @@ class EventAssignment(models.Model):
         return self.role + ': ' + str(self.user) + ' - ' + str(self.event)
 
 
-# OK PER OVERHAUL
 class Contact(models.Model):
     """
     Records contact history with an individual person
@@ -232,7 +231,6 @@ class Contact(models.Model):
         return self.date_of_contact >= now - datetime.timedelta(hours=1)
 
 
-# OK PER OVERHAUL
 class DeletedContact(models.Model):
     """
     Archives contact information for deleted persons
@@ -246,7 +244,6 @@ class DeletedContact(models.Model):
     method = models.CharField(max_length=20)
 
 
-# NEW - KEEP THIS
 class MasterListSelections(models.Model):
     """
     Used to set master territory contact list
@@ -293,7 +290,6 @@ class MasterListSelections(models.Model):
                                        default='include')
 
 
-# Seems good - Keep this
 class PersonalListSelections(models.Model):
     GEO_CHOICES = (
         ('East', 'East'),
@@ -386,3 +382,22 @@ class Flags(models.Model):
 
     class Meta:
         unique_together=('event_assignment', 'person')
+
+
+class UserProfile(models.Model):
+    """
+    Extends base user profile with additional information
+    """
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=25, blank=True, null=True)
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.userprofile.save()

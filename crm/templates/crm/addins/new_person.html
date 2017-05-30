@@ -66,6 +66,15 @@
   </div>
   <div class="form-group row">
     <div class="col-sm-2">
+      {{ new_person_form.phone_alternate.label_tag }}
+    </div>
+    <div class="col-sm-6">
+      {{ new_person_form.phone_alternate.errors }}
+      {{ new_person_form.phone_alternate }}
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-2">
       {{ new_person_form.phone_main.label_tag }}
     </div>
     <div class="col-sm-6">
@@ -87,6 +96,15 @@
     <div class="col-sm-2">
       {{ new_person_form.do_not_email.errors }}
       {{ new_person_form.do_not_email }}
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-2">
+      {{ new_person_form.email_alternate.label_tag }}
+    </div>
+    <div class="col-sm-6">
+      {{ new_person_form.email_alternate.errors }}
+      {{ new_person_form.email_alternate }}
     </div>
   </div>
   <div class="form-group row">

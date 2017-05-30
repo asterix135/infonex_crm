@@ -8,9 +8,11 @@ $(document).ready(function() {
   var originalCompany = $('#id_company').val();
   var originalCity = $('#id_city').val();
   var originalPhone = $('#id_phone').val();
+  var originalPhoneAlternate = $('#id_phone_alternate').val();
   var originalPhoneMain = $('#id_phone_main').val();
   var originalDoNotCall = $('#id_do_not_call').prop('checked');
   var originalEmail = $('#id_email').val();
+  var originalEmailAlternate = $('#id_email_alternate').val();
   var originalDoNotEmail = $('#id_do_not_email').prop('checked');
   var originalLinkedIn = $('#id_linkedin').val();
   var originalUrl = $('#id_url').val();
@@ -43,8 +45,10 @@ $(document).ready(function() {
     $('#id_city').val(originalCity);
     $('#id_phone').val(originalPhone);
     $('#id_phone_main').val(originalPhoneMain);
+    $('#id_phone_alternate').val(originalPhoneAlternate);
     $('#id_do_not_call').prop('checked', originalDoNotCall);
     $('#id_email').val(originalEmail);
+    $('#id_email_alternate').val(originalEmailAlternate);
     $('#id_do_not_email').prop('checked', originalDoNotEmail);
     $('#id_linkedin').val(originalLinkedIn);
     $('#id_url').val(originalUrl);
@@ -61,9 +65,11 @@ $(document).ready(function() {
     var company = $('#id_company').val();
     var city = $('#id_city').val();
     var phone = $('#id_phone').val();
+    var phoneAlternate = $('#id_phone_alternate').val();
     var phoneMain = $('#id_phone_main').val();
     var doNotCall = $('#id_do_not_call').prop('checked');
     var email = $('#id_email').val();
+    var emailAlternate = $('#id_email_alternate').val();
     var doNotEmail = $('#id_do_not_email').prop('checked');
     var linkedIn = $('#id_linkedin').val();
     var url = $('#id_url').val();
@@ -79,9 +85,11 @@ $(document).ready(function() {
         'company': company,
         'city': city,
         'phone': phone,
+        'phone_alternate': phoneAlternate,
         'phone_main': phoneMain,
         'do_not_call': doNotCall,
         'email': email,
+        'email_alternate': emailAlternate,
         'do_not_email': doNotEmail,
         'linkedin': linkedIn,
         'url': url,
@@ -97,9 +105,11 @@ $(document).ready(function() {
           originalCompany = $('#id_company', data).val();
           originalCity = $('#id_city', data).val();
           originalPhone = $('#id_phone', data).val();
+          originalPhoneAlternate = $('#id_phone_alternate', data).val();
           originalPhoneMain = $('#id_phone_main', data).val();
           originalDoNotCall = $('#id_do_not_call', data).prop('checked');
           originalEmail = $('#id_email', data).val();
+          originalEmailAlternate = $('#id_email_alternate', data).val();
           originalDoNotEmail = $('#id_do_not_email', data).prop('checked');
           originalLinkedIn = $('#id_linkedin', data).val();
           originalUrl = $('#id_url', data).val();
@@ -358,7 +368,9 @@ $(document).ready(function() {
                    '<input type="hidden" name="company" value="' + originalCompany + '"/>' +
                    '<input type="hidden" name="city" value="' + originalCity + '"/>' +
                    '<input type="hidden" name="phone" value="' + originalPhone + '"/>' +
+                   '<input type="hidden" name="phone_alternate" value="' + originalPhoneAlternate + '"/>' +
                    '<input type="hidden" name="email" value="' + emailDomain + '"/>' +
+                   '<input type="hidden" name="email_alternate" value="' + originalEmailAlternate + '"/>' +
                    '<input type="hidden" name="phone_main" value="' + originalPhoneMain + '"/>' +
                    '<input type="hidden" name="url" value="' + originalUrl + '"/>' +
                    '<input type="hidden" name="industry" value="' + originalIndustry + '"/>' +

@@ -64,7 +64,8 @@ class NewPersonForm(forms.ModelForm):
         fields = ('name', 'title', 'company', 'url', 'linkedin', 'phone',
                   'phone_main', 'email', 'do_not_call', 'do_not_email',
                   'city', 'dept', 'industry', 'geo', 'main_category',
-                  'main_category2', 'division1', 'division2')
+                  'main_category2', 'division1', 'division2',
+                  'phone_alternate', 'email_alternate')
         labels = {
             'url': _('Website'),
             'linkedin': _('LinkedIn Profile'),
@@ -75,6 +76,8 @@ class NewPersonForm(forms.ModelForm):
             'main_category2': _('Secondary Category'),
             'division1': _('Main Sales Division'),
             'division2': _('Secondary Sales Division'),
+            'phone_alternate': _('Alternate Phone Number'),
+            'email_alternate': _('Alternate Email'),
         }
         widgets = {
             'name': forms.TextInput(
@@ -97,10 +100,16 @@ class NewPersonForm(forms.ModelForm):
             'phone': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
+            'phone_alternate': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
             'phone_main': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
             'email': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'email_alternate': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
             'do_not_call': forms.CheckboxInput(
@@ -169,11 +178,13 @@ class PersonDetailsForm(forms.ModelForm):
         model = Person
         fields = ('name', 'title', 'company', 'url', 'phone', 'phone_main',
                   'do_not_call', 'email', 'do_not_email', 'industry',
-                  'city', 'linkedin',)
+                  'city', 'linkedin', 'phone_alternate', 'email_alternate',)
         labels = {
             'url': _('Website'),
             'linkedin': _('LinkedIn Profile'),
             'industry': _('Industry Description'),
+            'phone_alternate': _('Alternate Phone Number'),
+            'email_alternate': _('Alternate Email'),
         }
         widgets = {
             'name': forms.TextInput(
@@ -194,10 +205,16 @@ class PersonDetailsForm(forms.ModelForm):
             'phone': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
+            'phone_alternate': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
             'phone_main': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
             'email': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'email_alternate': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
             'industry': forms.Textarea(

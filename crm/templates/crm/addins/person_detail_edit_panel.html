@@ -7,37 +7,37 @@
   </div>
   <div class="panel-body collapse" id="person-edit-form-fields">
     <div class="form-group row">
-      <div class="col-sm-1">
+      <div class="col-sm-2">
         {{ person_details_form.name.label_tag }}
       </div>
-      <div class="col-sm-11">
+      <div class="col-sm-10">
         {{ person_details_form.name.errors }}
         {{ person_details_form.name }}
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-sm-1">
+      <div class="col-sm-2">
         {{ person_details_form.title.label_tag }}
       </div>
-      <div class="col-sm-11">
+      <div class="col-sm-10">
         {{ person_details_form.title.errors }}
         {{ person_details_form.title }}
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-sm-1">
+      <div class="col-sm-2">
         {{ person_details_form.company.label_tag }}
       </div>
-      <div class="col-sm-11">
+      <div class="col-sm-10">
         {{ person_details_form.company.errors }}
         {{ person_details_form.company }}
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-sm-1">
+      <div class="col-sm-2">
         {{ person_details_form.city.label_tag }}
       </div>
-      <div class="col-sm-7">
+      <div class="col-sm-6">
         {{ person_details_form.city.errors }}
         {{ person_details_form.city }}
       </div>
@@ -49,10 +49,10 @@
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-sm-1">
+      <div class="col-sm-2">
         {{ person_details_form.phone.label_tag }}
       </div>
-      <div class="col-sm-7">
+      <div class="col-sm-6">
         {{ person_details_form.phone.errors }}
         {{ person_details_form.phone }}
       </div>
@@ -65,19 +65,28 @@
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-sm-1">
+      <div class="col-sm-2">
         {{ person_details_form.phone_main.label_tag }}
       </div>
-      <div class="col-sm-7">
+      <div class="col-sm-6">
         {{ person_details_form.phone_main.errors }}
         {{ person_details_form.phone_main }}
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-sm-1">
+      <div class="col-sm-2">
+        {{ person_details_form.phone_alternate.label_tag }}
+      </div>
+      <div class="col-sm-6">
+        {{ person_details_form.phone_alternate.errors }}
+        {{ person_details_form.phone_alternate }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-2">
         {{ person_details_form.email.label_tag }}
       </div>
-      <div class="col-sm-7">
+      <div class="col-sm-6">
         {{ person_details_form.email.errors }}
         {{ person_details_form.email }}
       </div>
@@ -90,19 +99,28 @@
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-sm-1">
+      <div class="col-sm-2">
+        {{ person_details_form.email_alternate.label_tag }}
+      </div>
+      <div class="col-sm-6">
+        {{ person_details_form.email_alternate.errors }}
+        {{ person_details_form.email_alternate }}
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-2">
         {{ person_details_form.linkedin.label_tag }}
       </div>
-      <div class="col-sm-11">
+      <div class="col-sm-10">
         {{ person_details_form.linkedin.errors }}
         {{ person_details_form.linkedin }}
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-sm-1">
+      <div class="col-sm-2">
         {{ person_details_form.url.label_tag }}
       </div>
-      <div class="col-sm-11">
+      <div class="col-sm-10">
         {{ person_details_form.url.errors }}
         {% if person.url %}
         <div class="input-group">
@@ -119,16 +137,16 @@
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-sm-1">
+      <div class="col-sm-2">
         {{ person_details_form.industry.label_tag }}
       </div>
-      <div class="col-sm-11">
+      <div class="col-sm-10">
         {{ person_details_form.industry.errors }}
         {{ person_details_form.industry }}
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-sm-offset-1 col-sm-2">
+      <div class="col-sm-offset-2 col-sm-2">
         <button type="button" class="btn btn-secondary" id="reset-person-details-form">
           Reset to Original
         </button>

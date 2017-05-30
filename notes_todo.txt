@@ -1,10 +1,10 @@
+TODO: typeahead for Assistant info
+
 TODO: Make it possible to edit any past conference (button on edit page?)
 
 TODO: Registration processing page - if matching delegate exists, need a pop-up to say same or new or additional invoice
 
 TODO: Make it possible to mass-delete people from territory
-
-TODO: add ass't info to crm.person
 
 TODO: Make crm so you can filter to people in territory you havent' contacted
 
@@ -28,10 +28,6 @@ TODO: 41) Add title filter to territory creation page
 
 TODO: 69) Add Delegate lists to territory selections
 
-TODO: 47) Edit venue button doesn't work when calling a conference to edit (update - seems ok, but monitor)
-
-TODO: 65) Export data http://djangotricks.blogspot.ca/2013/12/how-to-export-data-as-excel.html
-
 TODO: 20) STARTED - Charts & data on welcome page
 
 TODO: 13) Upload and download information from filemaker
@@ -48,8 +44,6 @@ TODO: 25) Booking system for upcoming appointments
 
 TODO: 28) if no admin access, set error page for accessing admin page
 
-TODO: 42) See what other flags a person has???
-
 TODO: 66) Pre-populate new delegate form based on search criteria
 
 TODO: (low priority) - scroll to error in company-field-compare-modal doesn't
@@ -57,10 +51,6 @@ TODO: (low priority) - scroll to error in company-field-compare-modal doesn't
 
 TODO: Consider automating stopwords in delegate.constants.py
       some kind of database-driven function
-
-See avoiding race conditions using F()
-    might be an issue with some records and should be implemented
-    https://docs.djangoproject.com/en/1.9/ref/models/expressions/#avoiding-race-conditions-using-f
 
 LONGTERM: Put in some kind of machine learning for matching company names - probably a table of match & guess
 
@@ -210,3 +200,7 @@ TODO: DONE - 67) Need logic on delegate page to validate and deal with invoice c
 TODO: DONE - 34) registration/forms.py/ConferenceEditForm.clean()
 TODO: DONE - 12) Report generation
 TODO: DONE - Auto-code crm from registration
+TODO: DONE - 47) Edit venue button doesn't work when calling a conference to edit (update - seems ok, but monitor)
+TODO: DONE - 65) Export data http://djangotricks.blogspot.ca/2013/12/how-to-export-data-as-excel.html
+TODO: DONE - add ass't info to crm.person
+TODO: DONE - I have another CRM suggestion.  There should be an alternate email/phone number and contact that we could enter. I often have been speaking with Admin support and they provide other contact info.

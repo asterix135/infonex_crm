@@ -274,11 +274,11 @@ class RegDetailsForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(RegDetailsForm, self).clean()
-        reg_status = cleaned_data['registration_status']
-        cxl_date = cleaned_data['cancellation_date']
-        pre_tax_price = cleaned_data['pre_tax_price']
-        payment_date = cleaned_data['payment_date']
-        payment_method = cleaned_data['payment_method']
+        reg_status = cleaned_data.get('registration_status')
+        cxl_date = cleaned_data.get('cancellation_date')
+        pre_tax_price = cleaned_data.get('pre_tax_price')
+        payment_date = cleaned_data.get('payment_date')
+        payment_method = cleaned_data.get('payment_method')
 
         if reg_status and reg_status in CXL_VALUES:
             if not cxl_date:

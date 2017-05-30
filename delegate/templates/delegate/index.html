@@ -177,6 +177,55 @@
           </div>
         </div>
 
+        <div id="assistant-info" class="panel panel-primary">
+          <div class="panel-heading">
+            Assistant Information
+            <span id="toggle-assistant-details" class="glyphicon glyphicon-chevron-down glyph-button float-right"></span>
+          </div>
+          {% if assistant %}
+          <div class="panel-body collapse in" id="assistant-details">
+          {% else %}
+          <div class="panel-body collapse" id="assistant-details">
+          {% endif %}
+            <div class="row">
+              <div class="col-sm-2">
+                {{ assistant_form.salutation.label_tag }}
+                {{ assistant_form.salutation.errors }}
+                {{ assistant_form.salutation }}
+              </div>
+              <div class="col-sm-5">
+                {{ assistant_form.first_name.label_tag }}
+                {{ assistant_form.first_name.errors }}
+                {{ assistant_form.first_name }}
+              </div>
+              <div class="col-sm-5">
+                {{ assistant_form.last_name.label_tag }}
+                {{ assistant_form.last_name.errors }}
+                {{ assistant_form.last_name }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                {{ assistant_form.title.label_tag }}
+                {{ assistant_form.title.errors }}
+                {{ assistant_form.title }}
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                  {{ assistant_form.email.label_tag }}
+                  {{ assistant_form.email.errors }}
+                  {{ assistant_form.email }}
+                </div>
+                <div class="col-sm-6">
+                  {{ assistant_form.phone.label_tag }}
+                  {{ assistant_form.phone.errors }}
+                  {{ assistant_form.phone }}
+                </div>
+              </div>
+          </div>
+        </div>
+
         <div id="company-info" class="panel panel-primary">
           <div class="panel-heading">
             Company Information
@@ -271,55 +320,6 @@
                 {{ reg_details_form.registration_notes }}
               </div>
             </div>
-          </div>
-        </div>
-
-        <div id="assistant-info" class="panel panel-primary">
-          <div class="panel-heading">
-            Assistant Information
-            <span id="toggle-assistant-details" class="glyphicon glyphicon-chevron-down glyph-button float-right"></span>
-          </div>
-          {% if assistant %}
-          <div class="panel-body collapse in" id="assistant-details">
-          {% else %}
-          <div class="panel-body collapse" id="assistant-details">
-          {% endif %}
-            <div class="row">
-              <div class="col-sm-2">
-                {{ assistant_form.salutation.label_tag }}
-                {{ assistant_form.salutation.errors }}
-                {{ assistant_form.salutation }}
-              </div>
-              <div class="col-sm-5">
-                {{ assistant_form.first_name.label_tag }}
-                {{ assistant_form.first_name.errors }}
-                {{ assistant_form.first_name }}
-              </div>
-              <div class="col-sm-5">
-                {{ assistant_form.last_name.label_tag }}
-                {{ assistant_form.last_name.errors }}
-                {{ assistant_form.last_name }}
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-12">
-                {{ assistant_form.title.label_tag }}
-                {{ assistant_form.title.errors }}
-                {{ assistant_form.title }}
-              </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                  {{ assistant_form.email.label_tag }}
-                  {{ assistant_form.email.errors }}
-                  {{ assistant_form.email }}
-                </div>
-                <div class="col-sm-6">
-                  {{ assistant_form.phone.label_tag }}
-                  {{ assistant_form.phone.errors }}
-                  {{ assistant_form.phone }}
-                </div>
-              </div>
           </div>
         </div>
 

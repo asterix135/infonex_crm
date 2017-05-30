@@ -342,7 +342,9 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     else:
         crm_match.company = request.POST['name'].strip()
     crm_match.phone = request.POST['phone1'].strip()
+    crm_match.phone_alternate = request.POST['phone2'].strip()
     crm_match.email = request.POST['email1'].strip()
+    crm_match.email_alternate = request.POST['email2'].strip()
     crm_match.city = request.POST['city'].strip()
     crm_match.date_modified = timezone.now()
     crm_match.modified_by = request.user
@@ -638,7 +640,9 @@ def index(request):
                      'last_name': last_name_guess,
                      'title': crm_match.title,
                      'email1': crm_match.email,
+                     'email2': crm_match.email_alternate,
                      'phone1': crm_match.phone,
+                     'phone2': crm_match.phone_alternate,
                      'contact_option': 'D',
         }
         new_delegate_form = NewDelegateForm(initial=form_data)
@@ -805,7 +809,9 @@ def process_registration(request):
                 title=request.POST['title'].strip(),
                 company=crm_company_name,
                 phone=request.POST['phone1'].strip(),
+                phone_alternate=request.POST['phone2'].strip(),
                 email=request.POST['email1'].strip(),
+                email_alternate=request.POST['email2'].strip(),
                 city=company.city,
                 date_created=timezone.now(),
                 created_by=request.user,

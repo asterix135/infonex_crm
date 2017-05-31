@@ -226,6 +226,27 @@ $(document).ready(function() {
           startTypeAhead();
         }
       })
+    } else if (editAction == 'change-list') {
+      var buttonText = $(this).text().trim();
+      if (buttonText == 'See All Events') {
+        $(this).text('See Current Events');
+        var qs = 'all';
+      } else {
+        $(this).text('See All Events');
+        var qs = 'current';
+      }
+      $.ajax({
+        url: '/registration/update_conference_choices/',
+        type: 'GET',
+        data: {
+          'qs': qs,
+        },
+        success: function(data){
+          $('#conference-select-dropdown').html(data);
+        }
+      });
+
+      console.log(buttonText);
     }
   });
 

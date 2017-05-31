@@ -696,7 +696,13 @@ def unfilter_venue(request):
 @login_required
 def update_conference_choices(request):
     """ ajax call to update conference select dropdown on conference.html """
-    conference_select_form = ConferenceSelectForm()
+    if 'qs' in request.GET:
+        conference_select_form = ConferenceSelectForm()
+        if request.GET['qs'] == 'all':
+            conference_select_form.fields['event'].queryset = \
+                Event.objects.all().order_by('-number')
+    else:
+        conference_select_form = ConferenceSelectForm()
     return render(request,
                   'registration/addins/conference_select_dropdown.html',
                   {'conference_select_form': conference_select_form})

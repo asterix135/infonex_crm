@@ -1,7 +1,3 @@
-TODO: typeahead for Assistant info
-
-TODO: Make it possible to edit any past conference (button on edit page?)
-
 TODO: Registration processing page - if matching delegate exists, need a pop-up to say same or new or additional invoice
 
 TODO: Make it possible to mass-delete people from territory
@@ -204,3 +200,5 @@ TODO: DONE - 47) Edit venue button doesn't work when calling a conference to edi
 TODO: DONE - 65) Export data http://djangotricks.blogspot.ca/2013/12/how-to-export-data-as-excel.html
 TODO: DONE - add ass't info to crm.person
 TODO: DONE - I have another CRM suggestion.  There should be an alternate email/phone number and contact that we could enter. I often have been speaking with Admin support and they provide other contact info.
+TODO: DONE - typeahead for Assistant info
+TODO: DONE - Make it possible to edit any past conference (button on edit page?)

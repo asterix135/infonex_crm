@@ -48,7 +48,7 @@ def build_email_message(reg_details, invoice):
         'reg_options': '',
         'cxl_policy': CANADA_CXL_POLICY,
         'account_rep_details': '',
-        'registrar_details': 'Alona Glikin\n416-971-4177\naglikin@infonex.ca'
+        'registrar_details': 'Registration Department\n416-971-4177\nregister@infonex.ca'
     }
 
     email_merge_fields['city'] = reg_details.conference.city
@@ -161,12 +161,21 @@ def build_email_message(reg_details, invoice):
                 email_merge_fields['account_rep_details'] = rep_details
 
     registrar = reg_details.conference.registrar
+    registrar_string = ''
     if registrar.first_name and registrar.last_name:
-        registrar_details = registrar.first_name + ' ' + registrar.last_name
+        registrar_string += registrar.first_name + ' ' + \
+            registrar.last_name + '\n'
     else:
-        registrar_details = 'Infonex Inc.'
-    registrar_details += '\n416-971-4177\nEmail: ' + registrar.email
-    email_merge_fields['registrar_details'] = registrar_details
+        registrar_string += 'Infonex Registration Department\n'
+    if registrar.userprofile.phone:
+        registrar_string += registrar.userprofile.phone + '\n'
+    else:
+        registrar_string += '416-971-4177\n'
+    if registrar.email:
+        registrar_string += registrar.email
+    else:
+        registrar_string += 'register@infonex.ca'
+    email_merge_fields['registrar_details'] = registrar_string
 
     if reg_details.registration_status in GUEST_CONFIRMATION:
         email_body_path = os.path.join(

@@ -4,8 +4,6 @@ TODO: Make it possible to mass-delete people from territory
 
 TODO: Make crm so you can filter to people in territory you havent' contacted
 
-TODO: delegate/views.py/build_email_message - need to get rid of Alona being hard coded
-
 TODO: Allow report selection to include/exclude on various categories (lower priority)
 
 TODO: 72) Format radio buttons on report select panel
@@ -17,8 +15,6 @@ TODO: 56) pytz timezone conversion to reports (home page chart & call report)
           http://www.saltycrane.com/blog/2009/05/converting-time-zones-datetime-objects-python/
 
 TODO: 70) Intake/queueing system for registrations to be processed (so they don’t get lost)
-
-TODO: 57) Add phone number field to auth.User (this seems complicated) and add to email confirmation etc
 
 TODO: 41) Add title filter to territory creation page
 
@@ -202,3 +198,5 @@ TODO: DONE - add ass't info to crm.person
 TODO: DONE - I have another CRM suggestion.  There should be an alternate email/phone number and contact that we could enter. I often have been speaking with Admin support and they provide other contact info.
 TODO: DONE - typeahead for Assistant info
 TODO: DONE - Make it possible to edit any past conference (button on edit page?)
+TODO: DONE - 57) Add phone number field to auth.User (this seems complicated) and add to email confirmation etc
+TODO: DONE - delegate/views.py/build_email_message - need to get rid of Alona being hard coded

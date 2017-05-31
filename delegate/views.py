@@ -1362,6 +1362,52 @@ def suggest_company_match(request):
 
 
 @login_required
+def suggest_assistant_data(request):
+    query_term = request.GET.get('q', '')
+    suggest_field = request.GET.get('f', '')
+    if suggest_field == 'first_name':
+        selects = Assistant.objects.filter(
+            first_name__icontains=query_term
+        ).values('first_name').annotate(
+            total=Count('first_name')
+        ).order_by('-total')[:25]
+    elif suggest_field == 'last_name':
+        selects = Assistant.objects.filter(
+            last_name__icontains=query_term
+        ).values('last_name').annotate(
+            total=Count('last_name')
+        ).order_by('-total')[:25]
+    elif suggest_field == 'email':
+        selects = Assistant.objects.filter(
+            email__icontains=query_term
+        ).values('email').annotate(
+            total=Count('email')
+        ).order_by('-total')[:25]
+    elif suggest_field == 'title':
+        selects = Assistant.objects.filter(
+            title__icontains=query_term
+        ).values('title').annotate(
+            total=Count('title')
+        ).order_by('-total')[:25]
+    elif suggest_field == 'phone':
+        selects = Assistant.objects.filter(
+            phone__icontains=query_term
+        ).values('phone').annotate(
+            total=Count('phone')
+        ).order_by('-total')[:25]
+    else:
+        selects = None
+    results = []
+    if selects:
+        for select in selects:
+            select_json = {}
+            select_json['identifier'] = select[suggest_field]
+            results.append(select_json)
+    data = json.dumps(results)
+    mimetype = 'applications/json'
+    return HttpResponse(data, mimetype)
+
+@login_required
 def update_conference_options(request):
     """ ajax call to update conference options when event is changed """
     conference_options = None

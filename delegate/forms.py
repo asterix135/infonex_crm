@@ -327,23 +327,23 @@ class AssistantForm(forms.ModelForm):
                        'id': 'assistant_salutation',}
             ),
             'first_name': forms.TextInput(
-                attrs={'class': 'form-control',
+                attrs={'class': 'form-control assistant-field',
                        'id': 'assistant_first_name'}
             ),
             'last_name': forms.TextInput(
-                attrs={'class': 'form-control',
+                attrs={'class': 'form-control assistant-field',
                        'id': 'assistant_last_name'}
             ),
             'title': forms.TextInput(
-                attrs={'class': 'form-control',
+                attrs={'class': 'form-control assistant-field',
                        'id': 'assistant_title'}
             ),
             'email': forms.EmailInput(
-                attrs={'class': 'form-control',
+                attrs={'class': 'form-control assistant-field',
                        'id': 'assistant_email'}
             ),
             'phone': forms.TextInput(
-                attrs={'class': 'form-control',
+                attrs={'class': 'form-control assistant-field',
                        'id': 'assistant_phone'}
             ),
             'address_personal': forms.Textarea(

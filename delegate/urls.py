@@ -23,6 +23,8 @@ urlpatterns = [
         name='person_is_registered'),
     url(r'^search_for_substitute/$', views.search_for_substitute,
         name='search_for_substitute'),
+    url(r'^suggest_assistant_data/$', views.suggest_assistant_data,
+        name='suggest_assistant_data'),
     url(r'^suggest_company/$', views.suggest_company, name='suggest_company'),
     url(r'^suggest_company_match/$', views.suggest_company_match,
         name='suggest_company_match'),

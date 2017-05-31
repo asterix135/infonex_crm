@@ -15,7 +15,7 @@ $(document).ready(function(){
   } else {
     var originalDelegate = $('#current-registrant-id').val();
   };
-
+  var asstQueryField = 'first_name';
 
   // Check & adjust display of reg details on page load/reload
   displayHideRegDetails();
@@ -643,9 +643,49 @@ $(document).ready(function(){
 
 
   ////////////////////
-  // End previous section
+  // Autocomplete / Typeahead code
   ///////////////////
 
+  // Assistant Form data
+  var assistantSuggestionClass = new Bloodhound({
+    limit: 20,
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    remote: {
+      url: '/delegate/suggest_assistant_data',
+      replace: function(url, query){
+        return url + '?f=' + asstQueryField + '&q=' + query;
+      },
+      filter: function(my_Suggestion_class){
+        return $.map(my_Suggestion_class, function(data){
+          return {value: data.identifier};
+        })
+      }
+    }
+  });
+  assistantSuggestionClass.initialize();
+  $('.assistant-field').typeahead({
+    hint: true,
+    highlight: true,
+    minLength: 1
+  },
+  {
+    name: 'value',
+    displayKey: 'value',
+    source: assistantSuggestionClass.ttAdapter(),
+    templates: {
+      empty: [
+        '<div class="tt-suggestion">',
+        'No Items Found',
+        '</div>'
+      ].join('\n')
+    }
+  });
+  $('.assistant-field').keyup(function(){
+    var currentField = $(this).attr('id');
+    asstQueryField = currentField.slice(10)
+    console.log(asstQueryField);
+  });
 
   // Autocomplete for company name
   var companySuggestionClass = new Bloodhound({
@@ -667,7 +707,7 @@ $(document).ready(function(){
   companySuggestionClass.initialize();
   $('#id_company_name').typeahead({
     hint: true,
-    highligh: true,
+    highlight: true,
     minLength: 1
   },
   {

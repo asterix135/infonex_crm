@@ -145,10 +145,19 @@ def build_email_message(reg_details, invoice):
         if invoice.sales_credit.groups.filter(name='sales').exists():
             rep = invoice.sales_credit
             if rep.first_name and rep.last_name:
+                contact_info_added = False
                 rep_details = 'Your account representative for this event ' \
-                    'is: ' + rep.first_name + ' ' + rep.last_name + \
-                    '.  If you have any questions, you can reach them at: ' + \
-                    rep.email
+                    'is: ' + rep.first_name + ' ' + rep.last_name + '.'
+                if rep.email:
+                    rep_details += ' If you have any questions, you can ' \
+                        'reach them at: ' + rep.email
+                    contact_info_added = True
+                if rep.userprofile.phone:
+                    if contact_info_added:
+                        rep_details += ' or by phone at: ' + rep.userprofile.phone
+                    else:
+                        rep_details += ' If you have any questions, you can ' \
+                            'reach them at: ' + rep.userprofile.phone
                 email_merge_fields['account_rep_details'] = rep_details
 
     registrar = reg_details.conference.registrar

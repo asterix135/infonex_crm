@@ -1,3 +1,5 @@
+TODO: Add revised flag to invoices
+
 TODO: Registration processing page - if matching delegate exists, need a pop-up to say same or new or additional invoice
 
 TODO: Make it possible to mass-delete people from territory

@@ -226,7 +226,7 @@ class RegDetailsForm(forms.ModelForm):
         fields = ['sales_credit', 'pre_tax_price', 'gst_rate',
                   'hst_rate', 'qst_rate', 'payment_date', 'payment_method',
                   'fx_conversion_rate', 'invoice_notes',
-                  'sponsorship_description']
+                  'sponsorship_description', 'revised_flag',]
         labels = {
             'invoice_notes': _('Comments to Appear on Invoice'),
         }

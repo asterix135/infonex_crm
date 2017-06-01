@@ -208,7 +208,7 @@ def generate_invoice(canv, reg_details, invoice):
                        height=1.0*inch, width=1.6667*inch)
 
     if invoice.revised_flag:
-        canv.drawImage(revised_stamp_path, 6.2 * inch, 8.0 * inch,
+        canv.drawImage(revised_stamp_path, 5.9 * inch, 8.0 * inch,
                        height=1.0*inch, width=2.375*inch)
 
 

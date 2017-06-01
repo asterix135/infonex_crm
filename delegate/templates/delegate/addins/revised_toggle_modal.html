@@ -1,0 +1,33 @@
+<div class="modal fade" id="revisedToggleModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+        <h3 class="modal-title">Toggle Revised Stamp?</h3>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid bd-example-row">
+          <div class="row">
+            <div class="col-sm-12">
+              <p id="toggle-modal-text-1">
+                You are changing the payment amount for this invoice.
+              </p>
+              <p id="toggle-modal-text-2">
+                Would you like to flag the invoice as
+                <span id="revised-or-not"></span>revised?
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id='do-not-change-revised-flag'>Do Not Flag</button>
+        <button type="button" class="btn btn-primary" id="change-revised-flag">Flag Revised</button>
+      </div>
+    </div>
+  </div>
+</div>

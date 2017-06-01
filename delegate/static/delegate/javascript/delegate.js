@@ -1,7 +1,5 @@
 $(document).ready(function(){
 
-  // TODO: Format currency to 2 decimals & fx to 3 decimals
-
   // Global variables
   var defaultGstRate = $('#id_gst_rate').val();
   var defaultHstRate = $('#id_hst_rate').val();
@@ -16,6 +14,10 @@ $(document).ready(function(){
     var originalDelegate = $('#current-registrant-id').val();
   };
   var asstQueryField = 'first_name';
+  var revisedFlagStatus = $('#id_revised_flag').val();
+  var pageAction = $('#action-type').val();
+  var invoiceNumber = $('#invoice-number').val();
+  var revisionMade = false;
 
   // Check & adjust display of reg details on page load/reload
   displayHideRegDetails();
@@ -548,6 +550,56 @@ $(document).ready(function(){
       }, 500);
     }
   });
+
+  //////////////////////
+  // Code relating to toggling revised flag status
+  //////////////////////
+  $('#btn-change-revised-flag').on('click', function(){
+    if (revisedFlagStatus == 'False'){
+      revisedFlagStatus = 'True';
+      $('#id_revised_flag').val('True');
+    } else {
+      revisedFlagStatus = 'False';
+      $('#id_revised_flag').val('False')
+    }
+    $('#revisedToggleModal').modal('hide');
+  });
+
+  function activateRevisedModal(text1, revisedOrNot, buttonText) {
+    $('#toggle-modal-text-1').text(text1);
+    $('#revised-or-not').text(revisedOrNot);
+    $('#btn-change-revised-flag').text(buttonText);
+    $('#revisedToggleModal').modal('show');
+  }
+
+  $('body').on('change', '#id_pre_tax_price #id_gst_hst_exempt #id_qst_exempt', function(){
+    if (pageAction == 'edit' && revisedFlagStatus == 'False' && invoiceNumber) {
+      var changedItem = $(this).attr('id');
+      switch (changedItem) {
+        case 'id_pre_tax_price':
+          var text1 = 'You are changing the price for this invoice'
+          var revisedOrNot = '';
+          var buttonText = 'Add Revised Stamp';
+          break;
+        case 'id_gst_hst_exempt':
+        case 'id_qst_exempt':
+          var text1 = 'You are changing the tax-exempt status for this invoice';
+          var revisedOrNot = '';
+          var buttonText = 'Add Revised Stamp';
+      }
+      activateRevisedModal(text1, revisedOrNot, buttonText);
+    }
+  });
+
+  $('body').on('change', 'input[name="event-option-selection"]', function(){
+    if (pageAction == 'edit' && revisedFlagStatus == 'False' && invoiceNumber) {
+      var text1 = 'You are changing the registration options for this person';
+      var revisedOrNot = '';
+      var buttonText = 'Add Revised Stamp';
+      activateRevisedModal(text1, revisedOrNot, buttonText);
+    }
+  });
+
 
   //////////////////////
   // Following code deals with matching current company to a d/b record onscreen

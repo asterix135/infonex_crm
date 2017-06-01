@@ -26,6 +26,9 @@
 <div id="company-field-compare-modal">
   {% include 'delegate/addins/company_field_compare_modal.html' %}
 </div>
+<div id="revised-toggle-modal">
+  {% include 'delegate/addins/revised_toggle_modal.html' %}
+</div>
 
 <form action="/delegate/process_registration/" method="post" id="registration-form">
   <div id="stored-variables">
@@ -37,6 +40,8 @@
     <input type="hidden" id="company-match-value" name="company_match_value" value="{{ company.id }}" />
     <input type="hidden" id="assistant-match-value" name="assistant_match_value" value="{{ assistant.id }}" />
     <input type="hidden" id="action-type" name="action_type" value="{{ action_type }}" />
+    <input type="hidden" id="invoice-number" value="{{ current_registration.invoice.pk }}" />
+    {{ reg_details_form.revised_flag.as_hidden }}
     {% csrf_token %}
   </div>
   <div class="container-fluid fill">

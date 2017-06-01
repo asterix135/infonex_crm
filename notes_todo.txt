@@ -1,5 +1,9 @@
 TODO: Add revised flag to invoices
 
+TODO: Ability to edit conference options (esp. name)
+
+TODO: Find people registered for specific option
+
 TODO: Registration processing page - if matching delegate exists, need a pop-up to say same or new or additional invoice
 
 TODO: Make it possible to mass-delete people from territory

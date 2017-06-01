@@ -772,7 +772,9 @@ def process_registration(request):
             'invoice_notes': request.POST['invoice_notes'],
             'registration_notes': request.POST['registration_notes'],
             'sponsorship_description': request.POST['sponsorship_description'] \
-                if 'sponsorship_description' in request.POST else None
+                if 'sponsorship_description' in request.POST else None,
+            'revised_flag': request.POST['revised_flag'] if 'revised_flag' in \
+                request.POST else False
         }
         if request.POST['registration_status'] in NON_INVOICE_VALUES:
             reg_details_data['sales_credit'] = get_valid_sales_rep_id(request)

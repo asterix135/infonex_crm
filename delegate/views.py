@@ -327,6 +327,7 @@ def process_complete_registration(request, assistant_data, company, crm_match,
     # 0. Get info to process substitution
     if current_registration and request.POST['action_type'] == 'sub':
         original_registrant = current_registration.registrant
+        reg_details_data['revised_flag'] = True
 
     # 1. create database records if not present
     # a. assistant

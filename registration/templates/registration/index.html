@@ -48,8 +48,8 @@
       <h2>Reports</h2>
       <p>Generate reports for various departmental needs</p>
       <p><button class="btn btn-default ajax-load" type="button" ajax-target="admin-reports">Admin Reports &raquo;</button></p>
-      {% if request.use|has_group:'registration' or request.user|has_group:'management' or request.user.is_superuser %}
-      <p><button class="btn btn-default" type="button" ajax-target="mass-mail">Send email to all Event Participants &raquo;</button></p>
+      {% if request.user|has_group:'registration' or request.user|has_group:'management' or request.user.is_superuser %}
+      <p><button class="btn btn-default ajax-load" type="button" ajax-target="mass-mail">Send email to all Event Participants &raquo;</button></p>
       {% endif %}
       {% if request.user|has_group:'db_admin' or request.user|has_group:'management' or request.user.is_superuser %}
       <p><button class="btn btn-default ajax-load" type="button" ajax-target="sales-reports">Sales Commission Reports &raquo;</button></p>

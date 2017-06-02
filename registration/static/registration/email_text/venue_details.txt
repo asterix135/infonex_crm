@@ -1,6 +1,6 @@
 Good afternoon %s,
 
-We have confirmed the venue for our upcoming %s conference being held in %s, %s on %s.
+We have confirmed the venue for our upcoming %s conference being held in %s on %s.
 
 The venue is as follows:
 

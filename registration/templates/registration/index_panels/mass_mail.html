@@ -1,17 +1,28 @@
 <!-- AJAX insert into registration/index.html -->
 <div class="panel panel-primary">
   <div class="panel-heading">
-    <h2 class="panel-title h2">Select Mass Mail Details</h2>
+    <h2 class="panel-title h2">Set Up Mass Email</h2>
   </div>
   <div class="panel-body">
-    <div class="form-group row col-sm-12">
+    <div class="form-group row col-sm-12" id="mass-mail-conf-select">
       {{ conference_select_form.event.label_tag }}
       {{ conference_select_form.event.errors }}
       {{ conference_select_form.event }}
     </div>
     <div class="form-group row col-sm-12">
-      label for letter choice<br />
-      radio choices
+      {{ mass_mail_options_form.mass_mail_message.label_tag }}
+      {{ mass_mail_options_form.mass_mail_message.errors }}
+      {% for choice in mass_mail_options_form.mass_mail_message %}
+      <div class="radio">
+        {{ choice }}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="form-group row col-sm-12" id="merge-field-details">
+      <!-- Include mass_mail_venue.html or mass_mail_docs.html or ?? here by js -->
+    </div>
+    <div class="form-group row col-sm-12 collapse" id="mail-submit-button">
+      <button type="button" id="submit-mass-mail-details" class="btn btn-success col-sm-12">Go!</button>
     </div>
   </div>
 </div>

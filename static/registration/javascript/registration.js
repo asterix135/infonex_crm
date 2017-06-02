@@ -139,6 +139,32 @@ $(document).ready(function(){
 
 
   ////////////////////////
+  // Code related to mass mailings
+  ////////////////////////
+  $('body').on('change', 'input[name="mass_mail_message"], #mass-mail-conf-select > #id_event', function(){
+    var confId = $('#id_event').val();
+    var selectedMail = $('input[name="mass_mail_message"]:checked').val();
+    if (confId && selectedMail) {
+      $.ajax({
+        url: '/registration/mass_mail_details/',
+        type: 'GET',
+        data: {
+          'message': selectedMail,
+          'event': confId,
+        },
+        success: function(data) {
+          $('#merge-field-details').html(data);
+          if (!$('#mail-submit-button').hasClass('in')) {
+            $('#mail-submit-button').addClass('in');
+          }
+        }
+      })
+    }
+  });
+  // $('body').on('change', '#mass-mail-conf-select > #id_event')
+
+
+  ////////////////////////
   // Code related to sales reports
   ////////////////////////
   $('body').on('click', '#submit-sales-reports', function(){

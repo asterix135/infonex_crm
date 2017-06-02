@@ -312,3 +312,83 @@ class SalesReportOptionsForm(forms.Form):
             attrs={'class': 'form-control col-sm-4'}
         )
     )
+
+
+class MassMailOptionsForm(forms.Form):
+    mass_mail_message = forms.ChoiceField(
+        label='What email do you want to send?',
+        required=True,
+        # initial=MASS_MAIL_CHOICES[0][0],
+        choices=MASS_MAIL_CHOICES,
+        widget=forms.RadioSelect()
+    )
+
+
+class MailMergeDetailsForm(forms.Form):
+    venue_details = forms.CharField(
+        label="Confirm Venue Details",
+        required=True,
+        widget=forms.Textarea(
+            attrs={'class': 'form-control',
+                   'rows': '5'}
+        )
+    )
+    event_registrar = forms.CharField(
+        label='Event Registrar',
+        required=True,
+        widget=forms.Textarea(
+            attrs={'class': 'form-control',
+                   'rows': '3'}
+        )
+    )
+    room_rate = forms.CharField(
+        label='Bedroom rate',
+        widget=forms.TextInput(
+            attrs={'class': 'form-control',
+                   'placeholder': 'e.g.: $249 per night'}
+        )
+    )
+    conference_name = forms.CharField(
+        label='Conference Name',
+        required=True,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    conference_location = forms.CharField(
+        label='Conference Location',
+        required = True,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    start_date = forms.CharField(
+        label='Start Date',
+        required=True,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    download_link = forms.URLField(
+        label='Conference Download URL',
+        required=False,
+        widget=forms.URLInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    registration_start = forms.CharField(
+        label='Registration/Breakfast Start',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control',
+                   'placeholder': 'e.g.: 8:00 a.m.'}
+        )
+    )
+    opening_remarks_time = forms.CharField(
+        label='Time of Opening Remarks',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control',
+                   'placeholder': 'e.g.: 9:00 am'}
+        )
+    )

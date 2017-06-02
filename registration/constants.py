@@ -39,6 +39,9 @@ ADMIN_REPORTS = (('Delegate', 'Delegate List'),
                  ('Counts', 'Registration Counts'),
                  ('Speaker', 'Speaker List'),)
 
+MASS_MAIL_CHOICES = (('venue', 'Venue Announcement'),
+                     ('docs', 'Doc Download Instructions'),)
+
 STATE_PROV_TUPLE =  (
     ('', 'Any'),
     ('AB', 'Alberta'), ('BC', 'British Columbia'), ('MB', 'Manitoba'),

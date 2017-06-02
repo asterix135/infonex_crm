@@ -1,5 +1,7 @@
 TODO: Toggle modal to ask about removing Revised Stamp
 
+TODO: URGENT!!  Tax not appearing properly on invoices - figure out why
+
 TODO: Mass mail function (make sure its visible to admin)
 
 TODO: Ability to edit conference options (esp. name)

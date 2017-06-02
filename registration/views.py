@@ -514,16 +514,101 @@ def index_panel(request):
     elif request.GET['panel'] == 'event-revenue':
         response_url = 'registration/index_panels/event_revenue.html'
         conference_select_form = ConferenceSelectForm()
+        conference_select_form.fields['event'].queryset = \
+            Event.objects.all().order_by('-number')
         options_form = AdminReportOptionsForm()
         context = {
             'select_form': conference_select_form,
             'options_form': options_form
+        }
+    elif request.GET['panel'] == 'mass-mail':
+        response_url = 'registration/index_panels/mass_mail.html'
+        conference_select_form = ConferenceSelectForm()
+        mass_mail_options_form = MassMailOptionsForm()
+        context = {
+            'conference_select_form': conference_select_form,
+            'mass_mail_options_form': mass_mail_options_form,
         }
 
     else:
         raise Http404('Invalid panel name')
 
     return render(request, response_url, context)
+
+
+@login_required
+def mass_mail_details(request):
+    message = request.GET.get('message', '')
+    event_number = request.GET.get('event', None)
+    event = get_object_or_404(Event, pk=event_number)
+
+    registrar_string = 'Infonex Registration Department ' \
+                       '416-971-4177' \
+                       'register@infonex.ca'
+    if event.registrar:
+        registrar_string = ''
+        registrar = event.registrar
+        if registrar.first_name and registrar.last_name:
+            registrar_string += registrar.first_name + ' ' + registrar.last_name
+        else:
+            registrar_string += 'Infonex Registration Department'
+        if registrar.userprofile.phone:
+            registrar_string += '\n' + registrar.userprofile.phone
+        else:
+            registrar_string += '\n416-971-4177'
+        if registrar.email:
+            registrar_string += '\n' + registrar.email
+        else:
+            registrar_string += '\nregister@infonex.ca'
+
+    venue_details = ''
+    if event.hotel:
+        hotel = event.hotel
+        if hotel.name:
+            venue_details += hotel.name
+        if hotel.address:
+            venue_details += '\n' + hotel.address
+        if hotel.city:
+            venue_details += '\n' + hotel.city + ', ' + \
+                hotel.state_prov + ' ' + hotel.postal_code
+        if hotel.phone:
+            venue_details += '\nHotel Phone: ' + hotel.phone
+        if event.hotel.hotel_url:
+            venue_details += '\nHotel Website: ' + hotel.hotel_url
+
+    try:
+        start_date = event.date_begins.strftime('%A, %-d %B, %Y')
+    except AttributeError:
+        start_date = None
+
+    form_data = {
+        'venue_details': venue_details,
+        'event_registrar': registrar_string,
+        'conference_name': event.title,
+        'conference_location': event.city + ', ' + event.state_prov,
+        'start_date': start_date,
+    }
+
+    if message == 'venue':
+        detail_panel = 'registration/index_panels/mass_mail_venue.html'
+        merge_field_form = MailMergeDetailsForm(initial=form_data)
+
+    elif message == 'docs':
+        detail_panel = 'registration/index_panels/mass_mail_docs.html'
+        download_link = 'http://www.infonex.ca/' + event.number + \
+            '/download.shtml'
+        form_data['download_link'] = download_link
+        merge_field_form = MailMergeDetailsForm(initial=form_data)
+    else:
+        raise Http404('Invalid Message')
+
+    context = {
+        'merge_field_form': merge_field_form,
+        'event': event,
+    }
+    return render(request, detail_panel, context)
+
+
 
 
 @login_required

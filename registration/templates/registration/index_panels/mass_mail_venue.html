@@ -1,0 +1,38 @@
+<div id="venue-details-panel">
+  <div class="row col-sm-12">
+    <h4>Please verify/input/change the following merge fields</h4>
+    <p class="errorlist">
+      If any of these values (other than room rate) are wrong or missing,
+      you should
+      <a href="/registration/conference/?action=edit&id={{ event.pk }}">
+        edit this conference
+      </a>
+      before proceeding.
+    </p>
+  </div>
+  <div class="row col-sm-12">
+    {{ merge_field_form.venue_details.label_tag }}
+    {{ merge_field_form.venue_details.errors }}
+    {{ merge_field_form.venue_details }}
+  </div>
+  <div class="row col-sm-12">
+    {{ merge_field_form.room_rate.label_tag }}
+    {{ merge_field_form.room_rate.errors }}
+    {{ merge_field_form.room_rate }}
+  </div>
+  <div class="row col-sm-12">
+    {{ merge_field_form.conference_name.label_tag }}
+    {{ merge_field_form.conference_name.errors }}
+    {{ merge_field_form.conference_name }}
+  </div>
+  <div class="row col-sm-12">
+    {{ merge_field_form.conference_location.label_tag }}
+    {{ merge_field_form.conference_location.errors }}
+    {{ merge_field_form.conference_location }}
+  </div>
+  <div class="row col-sm-12">
+    {{ merge_field_form.start_date.label_tag }}
+    {{ merge_field_form.start_date.errors }}
+    {{ merge_field_form.start_date }}
+  </div>
+</div>

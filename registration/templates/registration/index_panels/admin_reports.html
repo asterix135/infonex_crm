@@ -5,14 +5,14 @@
   </div>
   <div class="panel-body">
     <div class="form-group row col-sm-12">
-      {{ conference_select_form.event.errors }}
       {{ conference_select_form.event.label_tag }}
+      {{ conference_select_form.event.errors }}
       {{ conference_select_form.event }}
     </div>
 
     <div class="form-group row col-sm-12">
-      {{ admin_report_options_form.report.errors }}
       {{ admin_report_options_form.report.label_tag }}
+      {{ admin_report_options_form.report.errors }}
       {% for choice in admin_report_options_form.report %}
       <div class="radio">
         {{ choice }}
@@ -21,8 +21,8 @@
     </div>
 
     <div class="form-group row col-sm-12">
-      {{ admin_report_options_form.sort.errors }}
       {{ admin_report_options_form.sort.label_tag }}
+      {{ admin_report_options_form.sort.errors }}
       {% for choice in admin_report_options_form.sort %}
       <div class="radio">
         {{ choice }}
@@ -31,8 +31,8 @@
     </div>
 
     <div class="form-group row col-sm-12">
-      {{ admin_report_options_form.destination.errors }}
       {{ admin_report_options_form.destination.label_tag }}
+      {{ admin_report_options_form.destination.errors }}
       {% for choice in admin_report_options_form.destination %}
       <div class="radio">
         {{ choice }}
@@ -41,8 +41,8 @@
     </div>
 
     <div class="form-group row col-sm-12">
-      {{ admin_report_options_form.report_format.errors }}
       {{ admin_report_options_form.report_format.label_tag }}
+      {{ admin_report_options_form.report_format.errors }}
       {% for choice in admin_report_options_form.report_format %}
       <div class="radio">
         {{ choice }}

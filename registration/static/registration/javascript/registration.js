@@ -154,14 +154,13 @@ $(document).ready(function(){
         },
         success: function(data) {
           $('#merge-field-details').html(data);
-          if (!$('#mail-submit-button').hasClass('in')) {
-            $('#mail-submit-button').addClass('in');
+          if (!$('#merge-submit-button').hasClass('in')) {
+            $('#merge-submit-button').addClass('in');
           }
         }
       })
     }
   });
-  // $('body').on('change', '#mass-mail-conf-select > #id_event')
 
 
   ////////////////////////

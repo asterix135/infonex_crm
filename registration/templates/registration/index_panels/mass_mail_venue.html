@@ -21,6 +21,16 @@
     {{ merge_field_form.room_rate }}
   </div>
   <div class="row col-sm-12">
+    {{ merge_field_form.room_rate_code.label_tag }}
+    {{ merge_field_form.room_rate_code.errors }}
+    {{ merge_field_form.room_rate_code }}
+  </div>
+  <div class="row col-sm-12">
+    {{ merge_field_form.room_booking_phone.label_tag }}
+    {{ merge_field_form.room_booking_phone.errors }}
+    {{ merge_field_form.room_booking_phone }}
+  </div>
+  <div class="row col-sm-12">
     {{ merge_field_form.conference_name.label_tag }}
     {{ merge_field_form.conference_name.errors }}
     {{ merge_field_form.conference_name }}
@@ -34,5 +44,10 @@
     {{ merge_field_form.start_date.label_tag }}
     {{ merge_field_form.start_date.errors }}
     {{ merge_field_form.start_date }}
+  </div>
+  <div class="row col-sm-12">
+    {{ merge_field_form.event_registrar.label_tag }}
+    {{ merge_field_form.event_registrar.errors }}
+    {{ merge_field_form.event_registrar }}
   </div>
 </div>

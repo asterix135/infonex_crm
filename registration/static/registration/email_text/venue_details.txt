@@ -1,13 +1,15 @@
-Good afternoon %s,
+<p>We have confirmed the venue for our upcoming event {conference_name} taking place beginning on {start_date} in {conference_location}.</p>
 
-We have confirmed the venue for our upcoming %s conference being held in %s on %s.
+<p><b>The venue is as follows:</b></p>
 
-The venue is as follows:
+<p>
+{venue_details}
+</p>
 
-%s
+<p>
+{room_rate_text}
+</p>
 
-The hotel is able to offer our guests a special guest room rate of %s per night plus tax. Please call %s directly to book your room and quote %s.
+<p>Thank you,</p>
 
-Thank you,
-
-Infonex Registration Department
+<p>{event_registrar}</p>

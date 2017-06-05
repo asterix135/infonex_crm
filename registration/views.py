@@ -2,6 +2,7 @@ import csv
 import datetime
 from io import BytesIO
 import json
+import os
 from openpyxl import Workbook
 from openpyxl.styles import Font
 from string import ascii_uppercase
@@ -25,6 +26,8 @@ from .models import *
 from .pdfs import *
 from crm.models import Person, Event
 from delegate.constants import *
+from infonex_crm.settings import BASE_DIR
+
 
 ########################
 # HELPER FUNCTIONS
@@ -135,6 +138,70 @@ def add_edit_conference(request):
 @login_required
 def index(request):
     return render(request, 'registration/index.html')
+
+
+@login_required
+def mass_mail(request):
+    if request.method != 'POST':
+        return redirect('/registration/')
+    event = get_object_or_404(Event, pk=request.POST['event'])
+    email_merge_fields = {
+        'venue_details': request.POST['venue_details'].strip().replace('\r\n', '<br/>'),
+        'event_registrar': request.POST['event_registrar'].strip().replace('\r\n', '<br/>'),
+        'conference_name': request.POST['conference_name'].strip(),
+        'conference_location': request.POST['conference_location'].strip(),
+        'start_date': request.POST['start_date'].strip()
+    }
+    email_subject = 'Infonex - ' + request.POST['conference_name'].strip() + ' - '
+
+    if request.POST['mass_mail_message'] == 'venue':
+        email_body_path = os.path.join(
+            BASE_DIR,
+            'registration/static/registration/email_text/venue_details.txt'
+        )
+        if request.POST['room_rate'] not in ('', None):
+            room_rate_text = '\nThe hotel is able to offer you a special ' + \
+                             'guest room rate of '
+            room_rate_text += request.POST['room_rate'].strip() + '. '
+            if request.POST['room_rate_code'] not in ('', None):
+                if request.POST['room_booking_phone'] not in ('', None):
+                    room_rate_text += 'Please call ' + \
+                        request.POST['room_booking_phone'].strip() + \
+                        ' directly to book your room and quote ' + \
+                        request.POST['room_rate_code'].strip() + '.<br/>'
+                else:
+                    room_rate_text += 'Please quote ' + \
+                        request.POST['room_rate_code'].strip() + \
+                        ' when booking your room.<br/>'
+        else:
+            room_rate_text = ''
+        email_merge_fields['room_rate_text'] = room_rate_text
+        email_subject += 'VENUE UPDATE'
+
+    elif request.POST['mass_mail_message'] == 'docs':
+        email_body_path = os.path.join(
+            BASE_DIR,
+            'registration/static/registration/email_text/doc_download.txt'
+        )
+        email_merge_fields['download_link'] = \
+            request.POST['download_link'].strip()
+        email_merge_fields['registration_start'] = \
+            request.POST['registration_start'].strip()
+        email_merge_fields['opening_remarks_time'] = \
+            request.POST['opening_remarks_time'].strip()
+        email_subject += 'DOCUMENT ACCESS'
+
+    else:
+        raise Http404('Invalid mail choice')
+    with open(email_body_path) as f:
+        email_body = f.read()
+    email_body = email_body.format(**email_merge_fields)
+    print(email_body)
+    context = {
+        'email_subject': email_subject,
+        'email_body': email_body,
+    }
+    return render(request, 'registration/mass_mail.html', context)
 
 
 @login_required
@@ -562,6 +629,7 @@ def mass_mail_details(request):
             registrar_string += '\nregister@infonex.ca'
 
     venue_details = ''
+    booking_phone = ''
     if event.hotel:
         hotel = event.hotel
         if hotel.name:
@@ -573,6 +641,7 @@ def mass_mail_details(request):
                 hotel.state_prov + ' ' + hotel.postal_code
         if hotel.phone:
             venue_details += '\nHotel Phone: ' + hotel.phone
+            booking_phone = hotel.phone
         if event.hotel.hotel_url:
             venue_details += '\nHotel Website: ' + hotel.hotel_url
 
@@ -587,6 +656,7 @@ def mass_mail_details(request):
         'conference_name': event.title,
         'conference_location': event.city + ', ' + event.state_prov,
         'start_date': start_date,
+        'room_booking_phone': booking_phone,
     }
 
     if message == 'venue':
@@ -607,8 +677,6 @@ def mass_mail_details(request):
         'event': event,
     }
     return render(request, detail_panel, context)
-
-
 
 
 @login_required

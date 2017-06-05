@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^conference/$', views.add_edit_conference,
         name='conference'),
+    url(r'^mass_mail$', views.mass_mail, name='mass_mail'),
     url(r'^new_delegate_search/$', views.new_delegate_search,
         name='new_delegate_search'),
 

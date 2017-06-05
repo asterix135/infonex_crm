@@ -1,13 +1,11 @@
-Good Afternoon  %s,
-
-Thank you for your participation in %s taking place %s in %s, %s.
+Thank you for your participation in {conference_name} taking place beginning on {start_date} in {conference_location}.
 
 Presentation Download
 Copies of speaker presentations are available for download from our website.
 Below are the instructions on how to access our online library to get your own copy of the presentations for the conference.
 
 Download presentations by using the following link:
-%s
+{download_link}
 
 USER NAME:  %s
 PASSWORD:   %s
@@ -19,14 +17,14 @@ At the conclusion of the conference all collected presentations will be posted o
 Presentations are the property of Infonex Inc. and its speakers.  Unauthorized distribution of any downloads off the website is strictly prohibited.
 
 Venue Information
-Registration & Continental Breakfast will be available at %s.
-Opening Remarks begin promptly at %s.
+Registration & Continental Breakfast will be available at {registration_start}.
+Opening Remarks begin promptly at {opening_remarks_time}.
 The Conference will be held at the following location
 
-%s
+{venue_details}
 
 If you have any questions please contact Infonex's delegate support team at 416-971-4177
 
 Thank you,
 
-%s
+{event_registrar}

@@ -334,7 +334,7 @@ class MailMergeDetailsForm(forms.Form):
         )
     )
     event_registrar = forms.CharField(
-        label='Event Registrar',
+        label='Event Registrar (Who the email is from)',
         required=True,
         widget=forms.Textarea(
             attrs={'class': 'form-control',
@@ -346,6 +346,17 @@ class MailMergeDetailsForm(forms.Form):
         widget=forms.TextInput(
             attrs={'class': 'form-control',
                    'placeholder': 'e.g.: $249 per night'}
+        )
+    )
+    room_rate_code = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+    room_booking_phone = forms.CharField(
+        label='Bedroom reservation number',
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
         )
     )
     conference_name = forms.CharField(

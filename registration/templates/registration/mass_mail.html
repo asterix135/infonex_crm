@@ -1,0 +1,17 @@
+{% extends 'registration/base.html' %}
+{% block title %}Send Mass Email | {% endblock %}
+
+{% block content %}
+
+<h2>Please Confirm Email Details</h2>
+<p>
+
+  {{ email_subject }}
+</p>
+<article>
+  <section id="email-body-text" contenteditable="true">
+    {{ email_body|safe }}
+  </section>
+</article>
+
+{% endblock %}

@@ -3,26 +3,29 @@
   <div class="panel-heading">
     <h2 class="panel-title h2">Set Up Mass Email</h2>
   </div>
-  <div class="panel-body">
-    <div class="form-group row col-sm-12" id="mass-mail-conf-select">
-      {{ conference_select_form.event.label_tag }}
-      {{ conference_select_form.event.errors }}
-      {{ conference_select_form.event }}
-    </div>
-    <div class="form-group row col-sm-12">
-      {{ mass_mail_options_form.mass_mail_message.label_tag }}
-      {{ mass_mail_options_form.mass_mail_message.errors }}
-      {% for choice in mass_mail_options_form.mass_mail_message %}
-      <div class="radio">
-        {{ choice }}
+  <form action="{% url 'registration:mass_mail' %}" method="post">
+    {% csrf_token %}
+    <div class="panel-body">
+      <div class="form-group row col-sm-12" id="mass-mail-conf-select">
+        {{ conference_select_form.event.label_tag }}
+        {{ conference_select_form.event.errors }}
+        {{ conference_select_form.event }}
       </div>
-      {% endfor %}
+      <div class="form-group row col-sm-12">
+        {{ mass_mail_options_form.mass_mail_message.label_tag }}
+        {{ mass_mail_options_form.mass_mail_message.errors }}
+        {% for choice in mass_mail_options_form.mass_mail_message %}
+        <div class="radio">
+          {{ choice }}
+        </div>
+        {% endfor %}
+      </div>
+      <div class="form-group row col-sm-12" id="merge-field-details">
+        <!-- Include mass_mail_venue.html or mass_mail_docs.html or ?? here by js -->
+      </div>
+      <div class="form-group row col-sm-12 collapse" id="merge-submit-button">
+        <button type="submit" id="submit-mass-mail-details" class="btn btn-success col-sm-12">Go!</button>
+      </div>
     </div>
-    <div class="form-group row col-sm-12" id="merge-field-details">
-      <!-- Include mass_mail_venue.html or mass_mail_docs.html or ?? here by js -->
-    </div>
-    <div class="form-group row col-sm-12 collapse" id="mail-submit-button">
-      <button type="button" id="submit-mass-mail-details" class="btn btn-success col-sm-12">Go!</button>
-    </div>
-  </div>
+  </form>
 </div>

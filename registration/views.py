@@ -8,6 +8,7 @@ from openpyxl.styles import Font
 from string import ascii_uppercase
 
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMessage
 from django.db.models import Q, Sum
 from django.http import HttpResponseRedirect, HttpResponse, Http404, \
     JsonResponse
@@ -145,9 +146,13 @@ def mass_mail(request):
     if request.method != 'POST':
         return redirect('/registration/')
     event = get_object_or_404(Event, pk=request.POST['event'])
+    distribution_list = RegDetails.objects.filter(conference=event).exclude(
+        registration_status__in=CXL_VALUES
+    ).order_by('registrant__company__name', 'registrant__last_name')
+    mass_mail_message = request.POST['mass_mail_message']
     email_merge_fields = {
-        'venue_details': request.POST['venue_details'].strip().replace('\r\n', '<br/>'),
-        'event_registrar': request.POST['event_registrar'].strip().replace('\r\n', '<br/>'),
+        'venue_details': request.POST['venue_details'].strip(),
+        'event_registrar': request.POST['event_registrar'].strip(),
         'conference_name': request.POST['conference_name'].strip(),
         'conference_location': request.POST['conference_location'].strip(),
         'start_date': request.POST['start_date'].strip()
@@ -160,7 +165,7 @@ def mass_mail(request):
             'registration/static/registration/email_text/venue_details.txt'
         )
         if request.POST['room_rate'] not in ('', None):
-            room_rate_text = '\nThe hotel is able to offer you a special ' + \
+            room_rate_text = 'The hotel is able to offer you a special ' + \
                              'guest room rate of '
             room_rate_text += request.POST['room_rate'].strip() + '. '
             if request.POST['room_rate_code'] not in ('', None):
@@ -168,11 +173,11 @@ def mass_mail(request):
                     room_rate_text += 'Please call ' + \
                         request.POST['room_booking_phone'].strip() + \
                         ' directly to book your room and quote ' + \
-                        request.POST['room_rate_code'].strip() + '.<br/>'
+                        request.POST['room_rate_code'].strip() + '.'
                 else:
                     room_rate_text += 'Please quote ' + \
                         request.POST['room_rate_code'].strip() + \
-                        ' when booking your room.<br/>'
+                        ' when booking your room.'
         else:
             room_rate_text = ''
         email_merge_fields['room_rate_text'] = room_rate_text
@@ -196,10 +201,12 @@ def mass_mail(request):
     with open(email_body_path) as f:
         email_body = f.read()
     email_body = email_body.format(**email_merge_fields)
-    print(email_body)
+    # email_body = email_body.replace('\n', '')
     context = {
         'email_subject': email_subject,
         'email_body': email_body,
+        'distribution_list': distribution_list,
+        'mass_mail_message': mass_mail_message,
     }
     return render(request, 'registration/mass_mail.html', context)
 
@@ -249,6 +256,36 @@ def new_delegate_search(request):
         'search_entered': search_entered,
     }
     return render(request, 'registration/new_delegate_search.html', context)
+
+
+@login_required
+def send_mass_email(request):
+    if request.method != 'POST':
+        raise Http404
+    email_subject = request.POST['email_subject']
+    email_body = request.POST['email_body']
+    email_body = email_body.replace('\n', '<br/>')
+    recipient_list = list(set(request.POST.getlist('email_address')))
+    message_type = request.POST['mass_mail_message']
+
+    if message_type == 'docs':
+        return HttpResponse('<h1>Not yet active</h1>')
+
+    else:
+        email_body = email_body.replace(
+            'The venue is as follows:',
+            '<b>The venue is as follows:</b>'
+        )
+
+    for address in recipient_list:
+        email = EmailMessage(
+            subject=email_subject,
+            body=email_body,
+            to=['chris.graham@infonex.ca']
+        )
+        email.content_subtype = 'html'
+        email.send()
+    return HttpResponse('<h1>Submitted</h1>')
 
 
 #######################

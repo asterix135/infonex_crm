@@ -1,15 +1,13 @@
-<p>We have confirmed the venue for our upcoming event {conference_name} taking place beginning on {start_date} in {conference_location}.</p>
+Thank you for your participation in {conference_name} taking place starting on {start_date} in {conference_location}.
 
-<p><b>The venue is as follows:</b></p>
+We have confirmed the venue for our this event.
 
-<p>
+The venue is as follows:
+
 {venue_details}
-</p>
 
-<p>
 {room_rate_text}
-</p>
 
-<p>Thank you,</p>
+Thank you,
 
-<p>{event_registrar}</p>
+{event_registrar}

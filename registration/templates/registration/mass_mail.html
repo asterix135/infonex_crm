@@ -1,17 +1,107 @@
 {% extends 'registration/base.html' %}
+{% load staticfiles %}
 {% block title %}Send Mass Email | {% endblock %}
 
+{% block script_includes %}
+<script type="text/javascript" src="{% static 'registration/javascript/mass_mail.js' %}"></script>
+{% endblock %}
+
 {% block content %}
+<form action="{% url 'registration:send_mass_email' %}" method="post">
+  {% csrf_token %}
+  <input type="hidden" name="mass_mail_message" value="{{ mass_mail_message }}" />
+  <div class="container">
+    <div class="row">
+      <h1>Email All Conference Attendees</h1>
+      <h3>Please confirm and/or update details below</h3>
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h2 class="panel-title h2">Email details</h2>
+        </div>
+        <div class="panel-body">
+          <div class="form-group row">
+            <label for="email_subject" class="col-sm-12 form-control-label">Email subject line</label>
+            <div class="col-sm-12">
+              <input id="email_subject" name="email_subject" class="form-control col-sm-12" required="true" value="{{ email_subject }}" maxlength="255" />
+            </div>
+          </div>
+          <div class="form-grou row">
+            <label for="email_body" class="col-sm-12 form-control-label">Email body</label>
+            <div class="col-sm-12">
+              <textarea id="email_body" name="email_body" class="form-control" required="true" cols="40" rows="18">{{ email_body|safe }}</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h2 class="panel-title h2">Distribution list</h2>
+        </div>
+        <div class="panel-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th class="col-sm-2">
+                  Add/Remove
+                </th>
+                <th class="col-sm-4">
+                  Email address
+                </th>
+                <th class="col-sm-6">
+                  Person details
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for delegate in distribution_list %}
+              <tr id="row{{ delegate.pk }}">
+                <td>
+                  <button id="remove-email-btn-{{ delegate.pk}}" class="btn btn-default delete-step-1" type="button" related-email="{{ delegate.pk }}"><span class="glyphicon glyphicon-remove"></span></button>
+                </td>
+                <td>
+                  {% if delegate.registrant.email1 %}
+                  <input type="email" name="email_address" class="form-control" id="{{ delegate.pk }}" value="{{ delegate.registrant.email1 }}" />
+                  {% elif delegate.registrant.assistant %}
+                  <input type="email" name="email_address" class="form-control" id="{{ delegate.pk }}" value="{{ delegate.registrant.assistant.email }}" />
+                  {% else %}
+                  <input type="email" name="email_address" class="form-control" id="{{ delegate.pk }}" />
+                  {% endif %}
+                </td>
+                <td>
+                  {{ delegate.registrant.first_name }}
+                  {{ delegate.registrant.last_name }},
+                  {{ delegate.registrant.title }},
+                  {{ delegate.registrant.company.name }}
+                </td>
+              </tr>
+              {% endfor %}
+              <tr id="rowN0">
+                <td>
+                  <button class="btn btn-default add-email-btn" type="button" related-email="N0"><span class="glyphicon glyphicon-plus"></span></button>
+                </td>
+                <td>
+                  <input type="email" name="email_address" class="form-control" id="N0" />
+                </td>
+                <td>
+                  New Recipient
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row" id="email-submit-button">
+      <button id="btn-all-ok" class="btn btn-info col-sm-6" type="button">Everything looks good</button>
+    </div>
+  </div>
+</form>
 
-<h2>Please Confirm Email Details</h2>
-<p>
 
-  {{ email_subject }}
-</p>
-<article>
+<!-- <article>
   <section id="email-body-text" contenteditable="true">
     {{ email_body|safe }}
   </section>
-</article>
+</article> -->
 
 {% endblock %}

@@ -1,13 +1,11 @@
 Thank you for your participation in {conference_name} taking place starting on {start_date} in {conference_location}.
 
-We have confirmed the venue for our this event.
+We have confirmed the venue for this event.
 
 The venue is as follows:
 
 {venue_details}
-
 {room_rate_text}
-
 Thank you,
 
 {event_registrar}

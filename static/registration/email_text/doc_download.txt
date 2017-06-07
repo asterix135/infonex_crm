@@ -7,8 +7,8 @@ Below are the instructions on how to access our online library to get your own c
 Download presentations by using the following link:
 {download_link}
 
-USER NAME:  %s
-PASSWORD:   %s
+Login credentials are as follows:
+**!!DO NOT CHANGE THIS LINE!!**
 Both user name and password are case sensitive
 
 Please note: Infonex will not provide hard copies of these presentations at the conference.

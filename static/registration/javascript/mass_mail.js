@@ -23,6 +23,10 @@ $(document).ready(function(){
     $('#btn-send-email').remove();
   });
 
+  $('body').on('click', '#btn-send-email', function(){
+    $('#doNotCloseModal').modal('show');
+  });
+
   ///////////////////
   // Functions dealing with removing email from list
   ///////////////////
@@ -36,7 +40,9 @@ $(document).ready(function(){
 
   $('body').on('click', '.btn-restore', function(){
     var rowId = $(this).attr('related-email');
+    console.log(rowId);
     var removeBtn = $('#remove-email-btn-' + rowId);
+    console.log(removeBtn)
     removeBtn.removeClass('delete-step-2 btn-warning');
     removeBtn.addClass('delete-step-1 btn-default');
     removeBtn.html('<span class="glyphicon glyphicon-remove"></span>');
@@ -66,12 +72,17 @@ $(document).ready(function(){
       $(this).addClass('delete-step-1');
       $(this).html('<span class="glyphicon glyphicon-remove"></span>');
       newEmailId += 1;
-      $('<tr id="rowN' + newEmailId.toString() + '"><td><button class="btn btn-default ' +
-        'add-email-btn" type="button" related-email="N' + newEmailId.toString() +
-        '"><span class="glyphicon glyphicon-plus"></span></button></td>' +
-        '<td><input type="email" name="email_address" class="form-control"' +
-        ' id="N' + newEmailId.toString() +
-        '" /></td><td>New Recipient</td></tr>').insertAfter(
+      var rowId = newEmailId.toString();
+      $('<tr id="rowN' + rowId + '">' +
+        '<td><button class="btn btn-default ' +
+          'add-email-btn" type="button" related-email="N' + rowId +
+          '" id="remove-email-btn-N' + rowId + '">' +
+          '<span class="glyphicon glyphicon-plus"></span></button></td>' +
+        '<td><input type="email" name="address_N"' + rowId +
+          ' class="form-control" id="N' + rowId + '" /></td>' +
+        '<td><input name="salutation_N' + rowId + '" class="form-control" ' +
+          'id="salutation_N' + rowId + '" /></td>' +
+        '<td>New Recipient</td></tr>').insertAfter(
           '#rowN' + (newEmailId - 1).toString()
         )
     }

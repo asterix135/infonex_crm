@@ -11,7 +11,8 @@ urlpatterns = [
     url(r'^mass_mail$', views.mass_mail, name='mass_mail'),
     url(r'^new_delegate_search/$', views.new_delegate_search,
         name='new_delegate_search'),
-    url(r'^send_mass_email/$', views.send_mass_email, name='send_mass_email'),
+    url(r'^send_mass_email/$', views.process_mass_email,
+        name='send_mass_email'),
 
     # AJAX Calls
     url(r'^add_event_option/$', views.add_event_option,

@@ -8,7 +8,6 @@ from openpyxl.styles import Font
 from string import ascii_uppercase
 
 from django.contrib.auth.decorators import login_required
-from django.core.mail import EmailMessage
 from django.db.models import Q, Sum
 from django.http import HttpResponseRedirect, HttpResponse, Http404, \
     JsonResponse
@@ -23,6 +22,7 @@ from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate
 
 from .forms import *
+from .mass_mail import MassMail
 from .models import *
 from .pdfs import *
 from crm.models import Person, Event
@@ -51,6 +51,26 @@ def format_sales_report_header_row(ws, row_num=1):
     for letter in ascii_uppercase:
         cell = ws[letter + str(row_num)]
         cell.font = Font(bold=True)
+
+
+# def mass_mail_email_list(request):
+#     email_dict = {}
+#     for key in request.POST:
+#         if key[:7] == 'address':
+#             row_id = key.partition('_')[2]
+#             if row_id in email_dict:
+#                 email_dict[row_id]['email'] = request.POST[key]
+#             else:
+#                 email_dict[row_id] = {'email': request.POST[key],
+#                                       'salutation': None}
+#         elif key[:7] == 'salutat':
+#             row_id = key.partition('_')[2]
+#             if row_id in email_dict:
+#                 email_dict[row_id]['salutation'] = request.POST[key]
+#             else:
+#                 email_dict[row_id] = {'email': None,
+#                                       'salutation': request.POST[key]}
+#     return email_dict
 
 
 def sales_report_row(regdetail):
@@ -95,6 +115,17 @@ def sales_report_row(regdetail):
             regdetail.conference.billing_currency,
             fx_rate,
             pre_tax_price * fx_rate]
+
+
+# def send_mass_mail(email_dict, subject_line, body_text):
+#     sent_emails = []
+#     for item in email_dict:
+#         address = email_dict[item]['email']
+#         message = body_text
+#         if address not in sent_emails:
+#             sent_emails.append(address)
+#             if email_dict[item]['salutation'] not in (None, ''):
+#                 message = 'Hello ' + email_dict[item]['salutation'] + ':<br/><br/>'
 
 
 ########################
@@ -165,19 +196,22 @@ def mass_mail(request):
             'registration/static/registration/email_text/venue_details.txt'
         )
         if request.POST['room_rate'] not in ('', None):
-            room_rate_text = 'The hotel is able to offer you a special ' + \
+            room_rate_text = '\nThe hotel is able to offer you a special ' + \
                              'guest room rate of '
             room_rate_text += request.POST['room_rate'].strip() + '. '
             if request.POST['room_rate_code'] not in ('', None):
                 if request.POST['room_booking_phone'] not in ('', None):
-                    room_rate_text += 'Please call ' + \
+                    room_rate_text += '\nPlease call ' + \
                         request.POST['room_booking_phone'].strip() + \
-                        ' directly to book your room and quote ' + \
-                        request.POST['room_rate_code'].strip() + '.'
-                else:
-                    room_rate_text += 'Please quote ' + \
+                        ' directly to book your room and quote reservation code: "' + \
                         request.POST['room_rate_code'].strip() + \
-                        ' when booking your room.'
+                        '" when booking your room.\n'
+                else:
+                    room_rate_text += '\nPlease quote reservation code: "' + \
+                        request.POST['room_rate_code'].strip() + \
+                        '" when booking your room.\n'
+            else:
+                room_rate_text += '\n'
         else:
             room_rate_text = ''
         email_merge_fields['room_rate_text'] = room_rate_text
@@ -207,6 +241,7 @@ def mass_mail(request):
         'email_body': email_body,
         'distribution_list': distribution_list,
         'mass_mail_message': mass_mail_message,
+        'event': event,
     }
     return render(request, 'registration/mass_mail.html', context)
 
@@ -259,15 +294,14 @@ def new_delegate_search(request):
 
 
 @login_required
-def send_mass_email(request):
+def process_mass_email(request):
     if request.method != 'POST':
-        raise Http404
+        raise Http404('Invalid URL')
     email_subject = request.POST['email_subject']
     email_body = request.POST['email_body']
     email_body = email_body.replace('\n', '<br/>')
-    recipient_list = list(set(request.POST.getlist('email_address')))
+    # recipient_list = mass_mail_email_list(request)
     message_type = request.POST['mass_mail_message']
-
     if message_type == 'docs':
         return HttpResponse('<h1>Not yet active</h1>')
 
@@ -277,15 +311,9 @@ def send_mass_email(request):
             '<b>The venue is as follows:</b>'
         )
 
-    for address in recipient_list:
-        email = EmailMessage(
-            subject=email_subject,
-            body=email_body,
-            to=['chris.graham@infonex.ca']
-        )
-        email.content_subtype = 'html'
-        email.send()
-    return HttpResponse('<h1>Submitted</h1>')
+    mailer = MassMail(email_subject, email_body, message_type, request.POST)
+    mailer.send_mail()
+    return redirect('/registration/')
 
 
 #######################

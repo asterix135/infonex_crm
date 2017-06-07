@@ -7,6 +7,35 @@
 {% endblock %}
 
 {% block content %}
+<div class="modal fade" id="doNotCloseModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+        <h3 class="modal-title">Email send in process</h3>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid bd-example-row">
+          <div class="row">
+            <div class="col-sm-12">
+              <p>
+                Email send has started.  This may take a few minutes
+              </p>
+              <h4 class="errorlist">
+                DO NOT CLOSE OR REFRESH THIS WINDOW!!!!
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <form action="{% url 'registration:send_mass_email' %}" method="post">
   {% csrf_token %}
   <input type="hidden" name="mass_mail_message" value="{{ mass_mail_message }}" />
@@ -14,6 +43,9 @@
     <div class="row">
       <h1>Email All Conference Attendees</h1>
       <h3>Please confirm and/or update details below</h3>
+      {% if mass_mail_message == 'docs' %}
+      {% include 'registration/addins/doc_passwords.html' %}
+      {% endif %}
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h2 class="panel-title h2">Email details</h2>
@@ -44,10 +76,13 @@
                 <th class="col-sm-2">
                   Add/Remove
                 </th>
-                <th class="col-sm-4">
+                <th class="col-sm-3">
                   Email address
                 </th>
-                <th class="col-sm-6">
+                <th class="col-sm-3">
+                  Dear ____
+                </th>
+                <th class="col-sm-4">
                   Person details
                 </th>
               </tr>
@@ -58,15 +93,28 @@
                 <td>
                   <button id="remove-email-btn-{{ delegate.pk}}" class="btn btn-default delete-step-1" type="button" related-email="{{ delegate.pk }}"><span class="glyphicon glyphicon-remove"></span></button>
                 </td>
+                {% if delegate.registrant.email1 %}
                 <td>
-                  {% if delegate.registrant.email1 %}
-                  <input type="email" name="email_address" class="form-control" id="{{ delegate.pk }}" value="{{ delegate.registrant.email1 }}" />
-                  {% elif delegate.registrant.assistant %}
-                  <input type="email" name="email_address" class="form-control" id="{{ delegate.pk }}" value="{{ delegate.registrant.assistant.email }}" />
-                  {% else %}
-                  <input type="email" name="email_address" class="form-control" id="{{ delegate.pk }}" />
-                  {% endif %}
+                  <input type="email" name="address_{{ delegate.pk }}" class="form-control" id="{{ delegate.pk }}" value="{{ delegate.registrant.email1 }}" />
                 </td>
+                <td>
+                  <input name="salutation_{{ delegate.pk }}" class="form-control" id="salutation_{{ delegate_pk }}" value="{{ delegate.registrant.salutation }}&nbsp;{{ delegate.registrant.last_name }}" />
+                </td>
+                {% elif delegate.registrant.assistant %}
+                <td>
+                  <input type="email" name="address_{{ delegate.pk }}" class="form-control" id="{{ delegate.pk }}" value="{{ delegate.registrant.assistant.email }}" />
+                </td>
+                <td>
+                  <input name="salutation_{{ delegate.pk }}" class="form-control" id="salutation_{{ delegate_pk }}" value="{{ delegate.registrant.assistant.salutation }}&nbsp;{{ delegate.registrant.assistant.last_name }}" />
+                </td>
+                {% else %}
+                <td>
+                  <input type="email" name="address_{{ delegate.pk }}" class="form-control" id="{{ delegate.pk }}" />
+                </td>
+                <td>
+                  <input name="salutation_{{ delegate.pk }}" class="form-control" id="salutation_{{ delegate_pk }}" value="{{ delegate.registrant.salutation }}&nbsp;{{ delegate.registrant.last_name }}" />
+                </td>
+                {% endif %}
                 <td>
                   {{ delegate.registrant.first_name }}
                   {{ delegate.registrant.last_name }},
@@ -77,10 +125,13 @@
               {% endfor %}
               <tr id="rowN0">
                 <td>
-                  <button class="btn btn-default add-email-btn" type="button" related-email="N0"><span class="glyphicon glyphicon-plus"></span></button>
+                  <button id="remove-email-btn-N0" class="btn btn-default add-email-btn" type="button" related-email="N0"><span class="glyphicon glyphicon-plus"></span></button>
                 </td>
                 <td>
-                  <input type="email" name="email_address" class="form-control" id="N0" />
+                  <input type="email" name="address_N0" class="form-control" id="N0" />
+                </td>
+                <td>
+                  <input name="salutation_N0" class="form-control" id="salutation_N0" />
                 </td>
                 <td>
                   New Recipient
@@ -96,12 +147,5 @@
     </div>
   </div>
 </form>
-
-
-<!-- <article>
-  <section id="email-body-text" contenteditable="true">
-    {{ email_body|safe }}
-  </section>
-</article> -->
 
 {% endblock %}

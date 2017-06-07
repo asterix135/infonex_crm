@@ -303,16 +303,28 @@ def process_mass_email(request):
     # recipient_list = mass_mail_email_list(request)
     message_type = request.POST['mass_mail_message']
     if message_type == 'docs':
-        return HttpResponse('<h1>Not yet active</h1>')
-
+        email_body = email_body.replace(
+            'Login credentials are as follows:',
+            '<b>Login credentials are as follows:</b>'
+        )
+        email_body = email_body.replace(
+            'Download presentations by using the following link',
+            '<b>Download presentations by using the following link</b>'
+        )
+        email_body = email_body.replace(
+            'Venue Information:',
+            '<b>Venue Information:</b>'
+        )
     else:
         email_body = email_body.replace(
             'The venue is as follows:',
             '<b>The venue is as follows:</b>'
         )
-
     mailer = MassMail(email_subject, email_body, message_type, request.POST)
+    if message_type == 'docs':
+        mailer.set_passwords(request.POST)
     mailer.send_mail()
+    return HttpResponse('<h1>Done</h1>')
     return redirect('/registration/')
 
 
@@ -654,7 +666,7 @@ def index_panel(request):
             'options_form': options_form
         }
     elif request.GET['panel'] == 'mass-mail':
-        response_url = 'registration/index_panels/mass_mail.html'
+        response_url = 'registration/index_panels/mass_mail_panel.html'
         conference_select_form = ConferenceSelectForm()
         mass_mail_options_form = MassMailOptionsForm()
         context = {

@@ -16,7 +16,7 @@ Some presentations are unavailable as they have yet to be provided to Infonex.
 At the conclusion of the conference all collected presentations will be posted on this site for you to download.
 Presentations are the property of Infonex Inc. and its speakers.  Unauthorized distribution of any downloads off the website is strictly prohibited.
 
-Venue Information
+Venue Information:
 Registration & Continental Breakfast will be available at {registration_start}.
 Opening Remarks begin promptly at {opening_remarks_time}.
 The Conference will be held at the following location

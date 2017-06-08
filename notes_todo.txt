@@ -1,8 +1,8 @@
+TODO: Logic behind changing reg options not working right
+
 TODO: Toggle modal to ask about removing Revised Stamp
 
 TODO: URGENT!!  Tax not appearing properly on invoices - figure out why
-
-TODO: Mass mail function (make sure its visible to admin)
 
 TODO: Ability to edit conference options (esp. name)
 
@@ -211,3 +211,4 @@ TODO: DONE - Make it possible to edit any past conference (button on edit page?)
 TODO: DONE - 57) Add phone number field to auth.User (this seems complicated) and add to email confirmation etc
 TODO: DONE - delegate/views.py/build_email_message - need to get rid of Alona being hard coded
 TODO: DONE - Add revised flag to invoices
+TODO: DONE - Mass mail function (make sure its visible to admin)

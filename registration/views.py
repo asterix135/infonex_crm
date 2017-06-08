@@ -172,7 +172,7 @@ def mass_mail(request):
                 if request.POST['room_booking_phone'] not in ('', None):
                     room_rate_text += '\nPlease call ' + \
                         request.POST['room_booking_phone'].strip() + \
-                        ' directly to book your room and quote reservation code: "' + \
+                        ' directly and quote reservation code: "' + \
                         request.POST['room_rate_code'].strip() + \
                         '" when booking your room.\n'
                 else:

@@ -1,4 +1,4 @@
-Thank you for your participation in {conference_name} taking place starting on {start_date} in {conference_location}.
+Thank you for your participation in {conference_name} starting on {start_date} in {conference_location}.
 
 We have confirmed the venue for this event.
 

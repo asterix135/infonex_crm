@@ -24,7 +24,12 @@ $(document).ready(function(){
   });
 
   $('body').on('click', '#btn-send-email', function(){
-    $('#doNotCloseModal').modal('show');
+    var emptyFields = $('input[required]').filter(function(){
+      return $(this).val().trim() == '';
+    }).length;
+    if (emptyFields == 0) {
+      $('#doNotCloseModal').modal('show');
+    };
   });
 
   ///////////////////

@@ -9,12 +9,14 @@ from registration.models import RegDetails, EventOptions
 
 
 class MassMail():
-    def __init__(self, subject, message, msg_type, post_data):
+    def __init__(self, subject, message, msg_type, post_data, event=None):
         self._subject = subject
         self._message = message
         self._recipients = self._build_mail_dict(post_data)
         self._msg_type = msg_type
         self._password_dict = {}
+        if event:
+            self.set_event(event)
 
     def _build_mail_dict(self, post_data):
         """
@@ -40,22 +42,48 @@ class MassMail():
                                           'salutation': post_data[key],}
         return email_dict
 
-    def _insert_passwords(self, msg_body, reg_detail_id):
+    def _append_to_pw_text(self, regeventoption_obj, pw_text):
 
+        addl_text = 'USER NAME: ' + 'foo'
+
+    def _insert_passwords(self, msg_body, reg_detail_id):
         password_text = ''
         try:
             reg_details = RegDetails.objects.get(pk=reg_detail_id)
-            try:
-                option_set = reg_details.regeventoptions_set
-            except RegEventOptions.DoesNotExist:
-                option_set = None
-        except RegDetails.DoesNotExist:
-            option_set = None
+            if reg_details.regeventoptions_set.exists():
+                options_set = reg_details.regeventoptions_set.all()
+            else:
+                options_set = None
+        except (ValueError, RegDetails.DoesNotExist):
+            options_set = None
 
-        for password_id in self._password_dict:
-            event_option = EventOptions.options.get(pk=password_id)
-
-
+        # if no options set for event, only return
+        if not self._default_options:
+            password_text = 'USERNAME: ' + \
+                self._password_dict['all']['username'] + \
+                '<br/>PASSWORD: ' + \
+                self._password_dict['all']['password'] + '<br/><br/>'
+        elif not options_set:
+            event_defaults = self._event.eventoptions_set.filter(primary=True)
+            for option in event_defaults:
+                password_text += '<em>' + option.name + '</em><br/>' + \
+                    'USERNAME: ' + \
+                    self._password_dict[str(option.pk)]['username'] + \
+                    '<br/>PASSWORD: ' + \
+                    self._password_dict[str(option.pk)]['password'] + \
+                    '<br/><br/>'
+        else:
+            for option in options_set:
+                password_text += '<em>' + option.option.name + '</em><br/>' + \
+                    'USERNAME: ' + \
+                    self._password_dict[str(option.option.pk)]['username'] + \
+                    '<br/>PASSWORD: ' + \
+                    self._password_dict[str(option.option.pk)]['password'] + \
+                    '<br/><br>'
+        msg_body = msg_body.replace(
+            '**!!DO NOT CHANGE THIS LINE!!**',
+            password_text[:-5]  # Remove final <br/>
+        )
         return msg_body
 
     def set_subject(self, subject_text):
@@ -63,6 +91,13 @@ class MassMail():
 
     def set_message(self, message_text):
         self._message = message_text
+
+    def set_event(self, event_object):
+        self._event = event_object
+        try:
+            self._default_options = self._event.eventoptions_set.all()
+        except EventOptions.DoesNotExist:
+            self._default_options = None
 
     def set_passwords(self, post_data):
         password_dict = {}
@@ -103,6 +138,6 @@ class MassMail():
                     to = [address]
                 )
                 email.content_subtype = 'html'
-                # email.send()
+                email.send()
                 sent_emails.append(address)
                 time.sleep(0.5)

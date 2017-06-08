@@ -39,6 +39,7 @@
 <form action="{% url 'registration:send_mass_email' %}" method="post">
   {% csrf_token %}
   <input type="hidden" name="mass_mail_message" value="{{ mass_mail_message }}" />
+  <input type="hidden" name="event_id" value="{{ event.pk }}" />
   <div class="container">
     <div class="row">
       <h1>Email All Conference Attendees</h1>
@@ -144,6 +145,9 @@
     </div>
     <div class="row" id="email-submit-button">
       <button id="btn-all-ok" class="btn btn-info col-sm-6" type="button">Everything looks good</button>
+    </div>
+    <div class="row">
+      &nbsp;
     </div>
   </div>
 </form>

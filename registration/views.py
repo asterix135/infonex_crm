@@ -53,26 +53,6 @@ def format_sales_report_header_row(ws, row_num=1):
         cell.font = Font(bold=True)
 
 
-# def mass_mail_email_list(request):
-#     email_dict = {}
-#     for key in request.POST:
-#         if key[:7] == 'address':
-#             row_id = key.partition('_')[2]
-#             if row_id in email_dict:
-#                 email_dict[row_id]['email'] = request.POST[key]
-#             else:
-#                 email_dict[row_id] = {'email': request.POST[key],
-#                                       'salutation': None}
-#         elif key[:7] == 'salutat':
-#             row_id = key.partition('_')[2]
-#             if row_id in email_dict:
-#                 email_dict[row_id]['salutation'] = request.POST[key]
-#             else:
-#                 email_dict[row_id] = {'email': None,
-#                                       'salutation': request.POST[key]}
-#     return email_dict
-
-
 def sales_report_row(regdetail):
     """
     takes a RegDetail object as param
@@ -115,17 +95,6 @@ def sales_report_row(regdetail):
             regdetail.conference.billing_currency,
             fx_rate,
             pre_tax_price * fx_rate]
-
-
-# def send_mass_mail(email_dict, subject_line, body_text):
-#     sent_emails = []
-#     for item in email_dict:
-#         address = email_dict[item]['email']
-#         message = body_text
-#         if address not in sent_emails:
-#             sent_emails.append(address)
-#             if email_dict[item]['salutation'] not in (None, ''):
-#                 message = 'Hello ' + email_dict[item]['salutation'] + ':<br/><br/>'
 
 
 ########################
@@ -315,6 +284,14 @@ def process_mass_email(request):
             'Venue Information:',
             '<b>Venue Information:</b>'
         )
+        email_body = email_body.replace(
+            'Both username and password are case sensitive',
+            '<em>Both username and password are case sensitive</em>'
+        )
+        email_body = email_body.replace(
+            'Unauthorized distribution of any downloads off the website is strictly prohibited.',
+            '<b>Unauthorized distribution of any downloads off the website is strictly prohibited.</b>'
+        )
     else:
         email_body = email_body.replace(
             'The venue is as follows:',
@@ -323,6 +300,7 @@ def process_mass_email(request):
     mailer = MassMail(email_subject, email_body, message_type, request.POST)
     if message_type == 'docs':
         mailer.set_passwords(request.POST)
+        mailer.set_event(Event.objects.get(pk=request.POST['event_id']))
     mailer.send_mail()
     return HttpResponse('<h1>Done</h1>')
     return redirect('/registration/')

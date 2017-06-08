@@ -385,14 +385,14 @@ class MailMergeDetailsForm(forms.Form):
     )
     download_link = forms.URLField(
         label='Conference Download URL',
-        required=False,
+        required=True,
         widget=forms.URLInput(
             attrs={'class': 'form-control'}
         )
     )
     registration_start = forms.CharField(
         label='Registration/Breakfast Start',
-        required=False,
+        required=True,
         widget=forms.TextInput(
             attrs={'class': 'form-control',
                    'placeholder': 'e.g.: 8:00 a.m.'}
@@ -400,7 +400,7 @@ class MailMergeDetailsForm(forms.Form):
     )
     opening_remarks_time = forms.CharField(
         label='Time of Opening Remarks',
-        required=False,
+        required=True,
         widget=forms.TextInput(
             attrs={'class': 'form-control',
                    'placeholder': 'e.g.: 9:00 am'}

@@ -302,7 +302,6 @@ def process_mass_email(request):
         mailer.set_passwords(request.POST)
         mailer.set_event(Event.objects.get(pk=request.POST['event_id']))
     mailer.send_mail()
-    return HttpResponse('<h1>Done</h1>')
     return redirect('/registration/')
 
 

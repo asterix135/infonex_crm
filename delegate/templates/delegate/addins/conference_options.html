@@ -1,3 +1,5 @@
+{% load delegate_extras %}
+
 {% if conference_options %}
 <h1>Conference Option Selection</h1>
 <div class="panel panel-info">
@@ -23,7 +25,15 @@
     <tbody>
       {% for option in conference_options %}
       <tr>
-        {% if option.primary %}
+        <td>
+          {% if current_registration %}
+          {% if current_registration|has_event_option:option %}
+          <input type="checkbox" name="event-option-selection" value="{{ option.id }}" checked="checked" />
+          {% else %}
+          <input type="checkbox" name="event-option-selection" value="{{ option.id }}" />          
+          {% endif %}
+        </td>
+        {% elif option.primary %}
         <td>
           <input type="checkbox" name="event-option-selection"
             value="{{ option.id }}" checked="checked" />

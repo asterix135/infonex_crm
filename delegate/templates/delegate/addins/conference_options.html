@@ -27,23 +27,17 @@
       <tr>
         <td>
           {% if current_registration %}
-          {% if current_registration|has_event_option:option %}
-          <input type="checkbox" name="event-option-selection" value="{{ option.id }}" checked="checked" />
+            {% if current_registration|has_event_option:option %}
+            <input type="checkbox" name="event-option-selection" value="{{ option.id }}" checked="checked" />
+            {% else %}
+            <input type="checkbox" name="event-option-selection" value="{{ option.id }}" />
+            {% endif %}
+          {% elif option.primary %}
+            <input type="checkbox" name="event-option-selection" value="{{ option.id }}" checked="checked" />
           {% else %}
-          <input type="checkbox" name="event-option-selection" value="{{ option.id }}" />          
+            <input type="checkbox" name="event-option-selection" value="{{ option.id }}" />
           {% endif %}
         </td>
-        {% elif option.primary %}
-        <td>
-          <input type="checkbox" name="event-option-selection"
-            value="{{ option.id }}" checked="checked" />
-        </td>
-        {% else %}
-        <td>
-          <input type="checkbox" name="event-option-selection"
-            value="{{ option.id }}" />
-        </td>
-        {% endif %}
         <td>{{ option.name }}</td>
         <td>{{ option.startdate }}</td>
         <td>{{ option.enddate }}</td>

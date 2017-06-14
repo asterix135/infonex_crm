@@ -366,7 +366,7 @@ def detail(request, person_id):
                 if not reg_list:
                     reg_list = registrant.regdetails_set.all()
                 else:
-                    reg_list = reg_list | registrant.regdetails.set.all()
+                    reg_list = reg_list | registrant.regdetails_set.all()
             if reg_list.count() == 0:
                 reg_list = None
             else:

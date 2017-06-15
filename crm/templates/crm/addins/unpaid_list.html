@@ -1,0 +1,73 @@
+{% load staticfiles %}
+<script src="{% static 'crm/javascript/unpaid_list.js' %}"></script>
+
+<div class="row" style="margin-top:15px;">
+  <div class="col-sm-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="panel-title h2">
+          Your Current Unpaid Delegates
+          <span id="btn-toggle-unpaids" class="float-right glyphicon glyphicon-chevron-down glyph-button" toggle-obj="#unpaid-panel"></span>
+        </h2>
+      </div>
+      <div class="panel-body collapse" id="unpaid-panel">
+        <table class="table">
+          <thead class="thead-inverse">
+            <tr>
+              <th>
+                Inv. Date
+              </th>
+              <th>
+                Delegate
+              </th>
+              <th>
+                Conference
+              </th>
+              <th>
+                Invoice #
+              </th>
+              <th>
+                Pre-Tax Amount
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if unpaid_list %}
+              {% for reg in unpaid_list %}
+              <tr>
+                <td>
+                  {{ reg.register_date }}
+                </td>
+                <td>
+                  {% if reg.registrant.crm_person %}
+                  <a href="{% url 'crm:detail' reg.registrant.crm_person.id %}">
+                    {{ reg.registrant.first_name }}&nbsp;{{ reg.registrant.last_name }} - {{ reg.registrant.company.name }}
+                  </a>
+                  {% else %}
+                  {{ reg.registrant.first_name }}&nbsp;{{ reg.registrant.last_name }} - {{ reg.registrant.company.name }}
+                  {% endif %}
+                </td>
+                <td>
+                  {{ reg.conference.number }} - {{ reg.conference.title }}
+                </td>
+                <td>
+                  {{ reg.invoice.pk }}
+                </td>
+                <td>
+                  {{ reg.invoice.pre_tax_price }}
+                </td>
+            </tr>
+              {% endfor %}
+            {% else %}
+            <tr>
+              <td colspan="5">
+                <h3>All paid up!</h3>
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -22,7 +22,9 @@ from reportlab.platypus import Paragraph, Table, TableStyle, SimpleDocTemplate
 from .forms import *
 from .models import *
 from .constants import *
+from delegate.constants import UNPAID_STATUS_VALUES
 from registration.forms import ConferenceSelectForm, ConferenceEditForm
+from registration.models import RegDetails
 
 
 ##################
@@ -427,12 +429,23 @@ def index(request):
             ).order_by('-date_begins', 'number')
 
     # check for permission to view all records
-    user = request.user
     edit_permission_ok = has_management_permission(request.user)
+
+    # if sales person, generate unpaid list
+    if request.user.groups.filter(name='sales').exists() or \
+        request.user.groups.filter(name='sponsorship').exists() or \
+        request.user.is_superuser:
+        unpaid_list = RegDetails.objects.filter(
+            registration_status__in=UNPAID_STATUS_VALUES,
+            invoice__sales_credit=request.user,
+        ).order_by('register_date')
+    else:
+        unpaid_list = None
     context = {
         'my_territories': get_my_territories(request.user),
         'user_is_admin': edit_permission_ok,
         'territory_form': territory_form,
+        'unpaid_list': unpaid_list,
     }
     return render(request, 'crm/index.html', context)
 

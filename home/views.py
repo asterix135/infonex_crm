@@ -3,70 +3,99 @@ import datetime
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum
 from django.http import HttpResponse
-from django.shortcuts import render_to_response, render
-from django.template import RequestContext
+from django.views.generic import TemplateView
 from django.utils import timezone
 
 from crm.models import Contact
 from registration.models import RegDetails, Invoice
 from . import charts
 
+
 #############################
-# helper functions
+# primary page views
 #############################
-def get_sales_data(request):
-    current_month = datetime.datetime.today().month
-    current_year = datetime.datetime.today().year
-    user = request.user
-    if (user.groups.filter(name='sales').exists() or
-        user.groups.filter(name='sponsorship').exists()):
-        user_bookings = Invoice.objects.filter(sales_credit=user)
-    elif user.groups.filter(name='conference_developer').exists():
-        user_bookings = Invoice.objects.filter(
-            reg_details__conference__developer=user
+class Index(TemplateView):
+    template_name = 'home/index.html'
+
+    def _get_sales_data(self):
+        current_month = datetime.datetime.today().month
+        current_year = datetime.datetime.today().year
+        user = self.request.user
+        if (user.groups.filter(name='sales').exists() or
+            user.groups.filter(name='sponsorship').exists()):
+            user_bookings = Invoice.objects.filter(sales_credit=user)
+        elif user.groups.filter(name='conference_developer').exists():
+            user_bookings = Invoice.objects.filter(
+                reg_details__conference__developer=user
+            )
+        elif (user.groups.filter(name='management').exists or user.is_superuser):
+            user_bookings = Invoice.objects.all()
+        else:
+            user_bookings = Invoice.objects.none()
+        month_bookings = user_bookings.filter(
+            reg_details__register_date__month=current_month,
+            reg_details__register_date__year=current_year
+        ).aggregate(Sum('pre_tax_price'))['pre_tax_price__sum']
+        monthly_payments = user_bookings.filter(
+            payment_date__month=current_month,
+            payment_date__year=current_year
+        ).aggregate(Sum('pre_tax_price'))['pre_tax_price__sum']
+        if not month_bookings:
+            month_bookings = 0
+        if not monthly_payments:
+            monthly_payments = 0
+        return month_bookings, monthly_payments
+
+    def _get_month_regs(self):
+        month = self.request.GET.get('month',
+                                     datetime.datetime.today().month)
+        year = self.request.GET.get('year',
+                                    datetime.datetime.today().year)
+        user = self.request.user
+        month_regs = RegDetails.objects.filter(
+            register_date__year=year,
+            register_date__month=month,
+            invoice__sales_credit=user,
+        ).order_by('register_date')
+        return month_regs
+
+    def _get_month_payments(self):
+        month = self.request.GET.get('month',
+                                     datetime.datetime.today().month)
+        year = self.request.GET.get('year',
+                                    datetime.datetime.today().year)
+        user = self.request.user
+        month_payments = RegDetails.objects.filter(
+            invoice__payment_date__year=year,
+            invoice__payment_date__month=month,
+            invoice__sales_credit=user,
+        ).order_by('register_date')
+        return month_payments
+
+    def get_context_data(self, **kwargs):
+        context = super(Index, self).get_context_data(**kwargs)
+        user = self.request.user
+        context['reg_permission_ok'] = (
+            user.groups.filter(name='db_admin').exists() or
+            user.groups.filter(name='registration').exists() or
+            user.groups.filter(name='management').exists() or
+            user.is_superuser
         )
-    elif (user.groups.filter(name='management').exists or user.is_superuser):
-        user_bookings = Invoice.objects.all()
-    else:
-        user_bookings = Invoice.objects.none()
-    month_bookings = user_bookings.filter(
-        reg_details__register_date__month=current_month,
-        reg_details__register_date__year=current_year
-    ).aggregate(Sum('pre_tax_price'))['pre_tax_price__sum']
-    monthly_payments = user_bookings.filter(
-        payment_date__month=current_month,
-        payment_date__year=current_year
-    ).aggregate(Sum('pre_tax_price'))['pre_tax_price__sum']
-    if not month_bookings:
-        month_bookings = 0
-    if not monthly_payments:
-        monthly_payments = 0
-    return month_bookings, monthly_payments
+        context['today_contacts'] = \
+            today_contacts = Contact.objects.filter(
+                author=user,
+                date_of_contact__date=datetime.datetime.today().date()
+            ).count()
+        month_sales, month_payments = self._get_sales_data()
+        context['month_sales'] = month_sales
+        context['month_payments'] = month_payments
+        if user.groups.filter(name='sales').exists() or \
+            user.groups.filter(name='sponsorship').exists() or \
+            user.is_superuser:
+            context['month_reg_list'] = self._get_month_regs()
+            context['month_payment_list'] = self._get_month_payments()
+        return context
 
-
-#############################
-# page view functions
-#############################
-@login_required
-def index(request):
-    user = request.user
-    reg_permission_ok = (user.groups.filter(name='db_admin').exists() or
-                         user.groups.filter(name='registration').exists() or
-                         user.groups.filter(name='management').exists() or
-                         user.is_superuser)
-    today_contacts = Contact.objects.filter(
-        author=user,
-        date_of_contact__date=datetime.datetime.today().date()
-    ).count()
-
-    # test stuff for showing sales data
-    month_sales, month_payments = get_sales_data(request)
-
-    context = {'reg_permission_ok': reg_permission_ok,
-               'today_contacts': today_contacts,
-               'month_sales': month_sales,
-               'month_payments': month_payments}
-    return render(request, 'home/index.html', context)
 
 ###########################
 # Page elements

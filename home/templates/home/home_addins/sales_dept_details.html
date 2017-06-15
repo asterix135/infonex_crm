@@ -1,0 +1,162 @@
+<!-- inserted into home/index.html -->
+{% load humanize %}
+<div class="row" style="margin-top:15px;">
+  <div class="col-sm-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="panel-title h2">
+          You have
+          <span id="sales-amount">
+            ${{ month_sales|floatformat:'2'|intcomma }}
+          </span>
+          in Sales for {% now 'F Y' %}
+          <span id="btn-toggle-sales-details" class="float-right glyphicon glyphicon-chevron-down glyph-button" toggle-obj="#sales-detail-panel"></span>
+        </h2>
+      </div>
+      <div class="panel-body collapse" id="sales-detail-panel">
+        <table class="table">
+          <thead class="thead-inverse">
+            <tr>
+              <th>
+                Inv. Date
+              </th>
+              <th>
+                Delegate
+              </th>
+              <th>
+                Conference
+              </th>
+              <th>
+                Invoice #
+              </th>
+              <th>
+                Invoice Status
+              </th>
+              <th>
+                Amount
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if month_reg_list %}
+              {% for reg in month_reg_list %}
+              <tr>
+                <td>
+                  {{ reg.register_date }}
+                </td>
+                <td>
+                  {% if reg.registrant.crm_person %}
+                  <a href="{% url 'crm:detail' reg.registrant.crm_person.id %}">
+                    {{ reg.registrant.first_name }}&nbsp;{{ reg.registrant.last_name }} - {{ reg.registrant.company.name }}
+                  </a>
+                  {% else %}
+                  {{ reg.registrant.first_name }}&nbsp;{{ reg.registrant.last_name }} - {{ reg.registrant.company.name }}
+                  {% endif %}
+                </td>
+                <td>
+                  {{ reg.conference.number }} - {{ reg.conference.title }}
+                </td>
+                <td>
+                  {{ reg.invoice.pk }}
+                </td>
+                <td>
+                  {{ reg.get_registration_status_display }}
+                </td>
+                <td>
+                  {{ reg.invoice.pre_tax_price }}
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+            <tr>
+              <td colspan="5">
+                <h3>Nothing yet - get selling!</h3>
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="panel-title h2">
+          You have
+          <span id="sales-amount">
+            ${{ month_payments|floatformat:'2'|intcomma }}
+          </span>
+          in Received Payments for {% now 'F Y' %}
+          <span id="btn-toggle-payment-details" class="float-right glyphicon glyphicon-chevron-down glyph-button" toggle-obj="#payment-detail-panel"></span>
+        </h2>
+      </div>
+      <div class="panel-body collapse" id="payment-detail-panel">
+        <table class="table">
+          <thead class="thead-inverse">
+            <tr>
+              <th>
+                Payment Date
+              </th>
+              <th>
+                Delegate
+              </th>
+              <th>
+                Conference
+              </th>
+              <th>
+                Invoice #
+              </th>
+              <th>
+                Payment Method
+              </th>
+              <th>
+                Amount
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if month_payment_list %}
+              {% for reg in month_payment_list %}
+              <tr>
+                <td>
+                  {{ reg.register_date }}
+                </td>
+                <td>
+                  {% if reg.registrant.crm_person %}
+                  <a href="{% url 'crm:detail' reg.registrant.crm_person.id %}">
+                    {{ reg.registrant.first_name }}&nbsp;{{ reg.registrant.last_name }} - {{ reg.registrant.company.name }}
+                  </a>
+                  {% else %}
+                  {{ reg.registrant.first_name }}&nbsp;{{ reg.registrant.last_name }} - {{ reg.registrant.company.name }}
+                  {% endif %}
+                </td>
+                <td>
+                  {{ reg.conference.number }} - {{ reg.conference.title }}
+                </td>
+                <td>
+                  {{ reg.invoice.pk }}
+                </td>
+                <td>
+                  {{ reg.invoice.get_payment_method_display }}
+                </td>
+                <td>
+                  {{ reg.invoice.pre_tax_price }}
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+            <tr>
+              <td colspan="5">
+                <h3>Nothing yet - get selling!</h3>
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

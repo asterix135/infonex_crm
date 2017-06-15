@@ -15,9 +15,11 @@
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">
-    <link href="{% static 'crm/style.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'crm/style.css' %}" rel="stylesheet" type="text/css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link href="{% static 'home/home.css' %}" rel="stylesheet" type="text/css" />
+    <script src="{% static 'home/javascript/home.js' %}"></script>
 
     <!-- For testing Chartist integration -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
@@ -71,30 +73,28 @@
         <h1>Welcome {{ user.username }}</h1>
       </div>
       <div class="row">
-        <div class="col-sm-6">
-          <img src="{% static 'home/images/welcome_dog.gif' %}" />
+        <div class="col-sm-12 col-md-6">
+          <img class="welcome-image" src="{% static 'home/images/welcome_dog.gif' %}" />
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-md-6">
           {% if today_contacts == 1 %}
           <h3>You've made {{ today_contacts }} contact today</h3>
           {% else %}
           <h3>You've made {{ today_contacts }} contacts today</h3>
           {% endif %}
-          <img src="{% url 'home:contact_chart' %}" />
+          <img class="welcome-image" src="{% url 'home:contact_chart' %}" />
         </div>
       </div>
+      {% if request.user|has_group:'sales' or request.user|has_group:'sponsorship' or request.user.is_superuser %}
+      {% include 'home/home_addins/sales_dept_details.html' %}
+      {% else %}
       <div class="row">
         <div class="col-sm-6">
           <h4>Your Sales this month:&nbsp;${{ month_sales|floatformat:'2'|intcomma }}</h4>
           <h4>Payments recevied this month:&nbsp;${{ month_payments|floatformat:'2'|intcomma }}</h4>
         </div>
-        <p>
-          Additional information will appear here as the system improves.
-        </p>
       </div>
-      <div class="row">
-        <h3><a href="{% url 'crm:index' %}">Go to CRM System</a></h3>
-      </div>
+      {% endif %}
     </div>
   </body>
 </html>

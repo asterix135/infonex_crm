@@ -1,5 +1,6 @@
 {% extends 'crm/base.html' %}
 {% load staticfiles %}
+{% load crm_extras %}
 
 {% block script_includes %}
 <link href="{% static 'crm/crm_style.css' %}" rel="stylesheet" type="text/css" />
@@ -36,7 +37,7 @@
                 <label for="{{ territory_form.event.id_for_label }}">Select event:</label>
                 {{ territory_form.event }}
               </fieldset>
-              <button type="submit" class="btn btn-primary">Go</button>
+              <button type="submit" class="btn btn-success">Go</button>
               {% if user_is_admin %}
               {% endif %}
             </form>
@@ -63,6 +64,11 @@
               <a href="/crm/manage_territory/" class="btn btn-default">Create/Edit Territory</a>
             </p>
           </div>
+          {% endif %}
+        </div>
+        <div class="row">
+          {% if request.user|has_group:'sales' or request.user|has_group:'sponsorship' or request.user.is_superuser %}
+          {% include 'crm/addins/unpaid_list.html' %}
           {% endif %}
         </div>
       </div>

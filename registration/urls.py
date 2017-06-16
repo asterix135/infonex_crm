@@ -1,4 +1,6 @@
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required, permission_required
+
 from . import views
 
 app_name = 'registration'
@@ -15,11 +17,15 @@ urlpatterns = [
         name='send_mass_email'),
 
     # AJAX Calls
+
+    url(r'^update_event_option/$',
+        login_required(views.UpdateEventOptions.as_view()),
+        name='update_event_option'),
+
+
     url(r'^add_event_option/$', views.add_event_option,
         name='add_event_option'),
     url(r'^add_venue/$', views.add_venue, name='add_venue'),
-    url(r'^delete_event_option/$', views.delete_event_option,
-        name='delete_event_option'),
     url(r'^delete_temp_conf/$', views.delete_temp_conf,
         name='delete_temp_conf'),
     url(r'^delete_venue/$', views.delete_venue, name='delete_venue'),

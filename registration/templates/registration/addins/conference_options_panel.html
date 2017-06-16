@@ -29,21 +29,20 @@
     <tr>
       <td>
         {% if option.primary %}
-        <input type="checkbox" checked="checked" disabled="disabled"
-          id="primary_{{ option.id }}"/>
+        <input type="checkbox" class="form-control" checked="checked"id="primary-{{ option.id }}"/>
         {% else %}
-        <input type="checkbox" disabled="disabled"
-          id="primary_{{ option.id }}" />
+        <input type="checkbox" class="form-control" id="primary-{{ option.id }}" />
         {% endif %}
       </td>
-      <td>{{ option.name }}</td>
-      <td>{{ option.startdate }}</td>
-      <td>{{ option.enddate }}</td>
+      <td><input class="form-control" id="option-name-{{ option.id }}" value="{{ option.name }}" /></td>
+      <td><input class="form-control option-startdate" id="option-startdate-{{ option.id }}" value="{{ option.startdate|date:'Y-m-d' }}" /></td>
+      <td><input class="form-control option-enddate" id="option-enddate-{{ option.id }}" value="{{ option.enddate|date:'Y-m-d' }}" /></td>
       <td>
-        <button type="button" class="btn btn-danger btn-xs option-manage-btn"
-          id="delete-option-{{ option.id }}" name="delete"
-          option-val="{{ option.id }}">
-          Delete
+        <button type="button" class="btn btn-danger btn-xs option-manage-btn" id="delete-option-{{ option.id }}" name="delete" option-val="{{ option.id }}">
+          Delete&nbsp;
+        </button><br />
+        <button type="button" class="btn btn-success btn-xs option-manage-btn" id="update-option-{{ option.id }}" name="update" option-val="{{ option.id }}">
+          Update
         </button>
       </td>
     </tr>

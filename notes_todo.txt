@@ -1,4 +1,10 @@
+TODO: Finish UpdateEventOptions class in registration/views.py
+      a) add method
+      b) how to deal with form.is_invalid()
+
 TODO: Toggle modal to ask about removing Revised Stamp
+
+TODO: Select event button on main CRM page doesn't work
 
 TODO: Ability to edit conference options (esp. name)
 

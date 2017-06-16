@@ -25,7 +25,7 @@ $(document).ready(function() {
       var dateBeginsDate = new Date($('#id_date_begins').val());
       startDateMin = new Date(dateBeginsDate.getTime() - 3 * msecsInADay);
     }
-    $('#id_startdate').datepicker({
+    $('#id_startdate, .option-startdate').datepicker({
       dateFormat: 'yy-mm-dd',
       minDate: startDateMin,
       onSelect: function(date){
@@ -52,7 +52,7 @@ $(document).ready(function() {
       var enddateMin = null;
     }
     $('#id_enddate').datepicker('destroy');
-    $('#id_enddate').datepicker({
+    $('#id_enddate, .option-enddate').datepicker({
       dateFormat: 'yy-mm-dd',
       minDate: enddateMin,
     });
@@ -375,6 +375,7 @@ $(document).ready(function() {
           startdate: startdate,
           enddate: enddate,
           event_id: eventId,
+          'edit_action': editAction,
         },
         success: function(data) {
           $('#event-options-panel').html(data);
@@ -389,11 +390,12 @@ $(document).ready(function() {
         $('#delete-option-warning' + optionId).show();
       } else {
         $.ajax({
-          url: '/registration/delete_event_option/',
+          url: '/registration/update_event_option/',
           type: 'POST',
           data: {
-            option_id: optionId,
-            event_id: eventId,
+            'option_id': optionId,
+            'event_id': eventId,
+            'edit_action': editAction
           },
           success: function(data) {
             $('#event-options-panel').html(data);
@@ -402,6 +404,31 @@ $(document).ready(function() {
           }
         })
       }
+    } else if (editAction == 'update') {
+      var optionId = $(this).attr('option-val');
+      var optionName = $('#option-name-' + optionId).val();
+      var primary = $('#primary-' + optionId).prop('checked');
+      var startDate = $('#option-startdate-' + optionId).val();
+      var endDate = $('#option-enddate-' + optionId).val();
+      $.ajax({
+        url: '/registration/update_event_option/',
+        type: 'POST',
+        data: {
+          'option_id': optionId,
+          'event_id': eventId,
+          'name': optionName,
+          'primary': primary,
+          'startdate': startDate,
+          'enddate': endDate,
+          'edit_action': editAction,
+        },
+        success: function(data) {
+          $('#event-options-panel').html(data);
+          startdateDatepicker();
+          enddateDatePicker();
+        }
+      })
+
     } else {  //rehide
       var optionId = $(this).attr('option-val');
       $('#delete-option-warning' + optionId).hide();

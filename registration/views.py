@@ -17,6 +17,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 
+from django.views.generic.edit import FormView
+
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate
@@ -379,35 +381,6 @@ def add_venue(request):
         'errors': errors,
     }
     return render(request, 'registration/addins/venue_sidebar.html', context)
-
-
-@login_required
-def delete_event_option(request):
-    """ ajax call to delete option from a conference """
-    conference_option_form = ConferenceOptionForm()
-    event_option_set = None
-    event = None
-    if request.method == 'POST':
-        try:
-            event_id = request.POST['event_id']
-            event = Event.objects.get(pk=event_id)
-        except (MultiValueDictKeyError, Event.DoesNotExist):
-            event_id = None
-        try:
-            option_id = request.POST['option_id']
-            option = EventOptions.objects.get(pk=option_id)
-        except (EventOptions.DoesNotExist, MultiValueDictKeyError):
-            option_id = None
-        if event_id and option_id:
-            option.delete()
-            event_option_set = event.eventoptions_set.all()
-    context = {
-        'conference_option_form': conference_option_form,
-        'event_option_set': event_option_set,
-        'event': event,
-    }
-    return render(request, 'registration/addins/conference_options_panel.html',
-                  context)
 
 
 @login_required
@@ -913,6 +886,87 @@ def update_conference_choices(request):
     return render(request,
                   'registration/addins/conference_select_dropdown.html',
                   {'conference_select_form': conference_select_form})
+
+
+class UpdateEventOptions(FormView):
+    """
+    Update, delete or add an EventOptions record for a specific event
+    """
+    template_name = 'registration/addins/conference_options_panel.html'
+    form_class = ConferenceOptionForm
+
+    def _set_event(self):
+        try:
+            self.event = Event.objects.get(pk=self.request.POST['event_id'])
+        except (MultiValueDictKeyError, Event.DoesNotExist):
+            self.event = None
+
+    def _set_event_option(self):
+        try:
+            self.event_option = EventOptions.objects.get(
+                pk=self.request.POST['option_id']
+            )
+        except (MultiValueDictKeyError, Event.DoesNotExist):
+            self.event_option = None
+
+    def add(self, **kwargs):
+        pass
+
+    def delete(self, **kwargs):
+        self.event_option.delete()
+        self.event_option_set = self.event.eventoptions_set.all()
+        context = self.get_context_data(**kwargs)
+        context['conference_option_form'] = self.get_form_class()
+        return self.render_to_response(context)
+
+    def update(self, form, **kwargs):
+        form.save()
+        context = self.get_context_data(**kwargs)
+        context['conference_option_form'] = self.get_form_class()
+        return self.render_to_response(context)
+
+    def get(self, request, *args, **kwargs):
+        raise Http404()
+
+    def post(self, request, *args, **kwargs):
+        self._set_event()
+        self._set_event_option()
+        self.edit_action = self.request.POST['edit_action']
+        if self.edit_action == 'delete':
+            return self.delete(**kwargs)
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        form.instance = self.event_option
+        if form.is_valid():
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)
+
+    def form_valid(self, form, **kwargs):
+        self.event_option_set = self.event.eventoptions_set.all()
+        if self.edit_action == 'update':
+            return self.update(form, **kwargs)
+        context = self.get_context_data(**kwargs)
+
+        context['conference_option_form'] = self.get_form_class()
+
+        return self.render_to_response(context)
+
+    def form_invalid(self, form, **kwargs):
+        # return Form.errors.as_data() or Form.errors.as_json()
+        # https://docs.djangoproject.com/en/1.11/ref/forms/api/
+
+        print('\n\ninvalid form')
+        self.event_option_set = self.event.eventoptions_set.all()
+        context = self.get_context_data(**kwargs)
+        return super(UpdateEventOptions, self).form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateEventOptions, self).get_context_data(**kwargs)
+        context['event'] = self.event
+        context['event_option_set'] = self.event_option_set
+        context['conference_option_form'] = context.pop('form')
+        return context
 
 
 @login_required

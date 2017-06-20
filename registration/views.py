@@ -35,15 +35,15 @@ from infonex_crm.settings import BASE_DIR
 ########################
 # HELPER FUNCTIONS
 ########################
-def create_temp_conf_number():
-    """ helper function for add_event_option """
-    base_number = "TEMP"
-    counter = 0
-    while True:
-        event_number = base_number + str(counter)
-        if Event.objects.filter(number=event_number).count() == 0:
-            return event_number
-        counter += 1
+# def create_temp_conf_number():
+#     """ helper function for add_event_option """
+#     base_number = "TEMP"
+#     counter = 0
+#     while True:
+#         event_number = base_number + str(counter)
+#         if Event.objects.filter(number=event_number).count() == 0:
+#             return event_number
+#         counter += 1
 
 
 def format_sales_report_header_row(ws, row_num=1):
@@ -310,55 +310,55 @@ def process_mass_email(request):
 #######################
 # AJAX CALLS
 #######################
-@login_required
-def add_event_option(request):
-    """ ajax call to add options to a conference """
-    conference_option_form = ConferenceOptionForm()
-    event_option_set = None
-    event = None
-    if request.method == 'POST':
-        try:
-            event_id = request.POST['event_id']
-        except MultiValueDictKeyError:
-            event_id = None
-        conference_option_form = ConferenceOptionForm(request.POST)
-        if conference_option_form.is_valid():
-            if not event_id:
-                new_event_number = create_temp_conf_number()
-                event = Event(
-                    number=new_event_number,
-                    title='Placeholder Event',
-                    city='Placeholder City',
-                    date_begins=timezone.now(),
-                    registrar=request.user,
-                    state_prov='ON',
-                    created_by=request.user,
-                    modified_by=request.user,
-                )
-                event.save()
-            else:
-                event = Event.objects.get(pk=event_id)
-            option = EventOptions(
-                event=event,
-                name=request.POST['name'],
-                startdate=request.POST['startdate'],
-                enddate=request.POST['enddate'],
-                primary=True if request.POST['primary'] == 'true' else False,
-            )
-            option.save()
-            conference_option_form = ConferenceOptionForm()
-            event_option_set = event.eventoptions_set.all()
-        else:
-            if event_id:
-                event = Event.objects.get(pk=event_id)
-                event_option_set = event.eventoptions_set.all()
-    context = {
-        'conference_option_form': conference_option_form,
-        'event_option_set': event_option_set,
-        'event': event,
-    }
-    return render(request, 'registration/addins/conference_options_panel.html',
-                  context)
+# @login_required
+# def add_event_option(request):
+#     """ ajax call to add options to a conference """
+#     conference_option_form = ConferenceOptionForm()
+#     event_option_set = None
+#     event = None
+#     if request.method == 'POST':
+#         try:
+#             event_id = request.POST['event_id']
+#         except MultiValueDictKeyError:
+#             event_id = None
+#         conference_option_form = ConferenceOptionForm(request.POST)
+#         if conference_option_form.is_valid():
+#             if not event_id:
+#                 new_event_number = create_temp_conf_number()
+#                 event = Event(
+#                     number=new_event_number,
+#                     title='Placeholder Event',
+#                     city='Placeholder City',
+#                     date_begins=timezone.now(),
+#                     registrar=request.user,
+#                     state_prov='ON',
+#                     created_by=request.user,
+#                     modified_by=request.user,
+#                 )
+#                 event.save()
+#             else:
+#                 event = Event.objects.get(pk=event_id)
+#             option = EventOptions(
+#                 event=event,
+#                 name=request.POST['name'],
+#                 startdate=request.POST['startdate'],
+#                 enddate=request.POST['enddate'],
+#                 primary=True if request.POST['primary'] == 'true' else False,
+#             )
+#             option.save()
+#             conference_option_form = ConferenceOptionForm()
+#             event_option_set = event.eventoptions_set.all()
+#         else:
+#             if event_id:
+#                 event = Event.objects.get(pk=event_id)
+#                 event_option_set = event.eventoptions_set.all()
+#     context = {
+#         'conference_option_form': conference_option_form,
+#         'event_option_set': event_option_set,
+#         'event': event,
+#     }
+#     return render(request, 'registration/addins/conference_options_panel.html',
+#                   context)
 
 
 @login_required
@@ -895,6 +895,15 @@ class UpdateEventOptions(FormView):
     template_name = 'registration/addins/conference_options_panel.html'
     form_class = ConferenceOptionForm
 
+    def _temp_conference_number(self):
+        base_number = 'TEMP'
+        counter = 0
+        while True:
+            event_number = base_number + str(counter)
+            if Event.objects.filter(number=event_number).count == 0:
+                return event_number
+            counter += 1
+
     def _set_event(self):
         try:
             self.event = Event.objects.get(pk=self.request.POST['event_id'])
@@ -909,8 +918,32 @@ class UpdateEventOptions(FormView):
         except (MultiValueDictKeyError, Event.DoesNotExist):
             self.event_option = None
 
-    def add(self, **kwargs):
-        pass
+    def add(self, form, **kwargs):
+        if not self.event:
+            new_event_number = self._temp_conference_number()
+            self.event = Event(
+                number=new_event_number,
+                title='Placeholder Event',
+                city='Placeholder City',
+                date_begins=timezone.now(),
+                registrar=request.user,
+                state_prov='ON',
+                created_by=request.user,
+                modified_by=request.user,
+            )
+            self.event.save()
+        option = EventOptions(
+            event=self.event,
+            name=form.cleaned_data['name'],
+            startdate=form.cleaned_data['startdate'],
+            enddate=form.cleaned_data['enddate'],
+            primary=form.cleaned_data['primary'],
+        )
+        option.save()
+        self.event_option_set = self.event.eventoptions_set.all()
+        context = self.get_context_data(**kwargs)
+        context['conference_option_form'] = self.get_form_class()
+        return self.render_to_response(context)
 
     def delete(self, **kwargs):
         self.event_option.delete()
@@ -936,7 +969,8 @@ class UpdateEventOptions(FormView):
             return self.delete(**kwargs)
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        form.instance = self.event_option
+        if self.event_option:
+            form.instance = self.event_option
         if form.is_valid():
             return self.form_valid(form, **kwargs)
         else:
@@ -946,6 +980,8 @@ class UpdateEventOptions(FormView):
         self.event_option_set = self.event.eventoptions_set.all()
         if self.edit_action == 'update':
             return self.update(form, **kwargs)
+        else:  # self.edit_action == 'add'
+            return self.add(form, **kwargs)
         context = self.get_context_data(**kwargs)
 
         context['conference_option_form'] = self.get_form_class()
@@ -953,13 +989,16 @@ class UpdateEventOptions(FormView):
         return self.render_to_response(context)
 
     def form_invalid(self, form, **kwargs):
-        # return Form.errors.as_data() or Form.errors.as_json()
-        # https://docs.djangoproject.com/en/1.11/ref/forms/api/
-
-        print('\n\ninvalid form')
-        self.event_option_set = self.event.eventoptions_set.all()
-        context = self.get_context_data(**kwargs)
-        return super(UpdateEventOptions, self).form_invalid(form)
+        if self.event:
+            self.event_option_set = self.event.eventoptions_set.all()
+        else:
+            self.event_option_set = None
+        if self.edit_action == 'add':
+            context = self.get_context_data(**kwargs)
+            context['conference_option_form'] = form
+            return self.render_to_response(context)
+        else:  # self.edit_action == 'update'
+            return JsonResponse(form.errors.as_json(), safe=False)
 
     def get_context_data(self, **kwargs):
         context = super(UpdateEventOptions, self).get_context_data(**kwargs)

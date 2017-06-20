@@ -33,10 +33,20 @@
         {% else %}
         <input type="checkbox" class="form-control" id="primary-{{ option.id }}" />
         {% endif %}
+        <span class="errorlist" id="error-checkbox-{{ option.id }}"></span>
       </td>
-      <td><input class="form-control" id="option-name-{{ option.id }}" value="{{ option.name }}" /></td>
-      <td><input class="form-control option-startdate" id="option-startdate-{{ option.id }}" value="{{ option.startdate|date:'Y-m-d' }}" /></td>
-      <td><input class="form-control option-enddate" id="option-enddate-{{ option.id }}" value="{{ option.enddate|date:'Y-m-d' }}" /></td>
+      <td>
+        <input class="form-control" id="option-name-{{ option.id }}" value="{{ option.name }}" />
+        <span class="errorlist" id="error-name-{{ option.id }}"></span>
+      </td>
+      <td>
+        <input class="form-control option-startdate" id="option-startdate-{{ option.id }}" value="{{ option.startdate|date:'Y-m-d' }}" />
+        <span class="errorlist" id="error-startdate-{{ option.id }}"></span>
+      </td>
+      <td>
+        <input class="form-control option-enddate" id="option-enddate-{{ option.id }}" value="{{ option.enddate|date:'Y-m-d' }}" />
+        <span class="errorlist" id="error-enddate-{{ option.id }}"></span>
+      </td>
       <td>
         <button type="button" class="btn btn-danger btn-xs option-manage-btn" id="delete-option-{{ option.id }}" name="delete" option-val="{{ option.id }}">
           Delete&nbsp;
@@ -49,20 +59,20 @@
     {% endfor %}
     <tr id="new-option-row">
       <td>
-        {{ conference_option_form.primary }}
         {{ conference_option_form.primary.errors }}
+        {{ conference_option_form.primary }}
       </td>
       <td>
-        {{ conference_option_form.name }}
         {{ conference_option_form.name.errors }}
+        {{ conference_option_form.name }}
       </td>
       <td>
+        {{ conference_option_form.startdate.errors }}
         {{ conference_option_form.startdate }}
-        {{ conference_option_form.startdate.errors }}
       </td>
       <td>
-        {{ conference_option_form.enddate }}
         {{ conference_option_form.startdate.errors }}
+        {{ conference_option_form.enddate }}
       </td>
       <td>
         <button type="button" class="btn btn-success btn-xs option-manage-btn"

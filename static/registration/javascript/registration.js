@@ -215,7 +215,7 @@ $(document).ready(function(){
         },
         success: function(data, status, xhr){
           var ct = xhr.getResponseHeader('content-type') || '';
-
+          // Check whether response is html or json
           if (ct.indexOf('html') > -1){
             $('#reg-results').html(data);
           }

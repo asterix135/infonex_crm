@@ -367,14 +367,14 @@ $(document).ready(function() {
     var enddate = $('#new-option-row #id_enddate').val();
     if (editAction == 'add') {
       $.ajax({
-        url: '/registration/add_event_option/',
+        url: '/registration/update_event_option/',
         type: 'POST',
         data: {
-          name: name,
-          primary: primary,
-          startdate: startdate,
-          enddate: enddate,
-          event_id: eventId,
+          'name': name,
+          'primary': primary,
+          'startdate': startdate,
+          'enddate': enddate,
+          'event_id': eventId,
           'edit_action': editAction,
         },
         success: function(data) {
@@ -422,8 +422,24 @@ $(document).ready(function() {
           'enddate': endDate,
           'edit_action': editAction,
         },
-        success: function(data) {
-          $('#event-options-panel').html(data);
+        success: function(data, status, xhr) {
+          var ct = xhr.getResponseHeader('content-type') || '';
+          // check whether response is html or json
+          if (ct.indexOf('html') > -1) {
+            $('#event-options-panel').html(data);
+            $('#error-name-' + optionId).text('update successful');
+            setTimeout(function(){
+              $('#error-name-' + optionId).text('')
+            }, 5000);
+          } else if (ct.indexOf('json') > -1) {
+            $.each(['checkbox', 'name', 'startdate', 'enddate'], function(i, val) {
+              $('#error-' + val + '-' + optionId).text('');
+            })
+            var result = $.parseJSON(data);
+            $.each(result, function(k, v) {
+              $('#error-' + k + '-' + optionId).text(v[0].message);
+            })
+          }
           startdateDatepicker();
           enddateDatePicker();
         }

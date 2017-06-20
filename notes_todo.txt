@@ -1,7 +1,3 @@
-TODO: Finish UpdateEventOptions class in registration/views.py
-      a) add method
-      b) how to deal with form.is_invalid()
-
 TODO: Toggle modal to ask about removing Revised Stamp
 
 TODO: Select event button on main CRM page doesn't work
@@ -218,3 +214,7 @@ TODO: DONE - delegate/views.py/build_email_message - need to get rid of Alona be
 TODO: DONE - Add revised flag to invoices
 TODO: DONE - Mass mail function (make sure its visible to admin)
 TODO: DONE - Logic behind changing reg options not working right
+TODO: DONE -  Finish UpdateEventOptions class in registration/views.py
+      a) DONE - add method
+      b) DONE - how to deal with form.is_invalid()
+TODO: DONE - Need some kind of confirmation after updateing event_option

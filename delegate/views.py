@@ -579,6 +579,19 @@ def index(request):
         conference = Event.objects.get(pk=conf_id)
         crm_id = request.POST['crm_id']
         registrant_id = request.POST['registrant_id']
+
+        ## This is an ugly POS and very inefficient, but is a stopgap
+        ## TODO: rework this whole view
+        if registrant_id in ('', None) and crm_id != '':
+            try:
+                crm_match = Person.objects.get(pk=request.POST['crm_id'])
+                if Registrants.objects.filter(crm_person=crm_match).exists():
+                    registrant_id = Registrants.objects.filter(
+                        crm_person=crm_match
+                    )[0].pk
+            except Person.DoesNotExist:
+                pass
+
     else:
         conference = current_registration.conference
         conf_id = conference.pk

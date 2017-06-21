@@ -1,3 +1,5 @@
+TODO: delegate.views.py/index really needs to be reworked.  It's too hard to follow
+
 TODO: Toggle modal to ask about removing Revised Stamp
 
 TODO: Find people registered for specific option
@@ -48,18 +50,15 @@ TODO: 66) Pre-populate new delegate form based on search criteria
 TODO: (low priority) - scroll to error in company-field-compare-modal doesn't
       work in delegate.js script
 
-TODO: Consider automating stopwords in delegate.constants.py
-      some kind of database-driven function
-
 LONGTERM: Put in some kind of machine learning for matching company names - probably a table of match & guess
 
 #############
 # DONE
 #############
 
-TODO: 55) DONE? - Added URL field to event - need to propagate to forms & web pages (modal - yes, )
+DONE: 55) DONE? - Added URL field to event - need to propagate to forms & web pages (modal - yes, )
 
-TODO: 8) DONE - (BIG) rework territory stuff
+DONE: 8) DONE - (BIG) rework territory stuff
          q) DONE - Check if the link on the sidebar takes me to the last territory page or page 1 (as a navigation method)
          s) DONE - Need to implement typeahead on personal selects in manage_territory.html
          p) DONE - Update manage_territory view to hide person-only selects (template-side)
@@ -78,57 +77,57 @@ TODO: 8) DONE - (BIG) rework territory stuff
          b) DONE - Need to (re)-create page showing all people in territory - territory.html
          f) DONE - Need to (re)-create a page to create territory based on set criteria - manage_territory.html
          d) DONE - Need to create a page for db admin to add a conference - Quick add Modal
-TODO: 38) DONE - Fix CSS on detail page for title & company
-TODO: 37) DONE - Active button to create new record based on current
-TODO: 23) DONE - If territory exists: new person should pre-populate categorization with relevant details
+DONE: 38) DONE - Fix CSS on detail page for title & company
+DONE: 37) DONE - Active button to create new record based on current
+DONE: 23) DONE - If territory exists: new person should pre-populate categorization with relevant details
          (This means updating crm.new.py)
-TODO: 39) DONE - Fix placement of CRM etc in top bar: Need to add registration link to CRM
-TODO: 40) DONE - Get rid of jumbotron except on home pages; add logo to top bar
-TODO: 41) DONE - Add territory filter to personal selects
-TODO: 2) DONE - Implement new table for invoices
-TODO: 44) DONE: Rework registration page.  Flow based on reg status; remove deposit details
-TODO: 35) DONE - Check if registration works with event minimally added in crm
+DONE: 39) DONE - Fix placement of CRM etc in top bar: Need to add registration link to CRM
+DONE: 40) DONE - Get rid of jumbotron except on home pages; add logo to top bar
+DONE: 41) DONE - Add territory filter to personal selects
+DONE: 2) DONE - Implement new table for invoices
+DONE: 44) DONE: Rework registration page.  Flow based on reg status; remove deposit details
+DONE: 35) DONE - Check if registration works with event minimally added in crm
           a) DONE - Need to get directly to conference edit page
           b) DONE - Need JS for 'Proceed' button on both instances
-TODO: 49) DONE - REWORK delegate/views.py/process_complete_registration starting at line 113
-TODO: 50) DONE - On delegate page load, make sure 'required' values are set correctly
-TODO: 55) DONE = Need to deal with event option selections on registration processing (currently ignored)
-TODO: 9) DONE - Play with pdf maker (ReportLab) and create new invoice & reg note
-TODO: 60) DONE - Should I put cc, bcc & to in email form?
-TODO: 61) DONE - Email_modal form -
+DONE: 49) DONE - REWORK delegate/views.py/process_complete_registration starting at line 113
+DONE: 50) DONE - On delegate page load, make sure 'required' values are set correctly
+DONE: 55) DONE = Need to deal with event option selections on registration processing (currently ignored)
+DONE: 9) DONE - Play with pdf maker (ReportLab) and create new invoice & reg note
+DONE: 60) DONE - Should I put cc, bcc & to in email form?
+DONE: 61) DONE - Email_modal form -
           a) DONE - finish javascript to add blank email lines
           b) DONE - Validate that email addresses are valid
           b) DONE - Validate that there is at least one email address
           c) DONE - Validate that there is a valid message and subject
-TODO: DONE - 58) Run makemigrations to deal with making sales credit mandatory for Invoice
-TODO: 51) DONE - On delegate page load and relevant changes, calculate tax and total invoice
-TODO: 19) DONE - How to send email confirmations?
-TODO: DONE - 52) Implement front-end logic for existing delegate
-TODO: 45) DONE - On delegate page - need to verify if, on change of conference, the current delegate is registered for that event
-TODO: DONE - 26) Date picker widget (https://jqueryui.com/datepicker/)
-TODO: 59) DONE - Create new delegate option does not work (oops!)  - work registration module on match_del_list.html and reg_jquery.js
-TODO: 62) DONE - Overhaul delegate registration page & logic
+DONE: DONE - 58) Run makemigrations to deal with making sales credit mandatory for Invoice
+DONE: 51) DONE - On delegate page load and relevant changes, calculate tax and total invoice
+DONE: 19) DONE - How to send email confirmations?
+DONE: DONE - 52) Implement front-end logic for existing delegate
+DONE: 45) DONE - On delegate page - need to verify if, on change of conference, the current delegate is registered for that event
+DONE: DONE - 26) Date picker widget (https://jqueryui.com/datepicker/)
+DONE: 59) DONE - Create new delegate option does not work (oops!)  - work registration module on match_del_list.html and reg_jquery.js
+DONE: 62) DONE - Overhaul delegate registration page & logic
           a) DONE BUT DELETE FILES WHEN GOOD - Remove sidebar (match_sidebar.html, sidebar_navbar.html, crm_sidebar.html, company_sidebar.html) & AJAX calls
           b) DONE - update delegate/index.html layout
           c) DONE - add page to confirm company and crm
           d) DONE - update views.py (add new view and update process_registration)
-TODO: DONE - 63) When registering from CRM record, company info does not transfer
-TODO: 53) DONE - Deal with GST/QST Exemption in registration/billing process
-TODO: 62) DONE - Have conference/option end date set automatically based on start date
-TODO: 66) Change company field on delegate page from disabled to readonly?  Or create hidden input value & update it
-TODO: 64) DONE - Delete unused Ajax calls & templates from delegate tree
-TODO: 10) DONE - Post-registration processing page
-TODO: 74) DONE - "I know this company is in there" on delegate registration page
+DONE: DONE - 63) When registering from CRM record, company info does not transfer
+DONE: 53) DONE - Deal with GST/QST Exemption in registration/billing process
+DONE: 62) DONE - Have conference/option end date set automatically based on start date
+DONE: 66) Change company field on delegate page from disabled to readonly?  Or create hidden input value & update it
+DONE: 64) DONE - Delete unused Ajax calls & templates from delegate tree
+DONE: 10) DONE - Post-registration processing page
+DONE: 74) DONE - "I know this company is in there" on delegate registration page
       a) DONE - Populate modal with form fields
       b) DONE - Trigger typeahead in company name field
       c) DONE - Backend search logic for match
       d) DONE - Frontend field population logic
       e) DONE - Backend match logic??
-TODO: 75) DONE - Fix company search modal to only show results after search
-TODO: 73) DONE - Logic to parse postal codes on delegate entry page & search
-TODO: 75) DONE - Write sql routine to insert space into all postal codes where needed
-TODO: 75) DONE - registration.js - line 113ish - how to respond to json w/ redirect
-TODO: 76) DONE?? - delegate/index.py - rewrite to take a get request for a specific reg - start at line 548
+DONE: 75) DONE - Fix company search modal to only show results after search
+DONE: 73) DONE - Logic to parse postal codes on delegate entry page & search
+DONE: 75) DONE - Write sql routine to insert space into all postal codes where needed
+DONE: 75) DONE - registration.js - line 113ish - how to respond to json w/ redirect
+DONE: 76) DONE?? - delegate/index.py - rewrite to take a get request for a specific reg - start at line 548
 DONE - Invoice/reg note rendering failing on following sequence:
   1) new registration
   2) forget to confirm some detail so get taken back to index page (eg. put phone # in email field)
@@ -136,83 +135,83 @@ DONE - Invoice/reg note rendering failing on following sequence:
   -- it appears the info is submitted correctly but there is a problem with the pdf render
   -- pre-tax price not being required before submit (lost on return to page with errors)
   -- on choosing delegate free put $0 in price box
-TODO: 70) DONE - Delegate page - cxl info doesn't disappear when it should
-TODO: DONE - revamp the way company match suggestions are made:
+DONE: 70) DONE - Delegate page - cxl info doesn't disappear when it should
+DONE: DONE - revamp the way company match suggestions are made:
   - see if they can be ordered better
   - trigrams first?
   - use city name?
-TODO: DONE - company suggest
+DONE: DONE - company suggest
       a) name__icontains
       b) deal with escaped characters in regex search
-TODO: Salesperson email not appearing on sponsor bookings?
-TODO: DONE - Selecting registration by criteria
+DONE: Salesperson email not appearing on sponsor bookings?
+DONE: DONE - Selecting registration by criteria
     registration/views.py - line 375 - kwargs don't apply to reg_details
-TODO: DONE - Keep search icon on screen after select
-TODO: 46) DONE - PD/Sales report page on notes (works but ugly)
-TODO: DONE - Date select for registration page chooses wrong date
-TODO: DONE - Make it possible to submit invoice number search with return
-TODO: DONE - Advanced search on CRM is broken
-TODO: DONE - Need to rework the company search function - screws up when dealing with
+DONE: DONE - Keep search icon on screen after select
+DONE: 46) DONE - PD/Sales report page on notes (works but ugly)
+DONE: DONE - Date select for registration page chooses wrong date
+DONE: DONE - Make it possible to submit invoice number search with return
+DONE: DONE - Advanced search on CRM is broken
+DONE: DONE - Need to rework the company search function - screws up when dealing with
       punctuation (commas, slashes, hyphens, etc).
       Also, plural/singular (first nation vs first nations)
       Consider TF/IDF (need to figure out how to best implement this)
-TODO: DONE - How to deal with apostrophes from company name whens searching (regex issue)
-TODO: DONE - if ! company_match, call modal when pressing enter in company name
-TODO: DONE - increase the confidence for recommending crm match
-TODO: DONE - consider updating company search to deal with singular/plural (first nation vs first nations)
-TODO: DONE - Pull speakers only
-TODO: DONE - delegate search doesn't work (other than invoice #)
-TODO: Post-submit modal on company match overwrites everything - should not
+DONE: DONE - How to deal with apostrophes from company name whens searching (regex issue)
+DONE: DONE - if ! company_match, call modal when pressing enter in company name
+DONE: DONE - increase the confidence for recommending crm match
+DONE: DONE - consider updating company search to deal with singular/plural (first nation vs first nations)
+DONE: DONE - Pull speakers only
+DONE: DONE - delegate search doesn't work (other than invoice #)
+DONE: Post-submit modal on company match overwrites everything - should not
       1) DONE - After selecting company on modal, do an AJAX call that returns a JSON with saved company values
       2) DONE - Compare JSON values with values in form
       3) DONE - If there is a difference, close current modal and open a new modal forcing user to choose between differing values
       4) DONE - On new modal have submit form option
       5) DONE - If there are no differences between modal and form, submit form with company value updated
       6) DONE - Make sure submit (views.py) doesn't overwrite existing values or find a way to show diffs
-TODO: DONE - FIX Issue with Peter's computer
+DONE: DONE - FIX Issue with Peter's computer
       1) delegate.views.py/test_peter
       2) templates test_peter.html
       3) url.py pointer
-TODO: DONE - Ability to select past delegate lists on crm advanced search
-TODO: DONE - Count report doesn't work
-TODO: DONE - update paid date when switching status on invoice
-TODO: DONE - 43) Upload current registration information and link to CRM records
+DONE: DONE - Ability to select past delegate lists on crm advanced search
+DONE: DONE - Count report doesn't work
+DONE: DONE - update paid date when switching status on invoice
+DONE: DONE - 43) Upload current registration information and link to CRM records
           a) DONE - upload company files
           b) upload last 2 years of person records
           c) split and upload last 2 years of invoice data (2015-present)
           d) figure out how to auto-link person & crm
-TODO: DONE - New Statuses - Paid cxl, unpaid cxl, substituted out
-TODO: DONE - REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
-TODO: DONE - Code PDF for event_revenue
-TODO: DONE - Set delegate response to not send email automatically when updating
-TODO: DONE - 68) Make it possible to substitute a delegate - need work on modal & logic
-TODO: DONE - Set delegate response to not send email automatically when updating
-TODO: DONE - 65) Create various reports for registration dept
+DONE: DONE - New Statuses - Paid cxl, unpaid cxl, substituted out
+DONE: DONE - REMEMBER TO ACTIVATE CODE THAT ACTUALLY SENDS THE email
+DONE: DONE - Code PDF for event_revenue
+DONE: DONE - Set delegate response to not send email automatically when updating
+DONE: DONE - 68) Make it possible to substitute a delegate - need work on modal & logic
+DONE: DONE - Set delegate response to not send email automatically when updating
+DONE: DONE - 65) Create various reports for registration dept
        a) Badge report seems off
-TODO: DONE - Cancellations - status for refund, credit note, Unpaid
-TODO: DONE - Update email message content for changing to paid;
+DONE: DONE - Cancellations - status for refund, credit note, Unpaid
+DONE: DONE - Update email message content for changing to paid;
       Also, after a conference has run
       Also, when registering/paying inside of 2 weeks
-TODO: 11) DONE - Search and update registration information
-TODO: DONE - Cancellation - verify that there is a cxl date
-TODO: DONE - 67) Need logic on delegate page to validate and deal with invoice changes
-TODO: DONE - 34) registration/forms.py/ConferenceEditForm.clean()
-TODO: DONE - 12) Report generation
-TODO: DONE - Auto-code crm from registration
-TODO: DONE - 47) Edit venue button doesn't work when calling a conference to edit (update - seems ok, but monitor)
-TODO: DONE - 65) Export data http://djangotricks.blogspot.ca/2013/12/how-to-export-data-as-excel.html
-TODO: DONE - add ass't info to crm.person
-TODO: DONE - I have another CRM suggestion.  There should be an alternate email/phone number and contact that we could enter. I often have been speaking with Admin support and they provide other contact info.
-TODO: DONE - typeahead for Assistant info
-TODO: DONE - Make it possible to edit any past conference (button on edit page?)
-TODO: DONE - 57) Add phone number field to auth.User (this seems complicated) and add to email confirmation etc
-TODO: DONE - delegate/views.py/build_email_message - need to get rid of Alona being hard coded
-TODO: DONE - Add revised flag to invoices
-TODO: DONE - Mass mail function (make sure its visible to admin)
-TODO: DONE - Logic behind changing reg options not working right
-TODO: DONE -  Finish UpdateEventOptions class in registration/views.py
+DONE: 11) DONE - Search and update registration information
+DONE: DONE - Cancellation - verify that there is a cxl date
+DONE: DONE - 67) Need logic on delegate page to validate and deal with invoice changes
+DONE: DONE - 34) registration/forms.py/ConferenceEditForm.clean()
+DONE: DONE - 12) Report generation
+DONE: DONE - Auto-code crm from registration
+DONE: DONE - 47) Edit venue button doesn't work when calling a conference to edit (update - seems ok, but monitor)
+DONE: DONE - 65) Export data http://djangotricks.blogspot.ca/2013/12/how-to-export-data-as-excel.html
+DONE: DONE - add ass't info to crm.person
+DONE: DONE - I have another CRM suggestion.  There should be an alternate email/phone number and contact that we could enter. I often have been speaking with Admin support and they provide other contact info.
+DONE: DONE - typeahead for Assistant info
+DONE: DONE - Make it possible to edit any past conference (button on edit page?)
+DONE: DONE - 57) Add phone number field to auth.User (this seems complicated) and add to email confirmation etc
+DONE: DONE - delegate/views.py/build_email_message - need to get rid of Alona being hard coded
+DONE: DONE - Add revised flag to invoices
+DONE: DONE - Mass mail function (make sure its visible to admin)
+DONE: DONE - Logic behind changing reg options not working right
+DONE: DONE -  Finish UpdateEventOptions class in registration/views.py
       a) DONE - add method
       b) DONE - how to deal with form.is_invalid()
-TODO: DONE - Need some kind of confirmation after updateing event_option
-TODO: DONE - Select event button on main CRM page doesn't work
-TODO: DONE - Ability to edit conference options (esp. name)
+DONE: DONE - Need some kind of confirmation after updateing event_option
+DONE: DONE - Select event button on main CRM page doesn't work
+DONE: DONE - Ability to edit conference options (esp. name)

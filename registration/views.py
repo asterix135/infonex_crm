@@ -35,17 +35,6 @@ from infonex_crm.settings import BASE_DIR
 ########################
 # HELPER FUNCTIONS
 ########################
-# def create_temp_conf_number():
-#     """ helper function for add_event_option """
-#     base_number = "TEMP"
-#     counter = 0
-#     while True:
-#         event_number = base_number + str(counter)
-#         if Event.objects.filter(number=event_number).count() == 0:
-#             return event_number
-#         counter += 1
-
-
 def format_sales_report_header_row(ws, row_num=1):
     """
     Sets first 26 columns of specified row in worksheet to bold
@@ -310,57 +299,6 @@ def process_mass_email(request):
 #######################
 # AJAX CALLS
 #######################
-# @login_required
-# def add_event_option(request):
-#     """ ajax call to add options to a conference """
-#     conference_option_form = ConferenceOptionForm()
-#     event_option_set = None
-#     event = None
-#     if request.method == 'POST':
-#         try:
-#             event_id = request.POST['event_id']
-#         except MultiValueDictKeyError:
-#             event_id = None
-#         conference_option_form = ConferenceOptionForm(request.POST)
-#         if conference_option_form.is_valid():
-#             if not event_id:
-#                 new_event_number = create_temp_conf_number()
-#                 event = Event(
-#                     number=new_event_number,
-#                     title='Placeholder Event',
-#                     city='Placeholder City',
-#                     date_begins=timezone.now(),
-#                     registrar=request.user,
-#                     state_prov='ON',
-#                     created_by=request.user,
-#                     modified_by=request.user,
-#                 )
-#                 event.save()
-#             else:
-#                 event = Event.objects.get(pk=event_id)
-#             option = EventOptions(
-#                 event=event,
-#                 name=request.POST['name'],
-#                 startdate=request.POST['startdate'],
-#                 enddate=request.POST['enddate'],
-#                 primary=True if request.POST['primary'] == 'true' else False,
-#             )
-#             option.save()
-#             conference_option_form = ConferenceOptionForm()
-#             event_option_set = event.eventoptions_set.all()
-#         else:
-#             if event_id:
-#                 event = Event.objects.get(pk=event_id)
-#                 event_option_set = event.eventoptions_set.all()
-#     context = {
-#         'conference_option_form': conference_option_form,
-#         'event_option_set': event_option_set,
-#         'event': event,
-#     }
-#     return render(request, 'registration/addins/conference_options_panel.html',
-#                   context)
-
-
 @login_required
 def add_venue(request):
     """ AJAX Function to add new venue and refresh venue sidebar """

@@ -31,11 +31,11 @@
             <p>Allows you to work with a defined sales territory for an individual conference</p>
 
 
-            <form action="{% url 'crm:territory' %}" method="post">
+            <form action="{% url 'crm:select_active_conference' %}" method="post">
               {% csrf_token %}
               <fieldset class="form-group">
-                <label for="{{ territory_form.event.id_for_label }}">Select event:</label>
-                {{ territory_form.event }}
+                <label for="{{ territory_form.event_assignment.id_for_label }}">Select event:</label>
+                {{ territory_form.event_assignment }}
               </fieldset>
               <button type="submit" class="btn btn-success">Go</button>
               {% if user_is_admin %}

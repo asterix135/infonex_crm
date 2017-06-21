@@ -412,21 +412,27 @@ def detail(request, person_id):
 @login_required
 def index(request):
     initial_event = None
+    event_assignment = None
     if 'assignment_id' in request.session:
         try:
-            initial_event = EventAssignment.objects.get(
+            event_assignment = EventAssignment.objects.get(
                 pk=request.session['assignment_id']
-            ).event
+            )
+            initial_event = event_assignment.event
+
             if initial_event.date_begins < \
                 datetime.date.today()-datetime.timedelta(weeks=4):
                 initial_event = None
+                event_assignment = None
         except EventAssignment.DoesNotExist:
             del request.session['assignment_id']
-    territory_form = SelectMyTerritoryForm(initial={'event': initial_event})
-    territory_form.fields['event'].queryset = Event.objects.filter(
-        eventassignment__user=request.user
-    ).filter(date_begins__gte=timezone.now()-datetime.timedelta(weeks=4)
-            ).order_by('-date_begins', 'number')
+    territory_form = SelectMyTerritoryForm(
+        initial={'event_assignment': event_assignment}
+    )
+    territory_form.fields['event_assignment'].queryset = EventAssignment.objects.filter(
+        user=request.user
+    ).filter(event__date_begins__gte=timezone.now()-datetime.timedelta(weeks=4)
+            ).order_by('-event__date_begins', 'event__number')
 
     # check for permission to view all records
     edit_permission_ok = has_management_permission(request.user)
@@ -1345,6 +1351,27 @@ def save_person_details(request):
         'updated_details_success': updated_details_success
     }
     return render(request, 'crm/addins/person_detail.html', context)
+
+
+class SelectActiveConference(View):
+
+    def get(self, request, *args, **kwargs):
+        raise Http404()
+
+    def post(self, request, *args, **kwargs):
+        event_assignment = get_object_or_404(
+            EventAssignment, pk=request.POST['event_assignment'])
+        request.session['assignment_id'] = event_assignment.id
+        request.session['conference_description'] = str(event_assignment.event)
+        # delete all request.session cookies related to territory filter_switch
+        for cookie in ['filter_page', 'filter_name', 'filter_company',
+                       'filter_prov', 'filter_customer', 'filter_flag',
+                       'filter_sort_col', 'filter_sort_order',
+                       'filter_hide_options', 'territory_page']:
+            if cookie in request.session:
+                del(request.session[cookie])
+
+        return HttpResponseRedirect(reverse('crm:territory'))
 
 
 @login_required

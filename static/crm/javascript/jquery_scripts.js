@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
   // Toggles display/hide of sidebar on small canvases
   $('[data-toggle="offcanvas"]').click(function () {
     $('.row-offcanvas').toggleClass('active');
@@ -28,17 +27,13 @@ $(document).ready(function() {
 
   // Change active conference in sidebar
   $('body').on('click', '.sidebar-territory-option', function(){
-    var newConfId = $(this).val();
-    $.ajax({
-      url: '/crm/select_active_conference/',
-      type: 'POST',
-      data: {
-        'new_conf_id': newConfId,
-      },
-      success: function(data){
-        $(location).attr('href', '/crm/territory/')
-      }
-    });
+    var eventAssignmentId = $(this).val();
+    // csrfValue comes from ajax_setup.js
+    var formHtml = '<form action="/crm/select_active_conference/" method="post">' +
+                   '<input name="csrfmiddlewaretoken" value="' + csrfValue + '" type="hidden"/>' +
+                   '<input name="event_assignment" value="' + eventAssignmentId + '"/>' +
+                   '</form>';
+    $(formHtml).appendTo('body').submit();
   });
 
 });

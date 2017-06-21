@@ -1,3 +1,5 @@
+var csrfValue = '';
+
 $(document).ready(function(){
   // AJAX CSRF Setup
   // CSRF code
@@ -18,6 +20,7 @@ $(document).ready(function(){
     return cookieValue;
   };
   var csrftoken = getCookie('csrftoken');
+  csrfValue = csrftoken;
 
   function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection

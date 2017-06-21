@@ -346,24 +346,13 @@ $(document).ready(function() {
 
   // Duplicate current person into new record (pre-populated)
   $('body').on('click', '#duplicate-current-person', function(){
-    var csrfToken = null;
-    var i = 0;
-    if (document.cookie && document.cookie !== ''){
-      var cookies = document.cookie.split(';');
-      for (i; i < cookies.length; i++){
-        var cookie = jQuery.trim(cookies[i]);
-        if (cookie.substring(0,10) === 'csrftoken='){
-          csrfToken = decodeURIComponent(cookie.substring(10));
-          break;
-        };
-      };
-    };
     var emailStringArray = originalEmail.split("@");
     var domainStringLocation = emailStringArray.length -1;
     var emailDomain = emailStringArray[domainStringLocation];
     if (emailDomain.length > 0) {emailDomain = '@' + emailDomain};
+    // csrf value below comes from ajax_setup.js
     var formHtml = '<form action="/crm/new/" method="post">' +
-                   '<input name="csrfmiddlewaretoken" value="' + csrfToken +'" type="hidden"/>' +
+                   '<input name="csrfmiddlewaretoken" value="' + csrfValue +'" type="hidden"/>' +
                    '<input type="hidden" name="dept" value="' + originalCatDept + '"/>' +
                    '<input type="hidden" name="company" value="' + originalCompany + '"/>' +
                    '<input type="hidden" name="city" value="' + originalCity + '"/>' +

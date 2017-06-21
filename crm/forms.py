@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.forms import ModelChoiceField
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -16,6 +17,14 @@ class HorizontalRadioRenderer(forms.RadioSelect.renderer):
     def render(self):
         return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
 
+
+#################
+# Model fields
+#################
+class EventAssignmentChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        # print(str(obj))
+        return str(obj.event)
 
 #################
 # Forms
@@ -422,16 +431,13 @@ class SearchForm(forms.Form):
                                     ))
 
 
-class SelectMyTerritoryForm(forms.ModelForm):
-
-    class Meta:
-        model = EventAssignment
-        fields = ('event',)
-        labels = {
-            'event': _('Select Event')
-        }
-        widgets = {
-            'event': forms.Select(
-                attrs={'class': 'form-control'}
-            ),
-        }
+class SelectMyTerritoryForm(forms.Form):
+    event_assignment = EventAssignmentChoiceField(
+        label='Select Event',
+        required=True,
+        initial='',
+        queryset=EventAssignment.objects.all(),
+        widget=forms.Select(
+            attrs={'class': 'form-control col-sm-4'}
+        )
+    )

@@ -1,9 +1,5 @@
 TODO: Toggle modal to ask about removing Revised Stamp
 
-TODO: Select event button on main CRM page doesn't work
-
-TODO: Ability to edit conference options (esp. name)
-
 TODO: Find people registered for specific option
 
 TODO: Registration processing page - if matching delegate exists, need a pop-up to say same or new or additional invoice
@@ -218,3 +214,5 @@ TODO: DONE -  Finish UpdateEventOptions class in registration/views.py
       a) DONE - add method
       b) DONE - how to deal with form.is_invalid()
 TODO: DONE - Need some kind of confirmation after updateing event_option
+TODO: DONE - Select event button on main CRM page doesn't work
+TODO: DONE - Ability to edit conference options (esp. name)

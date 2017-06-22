@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'crm.apps.CrmConfig',
     'home.apps.HomeConfig',
     'registration.apps.RegistrationConfig',
+    'marketing.apps.MarketingConfig',
     'delegate.apps.DelegateConfig',
     'django.contrib.admin',
     'django.contrib.auth',

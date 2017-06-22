@@ -10,6 +10,11 @@ urlpatterns = [
     ################
     url(r'^$', views.index, name='index'),
     url(r'^delete/$', views.delete, name='delete'),
+
+    url(r'^test/(?P<pk>[0-9]+)/$',
+        login_required(views.Detail.as_view()),
+        name='test'),
+
     url(r'^detail/(?P<person_id>[0-9]+)/$', views.detail, name='detail'),
     url(r'^manage_territory/$', views.manage_territory,
         name='manage_territory'),

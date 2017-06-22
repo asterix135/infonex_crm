@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
+from django.views.generic import DetailView
 
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import letter
@@ -349,6 +350,21 @@ def delete(request):
     add_change_record(person, 'delete')
     person.delete()
     return HttpResponseRedirect('/crm/search/')
+
+
+class Detail(DetailView):
+    template_name = 'crm/detail.html'
+    model = Person
+
+    def get_context_data(self, **kwargs):
+        print('get context')
+        context = super(Detail, self).get_context_data(**kwargs)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        print('get')
+        super(Detail, self).get(request, *args, **kwargs)
+
 
 
 @login_required

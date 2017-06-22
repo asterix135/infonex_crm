@@ -1,3 +1,7 @@
+TODO: implement marketing app
+
+TODO: crm.views.py/Detail - need to switch this over from detail
+
 TODO: delegate.views.py/index really needs to be reworked.  It's too hard to follow
 
 TODO: Toggle modal to ask about removing Revised Stamp

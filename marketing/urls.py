@@ -5,5 +5,5 @@ from . import views
 
 app_name = 'marketing'
 urlpatterns = [
-
+    url(r'^$', login_required(views.Index.as_view()), name='index'),
 ]

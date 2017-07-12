@@ -1,8 +1,3 @@
-TODO: TAX EXEMPTION ERROR
-      (This must be a javascript thing)
-      Go into an existing tax-exempt registration - taxes will show
-      (is ok when creating a new registration)
-
 TODO: implement marketing app
 
 TODO: crm.views.py/Detail - need to switch this over from detail
@@ -224,3 +219,7 @@ DONE: DONE -  Finish UpdateEventOptions class in registration/views.py
 DONE: DONE - Need some kind of confirmation after updateing event_option
 DONE: DONE - Select event button on main CRM page doesn't work
 DONE: DONE - Ability to edit conference options (esp. name)
+DONE: TAX EXEMPTION ERROR
+      (This must be a javascript thing)
+      Go into an existing tax-exempt registration - taxes will show
+      (is ok when creating a new registration)

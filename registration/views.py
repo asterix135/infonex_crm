@@ -838,22 +838,25 @@ class UpdateEventOptions(FormView):
         counter = 0
         while True:
             event_number = base_number + str(counter)
-            if Event.objects.filter(number=event_number).count == 0:
+            if Event.objects.filter(number=event_number).count() == 0:
                 return event_number
             counter += 1
 
     def _set_event(self):
-        try:
-            self.event = Event.objects.get(pk=self.request.POST['event_id'])
-        except (MultiValueDictKeyError, Event.DoesNotExist):
+        if self.request.POST['event_id'] in ('', None):
             self.event = None
+        else:
+            try:
+                self.event = Event.objects.get(pk=self.request.POST['event_id'])
+            except (MultiValueDictKeyError, Event.DoesNotExist):
+                self.event = None
 
     def _set_event_option(self):
         try:
             self.event_option = EventOptions.objects.get(
                 pk=self.request.POST['option_id']
             )
-        except (MultiValueDictKeyError, Event.DoesNotExist):
+        except (MultiValueDictKeyError, Event.DoesNotExist, ValueError):
             self.event_option = None
 
     def add(self, form, **kwargs):
@@ -864,10 +867,10 @@ class UpdateEventOptions(FormView):
                 title='Placeholder Event',
                 city='Placeholder City',
                 date_begins=timezone.now(),
-                registrar=request.user,
+                registrar=self.request.user,
                 state_prov='ON',
-                created_by=request.user,
-                modified_by=request.user,
+                created_by=self.request.user,
+                modified_by=self.request.user,
             )
             self.event.save()
         option = EventOptions(
@@ -915,7 +918,10 @@ class UpdateEventOptions(FormView):
             return self.form_invalid(form, **kwargs)
 
     def form_valid(self, form, **kwargs):
-        self.event_option_set = self.event.eventoptions_set.all()
+        if self.event:
+            self.event_option_set = self.event.eventoptions_set.all()
+        else:
+            self.event_option_set = None
         if self.edit_action == 'update':
             return self.update(form, **kwargs)
         else:  # self.edit_action == 'add'

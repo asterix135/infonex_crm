@@ -249,7 +249,7 @@ class RegDetailsForm(forms.ModelForm):
             ),
             'qst_rate': forms.NumberInput(
                 attrs={'class': 'form-control cost-field',
-                       'step': '0.0005'}
+                       'step': '0.0001'}
             ),
             'payment_date': forms.DateInput(
                 attrs={'class': 'form-control',

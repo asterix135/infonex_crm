@@ -1,3 +1,8 @@
+TODO: TAX EXEMPTION ERROR
+      (This must be a javascript thing)
+      Go into an existing tax-exempt registration - taxes will show
+      (is ok when creating a new registration)
+
 TODO: implement marketing app
 
 TODO: crm.views.py/Detail - need to switch this over from detail

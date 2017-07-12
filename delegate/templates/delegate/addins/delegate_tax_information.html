@@ -3,8 +3,12 @@
   {{ reg_details_form.gst_rate.label_tag }}
   {{ reg_details_form.gst_rate.errors }}
   <div class="input-group">
+    {% if reg_details_form.gst_rate.errors or data_source != 'new' %}
+    {{ reg_details_form.gst_rate }}
+    {% else %}
     <input id="id_gst_rate" class="form-control cost-field" name="gst_rate" step="0.01"
       required="" type="number" value="{{ conference.gst_rate }}" />
+    {% endif %}
     <span class="input-group-addon">%</span>
   </div>
 </div>
@@ -14,8 +18,12 @@
   {{ reg_details_form.hst_rate.label_tag }}
   {{ reg_details_form.hst_rate.errors }}
   <div class="input-group">
+    {% if reg_details_form.hst_rate.errors or data_source != 'new' %}
+    {{ reg_details_form.hst_rate }}
+    {% else %}
     <input id="id_hst_rate" class="form-control cost-field" name="hst_rate" step="0.01"
       required="" type="number" value="{{ conference.hst_rate }}"/>
+    {% endif %}
     <span class="input-group-addon">%</span>
   </div>
 </div>
@@ -25,8 +33,12 @@
   {{ reg_details_form.qst_rate.label_tag }}
   {{ reg_details_form.qst_rate.errors }}
   <div class="input-group">
+    {% if reg_details_form.qst_rate.errors or data_source != 'new' %}
+    {{ reg_details.form.qst_rate }}
+    {% else %}
     <input id="id_qst_rate" class="form-control cost-field" name="qst_rate" step="0.001"
       required="" type="number" value="{{ conference.qst_rate }}" />
+    {% endif %}
     <span class="input-group-addon">%</span>
   </div>
 </div>

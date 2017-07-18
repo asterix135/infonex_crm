@@ -1,1 +1,15 @@
+{% extends 'crm/base.html' %}
+{% load staticfiles %}
+{% load crm_extras %}
+
+{% block script_includes %}
+<script type="text/javascript" src="{% static 'marketing/javascript/marketing.js' %}"></script>
+<link href="{% static 'marketing/css/marketing.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block content %}
+{% include 'marketing/index_addins/navbar.html' %}
+
+
 <h1>Marketing Page</h1>
+{% endblock %}

@@ -8,7 +8,7 @@ th {
   z-index: 1031;
 }
 .marketing-table {
-  margin-top: 100px;
+  margin-top: 90px;
 }
 .table-field {
   border: none;
@@ -33,23 +33,15 @@ th {
   vertical-align: middle !important;
   /*padding-top: 12px;*/
 }
+#table-container {
+  display: block;
+}
 
 
-/*.table-fixed thead {
-  width: 97%;
-}*/
 .table-fixed tbody {
-  height: 2300px;
+  height: 75vh;
   overflow-y: auto;
-  /*width: 100%;*/
 }
 .table-fixed thead, .table-fixed tbody {
   display: block;
 }
-/*.table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
-  display: block;
-}*/
-/*.table-fixed tbody td, .table-fixed thead > tr> th {
-  float: left;
-  border-bottom-width: 0;
-}*/

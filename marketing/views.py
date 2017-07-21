@@ -4,7 +4,7 @@ from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views import View
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import ListView, TemplateView
 
 from crm.models import Person, Changes
 from crm.views import add_change_record
@@ -52,13 +52,23 @@ class Delete(View):
         return HttpResponse(status=200)
 
 
-class Index(TemplateView):
+class Index(ListView):
     template_name = 'marketing/index.html'
+    context_object_name = 'records'
+    queryset = Person.objects.all()[:200]
+    paginate_by=100
+
+    def get_ordering(self):
+        return super(Index, self).get_ordering()
+
+    def get_paginate_by(self, queryset):
+        return super(Index, self).get_paginate_by(queryset)
+
+    def get_queryset(self):
+        return super(Index, self).get_queryset()
 
     def get_context_data(self, **kwargs):
         context = super(Index, self).get_context_data(**kwargs)
-        records = Person.objects.all()[:100]
-        context['records'] = records
         context['geo_choices'] = GEO_CHOICES
         context['cat_choices'] = CAT_CHOICES
         context['div_choices'] = DIV_CHOICES

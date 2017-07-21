@@ -27,76 +27,7 @@
     </thead>
     <tbody>
       {% for record in records %}
-      <tr record_id="{{ record.pk }}">
-        <td class="select-input">
-          <button type="button" class="btn btn-link delete-step-1" record_id="{{ record.pk }}">
-            <span class="glyphicon glyphicon-remove-sign"></span>
-          </button>
-        </td>
-        <td class="select-input">
-          <select class="form-control" record_id="{{ record.pk }}" name="main_category">
-            {% for option in cat_choices %}
-            <option value="{{ option.0 }}" {% if record.main_category == option.0 %}selected="selected"{% endif %}>
-              {{ option.1 }}
-            </option>
-            {% endfor %}
-          </select>
-        </td>
-        <td class="select-input">
-          <select class="form-control" record_id="{{ record.pk }}" name="main_category2">
-            {% for option in cat_choices %}
-            <option value="{{ option.0 }}" {% if record.main_category2 == option.0 %}selected="selected"{% endif %}>
-              {{ option.1 }}
-            </option>
-            {% endfor %}
-          </select>
-        </td>
-        <td class="select-display"><span name="state_prov" record_id="{{ record.id }}">{{ record.state_prov }}</span></td>
-        <td class="select-input">
-          <select class="form-control" record_id="{{ record.pk }}" name="geo">
-            {% for option in geo_choices %}
-            <option value="{{ option.0 }}" {% if record.geo == option.0 %}selected="selected"{% endif %}>
-              {{ option.1 }}
-            </option>
-            {% endfor %}
-          </select>
-        </td>
-        <td class="select-input">
-          <select class="form-control" record_id="{{ record.pk }}" name="division1">
-            {% for option in div_choices %}
-            <option value="{{ option.0 }}" {% if record.division1 == option.0 %}selected="selected"{% endif %}>
-              {{ option.1 }}
-            </option>
-            {% endfor %}
-          </select>
-        </td>
-        <td class="select-input">
-          <select class="form-control" record_id="{{ record.pk }}" name="division2">
-            {% for option in div_choices %}
-            <option value="{{ option.0 }}" {% if record.division2 == option.0 %}selected="selected"{% endif %}>
-              {{ option.1 }}
-            </option>
-            {% endfor %}
-          </select>
-        </td>
-        <td class="text-input"><input class="form-control table-field" record_id="{{ record.pk }}" name="company" value="{{ record.company }}" /></td>
-        <td class="text-input"><input class="form-control table-field" record_id="{{ record.pk }}" name="name" value="{{ record.name }}"/></td>
-        <td class="text-input"><input class="form-control table-field" record_id="{{ record.pk }}" name="title" value="{{ record.title }}" /></td>
-        <td class="text-input"><input class="form-control table-field" record_id="{{ record.pk }}" name="dept" value="{{ record.dept|default_if_none:'' }}" /></td>
-        <td class="text-input"><input class="form-control table-field" record_id="{{ record.pk }}" name="phone" value="{{ record.phone }}" /></td>
-        <td class="select-input"><input type="checkbox" class="form-control" record_id="{{ record.pk }}" name="do_not_call" {% if record.do_not_call %}checked{% endif %} /></td>
-        <td class="text-input"><input class="form-control table-field" record_id="{{ record.pk }}" name="email" value="{{ record.email }}" /></td>
-        <td class="select-input"><input type="checkbox" class="form-control" record_id="{{ record.pk }}" name="do_not_email" {% if record.do_not_email %}checked{% endif %} /></td>
-        <td class="textarea-input"><textarea rows="1" class="form-control table-field" record_id="{{ record.pk }}" name="industry">{{ record.industry }}</textarea></td>
-        <td class="select-display">
-          {% if record.has_registration_history %}
-          <span class="glyphicon glyphicon-ok"></span>
-          {% endif %}
-        </td>
-        <td class="text-input"><input class="form-control table-field" record_id="{{ record.pk }}" name="email_alternate" value="{{ record.email_alternate|default_if_none:'' }}" /></td>
-        <td class="text-display"><span name="date_created" record_id="{{ record.id }}">{{ record.date_created|date:"SHORT_DATE_FORMAT" }}</span></td>
-        <td class="text-display"><span name="date_modified" record_id="{{ record.id }}">{{ record.date_modified|date:"SHORT_DATE_FORMAT" }}</span></td>
-      </tr>
+      {% include 'marketing/index_addins/table_row.html' %}
       {% endfor %}
     </tbody>
   </table>

@@ -73,5 +73,19 @@ $(document).ready(function() {
     });
   });
 
+  ////////////////////
+  // Add record
+  ////////////////////
+  $('body').on('click', '#btn-add-record', function(){
+    $.ajax({
+      url: '/marketing/add/',
+      type: 'POST',
+      success: function(data){
+        console.log('success');
+        $('.marketing-table').prepend(data);
+        $('input[name="company"]:first').focus();
+      }
+    });
+  });
 
 });

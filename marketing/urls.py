@@ -13,6 +13,9 @@ urlpatterns = [
     ################
     # Ajax
     ################
+    url(r'^add/$',
+        login_required(views.Add.as_view()),
+        name='add'),
     url(r'^delete/$',
         login_required(views.Delete.as_view()),
         name='delete'),

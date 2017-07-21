@@ -45,13 +45,11 @@ $(document).ready(function(){
 
   $('body').on('click', '.btn-restore', function(){
     var rowId = $(this).attr('related-email');
-    console.log(rowId);
     var removeBtn = $('#remove-email-btn-' + rowId);
-    console.log(removeBtn)
     removeBtn.removeClass('delete-step-2 btn-warning');
     removeBtn.addClass('delete-step-1 btn-default');
     removeBtn.html('<span class="glyphicon glyphicon-remove"></span>');
-    $(this).remove()
+    $(this).remove();
   });
 
   $('body').on('click', '.delete-step-2', function(){

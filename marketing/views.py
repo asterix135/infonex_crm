@@ -1,13 +1,14 @@
 from time import strftime
 
 from django.forms import model_to_dict
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
-from crm.models import Person
+from crm.models import Person, Changes
+from crm.views import add_change_record
 from crm.constants import GEO_CHOICES, CAT_CHOICES, DIV_CHOICES
 
 class Index(TemplateView):
@@ -28,7 +29,7 @@ class UpdatePerson(View):
     def get(self, request, *args, **kwargs):
         raise Http404()
 
-    def post(self, request, *arts, **kwargs):
+    def post(self, request, *args, **kwargs):
         person = get_object_or_404(Person, pk=request.POST['record_id'])
         update_field = request.POST['field']
         new_value = request.POST['new_value']
@@ -45,3 +46,18 @@ class UpdatePerson(View):
             'state_prov': person.state_prov(),
         }
         return JsonResponse(person_vals)
+
+
+class Delete(View):
+
+    def get(self, request, *args, **kwargs):
+        raise Http404()
+
+    def post(self, request, *args, **kwargs):
+        person = get_object_or_404(Person, pk=request.POST['record_id'])
+        pk = person.pk
+        Changes.objects.filter(orig_id=pk).delete()
+        if person.has_registration_history():
+            add_change_record(person, 'delete')
+        person.delete()
+        return HttpResponse(status=200)

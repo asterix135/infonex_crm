@@ -27,9 +27,9 @@
     </thead>
     <tbody>
       {% for record in records %}
-      <tr>
+      <tr record_id="{{ record.pk }}">
         <td class="select-input">
-          <button type="button" class="btn btn-link" record_id="{{ record.pk }}">
+          <button type="button" class="btn btn-link delete-step-1" record_id="{{ record.pk }}">
             <span class="glyphicon glyphicon-remove-sign"></span>
           </button>
         </td>

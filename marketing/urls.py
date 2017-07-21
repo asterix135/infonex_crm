@@ -13,6 +13,9 @@ urlpatterns = [
     ################
     # Ajax
     ################
+    url(r'^delete/$',
+        login_required(views.Delete.as_view()),
+        name='delete'),
     url(r'^update/$',
         login_required(views.UpdatePerson.as_view()),
         name='update'),

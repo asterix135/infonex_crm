@@ -55,8 +55,75 @@ class Delete(View):
 class Index(ListView):
     template_name = 'marketing/index.html'
     context_object_name = 'records'
-    queryset = Person.objects.all()[:200]
+    queryset = Person.objects.all()
     paginate_by=100
+
+    def _generate_pagination_list(self, context):
+        paginator = context['paginator']
+        page_obj = context['page_obj']
+        page_num = page_obj.number
+        last_page = paginator.num_pages
+        pagination_list = [1,]
+
+        # pre-page numbers
+        if page_num > 500:
+            start_num = page_num % 500
+            start_num += 500 if start_num == 0 else 0
+            while start_num < page_num:
+                pagination_list.append(start_num)
+                start_num += 500
+            pagination_list.append(page_num - 100)
+            pagination_list.append(page_num - 10)
+        elif page_num > 100:
+            start_num = page_num % 100
+            start_num += 100 if start_num == 0 else 0
+            while start_num < page_num:
+                pagination_list.append(start_num)
+                start_num += 100
+            pagination_list.append(page_num - 10)
+        elif page_num > 50:
+            pagination_list.append(page_num-50)
+            pagination_list.append(page_num - 10)
+        elif page_num > 10:
+            start_num = page_num % 10
+            start_num += 10 if start_num == 0 else 0
+            while start_num < page_num:
+                pagination_list.append(start_num)
+                start_num += 10
+        for i in range (page_num-5, page_num):
+            if i > 1:
+                pagination_list.append(i)
+
+        # post-page numbers
+        for i in range(page_num + 1, page_num + 6):
+            if i < last_page:
+                pagination_list.append(i)
+        if last_page - page_num > 500:
+            pagination_list.append(page_num + 10)
+            pagination_list.append(page_num + 100)
+            start_num = page_num + 500
+            while start_num < last_page:
+                pagination_list.append(start_num)
+                start_num += 500
+        elif last_page - page_num > 100:
+            pagination_list.append(page_num + 10)
+            start_num = page_num + 100
+            while start_num < last_page:
+                pagination_list.append(start_num)
+                start_num += 100
+        elif last_page - page_num > 50:
+            pagination_list.append(page_num + 10)
+            pagination_list.append(page_num + 50)
+        elif last_page - page_num > 10:
+            start_num = page_num + 10
+            while start_num < last_page:
+                pagination_list.append(start_num)
+                start_num += 10
+
+        if last_page > 1:
+            pagination_list.append(last_page)
+
+        return pagination_list
 
     def get_ordering(self):
         return super(Index, self).get_ordering()
@@ -72,6 +139,8 @@ class Index(ListView):
         context['geo_choices'] = GEO_CHOICES
         context['cat_choices'] = CAT_CHOICES
         context['div_choices'] = DIV_CHOICES
+        if context['is_paginated']:
+            context['pagination_list'] = self._generate_pagination_list(context)
         return context
 
 

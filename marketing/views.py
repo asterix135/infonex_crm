@@ -56,7 +56,7 @@ class Index(ListView):
     template_name = 'marketing/index.html'
     context_object_name = 'records'
     queryset = Person.objects.all()
-    paginate_by=100
+    paginate_by=250
 
     def _generate_pagination_list(self, context):
         paginator = context['paginator']
@@ -126,13 +126,51 @@ class Index(ListView):
         return pagination_list
 
     def get_ordering(self):
-        return super(Index, self).get_ordering()
+        """
+        Return the field or fields to use for ordering the queryset.
+        Overrides default method
+        """
+        self.order = self.request.GET.get('order', 'asc')
+        sort_by = self.request.GET.get('sort_by', None)
+        if sort_by and self.order == 'desc':
+            sort_by = '-' + sort_by
+        return self.ordering
 
     def get_paginate_by(self, queryset):
         return super(Index, self).get_paginate_by(queryset)
 
     def get_queryset(self):
         return super(Index, self).get_queryset()
+
+    def paginate_queryset(self, queryset, page_size):
+        """
+        Paginate the queryset, if needed.
+        Override default method to go to first or last page if out of bounds
+        """
+        paginator = self.get_paginator(
+            queryset, page_size, orphans=self.get_paginate_orphans(),
+            allow_empty_first_page=self.get_allow_empty())
+        page_kwarg = self.page_kwarg
+        page = self.kwargs.get(page_kwarg) or self.request.GET.get(page_kwarg) or 1
+        try:
+            page_number = int(page)
+        except ValueError:
+            if page == 'last':
+                page_number = paginator.num_pages
+            else:
+                raise Http404(_("Page is not 'last', nor can it be converted to an int."))
+        if page_number < 1:
+            page_number = 1
+        if page_number > paginator.num_pages:
+            page_number = paginator.num_pages
+        try:
+            page = paginator.page(page_number)
+            return (paginator, page, page.object_list, page.has_other_pages())
+        except InvalidPage as e:
+            raise Http404(_('Invalid page (%(page_number)s): %(message)s') % {
+                'page_number': page_number,
+                'message': str(e)
+            })
 
     def get_context_data(self, **kwargs):
         context = super(Index, self).get_context_data(**kwargs)
@@ -141,6 +179,11 @@ class Index(ListView):
         context['div_choices'] = DIV_CHOICES
         if context['is_paginated']:
             context['pagination_list'] = self._generate_pagination_list(context)
+        context['order'] = self.order
+        sort_order = self.get_ordering()
+        if sort_order and sort_order[0] == '-':
+            sort_order = sort_order[1:]
+        context['sort_order'] = sort_order
         return context
 
 

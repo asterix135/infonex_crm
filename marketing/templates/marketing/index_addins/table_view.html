@@ -3,7 +3,11 @@
     <thead>
       <tr>
         <th class="select-input-head">Delete</th>
-        <th class="select-input-head">Main1</th>
+        <th class="select-input-head">
+          <a href="?page={{ page_obj.number }}&sort_order=main_category&order={% if order == 'desc' %}asc{% else %}desc{% endif %}">
+            Main1
+          </a>
+        </th>
         <th class="select-input-head">Main2</th>
         <th class="select-input-head">State/Prov</th>
         <th class="select-input-head">Geo</th>

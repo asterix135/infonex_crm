@@ -134,7 +134,7 @@ class Index(ListView):
         sort_by = self.request.GET.get('sort_by', None)
         if sort_by and self.order == 'desc':
             sort_by = '-' + sort_by
-        return self.ordering
+        return sort_by
 
     def get_paginate_by(self, queryset):
         return super(Index, self).get_paginate_by(queryset)
@@ -180,10 +180,10 @@ class Index(ListView):
         if context['is_paginated']:
             context['pagination_list'] = self._generate_pagination_list(context)
         context['order'] = self.order
-        sort_order = self.get_ordering()
-        if sort_order and sort_order[0] == '-':
-            sort_order = sort_order[1:]
-        context['sort_order'] = sort_order
+        sort_by = self.get_ordering()
+        if sort_by and sort_by[0] == '-':
+            sort_by = sort_by[1:]
+        context['sort_by'] = sort_by
         return context
 
 

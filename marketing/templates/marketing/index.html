@@ -8,6 +8,16 @@
 {% endblock %}
 
 {% block content %}
+<div id="hidden-variables">
+  <input type="hidden" id="filter-string" value="{{ filter_string|default_if_none:'' }}" />
+  <input type="hidden" id="sort-by" value="{{ sort_by|default_if_none:'' }}" />
+  <input type="hidden" id="order" value="{{ order|default_if_none:'' }}" />
+  {% if page_obj %}
+  <input type="hidden" id="page-number" value="{{ page_obj.number }}" />
+  {% else %}
+  <input type="hidden" id="page-number" value="" />
+  {% endif %}
+</div>
 {% include 'marketing/index_addins/navbar.html' %}
 {% include 'marketing/index_addins/table_view.html' %}
 

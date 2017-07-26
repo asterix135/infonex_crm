@@ -1,5 +1,6 @@
 $(document).ready(function() {
   let oldValue;
+  var filterString = $('#filter-string').val();
 
   ///////////////////
   // submit changes to record as they are completed
@@ -19,10 +20,10 @@ $(document).ready(function() {
       },
     });
   };
-  $('body').on('focusin', 'input, textarea', function(){
+  $('body').on('focusin', '.record-field', function(){
     oldValue = $(this).val();
   });
-  $('body').on('focusout', 'input, textarea', function(){
+  $('body').on('focusout', '.record-field', function(){
     if ($(this).attr('type') != 'checkbox') {
       var newValue = $(this).val();
       if (newValue != oldValue) {
@@ -32,7 +33,7 @@ $(document).ready(function() {
         }
     };
   });
-  $('body').on('change', 'input[type="checkbox"], select', function(){
+  $('body').on('change', '.record-checkbox, .record-select', function(){
     var field = $(this).attr('name');
     var recordId = $(this).attr('record_id');
     if ($(this).is('input')) {
@@ -87,5 +88,50 @@ $(document).ready(function() {
       }
     });
   });
+
+  ////////////////////
+  // filter records
+  ////////////////////
+  $('body').on('click', '#btn-filter', function(){
+    $('#filter-row').addClass('in');
+    $(this).addClass('disabled');
+    $('#btn-see-all').removeClass('disabled');
+  })
+  $('body').on('click', '#btn-see-all', function(){
+    if (filterString != '') {
+      window.location.href = '/marketing/';
+    } else {
+      $('#filter-row').removeClass('in');
+      $(this).addClass('disabled');
+      $('#btn-filter').removeClass('disabled');
+    }
+  });
+  $('body').on('click', '#btn-apply-filter', function(){
+    var newFilterString = '?';
+    $('.filter-input').each(function(){
+      if ($(this).attr('type') == 'checkbox') {
+        if ($(this).is(':checked')){
+          newFilterString += $(this).attr('filter-field') + '=' + 'true' + '&';
+        };
+      } else if ($(this).val() != '' ) {
+        newFilterString += $(this).attr('filter-field') + '=' + $(this).val() + '&';
+      };
+    });
+    newFilterString = newFilterString.slice(0,-1);
+
+    // TODO: break if newFilterString == ''
+
+    newFilterString = newFilterString.replace(/\s/g, '%20');
+    if ($('#sort-by').val()) {
+      newFilterString += '&sort_by=' + $('#sort-by').val();
+      newFilterString += '&order=' + $('#order').val();
+    }
+    if ($('#page-number').val()) {
+      newFilterString += '&page=' + $('#page-number').val();
+    }
+
+    console.log(newFilterString);
+  });
+
 
 });

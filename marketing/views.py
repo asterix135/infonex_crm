@@ -139,8 +139,14 @@ class Index(ListView):
     def get_paginate_by(self, queryset):
         return super(Index, self).get_paginate_by(queryset)
 
+    def _filter_queryset(self, queryset):
+        self.filter_string = None
+        return queryset
+
     def get_queryset(self):
-        return super(Index, self).get_queryset()
+        queryset = super(Index, self).get_queryset()
+        self._filter_queryset(queryset)
+        return queryset
 
     def paginate_queryset(self, queryset, page_size):
         """
@@ -184,6 +190,7 @@ class Index(ListView):
         if sort_by and sort_by[0] == '-':
             sort_by = sort_by[1:]
         context['sort_by'] = sort_by
+        context['filter_string'] = self.filter_string
         return context
 
 

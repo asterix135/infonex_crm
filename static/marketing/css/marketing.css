@@ -1,5 +1,6 @@
 th {
     white-space: nowrap;
+    vertical-align: middle !important;
 }
 .navbar-static-top {
   position:fixed;

@@ -1,0 +1,96 @@
+<tr class="collapse in" id="filter-row">
+  <td class="select-input">
+    <button class="btn btn-success" type="button" id="btn-apply-filter">
+      Apply
+    </button>
+  </th>
+  <td>
+    <select class="form-control filter-input" filter-field="main_category">
+      <option value="">
+      </option>
+      {% for option in cat_choices %}
+      <option value = "{{ option.0 }}">
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
+  <td>
+    <select class="form-control filter-input" filter-field="main_category2">
+      <option value="">
+      </option>
+      {% for option in cat_choices %}
+      <option value = "{{ option.0 }}">
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
+  <td></td>
+  <td>
+    <select class="form-control filter-input" filter-field="geo">
+      <option value="">
+      </option>
+      {% for option in geo_choices %}
+      <option value = "{{ option.0 }}">
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
+  <td>
+    <select class="form-control filter-input" filter-field="division1">
+      <option value="">
+      </option>
+      {% for option in div_choices %}
+      <option value = "{{ option.0 }}">
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
+  <td>
+    <select class="form-control filter-input" filter-field="division2">
+      <option value="">
+      </option>
+      {% for option in div_choices %}
+      <option value = "{{ option.0 }}">
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
+  <td>
+    <input class="form-control filter-input" filter-field="company" />
+  </td>
+  <td>
+    <input class="form-control filter-input" filter-field="name" />
+  </td>
+  <td>
+    <input class="form-control filter-input" filter-field="title" />
+  </td>
+  <td>
+    <input class="form-control filter-input" filter-field="dept" />
+  </td>
+  <td>
+    <input class="form-control filter-input" filter-field="phone" />
+  </td>
+  <td>
+    <input type="checkbox" class="form-control filter-input" filter-field="do_not_call" />
+  </td>
+  <td>
+    <input class="form-control filter-input" filter-field="email" />
+  </td>
+  <td>
+    <input type="checkbox" class="form-control filter-input" filter-field="do_not_email" />
+  </td>
+  <td>
+    <input class="form-control filter-input" filter-field="industry" />
+  </td>
+  <th></th>
+  <td>
+    <input class="form-control filter-input" filter-field="email_alternate" />
+  </td>
+  <th></th>
+  <th></th>
+</tr>

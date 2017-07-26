@@ -48,6 +48,11 @@
             {% if reg_permission_ok %}
             <li><a href="{% url 'registration:index' %}">Registration</a></li>
             {% endif %}
+            {% if request.user|has_group:'marketing' or request.user|has_group:'management' or request.user|has_group:'db_admin' or request.user.is_superuser %}
+            <li>
+              <a href="{% url 'marketing:index' %}">Marketing</a>
+            </li>
+            {% endif %}
           </ul>
           {% endif %}
           <ul class="nav navbar-nav navbar-right">

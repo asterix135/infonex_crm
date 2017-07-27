@@ -4,13 +4,13 @@
       <tr>
         <th class="select-input-head"></th>
         <th class="select-input-head">
-          <a href="?page={{ page_obj.number }}&sort_by=main_category&order={% if order == 'desc' or sort_by != 'main_category' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=main_category&order={% if order == 'desc' or sort_by != 'main_category' %}asc{% else %}desc{% endif %}">
             Main1
             {% if sort_by == 'main_category' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="select-input-head">
-          <a href="?page={{ page_obj.number }}&sort_by=main_category2&order={% if order == 'desc' or sort_by != 'main_category2' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=main_category2&order={% if order == 'desc' or sort_by != 'main_category2' %}asc{% else %}desc{% endif %}">
             Main2
             {% if sort_by == 'main_category2' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
@@ -19,73 +19,73 @@
           State/Prov
         </th>
         <th class="select-input-head">
-          <a href="?page={{ page_obj.number }}&sort_by=geo&order={% if order == 'desc' or sort_by != 'geo' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=geo&order={% if order == 'desc' or sort_by != 'geo' %}asc{% else %}desc{% endif %}">
             Geo
             {% if sort_by == 'geo' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="select-input-head">
-          <a href="?page={{ page_obj.number }}&sort_by=division1&order={% if order == 'desc' or sort_by != 'division1' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=division1&order={% if order == 'desc' or sort_by != 'division1' %}asc{% else %}desc{% endif %}">
             Div1
             {% if sort_by == 'division1' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="select-input-head">
-          <a href="?page={{ page_obj.number }}&sort_by=division2&order={% if order == 'desc' or sort_by != 'division2' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=division2&order={% if order == 'desc' or sort_by != 'division2' %}asc{% else %}desc{% endif %}">
             Div2
             {% if sort_by == 'division2' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="text-input">
-          <a href="?page={{ page_obj.number }}&sort_by=company&order={% if order == 'desc' or sort_by != 'company' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=company&order={% if order == 'desc' or sort_by != 'company' %}asc{% else %}desc{% endif %}">
             Company Name
             {% if sort_by == 'company' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="text-input">
-          <a href="?page={{ page_obj.number }}&sort_by=contact&order={% if order == 'desc' or sort_by != 'contact' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=contact&order={% if order == 'desc' or sort_by != 'contact' %}asc{% else %}desc{% endif %}">
             Contact
             {% if sort_by == 'contact' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="text-input">
-          <a href="?page={{ page_obj.number }}&sort_by=title&order={% if order == 'desc' or sort_by != 'title' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=title&order={% if order == 'desc' or sort_by != 'title' %}asc{% else %}desc{% endif %}">
             Title
             {% if sort_by == 'title' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="text-input">
-          <a href="?page={{ page_obj.number }}&sort_by=dept&order={% if order == 'desc' or sort_by != 'dept' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=dept&order={% if order == 'desc' or sort_by != 'dept' %}asc{% else %}desc{% endif %}">
             Dept
             {% if sort_by == 'dept' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="text-input">
-          <a href="?page={{ page_obj.number }}&sort_by=phone&order={% if order == 'desc' or sort_by != 'phone' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=phone&order={% if order == 'desc' or sort_by != 'phone' %}asc{% else %}desc{% endif %}">
             Phone
             {% if sort_by == 'phone' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="select-input-head">
-          <a href="?page={{ page_obj.number }}&sort_by=do_not_call&order={% if order == 'desc' or sort_by != 'do_not_call' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=do_not_call&order={% if order == 'desc' or sort_by != 'do_not_call' %}asc{% else %}desc{% endif %}">
             Do Not Call
             {% if sort_by == 'do_not_call' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="text-input">
-          <a href="?page={{ page_obj.number }}&sort_by=email&order={% if order == 'desc' or sort_by != 'email' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=email&order={% if order == 'desc' or sort_by != 'email' %}asc{% else %}desc{% endif %}">
             Email
             {% if sort_by == 'email' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="select-input-head">
-          <a href="?page={{ page_obj.number }}&sort_by=do_not_email&order={% if order == 'desc' or sort_by != 'do_not_email' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=do_not_email&order={% if order == 'desc' or sort_by != 'do_not_email' %}asc{% else %}desc{% endif %}">
             Do Not Email
             {% if sort_by == 'do_not_email' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="textarea-input">
-          <a href="?page={{ page_obj.number }}&sort_by=industry&order={% if order == 'desc' or sort_by != 'industry' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=industry&order={% if order == 'desc' or sort_by != 'industry' %}asc{% else %}desc{% endif %}">
             Industry
             {% if sort_by == 'industry' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
@@ -94,19 +94,19 @@
           Customer
         </th>
         <th class="text-input-head">
-          <a href="?page={{ page_obj.number }}&sort_by=email_alternate&order={% if order == 'desc' or sort_by != 'email_alternate' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=email_alternate&order={% if order == 'desc' or sort_by != 'email_alternate' %}asc{% else %}desc{% endif %}">
             Secondary Email
             {% if sort_by == 'email_alternate' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="text-input-head">
-          <a href="?page={{ page_obj.number }}&sort_by=date_created&order={% if order == 'desc' or sort_by != 'date_created' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=date_created&order={% if order == 'desc' or sort_by != 'date_created' %}asc{% else %}desc{% endif %}">
             Date Entered
             {% if sort_by == 'date_created' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="text-input-head">
-          <a href="?page={{ page_obj.number }}&sort_by=date_modified&order={% if order == 'desc' or sort_by != 'date_modified' %}asc{% else %}desc{% endif %}">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=date_modified&order={% if order == 'desc' or sort_by != 'date_modified' %}asc{% else %}desc{% endif %}">
             Date Modified
             {% if sort_by == 'date_modified' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>

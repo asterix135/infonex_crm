@@ -13,15 +13,11 @@
         <span class="glyphicon glyphicon-plus-sign"></span><br />
         New
       </button>
-      <button type="button" class="btn btn-default navbar-btn" id='btn-filter'>
+      <button type="button" class="btn btn-default navbar-btn" id='btn-filter' {% if filter_string %}disabled{% endif %} >
         <span class="glyphicon glyphicon-filter"></span><br />
         Filter
       </button>
-      <button type="button" class="btn btn-default navbar-btn">
-        <span class="glyphicon glyphicon-sort-by-attributes"></span><br />
-        Sort
-      </button>
-      <button type="button" class="btn btn-default navbar-btn disabled" id="btn-see-all">
+      <button type="button" class="btn btn-default navbar-btn {% if not filter_string %}disabled{% endif %}" id="btn-see-all">
         <span class="glyphicon glyphicon-eye-open"></span><br />
         See All
       </button>

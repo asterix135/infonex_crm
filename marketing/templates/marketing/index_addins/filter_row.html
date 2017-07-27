@@ -1,4 +1,4 @@
-<tr class="collapse in" id="filter-row">
+<tr class="collapse {% if filter_string %}in{% endif %}" id="filter-row">
   <td class="select-input">
     <button class="btn btn-success" type="button" id="btn-apply-filter">
       Apply
@@ -9,7 +9,7 @@
       <option value="">
       </option>
       {% for option in cat_choices %}
-      <option value = "{{ option.0 }}">
+      <option value = "{{ option.0 }}" {% if 'main_category' in query_prefill and query_prefill.main_category == option.0 %}selected="selected"{% endif %}>
         {{ option.1 }}
       </option>
       {% endfor %}
@@ -20,7 +20,7 @@
       <option value="">
       </option>
       {% for option in cat_choices %}
-      <option value = "{{ option.0 }}">
+      <option value = "{{ option.0 }}" {% if 'main_category2' in query_prefill and query_prefill.main_category2 == option.0 %}selected="selected"{% endif %}>
         {{ option.1 }}
       </option>
       {% endfor %}
@@ -32,7 +32,7 @@
       <option value="">
       </option>
       {% for option in geo_choices %}
-      <option value = "{{ option.0 }}">
+      <option value = "{{ option.0 }}" {% if 'geo' in query_prefill and query_prefill.geo == option.0 %}selected="selected"{% endif %}>
         {{ option.1 }}
       </option>
       {% endfor %}
@@ -43,7 +43,7 @@
       <option value="">
       </option>
       {% for option in div_choices %}
-      <option value = "{{ option.0 }}">
+      <option value = "{{ option.0 }}" {% if 'division1' in query_prefill and query_prefill.division1 == option.0 %}selected="selected"{% endif %}>
         {{ option.1 }}
       </option>
       {% endfor %}
@@ -54,42 +54,42 @@
       <option value="">
       </option>
       {% for option in div_choices %}
-      <option value = "{{ option.0 }}">
+      <option value = "{{ option.0 }}" {% if 'division2' in query_prefill and query_prefill.division2 == option.0 %}selected="selected"{% endif %}>
         {{ option.1 }}
       </option>
       {% endfor %}
     </select>
   </td>
   <td>
-    <input class="form-control filter-input" filter-field="company" />
+    <input class="form-control filter-input" filter-field="company" {% if 'company' in query_prefill %}value="{{ query_prefill.company}}"{% endif %} />
   </td>
   <td>
-    <input class="form-control filter-input" filter-field="name" />
+    <input class="form-control filter-input" filter-field="name" {% if 'name' in query_prefill %}value="{{ query_prefill.name}}"{% endif %} />
   </td>
   <td>
-    <input class="form-control filter-input" filter-field="title" />
+    <input class="form-control filter-input" filter-field="title" {% if 'title' in query_prefill %}value="{{ query_prefill.title}}"{% endif %} />
   </td>
   <td>
-    <input class="form-control filter-input" filter-field="dept" />
+    <input class="form-control filter-input" filter-field="dept" {% if 'dept' in query_prefill %}value="{{ query_prefill.dept}}"{% endif %} />
   </td>
   <td>
-    <input class="form-control filter-input" filter-field="phone" />
+    <input class="form-control filter-input" filter-field="phone" {% if 'phone' in query_prefill %}value="{{ query_prefill.phone}}"{% endif %} />
   </td>
   <td>
-    <input type="checkbox" class="form-control filter-input" filter-field="do_not_call" />
+    <input type="checkbox" class="form-control filter-input" filter-field="do_not_call" {% if 'do_not_call' in query_prefill and query_prefill.do_not_call == 'true' %}checked{% endif %} />
   </td>
   <td>
-    <input class="form-control filter-input" filter-field="email" />
+    <input class="form-control filter-input" filter-field="email" {% if 'email' in query_prefill %}value="{{ query_prefill.mail}}"{% endif %} />
   </td>
   <td>
-    <input type="checkbox" class="form-control filter-input" filter-field="do_not_email" />
+    <input type="checkbox" class="form-control filter-input" filter-field="do_not_email" {% if 'do_not_email' in query_prefill and query_prefill.do_not_email == 'true' %}checked{% endif %} />
   </td>
   <td>
-    <input class="form-control filter-input" filter-field="industry" />
+    <input class="form-control filter-input" filter-field="industry" {% if 'industry' in query_prefill %}value="{{ query_prefill.industry}}"{% endif %} />
   </td>
   <th></th>
   <td>
-    <input class="form-control filter-input" filter-field="email_alternate" />
+    <input class="form-control filter-input" filter-field="email_alternate" {% if 'email_alternate' in query_prefill %}value="{{ query_prefill.email_alternate}}"{% endif %} />
   </td>
   <th></th>
   <th></th>

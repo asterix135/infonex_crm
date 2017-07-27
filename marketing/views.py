@@ -1,3 +1,4 @@
+import re
 from time import strftime
 
 from django.http import JsonResponse, Http404, HttpResponse
@@ -57,6 +58,22 @@ class Index(ListView):
     context_object_name = 'records'
     queryset = Person.objects.all()
     paginate_by=250
+    query_params = {
+        'main_category': 'main_category',
+        'main_category2': 'main_category2',
+        'geo': 'geo',
+        'division1': 'division1',
+        'division2': 'division2',
+        'company': 'company__icontains',
+        'name': 'name__icontains',
+        'title': 'title__icontains',
+        'dept': 'dept__icontains',
+        'phone': 'phone__icontains',
+        'do_not_call': 'do_not_call',
+        'email': 'email__iccontains',
+        'do_not_email': 'do_not_email',
+        'industry': 'industry__icontains',
+        'email_alternate': 'email_alternate__icontains'}
 
     def _generate_pagination_list(self, context):
         paginator = context['paginator']
@@ -140,12 +157,29 @@ class Index(ListView):
         return super(Index, self).get_paginate_by(queryset)
 
     def _filter_queryset(self, queryset):
-        self.filter_string = None
+        query_string = ''
+        query_params = {}
+        query_prefill = {}
+        for param in self.request.GET:
+            if param in self.query_params:
+                query_string += param + '=' + self.request.GET[param] + '&'
+                query_prefill[param] = self.request.GET[param]
+                if self.request.GET[param] in ('true', 'false'):
+                    tf_bool = self.request.GET[param] == 'true'
+                    query_params[self.query_params[param]] = tf_bool
+                else:
+                    query_params[self.query_params[param]] = \
+                        self.request.GET[param]
+        query_string = re.sub(r'\s', '%20', query_string)
+        query_string = query_string[:-1]
+        self.filter_string = query_string if len(query_string) > 0 else None
+        queryset = queryset.filter(**query_params)
+        self.query_prefill = query_prefill
         return queryset
 
     def get_queryset(self):
         queryset = super(Index, self).get_queryset()
-        self._filter_queryset(queryset)
+        queryset = self._filter_queryset(queryset)
         return queryset
 
     def paginate_queryset(self, queryset, page_size):
@@ -191,6 +225,7 @@ class Index(ListView):
             sort_by = sort_by[1:]
         context['sort_by'] = sort_by
         context['filter_string'] = self.filter_string
+        context['query_prefill'] = self.query_prefill
         return context
 
 

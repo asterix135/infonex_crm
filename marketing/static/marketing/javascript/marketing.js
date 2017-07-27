@@ -118,20 +118,35 @@ $(document).ready(function() {
       };
     });
     newFilterString = newFilterString.slice(0,-1);
-
-    // TODO: break if newFilterString == ''
-
-    newFilterString = newFilterString.replace(/\s/g, '%20');
-    if ($('#sort-by').val()) {
-      newFilterString += '&sort_by=' + $('#sort-by').val();
-      newFilterString += '&order=' + $('#order').val();
-    }
-    if ($('#page-number').val()) {
-      newFilterString += '&page=' + $('#page-number').val();
-    }
-
-    console.log(newFilterString);
+    if (newFilterString.length) {
+      newFilterString = newFilterString.replace(/\s/g, '%20');
+      if ($('#sort-by').val()) {
+        newFilterString += '&sort_by=' + $('#sort-by').val();
+        newFilterString += '&order=' + $('#order').val();
+      }
+      if ($('#page-number').val()) {
+        newFilterString += '&page=' + $('#page-number').val();
+      }
+      window.location.href = newFilterString;
+    };
   });
-
+  $('body').on('keypress', '.filter-input', function(e){
+    if (e.which === 13) {
+      $('#btn-apply-filter').click();
+    };
+  });
+  $('body').on('keypress, click', '.same-page', function(e){
+    if (filterString) {
+      if (e.which === 13 || e.type === 'click') {
+        var currentHref = $(this).attr('href');
+        if (currentHref.indexOf('?') > -1) {
+          currentHref += '&' + filterString;
+        } else {
+          currentHref += '?' + filterString;
+        };
+        $(this).attr('href', currentHref);
+      };
+    };
+  });
 
 });

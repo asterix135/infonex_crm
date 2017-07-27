@@ -1,3 +1,4 @@
+{% load crm_extras %}
 <nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -21,10 +22,16 @@
         <span class="glyphicon glyphicon-eye-open"></span><br />
         See All
       </button>
-      <button type="button" class="btn btn-default navbar-btn">
+      <button type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#upload-modal">
         <span class="glyphicon glyphicon-upload"></span><br />
         Upload
       </button>
+      {% if request.user|has_group:'management' or request.user|has_group:'db_admin' or request.user.is_superuser %}
+      <button type="button" class="btn btn-default navbar-btn">
+        <span class="glyphicon glyphicon-download"></span><br />
+        Download
+      </button>
+      {% endif %}
     </div>
   </div>
 </nav>

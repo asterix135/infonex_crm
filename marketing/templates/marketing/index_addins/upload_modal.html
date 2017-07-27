@@ -1,0 +1,44 @@
+<div class="modal fade" id="upload-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Upload Records to Database</h3>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid bd-example-row">
+          <div class="row">
+            <div class="col-sm-12">
+              <h4>Please select the file you want to upload (csv or xlsx only)</h4>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <!-- TODO: Need Form stuff here -->
+                <div class="input-group">
+                  <label class="input-group-btn">
+                    <span class="btn btn-primary">
+                      Browse...
+                      <input type="file" style="display: none;" multiple />
+                    </span>
+                  </label>
+                  <input type="text" class="form-control" readonly />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="submit-file">Submit File</button>
+        <button type="button" class="btn btn-secondary" id="see-uploads">See unprocessd uploads</button>
+      </div>
+
+    </div>
+  </div>
+</div>

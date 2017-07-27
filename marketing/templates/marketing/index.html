@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block content %}
+{% include 'marketing/index_addins/upload_modal.html' %}
 <div id="hidden-variables">
   <input type="hidden" id="filter-string" value="{{ filter_string|default_if_none:'' }}" />
   <input type="hidden" id="sort-by" value="{{ sort_by|default_if_none:'' }}" />

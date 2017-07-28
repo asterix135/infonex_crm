@@ -1,12 +1,20 @@
+import csv
 import re
+import warnings
+from io import BytesIO
+from openpyxl import load_workbook
+from openpyxl.utils.exceptions import InvalidFileException
 from time import strftime
+from zipfile import BadZipFile
 
 from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
 from django.views.generic import ListView, TemplateView
 
+from .forms import UploadFileForm
 from crm.models import Person, Changes
 from crm.views import add_change_record
 from crm.constants import GEO_CHOICES, CAT_CHOICES, DIV_CHOICES
@@ -226,6 +234,7 @@ class Index(ListView):
         context['sort_by'] = sort_by
         context['filter_string'] = self.filter_string
         context['query_prefill'] = self.query_prefill
+        context['upload_file_form'] = UploadFileForm()
         return context
 
 
@@ -255,3 +264,53 @@ class UpdatePerson(View):
 
 class UploadFile(TemplateView):
     template_name = 'marketing/upload.html'
+    error_message = None
+
+    def _process_csv(self, datafile):
+        reader = csv.reader(datafile.read())
+        self.first_row = next(reader)
+        print(self.first_row)
+        datafile_type_is='csv'
+
+    def _process_xlsx(self, datafile):
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            datafile = load_workbook(datafile)
+        datafile_type_is = 'xlsx'
+
+    def post(self, request, *args, **kwargs):
+        upload_file_form = UploadFileForm(request.POST, request.FILES)
+        if upload_file_form.is_valid():
+            uploaded_file = request.FILES['marketing_file']
+            try:
+                self._process_xlsx(uploaded_file)
+            except (InvalidFileException, BadZipFile):
+                try:
+                    self._process_csv(uploaded_file)
+                except UnicodeDecodeError:
+                    self.error_message = 'File submitted with neither xlsx nor csv'
+        else:
+            self.error_message = 'Invalid File Submitted'
+
+        datafile = None
+        datafile_type_is = None
+        # try:
+        #     with warnings.catch_warnings():
+        #         warnings.simplefilter('ignore')
+        #         datafile = load_workbook(filename='')
+        #         datafile_type_is = 'xlsx'
+        # except InvalidFileException:
+        #     try:
+        #         pass
+        #         # read csv
+        #         datafile_type_is = 'csv'
+        #     except:  # add error
+        #         error_message = 'Invalid file format.  Must be csv or xlsx.'
+
+        context = self.get_context_data(**kwargs)
+        return super(UploadFile, self).render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super(UploadFile, self).get_context_data(**kwargs)
+        context['error_message'] = self.error_message
+        return context

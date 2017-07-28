@@ -13,7 +13,7 @@
         <div class="container-fluid bd-example-row">
           <div class="row">
             <div class="col-sm-12">
-              <h4>Please select the file you want to upload (csv or xlsx only)</h4>
+              <h4>Please select a file to upload (csv or xlsx only)</h4>
             </div>
             <div class="row">
               <div class="col-sm-12">
@@ -22,7 +22,7 @@
                   <label class="input-group-btn">
                     <span class="btn btn-primary">
                       Browse...
-                      <input type="file" style="display: none;" multiple />
+                      <input type="file" style="display: none;" />
                     </span>
                   </label>
                   <input type="text" class="form-control" readonly />
@@ -35,7 +35,7 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="submit-file">Submit File</button>
+        <button type="button" class="btn btn-primary" id="submit-button" disabled="true">Submit File</button>
         <button type="button" class="btn btn-secondary" id="see-uploads">See unprocessd uploads</button>
       </div>
 

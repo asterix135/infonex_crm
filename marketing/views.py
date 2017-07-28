@@ -251,3 +251,7 @@ class UpdatePerson(View):
             'state_prov': person.state_prov(),
         }
         return JsonResponse(person_vals)
+
+
+class UploadFile(TemplateView):
+    template_name = 'marketing/upload.html'

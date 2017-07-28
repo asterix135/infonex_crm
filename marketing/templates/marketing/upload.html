@@ -1,0 +1,11 @@
+{% extends 'crm/base.html' %}
+{% load staticfiles %}
+
+{% block script_includes %}
+<script type="text/javascript" src="{% static 'marketing/javascript/upload.js' %}"></script>
+<link href="{% static 'marketing/css/upload.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block content %}
+<h1>This is the upload page</h1>
+{% endblock %}

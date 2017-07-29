@@ -1,11 +1,10 @@
+import codecs
 import csv
 import re
 import warnings
-from io import BytesIO
+import codecs
 from openpyxl import load_workbook
-from openpyxl.utils.exceptions import InvalidFileException
 from time import strftime
-from zipfile import BadZipFile
 
 from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404
@@ -266,28 +265,40 @@ class UploadFile(TemplateView):
     template_name = 'marketing/upload.html'
     error_message = None
 
-    def _process_csv(self, datafile):
-        reader = csv.reader(datafile.read())
-        self.first_row = next(reader)
-        print(self.first_row)
+    def _process_csv(self):
+        decoder = self.request.encoding if self.request.encoding else 'utf-8'
+        f = codecs.iterdecode(
+            self.upload_file_form.cleaned_data['marketing_file'], decoder
+        )
+        reader = csv.reader(f)
+        for row in reader:
+            print(row)
         datafile_type_is='csv'
 
     def _process_xlsx(self, datafile):
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
-            datafile = load_workbook(datafile)
+            wb = load_workbook(datafile)
+        ws = wb.active
+        print(ws.max_row)
+        print(ws.max_column)
+        for i in range(1,10):
+            print(ws[i])
         datafile_type_is = 'xlsx'
 
     def post(self, request, *args, **kwargs):
-        upload_file_form = UploadFileForm(request.POST, request.FILES)
-        if upload_file_form.is_valid():
+        self.upload_file_form = UploadFileForm(request.POST, request.FILES)
+        if self.upload_file_form.is_valid():
+            # uploaded_file = request.FILES['marketing_file']
             uploaded_file = request.FILES['marketing_file']
             try:
                 self._process_xlsx(uploaded_file)
-            except (InvalidFileException, BadZipFile):
+            except Exception as e:
+                print('xlsx failed with message ', e)
                 try:
-                    self._process_csv(uploaded_file)
-                except UnicodeDecodeError:
+                    self._process_csv()
+                except Exception as e:
+                    print(e)
                     self.error_message = 'File submitted with neither xlsx nor csv'
         else:
             self.error_message = 'Invalid File Submitted'

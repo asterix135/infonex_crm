@@ -14,6 +14,7 @@ from django.views import View
 from django.views.generic import ListView, TemplateView
 
 from .forms import UploadFileForm
+from .models import *
 from crm.models import Person, Changes
 from crm.views import add_change_record
 from crm.constants import GEO_CHOICES, CAT_CHOICES, DIV_CHOICES
@@ -264,32 +265,92 @@ class UpdatePerson(View):
 class UploadFile(TemplateView):
     template_name = 'marketing/upload.html'
     error_message = None
+    uploaded_file = None
 
-    def _process_csv(self):
-        decoder = self.request.encoding if self.request.encoding else 'utf-8'
+    def _csv_row_is_not_blank(self, row):
+        for cell_num in range(len(self.uploaded_file.first_row)):
+            if row[cell_num] not in ('', None):
+                return True
+        return False
+
+    def _add_csv_row_to_db(self, row, is_first, row_number):
+        new_row = UploadedRow(
+            parent_file = self.uploaded_file,
+            row_is_first=is_first,
+            row_number=row_number,
+        )
+        new_row.save()
+        for cell_num in range(self.num_cols):
+            new_cell = UploadedCell(
+                parent_row = new_row,
+                cell_order = cell_num,
+                content=row[cell_num],
+            )
+            new_cell.save()
+
+    def _add_csv_file_to_db(self, decoder):
         f = codecs.iterdecode(
-            self.upload_file_form.cleaned_data['marketing_file'], decoder
+            self.upload_file_form.cleaned_data['marketing_file'],
+            decoder
         )
         reader = csv.reader(f)
+        if not self.uploaded_file:
+            new_file = UploadedFile(
+                filename=self.upload_file_form.cleaned_data['marketing_file'].name,
+                uploaded_by=self.request.user,
+            )
+            new_file.save()
+            self.uploaded_file = new_file
+        is_first_row = True
+        self.num_cols = None
+        row_number = 0
         for row in reader:
-            print(row)
-        datafile_type_is='csv'
+            if not self.num_cols:
+                self.num_cols = len(row)
+            if self._csv_row_is_not_blank(row):
+                self._add_csv_row_to_db(row, is_first_row, row_number)
+            is_first_row = False
+            row_number += 1
+
+    def _process_csv(self):
+        decoder_list = ['utf-8', 'windows-1252']
+        if self.request.encoding and self.request_encoding not in decoder_list:
+            decoder.insert(0, self.request.encoding)
+        successful_transcription = False
+        for decode_attempt in range(len(decoder_list)):
+            print(decode_attempt)
+            if not successful_transcription:
+                try:
+                    self._add_csv_file_to_db(decoder_list[decode_attempt])
+                    successful_transcription = True
+                except UnicodeDecodeError:
+                    print('unicode error')
+                    if self.uploaded_file:
+                        UploadedRow.objects.filter(
+                            parent_file=self.uploaded_file
+                        ).delete()
 
     def _process_xlsx(self, datafile):
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
-            wb = load_workbook(datafile)
+            wb = load_workbook(datafile, read_only=True)
         ws = wb.active
-        print(ws.max_row)
-        print(ws.max_column)
-        for i in range(1,10):
-            print(ws[i])
+        num_rows = ws.max_row
+        num_cols = ws.max_column
+        new_file = UploadedFile(
+            filename=self.upload_file_form.cleaned_data['marketing_file'].name,
+            uploaded_by=self.request.user,
+        )
+
+        print(num_rows, num_cols)
+        for i in range(1,num_rows+1):
+            for j in range(1, num_cols+1):
+                print(ws.cell(row=i, column=j).value)
         datafile_type_is = 'xlsx'
 
     def post(self, request, *args, **kwargs):
         self.upload_file_form = UploadFileForm(request.POST, request.FILES)
         if self.upload_file_form.is_valid():
-            # uploaded_file = request.FILES['marketing_file']
             uploaded_file = request.FILES['marketing_file']
             try:
                 self._process_xlsx(uploaded_file)
@@ -298,8 +359,12 @@ class UploadFile(TemplateView):
                 try:
                     self._process_csv()
                 except Exception as e:
-                    print(e)
-                    self.error_message = 'File submitted with neither xlsx nor csv'
+                    self.error_message = 'File was not readable.\n' + \
+                        'It should be either xlsx or csv format, with ' + \
+                        'either utf-8 or windows-1252 encoding.\n' + \
+                        'If you are not able to fix this, please talk to ' + \
+                        'Chris.\n\n' + \
+                        'The specific error message was: \n\n' + str(e)
         else:
             self.error_message = 'Invalid File Submitted'
 

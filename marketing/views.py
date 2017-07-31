@@ -268,7 +268,7 @@ class UploadFile(TemplateView):
     uploaded_file = None
 
     def _csv_row_is_not_blank(self, row):
-        for cell_num in range(len(self.uploaded_file.first_row)):
+        for cell_num in range(self.num_cols):
             if row[cell_num] not in ('', None):
                 return True
         return False
@@ -298,6 +298,7 @@ class UploadFile(TemplateView):
             new_file = UploadedFile(
                 filename=self.upload_file_form.cleaned_data['marketing_file'].name,
                 uploaded_by=self.request.user,
+                num_columns=0,
             )
             new_file.save()
             self.uploaded_file = new_file
@@ -311,6 +312,9 @@ class UploadFile(TemplateView):
                 self._add_csv_row_to_db(row, is_first_row, row_number)
             is_first_row = False
             row_number += 1
+        if self.num_cols:
+            self.uploaded_file.num_columns = self.num_cols
+            self.uploaded_file.save()
 
     def _process_csv(self):
         decoder_list = ['utf-8', 'windows-1252']
@@ -318,13 +322,11 @@ class UploadFile(TemplateView):
             decoder.insert(0, self.request.encoding)
         successful_transcription = False
         for decode_attempt in range(len(decoder_list)):
-            print(decode_attempt)
             if not successful_transcription:
                 try:
                     self._add_csv_file_to_db(decoder_list[decode_attempt])
                     successful_transcription = True
                 except UnicodeDecodeError:
-                    print('unicode error')
                     if self.uploaded_file:
                         UploadedRow.objects.filter(
                             parent_file=self.uploaded_file

@@ -305,18 +305,6 @@ class UploadFile(TemplateView):
 
         datafile = None
         datafile_type_is = None
-        # try:
-        #     with warnings.catch_warnings():
-        #         warnings.simplefilter('ignore')
-        #         datafile = load_workbook(filename='')
-        #         datafile_type_is = 'xlsx'
-        # except InvalidFileException:
-        #     try:
-        #         pass
-        #         # read csv
-        #         datafile_type_is = 'csv'
-        #     except:  # add error
-        #         error_message = 'Invalid file format.  Must be csv or xlsx.'
 
         context = self.get_context_data(**kwargs)
         return super(UploadFile, self).render_to_response(context)

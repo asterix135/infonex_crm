@@ -11,56 +11,17 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
-from django.views.generic import ListView, TemplateView
+from django.views.generic import DetailView, ListView, TemplateView
 
-from .forms import UploadFileForm
+from .forms import FieldSelectorForm, UploadFileForm
 from .models import *
 from crm.models import Person, Changes
 from crm.views import add_change_record
 from crm.constants import GEO_CHOICES, CAT_CHOICES, DIV_CHOICES
 
-
-class Add(TemplateView):
-    template_name = 'marketing/index_addins/table_row.html'
-
-    def get(self, request, *args, **kwargs):
-        raise Http404
-
-    def post(self, request, *args, **kwargs):
-        self._person = Person(
-            date_created=timezone.now(),
-            created_by=request.user,
-            date_modified=timezone.now(),
-            modified_by=request.user,
-        )
-        self._person.save()
-        context = self.get_context_data(**kwargs)
-        return super(Add, self).render_to_response(context)
-
-    def get_context_data(self, **kwargs):
-        context = super(Add, self).get_context_data(**kwargs)
-        context['record'] = self._person
-        context['geo_choices'] = GEO_CHOICES
-        context['cat_choices'] = CAT_CHOICES
-        context['div_choices'] = DIV_CHOICES
-        return context
-
-
-class Delete(View):
-
-    def get(self, request, *args, **kwargs):
-        raise Http404()
-
-    def post(self, request, *args, **kwargs):
-        person = get_object_or_404(Person, pk=request.POST['record_id'])
-        pk = person.pk
-        Changes.objects.filter(orig_id=pk).delete()
-        if person.has_registration_history():
-            add_change_record(person, 'delete')
-        person.delete()
-        return HttpResponse(status=200)
-
-
+######################
+# Main page views
+######################
 class Index(ListView):
     template_name = 'marketing/index.html'
     context_object_name = 'records'
@@ -238,30 +199,6 @@ class Index(ListView):
         return context
 
 
-class UpdatePerson(View):
-
-    def get(self, request, *args, **kwargs):
-        raise Http404()
-
-    def post(self, request, *args, **kwargs):
-        person = get_object_or_404(Person, pk=request.POST['record_id'])
-        update_field = request.POST['field']
-        new_value = request.POST['new_value']
-        old_value = getattr(person, update_field)
-        if new_value in ('true', 'false') and old_value in (True, False):
-            new_value = new_value == 'true'
-        if new_value != old_value:
-            setattr(person, update_field, new_value)
-            person.date_modified = timezone.now()
-            person.modified_by = request.user
-            person.save()
-        person_vals = {
-            'date_modified': person.date_modified.strftime('%m/%d/%Y'),
-            'state_prov': person.state_prov(),
-        }
-        return JsonResponse(person_vals)
-
-
 class UploadFile(TemplateView):
     template_name = 'marketing/upload.html'
     error_message = None
@@ -356,7 +293,7 @@ class UploadFile(TemplateView):
     def _process_xlsx(self, datafile):
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
-            wb = load_workbook(datafile, read_only=True)
+            wb = load_workbook(datafile, read_only=True, data_only=True)
         ws = wb.active
         num_rows = ws.max_row
         num_cols = ws.max_column
@@ -402,5 +339,96 @@ class UploadFile(TemplateView):
         context = super(UploadFile, self).get_context_data(**kwargs)
         context['error_message'] = self.error_message
         context['unprocessed_files'] = \
-            UploadedFile.objects.all().sort_by('-uploaded_by')
+            UploadedFile.objects.all().order_by('-uploaded_at')
         return context
+
+
+#####################
+# Ajax views
+#####################
+class Add(TemplateView):
+    template_name = 'marketing/index_addins/table_row.html'
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
+    def post(self, request, *args, **kwargs):
+        self._person = Person(
+            date_created=timezone.now(),
+            created_by=request.user,
+            date_modified=timezone.now(),
+            modified_by=request.user,
+        )
+        self._person.save()
+        context = self.get_context_data(**kwargs)
+        return super(Add, self).render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super(Add, self).get_context_data(**kwargs)
+        context['record'] = self._person
+        context['geo_choices'] = GEO_CHOICES
+        context['cat_choices'] = CAT_CHOICES
+        context['div_choices'] = DIV_CHOICES
+        return context
+
+
+class Delete(View):
+
+    def get(self, request, *args, **kwargs):
+        raise Http404()
+
+    def post(self, request, *args, **kwargs):
+        person = get_object_or_404(Person, pk=request.POST['record_id'])
+        pk = person.pk
+        Changes.objects.filter(orig_id=pk).delete()
+        if person.has_registration_history():
+            add_change_record(person, 'delete')
+        person.delete()
+        return HttpResponse(status=200)
+
+
+class FieldMatcher(DetailView):
+    template_name = 'marketing/upload_addins/field_matcher.html'
+    queryset = UploadedFile.objects.all()
+    context_object_name = 'uploaded_file'
+
+    def get_context_data(self, **kwargs):
+        context = super(FieldMatcher, self).get_context_data(**kwargs)
+        try:
+            first_row = UploadedRow.objects.get(
+                parent_file=self.object, row_is_first=True
+            )
+        except UploadedRow.DoesNotExist:
+            first_row = None
+        if first_row:
+            header_cells = UploadedCell.objects.filter(
+                parent_row=first_row
+            ).order_by('cell_order')
+        else:
+            header_cells = None
+        context['header_cells'] = header_cells
+        context['selector_form'] = FieldSelectorForm()
+        return context
+
+class UpdatePerson(View):
+
+    def get(self, request, *args, **kwargs):
+        raise Http404()
+
+    def post(self, request, *args, **kwargs):
+        person = get_object_or_404(Person, pk=request.POST['record_id'])
+        update_field = request.POST['field']
+        new_value = request.POST['new_value']
+        old_value = getattr(person, update_field)
+        if new_value in ('true', 'false') and old_value in (True, False):
+            new_value = new_value == 'true'
+        if new_value != old_value:
+            setattr(person, update_field, new_value)
+            person.date_modified = timezone.now()
+            person.modified_by = request.user
+            person.save()
+        person_vals = {
+            'date_modified': person.date_modified.strftime('%m/%d/%Y'),
+            'state_prov': person.state_prov(),
+        }
+        return JsonResponse(person_vals)

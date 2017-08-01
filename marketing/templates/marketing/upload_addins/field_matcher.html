@@ -1,0 +1,21 @@
+<!-- Insert into upload.html by Ajax call -->
+
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h2 class="panel-title h2">Please match file fields to the database</h2>
+  </div>
+  <div class="panel-body">
+    <table class="table table-condensed">
+      {% for cell in header_cells %}
+      <tr>
+        <td class="col-sm-6 pull-right">
+          {{ cell.content }}
+        </td>
+        <td class="col-sm-6 pull-left">
+          {{ selector_form.field_option }}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>

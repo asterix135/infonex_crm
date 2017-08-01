@@ -6,3 +6,14 @@ class UploadFileForm(forms.Form):
             attrs={'style': 'display: none;'}
         )
     )
+
+
+class FieldSelectorForm(forms.Form):
+    field_option = forms.ChoiceField(
+        label='database_field',
+        required=False,
+        initial='',
+        choices=[('f1', 'f1'), ('name', 'name')],
+        widget=forms.Select(
+        attrs={'class': 'form-control pull-left'}
+    ))

@@ -1,0 +1,31 @@
+<!-- Insert into upload.html -->
+<table class="table table table-hover">
+  <thead>
+    <tr>
+      <th>
+        File Name
+      </th>
+      <th>
+        Uploaded On
+      </th>
+      <th>
+        Uploaded By
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for new_file in unprocessed_files %}
+    <tr file_id="{{ new_file.pk }}">
+      <td>
+        {{ new_file.filename }}
+      </td>
+      <td>
+        {{ new_file.uploaded_at }}
+      </td>
+      <td>
+        {{ new_file.uploaded_by }}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

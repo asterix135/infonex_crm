@@ -2,15 +2,46 @@
 {% load staticfiles %}
 
 {% block script_includes %}
+<script type="text/javascript" src="{% static 'marketing/javascript/upload_modal.js' %}"></script>
 <script type="text/javascript" src="{% static 'marketing/javascript/upload.js' %}"></script>
-<link href="{% static 'marketing/css/upload.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'marketing/css/upload_modal.css' %}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block content %}
-<h1>This is the upload page</h1>
+{% include 'marketing/index_addins/upload_modal.html' %}
+<div class="container">
 
-<h2>Errors:</h2>
-<p>
-  {{ error_message|linebreaks }}
-</p>
+  <div class="row">
+    <h1 class="col-sm-12 col-md-8">Process uploaded files</h1>
+    <button type="button" class="btn btn-default navbar-btn pull-right" data-toggle="modal" data-target="#upload-modal">
+      <span class="glyphicon glyphicon-upload"></span><br />
+      Upload New
+    </button>
+  </div>
+
+  {% if error_message %}
+  <div class="row">
+    <h2 class="errorlist">Error: Uploaded File Not Processed</h2>
+    <p class="errorlist">
+      {{ error_message|linebreaks }}
+      <br />
+    </p>
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="panel-title h2">Uploaded Files Waiting to be Processed - Click to select</h2>
+      </div>
+      <div class="panel-body" id="list-of-uploads">
+        {% include 'marketing/upload_addins/upload_list.html' %}
+      </div>
+    </div>
+  </div>
+
+  <div class="row" id="field-matcher"></div>
+
+</div>
+
 {% endblock %}

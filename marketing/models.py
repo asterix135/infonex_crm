@@ -25,4 +25,4 @@ class UploadedCell(models.Model):
     """
     parent_row = models.ForeignKey('UploadedRow', on_delete=models.CASCADE)
     cell_order = models.IntegerField()
-    content = models.TextField()
+    content = models.TextField(blank=True, null=True)

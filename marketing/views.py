@@ -332,6 +332,27 @@ class UploadFile(TemplateView):
                             parent_file=self.uploaded_file
                         ).delete()
 
+    def _xlsx_row_is_not_blank(self, ws, row_num, num_cols):
+        for col_num in range(1, num_cols+1):
+            if ws.cell(row=row_num, column=col_num).value not in ('', None):
+                return True
+        return False
+
+    def _add_xlsx_row_to_db(self, ws, row_num, num_cols):
+        new_row = UploadedRow(
+            parent_file = self.uploaded_file,
+            row_is_first = row_num == 1,
+            row_number = row_num,
+        )
+        new_row.save()
+        for col_num in range(1, num_cols+1):
+            new_cell = UploadedCell(
+                parent_row=new_row,
+                cell_order=col_num,
+                content=ws.cell(row=row_num, column=col_num).value
+            )
+            new_cell.save()
+
     def _process_xlsx(self, datafile):
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
@@ -342,13 +363,13 @@ class UploadFile(TemplateView):
         new_file = UploadedFile(
             filename=self.upload_file_form.cleaned_data['marketing_file'].name,
             uploaded_by=self.request.user,
+            num_columns=num_cols
         )
-
-        print(num_rows, num_cols)
-        for i in range(1,num_rows+1):
-            for j in range(1, num_cols+1):
-                print(ws.cell(row=i, column=j).value)
-        datafile_type_is = 'xlsx'
+        new_file.save()
+        self.uploaded_file = new_file
+        for row_num in range(1, num_rows+1):
+            if self._xlsx_row_is_not_blank(ws, row_num, num_cols):
+                self._add_xlsx_row_to_db(ws, row_num, num_cols)
 
     def post(self, request, *args, **kwargs):
         self.upload_file_form = UploadFileForm(request.POST, request.FILES)
@@ -357,7 +378,8 @@ class UploadFile(TemplateView):
             try:
                 self._process_xlsx(uploaded_file)
             except Exception as e:
-                print('xlsx failed with message ', e)
+                if self.uploaded_file:
+                    self.uploaded_file.delete()
                 try:
                     self._process_csv()
                 except Exception as e:
@@ -379,4 +401,6 @@ class UploadFile(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(UploadFile, self).get_context_data(**kwargs)
         context['error_message'] = self.error_message
+        context['unprocessed_files'] = \
+            UploadedFile.objects.all().sort_by('-uploaded_by')
         return context

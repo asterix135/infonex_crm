@@ -340,6 +340,7 @@ class UploadFile(TemplateView):
         context['error_message'] = self.error_message
         context['unprocessed_files'] = \
             UploadedFile.objects.all().order_by('-uploaded_at')
+        context['upload_file_form'] = UploadFileForm()
         return context
 
 

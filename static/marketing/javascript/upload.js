@@ -1,8 +1,18 @@
 $(document).ready(function() {
 
-  $('body').on('click', 'tr', function(){
+  $('body').on('click', '.upload-file-row', function(){
+    $('.upload-file-row').each(function(){
+      $(this).removeClass('info');
+    });
+    $(this).addClass('info');
     var file_id = $(this).attr('file_id');
-    console.log('selected a tr for file # ' + file_id);
+    $.ajax({
+      url: '/marketing/field_matcher/' + file_id,
+      type: 'GET',
+      success: function(data){
+        $('#field-matcher').html(data);
+      }
+    })
   })
 
 });

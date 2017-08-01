@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^delete/$',
         login_required(views.Delete.as_view()),
         name='delete'),
-    url(r'^field_matcher/(?P<pk>[0-9]+)$',
+    url(r'^field_matcher/(?P<pk>[0-9]+)/$',
         login_required(views.FieldMatcher.as_view()),
         name='field_matcher'),
     url(r'^update/$',

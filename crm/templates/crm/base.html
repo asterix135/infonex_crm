@@ -38,14 +38,14 @@
 
         <link href="http://getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet" />
         <link href="{% static 'crm/style.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'home/css/infonex_crm.css' %}" rel="stylesheet" type="text/css" />
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script type='text/javascript' src="http://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
         <script src="{% static 'crm/javascript/ajax_setup.js' %}" type="text/javascript"></script>
         <script src="{% static 'crm/javascript/jquery_scripts.js' %}" type="text/javascript"></script>
-        <script type="text/javascript"
-          src="{% static 'crm/javascript/crm_scripts.js' %}"></script>
+        <script type="text/javascript" src="{% static 'crm/javascript/crm_scripts.js' %}"></script>
         {% block script_includes %}{% endblock %}
 
         <title>{% block title %}{% endblock %}Infonex CRM</title>

@@ -1,21 +1,70 @@
 <!-- Insert into upload.html by Ajax call -->
 
-<div class="panel panel-info">
-  <div class="panel-heading">
-    <h2 class="panel-title h2">Please match file fields to the database</h2>
+<div class="row">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h2 class="panel-title h2">Please match file fields to the database</h2>
+    </div>
+    <div class="panel-body">
+      <div class="checkbox">
+        <label for="import_first_row">
+          {{ selector_form.import_first_row }}<b>Do not import first row (because those values are headers)</b>
+        </label>
+      </div>
+      <table class="table table-condensed">
+        {% for cell in header_cells %}
+        <tr class="header-match-row" cell-order-num="{{ cell.cell_order }}">
+          <td class="col-sm-6 pull-left text-center header-content">
+            {{ cell.content }}
+          </td>
+          <td class="col-sm-6 pull-right">
+            {{ selector_form.field_option }}
+            <span class="errorlist"></span>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
   </div>
-  <div class="panel-body">
-    <table class="table table-condensed">
-      {% for cell in header_cells %}
-      <tr>
-        <td class="col-sm-6 pull-left text-center">
-          {{ cell.content }}
-        </td>
-        <td class="col-sm-6 pull-right">
-          {{ selector_form.field_option }}
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
+</div>
+<div class="row">
+
+</div>
+<div id="row-action-buttons" class="row spacer">
+  <button class="btn btn-success col-sm-6 pull-left" id="btn-start-input">Input File to Database</button>
+  <button class="btn btn-warning col-sm-6 pull-right" id="delete-step-1">Delete This File</button>
+</div>
+<div class="row">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h2 class="panel-title h2">
+        First ten records
+        <div id="btn-toggle-records" class="pull-right glyphicon glyphicon-chevron-down glyph-button"></div>
+      </h2>
+    </div>
+    <div id="ten-record-detail" class="panel-body collapse">
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            {% for cell in header_cells %}
+            <th>
+              {{ cell.content }}
+            </th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in first_ten_rows %}
+          <tr>
+            {% for cell in row.uploadedcell_set.all %}
+            <td>
+              {{ cell.content }}
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

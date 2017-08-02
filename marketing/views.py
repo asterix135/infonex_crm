@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 
 from .forms import FieldSelectorForm, UploadFileForm
 from .models import *
@@ -373,7 +373,7 @@ class Add(TemplateView):
         return context
 
 
-class Delete(View):
+class DeletePerson(View):
 
     def get(self, request, *args, **kwargs):
         raise Http404()
@@ -388,10 +388,29 @@ class Delete(View):
         return HttpResponse(status=200)
 
 
+class DeleteUpload(DeleteView):
+    queryset = UploadedFile.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        raise Http404()
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return HttpResponse(status=200)
+
+
 class FieldMatcher(DetailView):
     template_name = 'marketing/upload_addins/field_matcher.html'
     queryset = UploadedFile.objects.all()
     context_object_name = 'uploaded_file'
+
+    def _first_ten_rows(self):
+        rows = UploadedRow.objects.filter(
+            parent_file=self.object,
+            row_is_first=False
+        ).order_by('row_number')[:10]
+        return []
 
     def get_context_data(self, **kwargs):
         context = super(FieldMatcher, self).get_context_data(**kwargs)
@@ -408,8 +427,13 @@ class FieldMatcher(DetailView):
         else:
             header_cells = None
         context['header_cells'] = header_cells
+        context['first_ten_rows'] = UploadedRow.objects.filter(
+            parent_file=self.object,
+            row_is_first=False,
+        ).order_by('row_number')[:10]
         context['selector_form'] = FieldSelectorForm()
         return context
+
 
 class UpdatePerson(View):
 

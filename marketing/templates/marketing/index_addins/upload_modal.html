@@ -18,13 +18,11 @@
               </div>
               <div class="row">
                 <div class="col-sm-12">
-                  <!-- TODO: Need Form stuff here -->
                   <div class="input-group">
                     <label class="input-group-btn">
                       <span class="btn btn-primary">
                         Browse...
                         {{ upload_file_form.marketing_file }}
-                        <!-- <input type="file" style="display: none;" name="marketing_file" /> -->
                       </span>
                     </label>
                     <input type="text" class="form-control" readonly />
@@ -38,7 +36,8 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-primary" id="submit-button" disabled="true">Submit File</button>
-          <button type="button" class="btn btn-secondary" id="see-uploads">See unprocessd uploads</button>
+          <a href="{% url 'marketing:upload' %}" class="btn btn-default" id="see-uploads" role="button">See unprocessed uploads</a>
+          <!-- <button type="button" class="btn btn-secondary" id="see-uploads">See unprocessd uploads</button> -->
         </div>
       </form>
 

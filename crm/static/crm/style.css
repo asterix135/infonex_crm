@@ -72,9 +72,6 @@ h1, h2, h3 {
 .float-right {
   float: right;
 }
-.glyph-button {
-  cursor: pointer;
-}
 .required-label {
   color: #BA2421;
   font-weight: bold;

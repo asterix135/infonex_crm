@@ -12,6 +12,22 @@
         </label>
       </div>
       <table class="table table-condensed">
+        <tr class="collapse errorlist" id="import-warnings">
+          <td colspan="2">
+            ERROR: The following fields must be selected prior to import:
+            <ul>
+              <li>
+                Name
+              </li>
+              <li>
+                Company
+              </li>
+              <li>
+                Either email or phone
+              </li>
+            </ul>
+          </td>
+        </tr>
         {% for cell in header_cells %}
         <tr class="header-match-row" cell-order-num="{{ cell.cell_order }}">
           <td class="col-sm-6 pull-left text-center header-content">
@@ -19,7 +35,7 @@
           </td>
           <td class="col-sm-6 pull-right">
             {{ selector_form.field_option }}
-            <span class="errorlist"></span>
+            <span class="errorlist field-error" id="field-error-{{ cell.cell_order }}"></span>
           </td>
         </tr>
         {% endfor %}

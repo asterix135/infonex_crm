@@ -72,29 +72,65 @@ $(document).ready(function() {
   ///////////////////////
   // Process uploaded file
   ///////////////////////
-  function okToUpload(){
-    var fieldMatches = {}
-    var selectedFields = []
+  function noDupeFields(){
+    var fieldMatches = {};
+    var selectedFields = [];
+    var allGood = true;
     $('.header-match-row').each(function(){
       var currentField = $('select[name="field_option"]', this).val();
-      if ($.inArray(currentField, selectedFields) > -1) {
-        // do something with errors and return false
-        return [false, fieldMatches];
-      } else {
-        selectedFields.push(currentField);
-      }
-      if ($('select[name="field_option"]', this).val() )
-      console.log($.trim($('.header-content', this).text()));
-      console.log($('select[name="field_option"]', this).val());
+      var cellOrderNumber = $(this).attr('cell-order-num');;
+      if (currentField != '') {
+        if ($.inArray(currentField, selectedFields) > -1) {
+          allGood = false;
+          fieldMatches[currentField].push(cellOrderNumber);
+        } else {
+          selectedFields.push(currentField);
+          fieldMatches[currentField] = [cellOrderNumber,];
+        };
+      };
     });
-    return [true, fieldMatches];
+    return [allGood, fieldMatches];
+  };
+  function flagDupeFields(fieldMatches) {
+    for (key in fieldMatches) {
+      if (fieldMatches[key].length > 1) {
+        fieldMatches[key].forEach(function(item){
+          $('#field-error-' + item).text(
+            'ERROR: You cannot use the same field for two different columns.'
+          );
+        });
+      };
+    };
+  };
+  function minimalFieldsChosen(fieldMatches) {
+    if (!('name' in fieldMatches)) {
+      return false;
+    };
+    if (!('company' in fieldMatches)) {
+      return false;
+    }
+    if ('email' in fieldMatches) {
+      return true;
+    }
+    if ('phone' in fieldMatches) {
+      return true;
+    }
+    return false;
   };
   $('body').on('click', '#btn-start-input', function(){
-    console.log('starting input....');
-    if (okToUpload()){
-      console.log('starting input');
+    $('.field-error').each(function(){
+      $(this).text('');
+    });
+    $('#import-warnings').removeClass('in');
+    var [noDupes, fieldMatches] = noDupeFields();
+    if (noDupes){
+      if (minimalFieldsChosen(fieldMatches)){
+        console.log('starting input');
+      } else {
+        $('#import-warnings').addClass('in');
+      }
     } else {
-      console.log('Houston we have a problem');
+      flagDupeFields(fieldMatches);
     };
   });
 

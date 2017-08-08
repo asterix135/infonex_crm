@@ -117,6 +117,21 @@ $(document).ready(function() {
     }
     return false;
   };
+  function startImport(fieldMatches){
+    var passedJson = {
+      'file_id': activeUpload,
+      'field_matches': fieldMatches,
+    }
+    $.ajax({
+      url: '/marketing/process_upload/',
+      type: 'POST',
+      data: {'json': JSON.stringify(passedJson)},
+      dataType: 'json',
+      success: function(data){
+        console.log('need to remove row from screen');
+      }
+    });
+  };
   $('body').on('click', '#btn-start-input', function(){
     $('.field-error').each(function(){
       $(this).text('');
@@ -125,7 +140,7 @@ $(document).ready(function() {
     var [noDupes, fieldMatches] = noDupeFields();
     if (noDupes){
       if (minimalFieldsChosen(fieldMatches)){
-        console.log('starting input');
+        startImport(fieldMatches);
       } else {
         $('#import-warnings').addClass('in');
       }

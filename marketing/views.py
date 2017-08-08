@@ -1,5 +1,6 @@
 import codecs
 import csv
+import json
 import re
 import warnings
 import codecs
@@ -385,7 +386,7 @@ class DeletePerson(View):
         if person.has_registration_history():
             add_change_record(person, 'delete')
         person.delete()
-        return HttpResponse(status=200)
+        return HttpResponse(status=204)
 
 
 class DeleteUpload(DeleteView):
@@ -433,6 +434,57 @@ class FieldMatcher(DetailView):
         ).order_by('row_number')[:10]
         context['selector_form'] = FieldSelectorForm()
         return context
+
+
+class ProcessUpload(View):
+
+    def get(self, request, *args, **kwargs):
+        raise Http404()
+
+    def _import_row(self, row, cell_map):
+        print('importing row')
+        person_record = Person()
+        person_attrs = {}
+        test_id = test_email = None
+        print(cell_map)
+        for cell in UploadedCell.objects.filter(parent_row=row):
+            print(cell.cell_order)
+            print(cell.content)
+            if cell.cell_order in cell_map:
+                person_attrs[cell_map[cell.cell_order]] = cell.content
+                if cell_map[cell.cell_order] == 'id':
+                    test_id = cell.content
+                elif cell_map[cell.cell_order] == 'email':
+                    test_email = cell.content
+        print('person_attrs: ' + str(person_attrs))
+        if test_id:
+            try:
+                person_instance = Person.objects.get(pk=test_id)
+            except Person.DoesNotExist:
+                try:
+                    person_instance = Person.objects.filter(email=test_email)[0]
+                except IndexError:
+                    person_instance = None
+        try:
+            person_record=Person(instance=person_instance, **person_attrs)
+            person_record.save()
+            row.delete()
+            print(person_record.id)
+        except Exception as e:
+            error_message = '\n\nERROR: Row # ' + str(row.row_number) + \
+                'failed wiht error message: ' + str(e) + '\n'
+
+
+    def post(self, request, *arts, **kwargs):
+        data = json.loads(request.POST['json'])
+        self.upload = UploadedFile.objects.get(pk = data['file_id'])
+        cell_map = {int(y[0]):x for x,y in data['field_matches'].items()}
+
+        for row in UploadedRow.objects.filter(parent_file=self.upload):
+            print('processing row # ' + str(row.row_number))
+            self._import_row(row, cell_map)
+            break
+        return HttpResponse(status=204)
 
 
 class UpdatePerson(View):

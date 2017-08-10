@@ -15,20 +15,20 @@ class Person(models.Model):
     Basic person model for CRM
     """
     name = models.CharField(max_length=100)
-    title = models.CharField(max_length=100, blank=True)
-    company = models.CharField(max_length=100, blank=True)
-    url = models.URLField(max_length=200, blank=True)
+    title = models.CharField(max_length=100, blank=True, null=True)
+    company = models.CharField(max_length=100, blank=True, null=True)
+    url = models.URLField(max_length=200, blank=True, null=True)
     linkedin = models.URLField(max_length=255, blank=True, null=True)
-    phone = models.CharField(max_length=20, blank=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
     phone_alternate = models.CharField(max_length=20, blank=True, null=True)
-    phone_main = models.CharField(max_length=20, blank=True)
-    email = models.EmailField(blank=True)
+    phone_main = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
     email_alternate = models.EmailField(blank=True, null=True)
     do_not_email = models.BooleanField(default=False)
     do_not_call = models.BooleanField(default=False)
-    city = models.CharField(max_length=50, blank=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
     dept = models.CharField(max_length=50, blank=True, null=True)  # General area of job
-    industry = models.TextField(blank=True)  # free-form descripton
+    industry = models.TextField(blank=True, null=True)  # free-form descripton
     geo = models.CharField(max_length=20,
                            choices=GEO_CHOICES,
                            default='Unknown')
@@ -44,7 +44,8 @@ class Person(models.Model):
     division2 = models.CharField(max_length=20,
                                  choices=DIV_CHOICES,
                                  default='NA',
-                                 blank=True)  # for splitting leads
+                                 blank=True,
+                                 null=True)  # for splitting leads
     date_created = models.DateTimeField('date created')
     created_by = models.ForeignKey('auth.User',
                                    default=1,

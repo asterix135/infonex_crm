@@ -17,6 +17,11 @@ class UploadedRow(models.Model):
     parent_file = models.ForeignKey('UploadedFile', on_delete=models.CASCADE)
     row_is_first = models.BooleanField(default=False)
     row_number = models.IntegerField()
+    has_error = models.BooleanField(default=False)
+    error_message = models.CharField(max_length=255,
+                                     blank=True,
+                                     null=True,
+                                     default=None)
 
 
 class UploadedCell(models.Model):

@@ -3,3 +3,6 @@ input[type=checkbox] {
   position: relative;
   bottom: 1px;
 }
+#incomplete-upload-data {
+  padding-bottom: 20px;
+}

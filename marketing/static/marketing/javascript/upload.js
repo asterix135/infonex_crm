@@ -8,6 +8,7 @@ $(document).ready(function() {
   // make uploaded file active
   //////////////////////
   $('body').on('click', '.upload-file-row', function(){
+    $('#incomplete-upload-data').removeClass('in');
     $('.upload-file-row').each(function(){
       $(this).removeClass('info');
     });
@@ -118,6 +119,8 @@ $(document).ready(function() {
     return false;
   };
   function startImport(fieldMatches){
+    var ignoreFirstRow = $('#id_import_first_row').prop('checked');
+    console.log(ignoreFirstRow);
     var passedJson = {
       'file_id': activeUpload,
       'field_matches': fieldMatches,
@@ -125,10 +128,23 @@ $(document).ready(function() {
     $.ajax({
       url: '/marketing/process_upload/',
       type: 'POST',
-      data: {'json': JSON.stringify(passedJson)},
+      data: {
+        'json': JSON.stringify(passedJson),
+        'ignore_first_row': ignoreFirstRow,
+      },
       dataType: 'json',
       success: function(data){
-        console.log('need to remove row from screen');
+        var processComplete = data.processComplete;
+        if (processComplete) {
+          $('tr[file_id="' + activeUpload + '"]').remove();
+        } else {
+          $('#incomplete-upload-data').addClass('in');
+          $('html, body').animate({
+            scrollTop: $("#incomplete-upload-data").offset().top
+          }, 500);
+          $('#rowsSuccess').text(data.rowsImported.success);
+          $('#rowsTotal').text(data.rowsImported.total);
+        }
       }
     });
   };
@@ -137,6 +153,7 @@ $(document).ready(function() {
       $(this).text('');
     });
     $('#import-warnings').removeClass('in');
+    $('#incomplete-upload-data').removeClass('in');
     var [noDupes, fieldMatches] = noDupeFields();
     if (noDupes){
       if (minimalFieldsChosen(fieldMatches)){
@@ -148,5 +165,12 @@ $(document).ready(function() {
       flagDupeFields(fieldMatches);
     };
   });
+
+  //////////////////////////
+  // Download errors
+  //////////////////////////
+  $('body').on('click', '.download-errors', function(){
+    alert('not implemented');
+  })
 
 });

@@ -107,22 +107,48 @@ class Changes(models.Model):
     """
     action = models.CharField(max_length=10)
     orig_id = models.IntegerField()
-    name = models.CharField(max_length=100, blank=True)
-    title = models.CharField(max_length=100, blank=True)
-    company = models.CharField(max_length=100, blank=True)
-    phone = models.CharField(max_length=20, blank=True)
-    phone_main = models.CharField(max_length=20, blank=True)
-    email = models.EmailField(blank=True)
+    name = models.CharField(max_length=100,
+                            blank=True,
+                            null=True)
+    title = models.CharField(max_length=100,
+                             blank=True,
+                             null=True)
+    company = models.CharField(max_length=100,
+                               blank=True,
+                               null=True)
+    phone = models.CharField(max_length=20,
+                             blank=True,
+                             null=True)
+    phone_main = models.CharField(max_length=20,
+                                  blank=True,
+                                  null=True)
+    email = models.EmailField(blank=True,
+                              null=True)
     do_not_email = models.BooleanField(default=False)
     do_not_call = models.BooleanField(default=False)
-    city = models.CharField(max_length=50, blank=True)
-    dept = models.CharField(max_length=50, blank=True, null=True)
-    industry = models.TextField(blank=True)  # free-form descripton
-    geo = models.CharField(max_length=10, blank=True)
-    main_category = models.CharField(max_length=25, blank=True)
-    main_category2 = models.CharField(max_length=15, blank=True)
-    division1 = models.CharField(max_length=20, blank=True)
-    division2 = models.CharField(max_length=20, blank=True)
+    city = models.CharField(max_length=50,
+                            blank=True,
+                            null=True)
+    dept = models.CharField(max_length=50,
+                            blank=True,
+                            null=True)
+    industry = models.TextField(blank=True,
+                                null=True)  # free-form descripton
+    geo = models.CharField(max_length=10,
+                           blank=True,
+                           null=True)
+    main_category = models.CharField(max_length=25,
+                                     blank=True,
+                                     null=True)
+    main_category2 = models.CharField(max_length=15,
+                                      blank=True,
+                                      null=True)
+    division1 = models.CharField(max_length=20,
+                                 blank=True,
+                                 null=True)
+    division2 = models.CharField(max_length=20,
+                                 blank=True,
+                                 null=True)
     date_created = models.DateTimeField('date created')
     created_by = models.ForeignKey('auth.User',
                                    default=1,

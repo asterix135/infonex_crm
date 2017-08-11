@@ -403,8 +403,16 @@ class DeleteUpload(DeleteView):
         return HttpResponse(status=200)
 
 
-# class Download(View):
+class Download(DownloadResponseMixin, View):
+    title = 'download'
 
+    def get_context_data(self, **kwargs):
+        content = {}
+        return content
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
 
 class FieldMatcher(DetailView):

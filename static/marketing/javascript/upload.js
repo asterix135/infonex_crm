@@ -145,6 +145,7 @@ $(document).ready(function() {
           $('#rowsSuccess').text(data.rowsImported.success);
           $('#rowsTotal').text(data.rowsImported.total);
         }
+        alert('Import Complete');
       }
     });
   };
@@ -157,6 +158,7 @@ $(document).ready(function() {
     var [noDupes, fieldMatches] = noDupeFields();
     if (noDupes){
       if (minimalFieldsChosen(fieldMatches)){
+        alert('This may take a while.  Do not refresh or leave this page.');
         startImport(fieldMatches);
       } else {
         $('#import-warnings').addClass('in');

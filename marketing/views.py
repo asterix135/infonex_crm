@@ -16,6 +16,7 @@ from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 
 from .constants import *
 from .forms import FieldSelectorForm, UploadFileForm
+from .mixins import DownloadResponseMixin
 from .models import *
 from crm.models import Person, Changes
 from crm.views import add_change_record
@@ -402,6 +403,10 @@ class DeleteUpload(DeleteView):
         return HttpResponse(status=200)
 
 
+# class Download(View):
+
+
+
 class FieldMatcher(DetailView):
     template_name = 'marketing/upload_addins/field_matcher.html'
     queryset = UploadedFile.objects.all()
@@ -500,7 +505,8 @@ class ProcessUpload(View):
             person.save()
             self.rows_imported['success'] += 1
             self.rows_imported['total'] += 1
-            row.delete()
+            if not row.row_is_first:
+                row.delete()
         except Exception as e:
             row.has_error = True
             row.error_message = str(e)
@@ -514,7 +520,6 @@ class ProcessUpload(View):
         self.upload = UploadedFile.objects.get(pk = data['file_id'])
         cell_map = {int(y[0]):x for x,y in data['field_matches'].items()}
         for row in UploadedRow.objects.filter(parent_file=self.upload):
-            print(row.row_number)
             if include_first_row or (not row.row_is_first):
                 self._import_row(row, cell_map)
         file_fully_processed = self._delete_file()

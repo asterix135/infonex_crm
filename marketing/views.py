@@ -4,7 +4,7 @@ import json
 import re
 import warnings
 import codecs
-from openpyxl import load_workbook
+from openpyxl import load_workbook, Workbook
 from time import strftime
 
 from django.http import JsonResponse, Http404, HttpResponse
@@ -16,7 +16,6 @@ from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 
 from .constants import *
 from .forms import FieldSelectorForm, UploadFileForm
-from .mixins import DownloadResponseMixin
 from .models import *
 from crm.models import Person, Changes
 from crm.views import add_change_record
@@ -354,7 +353,7 @@ class Add(TemplateView):
     template_name = 'marketing/index_addins/table_row.html'
 
     def get(self, request, *args, **kwargs):
-        raise Http404
+        raise Http404()
 
     def post(self, request, *args, **kwargs):
         self._person = Person(
@@ -403,16 +402,72 @@ class DeleteUpload(DeleteView):
         return HttpResponse(status=200)
 
 
-class Download(DownloadResponseMixin, View):
-    title = 'download'
+class DownloadErrors(View):
 
-    def get_context_data(self, **kwargs):
-        content = {}
-        return content
+    def _build_row_list(row):
+        row_text = []
+        for i in range(self.upload.num_columns + 1):
+            try:
+                row_text.append(
+                    UploadedCell.objects.get(parent_row=row,
+                                             cell_order=i).content
+                )
+            except UploadedCell.DoesNotExist:
+                if i == self.upload.num_columns:
+                    row_text.append(row.error_message)
+                else:
+                    row_text.append('')
+        return row_text
+
+    def _csv_response(self, filename):
+        filename += 'csv'
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = \
+            ('attachment; filename="%s.csv"' % filename)
+        writer = csv.writer(response)
+        filerows = UploadedRow.objects.filter(parent_file=self.upload)
+        for row in filerows:
+            row_text = self._build_row_list(row)
+            writer.writerow(row_text)
+        return response
+
+    def _xlsx_response(self, filename):
+        filename += 'xlsx'
+        response = HttpResponse(content_type='application/vnd.mx-excel')
+        response['Content-Disposition'] = \
+            ('attachment; filename="%s.xlsx"' % filename)
+        wb = Workbook()
+        ws = wb.active
+        filerows = UploadedRow.objects.filter(parent_file=self.upload)
+        for row in filerows:
+            row_text = self._build_row_list(row)
+            ws.append(row)
+        wb.save(response)
+        return response
 
     def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        return self.render_to_response(context)
+        raise Http404()
+
+    def post(self, request, *args, **kwargs):
+        ok_to_render = False
+        self.filetype = request.POST.get('fileformat', None)
+        self.upload = get_object_or_404(UploadedFile,
+                                        pk=request.POST['file_id'])
+        if self.filetype:
+            context = self.get(**kwargs)
+            self.render_to_response()
+        else:
+            raise Http404('invalid format specified')
+
+    def render_to_response(self):
+        if self.upload.filename[-3:] == 'csv':
+            filename = self.upload.filename[:-4] + '_errors.'
+        else:
+            filename = self.upload.filename[:-5] + '_errors.'
+        if self.filetype == 'csv':
+            return self._csv_response(filename)
+        else:
+            return self._xlsx_response(filename)
 
 
 class FieldMatcher(DetailView):

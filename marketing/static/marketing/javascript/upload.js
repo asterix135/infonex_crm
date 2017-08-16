@@ -137,6 +137,7 @@ $(document).ready(function() {
         var processComplete = data.processComplete;
         if (processComplete) {
           $('tr[file_id="' + activeUpload + '"]').remove();
+          $('#field-matcher').addClass('collapse');
         } else {
           $('#incomplete-upload-data').addClass('in');
           $('html, body').animate({
@@ -172,7 +173,14 @@ $(document).ready(function() {
   // Download errors
   //////////////////////////
   $('body').on('click', '.download-errors', function(){
-    alert('not implemented');
+    var url = '/marketing/download_errors?fileformat=';
+    url += $(this).attr('download-format');
+    url += '&file_id=' + activeUpload;
+    window.open(url);
+    $('#incomplete-upload-data').removeClass('in');
+    $('tr[file_id=' + activeUpload + ']').remove();
+    activeUpload = null;
+    $('#field-matcher').html('');    
   })
 
 });

@@ -1,11 +1,11 @@
 PAID_STATUS_VALUES = ['DP', 'SP', 'DX']
-UNPAID_STATUS_VALUES = ['DU', 'SU']
-CXL_VALUES = ['DX', 'SX', 'KX', 'B']
+UNPAID_STATUS_VALUES = ['DU', 'SU',]
+CXL_VALUES = ['DX', 'SX', 'KX', 'B', 'UX']
 NON_INVOICE_VALUES = ['K', 'KX', 'SD', 'SE', 'G', 'B', '']
 NO_CONFIRMATION_VALUES = ['K', 'KX', 'B']
 GUEST_CONFIRMATION = ['G', 'SD', 'SE']
 SPONSOR_CONFIRMATION = ['SP', 'SU']
-ZERO_INVOICE_OK = ['DF', 'K', 'KX', 'SD', 'SE', 'G', 'B', 'DX']
+ZERO_INVOICE_OK = ['DF', 'K', 'KX', 'SD', 'SE', 'G', 'B', 'DX', 'UX']
 
 TRAINING_CO_WEBSITE = 'www.inx-training.com'
 CANADA_WEBSITE = 'www.infonex.com'

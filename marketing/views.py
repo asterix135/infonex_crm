@@ -404,7 +404,7 @@ class DeleteUpload(DeleteView):
 
 class DownloadErrors(View):
 
-    def _build_row_list(row):
+    def _build_row_list(self, row):
         row_text = []
         for i in range(self.upload.num_columns + 1):
             try:
@@ -429,6 +429,7 @@ class DownloadErrors(View):
         for row in filerows:
             row_text = self._build_row_list(row)
             writer.writerow(row_text)
+        self.upload.delete()
         return response
 
     def _xlsx_response(self, filename):
@@ -443,19 +444,16 @@ class DownloadErrors(View):
             row_text = self._build_row_list(row)
             ws.append(row)
         wb.save(response)
+        self.upload.delete()
         return response
 
     def get(self, request, *args, **kwargs):
-        raise Http404()
-
-    def post(self, request, *args, **kwargs):
         ok_to_render = False
-        self.filetype = request.POST.get('fileformat', None)
+        self.filetype = request.GET.get('fileformat', None)
         self.upload = get_object_or_404(UploadedFile,
-                                        pk=request.POST['file_id'])
+                                        pk=request.GET['file_id'])
         if self.filetype:
-            context = self.get(**kwargs)
-            self.render_to_response()
+            return self.render_to_response()
         else:
             raise Http404('invalid format specified')
 
@@ -468,6 +466,12 @@ class DownloadErrors(View):
             return self._csv_response(filename)
         else:
             return self._xlsx_response(filename)
+
+
+class DownloadList(View):
+
+    def get(self, request, *args, **kwargs):
+        pass
 
 
 class FieldMatcher(DetailView):

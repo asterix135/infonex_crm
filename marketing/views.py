@@ -16,6 +16,7 @@ from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 
 from .constants import *
 from .forms import FieldSelectorForm, UploadFileForm
+from .mixins import CSVResponseMixin
 from .models import *
 from crm.models import Person, Changes
 from crm.views import add_change_record
@@ -24,7 +25,7 @@ from crm.constants import GEO_CHOICES, CAT_CHOICES, DIV_CHOICES
 ######################
 # Main page views
 ######################
-class Index(ListView):
+class Index(CSVResponseMixin, ListView):
     template_name = 'marketing/index.html'
     context_object_name = 'records'
     queryset = Person.objects.all()
@@ -150,7 +151,7 @@ class Index(ListView):
 
     def get_queryset(self):
         queryset = super(Index, self).get_queryset()
-        queryset = self._filter_queryset(queryset)
+        queryset = self.filtered_queryset = self._filter_queryset(queryset)
         return queryset
 
     def paginate_queryset(self, queryset, page_size):

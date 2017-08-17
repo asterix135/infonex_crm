@@ -27,10 +27,12 @@
         Upload
       </button>
       {% if request.user|has_group:'management' or request.user|has_group:'db_admin' or request.user.is_superuser %}
-      <button type="button" class="btn btn-default navbar-btn">
-        <span class="glyphicon glyphicon-download"></span><br />
-        Download
-      </button>
+      <a href="?export=csv">
+        <button type="button" class="btn btn-default navbar-btn">
+          <span class="glyphicon glyphicon-download"></span><br />
+          Download
+        </button>
+      </a>
       {% endif %}
     </div>
   </div>

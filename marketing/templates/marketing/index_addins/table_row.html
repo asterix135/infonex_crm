@@ -50,21 +50,22 @@
       {% endfor %}
     </select>
   </td>
-  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="company" value="{{ record.company }}" /></td>
-  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="name" value="{{ record.name }}"/></td>
-  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="title" value="{{ record.title }}" /></td>
+  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="company" value="{{ record.company|default_if_none:'' }}" /></td>
+  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="name" value="{{ record.name|default_if_none:'' }}"/></td>
+  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="title" value="{{ record.title|default_if_none:'' }}" /></td>
   <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="dept" value="{{ record.dept|default_if_none:'' }}" /></td>
-  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="phone" value="{{ record.phone }}" /></td>
+  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="phone" value="{{ record.phone|default_if_none:'' }}" /></td>
   <td class="select-input"><input type="checkbox" class="form-control record-checkbox" record_id="{{ record.pk }}" name="do_not_call" {% if record.do_not_call %}checked{% endif %} /></td>
-  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="email" value="{{ record.email }}" /></td>
+  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="email" value="{{ record.email|default_if_none:'' }}" /></td>
   <td class="select-input"><input type="checkbox" class="form-control record-checkbox" record_id="{{ record.pk }}" name="do_not_email" {% if record.do_not_email %}checked{% endif %} /></td>
-  <td class="textarea-input"><textarea rows="1" class="form-control table-field record-field" record_id="{{ record.pk }}" name="industry">{{ record.industry }}</textarea></td>
+  <td class="textarea-input"><textarea rows="1" class="form-control table-field record-field" record_id="{{ record.pk }}" name="industry">{{ record.industry|default_if_none:'' }}</textarea></td>
   <td class="select-display">
     {% if record.has_registration_history %}
     <span class="glyphicon glyphicon-ok"></span>
     {% endif %}
   </td>
   <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="email_alternate" value="{{ record.email_alternate|default_if_none:'' }}" /></td>
+  <td class="text-display"><span name="created_by" record_id="{{ record.id }}">{{ record.created_by.username }}</span></td>
   <td class="text-display"><span name="date_created" record_id="{{ record.id }}">{{ record.date_created|date:"SHORT_DATE_FORMAT" }}</span></td>
   <td class="text-display"><span name="date_modified" record_id="{{ record.id }}">{{ record.date_modified|date:"SHORT_DATE_FORMAT" }}</span></td>
 </tr>

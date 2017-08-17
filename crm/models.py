@@ -74,7 +74,7 @@ class Person(models.Model):
 
     def state_prov(self):
         phone_pattern = re.compile(r'(\d{3})\D*(\d{3})\D*(\d{4})\D*(\d*)$')
-        if phone_pattern.search(self.phone):
+        if self.phone and phone_pattern.search(self.phone):
             ac = phone_pattern.search(self.phone).groups()[0]
             if ac in AC_DICT:
                 return AC_DICT[ac]

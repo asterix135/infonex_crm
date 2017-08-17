@@ -1,7 +1,10 @@
 <tr record_id="{{ record.pk }}">
   <td class="select-input">
-    <button type="button" class="btn btn-link delete-step-1" record_id="{{ record.pk }}">
+    <button type="button" class="btn btn-link delete-step-1 float-left" record_id="{{ record.pk }}">
       <span class="glyphicon glyphicon-remove-sign"></span>
+    </button>
+    <button type="button" class="btn btn-link btn-duplicate float-right collapse in" record_id="{{ record.pk }}">
+      <span class="glyphicon glyphicon-duplicate"></span>
     </button>
   </td>
   <td class="select-input">

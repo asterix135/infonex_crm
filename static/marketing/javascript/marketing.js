@@ -52,6 +52,7 @@ $(document).ready(function() {
     $(this).removeClass('delete-step-1 btn-link');
     $(this).addClass('delete-step-2 btn-warning');
     $(this).text('Delete');
+    $('.btn-duplicate[record_id="' + recordId + '"]').removeClass('in');
     $('<button class="btn btn-success btn-restore" type="button" record_id="' + recordId + '">Oops..</button>').insertAfter(this);
   });
   $('body').on('click', '.btn-restore', function(){
@@ -61,6 +62,7 @@ $(document).ready(function() {
     removeBtn.addClass('delete-step-1 btn-link');
     removeBtn.html('<span class="glyphicon glyphicon-remove-sign"></span>');
     $(this).remove();
+    $('.btn-duplicate[record_id="' + recordId + '"]').addClass('in');
   });
   $('body').on('click', '.delete-step-2', function(){
     var recordId = $(this).attr('record_id');
@@ -87,6 +89,9 @@ $(document).ready(function() {
         $('input[name="company"]:first').focus();
       }
     });
+  });
+  $('body').on('click', '.btn-duplicate', function(){
+    alert('not yet working');
   });
 
   ////////////////////

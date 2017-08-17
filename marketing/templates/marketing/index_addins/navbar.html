@@ -27,7 +27,7 @@
         Upload
       </button>
       {% if request.user|has_group:'management' or request.user|has_group:'db_admin' or request.user.is_superuser %}
-      <a href="?export=csv">
+      <a href="?export=csv{% if filter_string %}&{{ filter_string }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}&order={{ order }}{% endif %}">
         <button type="button" class="btn btn-default navbar-btn">
           <span class="glyphicon glyphicon-download"></span><br />
           Download

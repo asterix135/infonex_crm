@@ -49,10 +49,7 @@ class CSVResponseMixin():
                 'HasRegistrationHistory',
                 'CreatedBy',
             ])
-            n=0
             for person in self.filtered_queryset:
-                print(n)
-                n+=1
                 writer.writerow([
                     person.name,
                     person.title,

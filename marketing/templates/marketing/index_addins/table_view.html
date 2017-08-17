@@ -43,9 +43,9 @@
           </a>
         </th>
         <th class="text-input">
-          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=contact&order={% if order == 'desc' or sort_by != 'contact' %}asc{% else %}desc{% endif %}">
-            Contact
-            {% if sort_by == 'contact' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=name&order={% if order == 'desc' or sort_by != 'name' %}asc{% else %}desc{% endif %}">
+            Name
+            {% if sort_by == 'name' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="text-input">

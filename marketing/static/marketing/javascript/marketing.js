@@ -84,14 +84,28 @@ $(document).ready(function() {
       url: '/marketing/add/',
       type: 'POST',
       success: function(data){
-        console.log('success');
         $('.marketing-table').prepend(data);
         $('input[name="company"]:first').focus();
       }
     });
   });
   $('body').on('click', '.btn-duplicate', function(){
-    alert('not yet working');
+    var personId = $(this).attr('record_id');
+    // $(this).closest('tr').after('<tr><td>foo<td></tr>');
+    $.ajax({
+      url: '/marketing/add/',
+      type: 'POST',
+      data: {
+        'person_id': personId,
+      },
+      success: function(data){
+        $('.marketing-table').prepend(data);
+        // console.log(data);
+        // $(data).insertAfter($(this).closest('tr'));
+        // $(this).closest('tr').after('<tr>' + data + '</tr>');
+        $('input[name="company"]:first').focus();
+      }
+    });
   });
 
   ////////////////////

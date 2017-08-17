@@ -353,10 +353,16 @@ class UploadFile(TemplateView):
 class Add(TemplateView):
     template_name = 'marketing/index_addins/table_row.html'
 
-    def get(self, request, *args, **kwargs):
-        raise Http404()
+    def _duplicate_person(self, request):
+        self._person = Person.objects.get(pk=request.POST['person_id'])
+        self._person.pk = None
+        self._person.created_by = request.user
+        self._person.modified_by = request.user
+        self._person.date_created = timezone.now()
+        self._person.date_modified = timezone.now()
+        self._person.save()
 
-    def post(self, request, *args, **kwargs):
+    def _new_person(self, request):
         self._person = Person(
             date_created=timezone.now(),
             created_by=request.user,
@@ -364,6 +370,18 @@ class Add(TemplateView):
             modified_by=request.user,
         )
         self._person.save()
+
+    def get(self, request, *args, **kwargs):
+        raise Http404()
+
+    def post(self, request, *args, **kwargs):
+        if 'person_id' in request.POST:
+            try:
+                self._duplicate_person(request)
+            except Person.DoesNotExist:
+                self._new_person(request)
+        else:
+            self._new_person(request)
         context = self.get_context_data(**kwargs)
         return super(Add, self).render_to_response(context)
 

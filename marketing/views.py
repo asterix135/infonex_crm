@@ -30,7 +30,7 @@ class Index(CSVResponseMixin, ListView):
     context_object_name = 'records'
     queryset = Person.objects.all()
     paginate_by=250
-    query_params = {
+    query_param_terms = {
         'main_category': 'main_category',
         'main_category2': 'main_category2',
         'geo': 'geo',
@@ -133,14 +133,14 @@ class Index(CSVResponseMixin, ListView):
         query_params = {}
         query_prefill = {}
         for param in self.request.GET:
-            if param in self.query_params:
+            if param in self.query_param_terms:
                 query_string += param + '=' + self.request.GET[param] + '&'
                 query_prefill[param] = self.request.GET[param]
                 if self.request.GET[param] in ('true', 'false'):
                     tf_bool = self.request.GET[param] == 'true'
-                    query_params[self.query_params[param]] = tf_bool
+                    query_params[self.query_param_terms[param]] = tf_bool
                 else:
-                    query_params[self.query_params[param]] = \
+                    query_params[self.query_param_terms[param]] = \
                         self.request.GET[param]
         query_string = re.sub(r'\s', '%20', query_string)
         query_string = query_string[:-1]

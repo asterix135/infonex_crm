@@ -133,7 +133,7 @@ $(document).ready(function() {
           newFilterString += $(this).attr('filter-field') + '=' + 'true' + '&';
         };
       } else if ($(this).val() != '' ) {
-        newFilterString += $(this).attr('filter-field') + '=' + $(this).val() + '&';
+        newFilterString += $(this).attr('filter-field') + '=' + $(this).val().trim() + '&';
       };
     });
     newFilterString = newFilterString.slice(0,-1);

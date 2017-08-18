@@ -15,17 +15,6 @@
       {% endfor %}
     </select>
   </td>
-  <td>
-    <select class="form-control filter-input" filter-field="main_category2">
-      <option value="">
-      </option>
-      {% for option in cat_choices %}
-      <option value = "{{ option.0 }}" {% if 'main_category2' in query_prefill and query_prefill.main_category2 == option.0 %}selected="selected"{% endif %}>
-        {{ option.1 }}
-      </option>
-      {% endfor %}
-    </select>
-  </td>
   <td></td>
   <td>
     <select class="form-control filter-input" filter-field="geo">
@@ -50,17 +39,6 @@
     </select>
   </td>
   <td>
-    <select class="form-control filter-input" filter-field="division2">
-      <option value="">
-      </option>
-      {% for option in div_choices %}
-      <option value = "{{ option.0 }}" {% if 'division2' in query_prefill and query_prefill.division2 == option.0 %}selected="selected"{% endif %}>
-        {{ option.1 }}
-      </option>
-      {% endfor %}
-    </select>
-  </td>
-  <td>
     <input class="form-control filter-input" filter-field="company" {% if 'company' in query_prefill %}value="{{ query_prefill.company}}"{% endif %} />
   </td>
   <td>
@@ -76,9 +54,6 @@
     <input class="form-control filter-input" filter-field="phone" {% if 'phone' in query_prefill %}value="{{ query_prefill.phone}}"{% endif %} />
   </td>
   <td>
-    <input type="checkbox" class="form-control filter-input" filter-field="do_not_call" {% if 'do_not_call' in query_prefill and query_prefill.do_not_call == 'true' %}checked{% endif %} />
-  </td>
-  <td>
     <input class="form-control filter-input" filter-field="email" {% if 'email' in query_prefill %}value="{{ query_prefill.mail}}"{% endif %} />
   </td>
   <td>
@@ -91,6 +66,32 @@
   <td>
     <input class="form-control filter-input" filter-field="email_alternate" {% if 'email_alternate' in query_prefill %}value="{{ query_prefill.email_alternate}}"{% endif %} />
   </td>
+  <td>
+    <select class="form-control filter-input" filter-field="main_category2">
+      <option value="">
+      </option>
+      {% for option in cat_choices %}
+      <option value = "{{ option.0 }}" {% if 'main_category2' in query_prefill and query_prefill.main_category2 == option.0 %}selected="selected"{% endif %}>
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
+  <td>
+    <select class="form-control filter-input" filter-field="division2">
+      <option value="">
+      </option>
+      {% for option in div_choices %}
+      <option value = "{{ option.0 }}" {% if 'division2' in query_prefill and query_prefill.division2 == option.0 %}selected="selected"{% endif %}>
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
   <th></th>
   <th></th>
+  <th></th>
+  <td>
+    <input type="checkbox" class="form-control filter-input" filter-field="do_not_call" {% if 'do_not_call' in query_prefill and query_prefill.do_not_call == 'true' %}checked{% endif %} />
+  </td>
 </tr>

@@ -9,14 +9,8 @@
             {% if sort_by == 'main_category' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
-        <th class="select-input-head">
-          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=main_category2&order={% if order == 'desc' or sort_by != 'main_category2' %}asc{% else %}desc{% endif %}">
-            Main2
-            {% if sort_by == 'main_category2' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
-          </a>
-        </th>
-        <th class="select-input-head">
-          State/Prov
+        <th class="select-input-head-skinny">
+          Prov
         </th>
         <th class="select-input-head">
           <a class="same-page" href="?page={{ page_obj.number }}&sort_by=geo&order={% if order == 'desc' or sort_by != 'geo' %}asc{% else %}desc{% endif %}">
@@ -28,12 +22,6 @@
           <a class="same-page" href="?page={{ page_obj.number }}&sort_by=division1&order={% if order == 'desc' or sort_by != 'division1' %}asc{% else %}desc{% endif %}">
             Div1
             {% if sort_by == 'division1' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
-          </a>
-        </th>
-        <th class="select-input-head">
-          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=division2&order={% if order == 'desc' or sort_by != 'division2' %}asc{% else %}desc{% endif %}">
-            Div2
-            {% if sort_by == 'division2' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="text-input">
@@ -54,22 +42,16 @@
             {% if sort_by == 'title' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
-        <th class="text-input">
+        <th class="text-input-skinny">
           <a class="same-page" href="?page={{ page_obj.number }}&sort_by=dept&order={% if order == 'desc' or sort_by != 'dept' %}asc{% else %}desc{% endif %}">
             Dept
             {% if sort_by == 'dept' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
-        <th class="text-input">
+        <th class="text-input-skinny">
           <a class="same-page" href="?page={{ page_obj.number }}&sort_by=phone&order={% if order == 'desc' or sort_by != 'phone' %}asc{% else %}desc{% endif %}">
             Phone
             {% if sort_by == 'phone' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
-          </a>
-        </th>
-        <th class="select-input-head">
-          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=do_not_call&order={% if order == 'desc' or sort_by != 'do_not_call' %}asc{% else %}desc{% endif %}">
-            Do Not Call
-            {% if sort_by == 'do_not_call' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
         <th class="text-input">
@@ -99,6 +81,18 @@
             {% if sort_by == 'email_alternate' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
+        <th class="select-input-head">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=main_category2&order={% if order == 'desc' or sort_by != 'main_category2' %}asc{% else %}desc{% endif %}">
+            Main2
+            {% if sort_by == 'main_category2' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
+          </a>
+        </th>
+        <th class="select-input-head">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=division2&order={% if order == 'desc' or sort_by != 'division2' %}asc{% else %}desc{% endif %}">
+            Div2
+            {% if sort_by == 'division2' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
+          </a>
+        </th>
         <th class="text-input-head">
           CreatedBy
         </th>
@@ -112,6 +106,12 @@
           <a class="same-page" href="?page={{ page_obj.number }}&sort_by=date_modified&order={% if order == 'desc' or sort_by != 'date_modified' %}asc{% else %}desc{% endif %}">
             Date Modified
             {% if sort_by == 'date_modified' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
+          </a>
+        </th>
+        <th class="select-input-head">
+          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=do_not_call&order={% if order == 'desc' or sort_by != 'do_not_call' %}asc{% else %}desc{% endif %}">
+            Do Not Call
+            {% if sort_by == 'do_not_call' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
       </tr>

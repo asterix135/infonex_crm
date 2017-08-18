@@ -25,18 +25,31 @@ th {
   min-width: 250px;
   max-width: 250px;
 }
+.text-input-skinny, .text-input-head-skinny, .text-display-skinny {
+  min-width: 175px;
+  max-width: 175px;
+  word-wrap: break-word;
+}
 .select-input, .select-input-head, .select-display {
   min-width: 100px;
   max-width: 100px;
 }
-.select-input, .select-display {
+.select-input-skinny, .select-input-head-skinny, .select-display-skinny {
+  min-width: 70px;
+  max-width: 70px;
+}
+.select-display-skinny {
+  font-size: 11px;
+}
+.select-input, .select-display, .select-display-skinny {
   text-align: center;
+  word-wrap: break-word;
 }
 .textarea-input {
   min-width: 350px;
   max-width: 350px;
 }
-.text-display, .select-display {
+.text-display, .select-display, .select-display-skinny {
   vertical-align: middle !important;
   /*padding-top: 12px;*/
 }

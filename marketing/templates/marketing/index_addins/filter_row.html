@@ -1,10 +1,11 @@
 <tr class="collapse {% if filter_string %}in{% endif %}" id="filter-row">
   <td class="select-input">
-    <button class="btn btn-success" type="button" id="btn-apply-filter">
-      Apply
+    <button class="btn btn-link float-left" type="button" id="btn-apply-filter">
+      <span class="glyphicon glyphicon-filter"></span>
     </button>
-    <!-- <button class="btn btn-success" type="button" id="btn-clear-filter">Clear</button>
-    <button class="btn btn-success" type="button" id="btn-hide-filter">Hide</button> -->
+    <button class="btn btn-link float-right" type="button" id="btn-clear-filter">
+      <span class="glyphicon glyphicon-erase"></span>
+    </button>
   </td>
   <td>
     <select class="form-control filter-input" filter-field="main_category">

@@ -121,9 +121,12 @@ $(document).ready(function() {
     });
   };
   $('body').on('click', '#btn-filter', function(){
-    $('#filter-row').addClass('in');
-    $(this).addClass('disabled');
-    $('#btn-see-all').removeClass('disabled');
+    if ($('#filter-row').hasClass('in')) {
+      $('#filter-row').removeClass('in');
+    } else {
+      $('#filter-row').addClass('in');
+      $('#btn-see-all').removeClass('disabled');
+    }
   })
   $('body').on('click', '#btn-see-all', function(){
     if (filterString != '') {
@@ -158,6 +161,9 @@ $(document).ready(function() {
       }
       window.location.href = newFilterString;
     };
+  });
+  $('body').on('click', '#btn-clear-filter', function(){
+    clearFilters();
   });
   $('body').on('keypress', '.filter-input', function(e){
     if (e.which === 13) {

@@ -26,8 +26,8 @@ th {
   max-width: 250px;
 }
 .text-input-skinny, .text-input-head-skinny, .text-display-skinny {
-  min-width: 175px;
-  max-width: 175px;
+  min-width: 125px;
+  max-width: 125px;
   word-wrap: break-word;
 }
 .select-input, .select-input-head, .select-display {
@@ -38,10 +38,14 @@ th {
   min-width: 70px;
   max-width: 70px;
 }
-.select-display-skinny {
+.select-input-med, .select-input-head-med, .select-display-med {
+  min-width: 70px;
+  max-width: 70px;
+}
+.select-display-med {
   font-size: 11px;
 }
-.select-input, .select-display, .select-display-skinny {
+.select-input, .select-display, .select-display-skinny, .select-display-med {
   text-align: center;
   word-wrap: break-word;
 }
@@ -49,7 +53,7 @@ th {
   min-width: 350px;
   max-width: 350px;
 }
-.text-display, .select-display, .select-display-skinny {
+.text-display, .select-display, .select-display-skinny, .select-display-med {
   vertical-align: middle !important;
   /*padding-top: 12px;*/
 }

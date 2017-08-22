@@ -16,11 +16,11 @@
       </span>
       <span id="linkedin-link" class="float-right">
         {% if person.linkedin %}
-        <a href="http://{{ person.linkedin }}" target="_blank">
+        <a href="{{ person.linkedin }}" target="_blank">
           <span class="float-right"><img src={% static 'crm/images/In-2C-128px-TM.png' %} style="width:32px;height:30px;"/></span>
         </a>
         {% else %}
-        <a href="http://{{ person.linkedin }}" target="_blank" style="display:none;">
+        <a href="{{ person.linkedin }}" target="_blank" style="display:none;">
           <span class="float-right"><img src={% static 'crm/images/In-2C-128px-TM.png' %} style="width:32px;height:30px;"/></span>
         </a>
         {% endif %}

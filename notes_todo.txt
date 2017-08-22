@@ -1,4 +1,5 @@
 TODO: implement marketing app
+      a) Add counter to company name
 
 TODO: crm.views.py/Detail - need to switch this over from detail
 

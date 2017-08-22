@@ -111,6 +111,15 @@ $(document).ready(function() {
   ////////////////////
   // filter records
   ////////////////////
+  function clearFilters() {
+    $('.filter-input').each(function(){
+      if ($(this).attr('type') == 'checkbox') {
+        $(this).attr('checked', false);
+      } else {
+        $(this).val('');
+      };
+    });
+  };
   $('body').on('click', '#btn-filter', function(){
     $('#filter-row').addClass('in');
     $(this).addClass('disabled');
@@ -120,6 +129,7 @@ $(document).ready(function() {
     if (filterString != '') {
       window.location.href = '/marketing/';
     } else {
+      clearFilters();
       $('#filter-row').removeClass('in');
       $(this).addClass('disabled');
       $('#btn-filter').removeClass('disabled');
@@ -167,5 +177,19 @@ $(document).ready(function() {
       };
     };
   });
+
+  ////////////////////
+  // bulk delete
+  ////////////////////
+  $('body').on('click', '#btn-bulk-delete', function(){
+    var numRows = $('.marketing-table tr').length;
+    if (numRows > 100) {
+      alert('You can only use this for less than 100 records');
+    } else {
+      alert('still being coded');
+
+    }
+  })
+
 
 });

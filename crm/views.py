@@ -366,7 +366,6 @@ class Detail(DetailView):
         super(Detail, self).get(request, *args, **kwargs)
 
 
-
 @login_required
 def detail(request, person_id):
     """ loads main person page (detail.html) """
@@ -594,6 +593,8 @@ def search(request):
     elif request.method == 'POST' and 'event' in request.POST:
         search_type = request.session['last_search_type'] = 'attendee'
         conference_select_form = ConferenceSelectForm(request.POST)
+        conference_select_form.fields['event'].queryset = \
+            Event.objects.all().order_by('-number')
         conf_id = request.session['search_conf_id'] = request.POST['event']
     elif request.method == 'POST':
         search_form = SearchForm(request.POST)
@@ -657,6 +658,8 @@ def search(request):
         conference_select_form = ConferenceSelectForm(
             {'event': conf_id}
         )
+        conference_select_form.fields['event'].queryset = \
+            Event.objects.all().order_by('-number')
 
     # execute advanced search
     elif (search_name and search_name not in ('', None)) or \

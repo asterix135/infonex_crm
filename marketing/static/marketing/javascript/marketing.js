@@ -1,6 +1,7 @@
 $(document).ready(function() {
   let oldValue;
   var filterString = $('#filter-string').val();
+  let bulkActionActive;
 
   ///////////////////
   // submit changes to record as they are completed
@@ -47,6 +48,16 @@ $(document).ready(function() {
   ///////////////////////
   // delete record
   ///////////////////////
+  function deleteRecord(recordId){
+    $.ajax({
+      url: '/marketing/delete/',
+      type: 'POST',
+      data: {'record_id': recordId,},
+      success: function(){
+        $('tr[record_id="' + recordId + '"]').remove();
+      },
+    });
+  }
   $('body').on('click', '.delete-step-1', function(){
     var recordId = $(this).attr('record_id');
     $(this).removeClass('delete-step-1 btn-link');
@@ -66,14 +77,7 @@ $(document).ready(function() {
   });
   $('body').on('click', '.delete-step-2', function(){
     var recordId = $(this).attr('record_id');
-    $.ajax({
-      url: '/marketing/delete/',
-      type: 'POST',
-      data: {'record_id': recordId,},
-      success: function(){
-        $('tr[record_id="' + recordId + '"]').remove();
-      },
-    });
+    deleteRecord(recordId);
   });
 
   ////////////////////
@@ -187,15 +191,62 @@ $(document).ready(function() {
   ////////////////////
   // bulk delete
   ////////////////////
+  function resetActionCell(cell){
+    var recordId = cell.attr('record_id');
+    cell.html(
+      '<button type="button" class="btn btn-link delete-step-1 float-left" record_id="' + recordId + '">' +
+        '<span class="glyphicon glyphicon-remove-sign"></span>' +
+      '</button>' +
+      '<button type="button" class="btn btn-link btn-duplicate float-right collapse in" record_id="' + recordId + '">' +
+        '<span class="glyphicon glyphicon-duplicate"></span>' +
+      '</button>'
+    );
+  };
+  function removeDeleteStuff() {
+    $('.row-action-cell').each(function(){
+      resetActionCell($(this));
+    });
+  };
   $('body').on('click', '#btn-bulk-delete', function(){
-    var numRows = $('.marketing-table tr').length;
-    if (numRows > 100) {
-      alert('You can only use this for less than 100 records');
+    if ($(this).hasClass('btn-info')) {
+      $(this).removeClass('btn-info');
+      $(this).addClass('btn-default');
+      $('#first-cell').html('');
+      removeDeleteStuff();
     } else {
-      alert('still being coded');
-
+      var numRows = $('.marketing-table tr').length;
+      if (numRows > 100) {
+        alert('You can only use this for less than 100 records');
+      } else {
+        $(this).removeClass('btn-default');
+        $(this).addClass('btn-info');
+        $('.row-action-cell').each(function(){
+          var recordId = $(this).attr('record_id');
+          $(this).html(
+            '<input class="form-control delete-checkbox" record_id="' + recordId +'" type="checkbox" checked="true" />'
+          );
+          $('#first-cell').html(
+            '<button type="button" class="btn btn-danger btn-xs" id="process-bulk-delete" id="process-bulk-delete">' +
+              'Delete Checked' +
+            '</button>'
+          )
+        });
+      }
     }
   })
-
+  $('body').on('click', '#process-bulk-delete', function(){
+    $('.row-action-cell').each(function(){
+      var recordId = $(this).attr('record_id');
+      var isChecked = $(this).find('input[type="checkbox"]').prop('checked');
+      if (isChecked) {
+        deleteRecord(recordId);
+      } else {
+        resetActionCell($(this));
+      }
+    });
+    $('#btn-bulk-delete').removeClass('btn-info');
+    $('#btn-bulk-delete').addClass('btn-default');
+    $('#first-cell').html('');
+  })
 
 });

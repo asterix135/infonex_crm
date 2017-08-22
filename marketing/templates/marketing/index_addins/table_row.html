@@ -1,5 +1,5 @@
 <tr record_id="{{ record.pk }}">
-  <td class="select-input">
+  <td class="select-input row-action-cell" record_id="{{ record.pk }}">
     <button type="button" class="btn btn-link delete-step-1 float-left" record_id="{{ record.pk }}">
       <span class="glyphicon glyphicon-remove-sign"></span>
     </button>
@@ -67,8 +67,8 @@
       {% endfor %}
     </select>
   </td>
-  <td class="text-display"><span name="created_by" record_id="{{ record.id }}">{{ record.created_by.username }}</span></td>
-  <td class="text-display"><span name="date_created" record_id="{{ record.id }}">{{ record.date_created|date:"SHORT_DATE_FORMAT" }}</span></td>
-  <td class="text-display"><span name="date_modified" record_id="{{ record.id }}">{{ record.date_modified|date:"SHORT_DATE_FORMAT" }}</span></td>
+  <td class="text-display-skinny"><span name="created_by" record_id="{{ record.id }}">{{ record.created_by.username }}</span></td>
+  <td class="text-display-skinny"><span name="date_created" record_id="{{ record.id }}">{{ record.date_created|date:"SHORT_DATE_FORMAT" }}</span></td>
+  <td class="text-display-skinny"><span name="date_modified" record_id="{{ record.id }}">{{ record.date_modified|date:"SHORT_DATE_FORMAT" }}</span></td>
   <td class="select-input"><input type="checkbox" class="form-control record-checkbox" record_id="{{ record.pk }}" name="do_not_call" {% if record.do_not_call %}checked{% endif %} /></td>
 </tr>

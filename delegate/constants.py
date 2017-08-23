@@ -6,6 +6,7 @@ NO_CONFIRMATION_VALUES = ['K', 'KX', 'B']
 GUEST_CONFIRMATION = ['G', 'SD', 'SE']
 SPONSOR_CONFIRMATION = ['SP', 'SU']
 ZERO_INVOICE_OK = ['DF', 'K', 'KX', 'SD', 'SE', 'G', 'B', 'DX', 'UX']
+SPEAKER_VALUES = ['K', 'KX',]
 
 TRAINING_CO_WEBSITE = 'www.inx-training.com'
 CANADA_WEBSITE = 'www.infonex.com'

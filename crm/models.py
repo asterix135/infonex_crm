@@ -8,6 +8,8 @@ from django.dispatch import receiver
 from django.utils import timezone
 
 from .constants import *
+from delegate.constants import SPEAKER_VALUES
+from registration.models import RegDetails
 
 
 class Person(models.Model):
@@ -95,6 +97,16 @@ class Person(models.Model):
                 reg_history_exists = True
         return reg_history_exists
     has_registration_history.boolean = True
+
+    def is_past_speaker(self):
+        spkr_count = RegDetails.objects.filter(
+            registration_status__in=SPEAKER_VALUES,
+            registrant__crm_person=self,
+        ).count()
+        if spkr_count > 0:
+            return True
+        return False
+    is_past_speaker.boolean = True
 
     def show_person_url(self):
         return '<a href="%s">%s</a>' % (self.url, self.url)

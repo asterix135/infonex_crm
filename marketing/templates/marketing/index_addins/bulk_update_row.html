@@ -1,0 +1,100 @@
+<tr class="collapse" id="bulk-update-row">
+  <td>
+    <button class="btn btn-warning float-center" type="button" id="btn-do-bulk-update">
+      <span class="glyphicon glyphicon-refresh"></span> Update
+    </button>
+  </td>
+  <td>
+    <select class="form-control update-input" update-field="main_category">
+      <option value="">
+      </option>
+      {% for option in cat_choices %}
+      <option value = "{{ option.0 }}">
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
+  <td>
+    <select class="form-control update-input" update-field="division1">
+      <option value="">
+      </option>
+      {% for option in div_choices %}
+      <option value = "{{ option.0 }}">
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
+  <td>
+    <input class="form-control update-input" update-field="company" />
+  </td>
+  <td>
+    <input class="form-control update-input" update-field="name" />
+  </td>
+  <td>
+    <input class="form-control update-input" update-field="title" />
+  </td>
+  <td>
+    <input class="form-control update-input" update-field="dept" />
+  </td>
+  <td>
+    <input class="form-control update-input" update-field="phone" />
+  </td>
+  <td>
+    <input class="form-control update-input" update-field="email" />
+  </td>
+  <td>
+    <input class="form-control update-input" update-field="industry" />
+  </td>
+  <td></td>
+  <td>
+    <select class="form-control update-input" update-field="geo">
+      <option value="">
+      </option>
+      {% for option in geo_choices %}
+      <option value = "{{ option.0 }}">
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
+
+  <th></th>
+  <td>
+    <input type="checkbox" class="form-control update-input" update-field="do_not_email" />
+  </td>
+
+  <td>
+    <input class="form-control update-input" update-field="email_alternate" />
+  </td>
+  <td>
+    <select class="form-control update-input" update-field="main_category2">
+      <option value="">
+      </option>
+      {% for option in cat_choices %}
+      <option value = "{{ option.0 }}">
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
+  <td>
+    <select class="form-control update-input" update-field="division2">
+      <option value="">
+      </option>
+      {% for option in div_choices %}
+      <option value = "{{ option.0 }}">
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
+  <th></th>
+  <th></th>
+  <th></th>
+  <th></th>
+  <td>
+    <input type="checkbox" class="form-control update-input" update-field="do_not_call" />
+  </td>
+</tr>

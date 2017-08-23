@@ -18,18 +18,6 @@
       {% endfor %}
     </select>
   </td>
-  <td></td>
-  <td>
-    <select class="form-control filter-input" filter-field="geo">
-      <option value="">
-      </option>
-      {% for option in geo_choices %}
-      <option value = "{{ option.0 }}" {% if 'geo' in query_prefill and query_prefill.geo == option.0 %}selected="selected"{% endif %}>
-        {{ option.1 }}
-      </option>
-      {% endfor %}
-    </select>
-  </td>
   <td>
     <select class="form-control filter-input" filter-field="division1">
       <option value="">
@@ -60,12 +48,26 @@
     <input class="form-control filter-input" filter-field="email" {% if 'email' in query_prefill %}value="{{ query_prefill.mail}}"{% endif %} />
   </td>
   <td>
-    <input type="checkbox" class="form-control filter-input" filter-field="do_not_email" {% if 'do_not_email' in query_prefill and query_prefill.do_not_email == 'true' %}checked{% endif %} />
-  </td>
-  <td>
     <input class="form-control filter-input" filter-field="industry" {% if 'industry' in query_prefill %}value="{{ query_prefill.industry}}"{% endif %} />
   </td>
   <th></th>
+  <td>
+    <select class="form-control filter-input" filter-field="geo">
+      <option value="">
+      </option>
+      {% for option in geo_choices %}
+      <option value = "{{ option.0 }}" {% if 'geo' in query_prefill and query_prefill.geo == option.0 %}selected="selected"{% endif %}>
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
+
+  <td></td>
+  <td>
+    <input type="checkbox" class="form-control filter-input" filter-field="do_not_email" {% if 'do_not_email' in query_prefill and query_prefill.do_not_email == 'true' %}checked{% endif %} />
+  </td>
+
   <td>
     <input class="form-control filter-input" filter-field="email_alternate" {% if 'email_alternate' in query_prefill %}value="{{ query_prefill.email_alternate}}"{% endif %} />
   </td>
@@ -91,6 +93,7 @@
       {% endfor %}
     </select>
   </td>
+  <th></th>
   <th></th>
   <th></th>
   <th></th>

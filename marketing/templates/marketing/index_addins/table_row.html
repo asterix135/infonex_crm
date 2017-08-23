@@ -1,5 +1,5 @@
 <tr record_id="{{ record.pk }}">
-  <td class="select-input row-action-cell" record_id="{{ record.pk }}">
+  <td class="select-input row-action-cell mktg-col-sm" record_id="{{ record.pk }}">
     <button type="button" class="btn btn-link delete-step-1 float-left" record_id="{{ record.pk }}">
       <span class="glyphicon glyphicon-remove-sign"></span>
     </button>
@@ -7,7 +7,7 @@
       <span class="glyphicon glyphicon-duplicate"></span>
     </button>
   </td>
-  <td class="select-input">
+  <td class="select-input mktg-col-xs">
     <select class="form-control record-select" record_id="{{ record.pk }}" name="main_category">
       {% for option in cat_choices %}
       <option value="{{ option.0 }}" {% if record.main_category == option.0 %}selected="selected"{% endif %}>
@@ -16,17 +16,7 @@
       {% endfor %}
     </select>
   </td>
-  <td class="select-display-med"><span name="state_prov" record_id="{{ record.id }}">{{ record.state_prov }}</span></td>
-  <td class="select-input">
-    <select class="form-control record-select" record_id="{{ record.pk }}" name="geo">
-      {% for option in geo_choices %}
-      <option value="{{ option.0 }}" {% if record.geo == option.0 %}selected="selected"{% endif %}>
-        {{ option.1 }}
-      </option>
-      {% endfor %}
-    </select>
-  </td>
-  <td class="select-input">
+  <td class="select-input mktg-col-xs">
     <select class="form-control record-select" record_id="{{ record.pk }}" name="division1">
       {% for option in div_choices %}
       <option value="{{ option.0 }}" {% if record.division1 == option.0 %}selected="selected"{% endif %}>
@@ -35,21 +25,51 @@
       {% endfor %}
     </select>
   </td>
-  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="company" value="{{ record.company|default_if_none:'' }}" /></td>
-  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="name" value="{{ record.name|default_if_none:'' }}"/></td>
-  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="title" value="{{ record.title|default_if_none:'' }}" /></td>
-  <td class="text-input-skinny"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="dept" value="{{ record.dept|default_if_none:'' }}" /></td>
-  <td class="text-input-skinny"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="phone" value="{{ record.phone|default_if_none:'' }}" /></td>
-  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="email" value="{{ record.email|default_if_none:'' }}" /></td>
-  <td class="select-input"><input type="checkbox" class="form-control record-checkbox" record_id="{{ record.pk }}" name="do_not_email" {% if record.do_not_email %}checked{% endif %} /></td>
-  <td class="textarea-input"><textarea rows="1" class="form-control table-field record-field" record_id="{{ record.pk }}" name="industry">{{ record.industry|default_if_none:'' }}</textarea></td>
-  <td class="select-display">
+  <td class="text-input mktg-col-xl">
+    <input class="form-control table-field record-field" record_id="{{ record.pk }}" name="company" value="{{ record.company|default_if_none:'' }}" />
+  </td>
+  <td class="text-input mktg-col-lg">
+    <input class="form-control table-field record-field" record_id="{{ record.pk }}" name="name" value="{{ record.name|default_if_none:'' }}"/>
+  </td>
+  <td class="text-input mktg-col-lg">
+    <input class="form-control table-field record-field" record_id="{{ record.pk }}" name="title" value="{{ record.title|default_if_none:'' }}" />
+  </td>
+  <td class="text-input mktg-col-xs">
+    <input class="form-control table-field record-field" record_id="{{ record.pk }}" name="dept" value="{{ record.dept|default_if_none:'' }}" />
+  </td>
+  <td class="text-input mktg-col-md">
+    <input class="form-control table-field record-field" record_id="{{ record.pk }}" name="phone" value="{{ record.phone|default_if_none:'' }}" />
+  </td>
+  <td class="text-input mktg-col-lg">
+    <input class="form-control table-field record-field" record_id="{{ record.pk }}" name="email" value="{{ record.email|default_if_none:'' }}" />
+  </td>
+  <td class="text-input mktg-col-xl">
+    <textarea rows="1" class="form-control table-field record-field" record_id="{{ record.pk }}" name="industry">{{ record.industry|default_if_none:'' }}</textarea>
+  </td>
+  <td class="select-display mktg-col-xs font-sm">
+    <span name="state_prov" record_id="{{ record.id }}">{{ record.state_prov }}</span>
+  </td>
+  <td class="select-input mktg-col-xs">
+    <select class="form-control record-select" record_id="{{ record.pk }}" name="geo">
+      {% for option in geo_choices %}
+      <option value="{{ option.0 }}" {% if record.geo == option.0 %}selected="selected"{% endif %}>
+        {{ option.1 }}
+      </option>
+      {% endfor %}
+    </select>
+  </td>
+  <td class="select-display mktg-col-xxs">
     {% if record.has_registration_history %}
     <span class="glyphicon glyphicon-ok"></span>
     {% endif %}
   </td>
-  <td class="text-input"><input class="form-control table-field record-field" record_id="{{ record.pk }}" name="email_alternate" value="{{ record.email_alternate|default_if_none:'' }}" /></td>
-  <td class="select-input">
+  <td class="select-input mktg-col-xs">
+    <input type="checkbox" class="form-control record-checkbox" record_id="{{ record.pk }}" name="do_not_email" {% if record.do_not_email %}checked{% endif %} />
+  </td>
+  <td class="text-input mktg-col-lg">
+    <input class="form-control table-field record-field" record_id="{{ record.pk }}" name="email_alternate" value="{{ record.email_alternate|default_if_none:'' }}" />
+  </td>
+  <td class="select-input mktg-col-xs">
     <select class="form-control record-select" record_id="{{ record.pk }}" name="main_category2">
       {% for option in cat_choices %}
       <option value="{{ option.0 }}" {% if record.main_category2 == option.0 %}selected="selected"{% endif %}>
@@ -58,7 +78,7 @@
       {% endfor %}
     </select>
   </td>
-  <td class="select-input">
+  <td class="select-input mktg-col-xs">
     <select class="form-control record-select" record_id="{{ record.pk }}" name="division2">
       {% for option in div_choices %}
       <option value="{{ option.0 }}" {% if record.division2 == option.0 %}selected="selected"{% endif %}>
@@ -67,8 +87,27 @@
       {% endfor %}
     </select>
   </td>
-  <td class="text-display-skinny"><span name="created_by" record_id="{{ record.id }}">{{ record.created_by.username }}</span></td>
-  <td class="text-display-skinny"><span name="date_created" record_id="{{ record.id }}">{{ record.date_created|date:"SHORT_DATE_FORMAT" }}</span></td>
-  <td class="text-display-skinny"><span name="date_modified" record_id="{{ record.id }}">{{ record.date_modified|date:"SHORT_DATE_FORMAT" }}</span></td>
-  <td class="select-input"><input type="checkbox" class="form-control record-checkbox" record_id="{{ record.pk }}" name="do_not_call" {% if record.do_not_call %}checked{% endif %} /></td>
+  <td class="text-display mktg-col-sm">
+    <span name="created_by" record_id="{{ record.id }}">
+      {{ record.created_by.username }}
+    </span>
+  </td>
+  <td class="text-display mktg-col-sm">
+    <span name="date_created" record_id="{{ record.id }}">
+      {{ record.date_created|date:"SHORT_DATE_FORMAT" }}
+    </span>
+  </td>
+  <td class="text-display mktg-col-sm">
+    <span name="date_modified" record_id="{{ record.id }}">
+      {{ record.modified_by.username }}
+    </span>
+  </td>
+  <td class="text-display mktg-col-sm">
+    <span name="date_modified" record_id="{{ record.id }}">
+      {{ record.date_modified|date:"SHORT_DATE_FORMAT" }}
+    </span>
+  </td>
+  <td class="select-input mktg-col-xs">
+    <input type="checkbox" class="form-control record-checkbox" record_id="{{ record.pk }}" name="do_not_call" {% if record.do_not_call %}checked{% endif %} />
+  </td>
 </tr>

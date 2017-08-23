@@ -1,7 +1,7 @@
 $(document).ready(function() {
   let oldValue;
   var filterString = $('#filter-string').val();
-  let bulkActionActive;
+  var filterRowVisible = filterString != '';
 
   ///////////////////
   // submit changes to record as they are completed
@@ -127,8 +127,10 @@ $(document).ready(function() {
   $('body').on('click', '#btn-filter', function(){
     if ($('#filter-row').hasClass('in')) {
       $('#filter-row').removeClass('in');
+      filterRowVisible = false;
     } else {
       $('#filter-row').addClass('in');
+      filterRowVisible = true;
       $('#btn-see-all').removeClass('disabled');
     }
   })
@@ -138,6 +140,7 @@ $(document).ready(function() {
     } else {
       clearFilters();
       $('#filter-row').removeClass('in');
+      filterRowVisible = false;
       $(this).addClass('disabled');
       $('#btn-filter').removeClass('disabled');
     }
@@ -213,10 +216,12 @@ $(document).ready(function() {
       $(this).addClass('btn-default');
       $('#first-cell').html('');
       removeDeleteStuff();
+      $('#btn-bulk-update').removeClass('disabled');
     } else {
+      $('#btn-bulk-update').addClass('disabled');
       var numRows = $('.marketing-table tr').length;
-      if (numRows > 100) {
-        alert('You can only use this for less than 100 records');
+      if (numRows > 250) {
+        alert('You can only use this for less than 250 records');
       } else {
         $(this).removeClass('btn-default');
         $(this).addClass('btn-info');
@@ -225,15 +230,15 @@ $(document).ready(function() {
           $(this).html(
             '<input class="form-control delete-checkbox" record_id="' + recordId +'" type="checkbox" checked="true" />'
           );
-          $('#first-cell').html(
-            '<button type="button" class="btn btn-danger btn-xs" id="process-bulk-delete" id="process-bulk-delete">' +
-              'Delete Checked' +
-            '</button>'
-          )
         });
-      }
+        $('#first-cell').html(
+          '<button type="button" class="btn btn-danger btn-xs" id="process-bulk-delete" id="process-bulk-delete">' +
+            'Delete Checked' +
+          '</button>'
+        );
+      };
     }
-  })
+  });
   $('body').on('click', '#process-bulk-delete', function(){
     $('.row-action-cell').each(function(){
       var recordId = $(this).attr('record_id');
@@ -247,6 +252,51 @@ $(document).ready(function() {
     $('#btn-bulk-delete').removeClass('btn-info');
     $('#btn-bulk-delete').addClass('btn-default');
     $('#first-cell').html('');
-  })
+  });
+
+
+  ////////////////////
+  // bulk update
+  ////////////////////
+  function clearBulkUpdateRow(){
+    $('.update-input').each(function(){
+      if ($(this).attr('type') == 'checkbox') {
+        $(this).attr('checked', false);
+      } else {
+        $(this).val('');
+      };
+    });
+  };
+  $('body').on('click', '#btn-bulk-update', function(){
+    console.log('bulk update');
+    if ($(this).hasClass('btn-info')) {
+      $(this).removeClass('btn-info');
+      $(this).addClass('btn-default');
+      $('#bulk-update-row').removeClass('in');
+      clearBulkUpdateRow();
+      removeDeleteStuff();
+      $('#btn-bulk-delete').removeClass('disabled');
+      if (filterRowVisible) {
+        $('#filter-row').addClass('in');
+      };
+    } else {
+      $('#btn-bulk-delete').addClass('disabled');
+      var numRows = $('.marketing-table tr').length;
+      alert('You will be updating ' + numRows + ' records.');
+      $('#filter-row').removeClass('in');
+      $('#bulk-update-row').addClass('in');
+      $(this).removeClass('btn-default');
+      $(this).addClass('btn-info');
+      $('.row-action-cell').each(function(){
+        var recordId = $(this).attr('record_id');
+        $(this).html(
+          '<input class="form-control update-checkbox" record_id="' + recordId +'" type="checkbox" checked="true" />'
+        );
+      });
+    }
+  });
+  $('body').on('click', '#btn-do-bulk-update', function(){
+
+  });
 
 });

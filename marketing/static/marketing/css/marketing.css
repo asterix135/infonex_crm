@@ -21,47 +21,50 @@ th {
   border: none;
   box-shadow: none;
 }
-.text-input, .text-input-head, .text-display {
-  min-width: 250px;
-  max-width: 250px;
+.mktg-col-xxs {
+  min-width: 50px;
+  max-width: 50px;
 }
-.text-input-skinny, .text-input-head-skinny, .text-display-skinny {
-  min-width: 125px;
-  max-width: 125px;
-  word-wrap: break-word;
+.mktg-col-xs {
+  min-width: 70px;
+  max-width: 70px;
 }
-.select-input, .select-input-head, .select-display {
+.mktg-col-sm {
   min-width: 100px;
   max-width: 100px;
 }
-.select-input-skinny, .select-input-head-skinny, .select-display-skinny {
-  min-width: 70px;
-  max-width: 70px;
+.mktg-col-md {
+  min-width: 125px;
+  max-width: 125px;
 }
-.select-input-med, .select-input-head-med, .select-display-med {
-  min-width: 70px;
-  max-width: 70px;
+.mktg-col-lg {
+  min-width: 250px;
+  max-width: 250px;
 }
-.select-display-med {
+.mktg-col-xl {
+  min-width: 375px;
+  max-width: 375px;
+}
+.font-sm {
   font-size: 11px;
 }
-.select-input, .select-display, .select-display-skinny, .select-display-med {
+.text-input, .text-input-head, .text-display, .select-input-head {
+  word-wrap: break-word;
+}
+.select-input, .select-display {
   text-align: center;
   word-wrap: break-word;
 }
-.textarea-input {
-  min-width: 350px;
-  max-width: 350px;
-}
-.text-display, .select-display, .select-display-skinny, .select-display-med {
+.text-display, .select-display {
   vertical-align: middle !important;
   /*padding-top: 12px;*/
+}
+.record-select {
+  padding-left: 1px;
 }
 #table-container {
   display: block;
 }
-
-
 .table-fixed tbody {
   height: 65vh;
   overflow-y: auto;

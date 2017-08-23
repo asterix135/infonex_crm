@@ -15,11 +15,12 @@
             {% if sort_by == 'division1' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
-        <th class="text-input mktg-col-xl">
-          <a class="same-page" href="?page={{ page_obj.number }}&sort_by=company&order={% if order == 'desc' or sort_by != 'company' %}asc{% else %}desc{% endif %}">
+        <th class="text-input mktg-col-xl company-cell">
+          <a class="same-page pull-left" href="?page={{ page_obj.number }}&sort_by=company&order={% if order == 'desc' or sort_by != 'company' %}asc{% else %}desc{% endif %}">
             Company Name
             {% if sort_by == 'company' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
+          <span class="pull-right glyphicon glyphicon-chevron-right glyph-button" id="expand-company-btn" direction="expand"></span>
         </th>
         <th class="text-input mktg-col-lg">
           <a class="same-page" href="?page={{ page_obj.number }}&sort_by=name&order={% if order == 'desc' or sort_by != 'name' %}asc{% else %}desc{% endif %}">

@@ -45,6 +45,10 @@ th {
   min-width: 375px;
   max-width: 375px;
 }
+.mktg-col-xxl {
+  min-width: 750px;
+  max-width: 750px;
+}
 .font-sm {
   font-size: 11px;
 }

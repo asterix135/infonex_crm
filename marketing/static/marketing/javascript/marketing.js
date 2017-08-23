@@ -4,6 +4,30 @@ $(document).ready(function() {
   var filterRowVisible = filterString != '';
 
   ///////////////////
+  // adjust layout
+  ///////////////////
+  $('body').on('click', '#expand-company-btn', function(){
+    if ($(this).attr('direction') == 'expand') {
+      $(this).removeClass('glyphicon-chevron-right');
+      $(this).addClass('glyphicon-chevron-left');
+      $(this).attr('direction', 'collapse');
+      $('.company-cell').each(function(){
+        $(this).removeClass('mktg-col-xl');
+        $(this).addClass('mktg-col-xxl');
+      });
+    } else {
+      $(this).removeClass('glyphicon-chevron-left');
+      $(this).addClass('glyphicon-chevron-right');
+      $(this).attr('direction', 'expand');
+      $('.company-cell').each(function(){
+        $(this).removeClass('mktg-col-xxl');
+        $(this).addClass('mktg-col-xl');
+      });
+    };
+  });
+
+
+  ///////////////////
   // submit changes to record as they are completed
   ///////////////////
   function updateRecord(recordId, field, newValue){

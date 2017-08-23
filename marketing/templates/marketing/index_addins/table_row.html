@@ -40,11 +40,16 @@
   <td class="text-input mktg-col-md">
     <input class="form-control table-field record-field" record_id="{{ record.pk }}" name="phone" value="{{ record.phone|default_if_none:'' }}" />
   </td>
-  <td class="text-input mktg-col-lg">
+  <td class="text-input mktg-col-ml">
     <input class="form-control table-field record-field" record_id="{{ record.pk }}" name="email" value="{{ record.email|default_if_none:'' }}" />
   </td>
-  <td class="text-input mktg-col-xl">
+  <td class="text-input mktg-col-ml">
     <textarea rows="1" class="form-control table-field record-field" record_id="{{ record.pk }}" name="industry">{{ record.industry|default_if_none:'' }}</textarea>
+  </td>
+  <td class="select-display mktg-col-xxs">
+    {% if record.has_registration_history %}
+    <span class="glyphicon glyphicon-ok"></span>
+    {% endif %}
   </td>
   <td class="select-display mktg-col-xs font-sm">
     <span name="state_prov" record_id="{{ record.id }}">{{ record.state_prov }}</span>
@@ -58,15 +63,10 @@
       {% endfor %}
     </select>
   </td>
-  <td class="select-display mktg-col-xxs">
-    {% if record.has_registration_history %}
-    <span class="glyphicon glyphicon-ok"></span>
-    {% endif %}
-  </td>
   <td class="select-input mktg-col-xs">
     <input type="checkbox" class="form-control record-checkbox" record_id="{{ record.pk }}" name="do_not_email" {% if record.do_not_email %}checked{% endif %} />
   </td>
-  <td class="text-input mktg-col-lg">
+  <td class="text-input mktg-col-ml">
     <input class="form-control table-field record-field" record_id="{{ record.pk }}" name="email_alternate" value="{{ record.email_alternate|default_if_none:'' }}" />
   </td>
   <td class="select-input mktg-col-xs">

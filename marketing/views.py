@@ -394,6 +394,18 @@ class Add(TemplateView):
         return context
 
 
+class BulkUpdate(View):
+
+    def get(self, request, *args, **kwargs):
+        raise Http404()
+
+    def post(self, request, *arts, **kwargs):
+        data = json.loads(request.POST['json'])
+
+        response_json = {}
+        return HttpResponse(response_json)
+
+
 class DeletePerson(View):
 
     def get(self, request, *args, **kwargs):

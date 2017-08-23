@@ -26,7 +26,6 @@ $(document).ready(function() {
     };
   });
 
-
   ///////////////////
   // submit changes to record as they are completed
   ///////////////////
@@ -119,7 +118,6 @@ $(document).ready(function() {
   });
   $('body').on('click', '.btn-duplicate', function(){
     var personId = $(this).attr('record_id');
-    // $(this).closest('tr').after('<tr><td>foo<td></tr>');
     $.ajax({
       url: '/marketing/add/',
       type: 'POST',
@@ -128,9 +126,6 @@ $(document).ready(function() {
       },
       success: function(data){
         $('.marketing-table').prepend(data);
-        // console.log(data);
-        // $(data).insertAfter($(this).closest('tr'));
-        // $(this).closest('tr').after('<tr>' + data + '</tr>');
         $('input[name="company"]:first').focus();
       }
     });
@@ -320,7 +315,15 @@ $(document).ready(function() {
     }
   });
   $('body').on('click', '#btn-do-bulk-update', function(){
-
+    var update_fields = {};
+    var update_records = [];
+    $('.update-input').each(function(){
+      if ($(this).attr('type') == 'checkbox') {
+        if ($(this).is(':checked')) {
+          var fieldVal = true;
+        }
+      }
+    })
   });
 
 });

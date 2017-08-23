@@ -50,7 +50,8 @@
   <td>
     <input class="form-control filter-input" filter-field="industry" {% if 'industry' in query_prefill %}value="{{ query_prefill.industry}}"{% endif %} />
   </td>
-  <th></th>
+  <td></td>
+  <td></td>
   <td>
     <select class="form-control filter-input" filter-field="geo">
       <option value="">
@@ -62,8 +63,6 @@
       {% endfor %}
     </select>
   </td>
-
-  <td></td>
   <td>
     <input type="checkbox" class="form-control filter-input" filter-field="do_not_email" {% if 'do_not_email' in query_prefill and query_prefill.do_not_email == 'true' %}checked{% endif %} />
   </td>

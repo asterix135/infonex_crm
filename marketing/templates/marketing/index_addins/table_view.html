@@ -46,17 +46,20 @@
             {% if sort_by == 'phone' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
-        <th class="text-input mktg-col-lg">
+        <th class="text-input mktg-col-ml">
           <a class="same-page" href="?page={{ page_obj.number }}&sort_by=email&order={% if order == 'desc' or sort_by != 'email' %}asc{% else %}desc{% endif %}">
             Email
             {% if sort_by == 'email' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
-        <th class="mktg-col-xl">
+        <th class="mktg-col-ml">
           <a class="same-page" href="?page={{ page_obj.number }}&sort_by=industry&order={% if order == 'desc' or sort_by != 'industry' %}asc{% else %}desc{% endif %}">
             Industry
             {% if sort_by == 'industry' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
+        </th>
+        <th class="select-input-head mktg-col-xxs">
+          Cust?
         </th>
         <th class="select-input-head mktg-col-xs">
           Prov
@@ -67,16 +70,13 @@
             {% if sort_by == 'geo' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
-        <th class="select-input-head mktg-col-xxs">
-          Cust?
-        </th>
         <th class="select-input-head mktg-col-xs">
           <a class="same-page" href="?page={{ page_obj.number }}&sort_by=do_not_email&order={% if order == 'desc' or sort_by != 'do_not_email' %}asc{% else %}desc{% endif %}">
             No Email
             {% if sort_by == 'do_not_email' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}
           </a>
         </th>
-        <th class="text-input-head mktg-col-lg">
+        <th class="text-input-head mktg-col-ml">
           <a class="same-page" href="?page={{ page_obj.number }}&sort_by=email_alternate&order={% if order == 'desc' or sort_by != 'email_alternate' %}asc{% else %}desc{% endif %}">
             Secondary Email
             {% if sort_by == 'email_alternate' %}{% if order == 'asc' %}<span class="glyphicon glyphicon-sort-by-alphabet"></span>{% else %}<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>{% endif %}{% endif %}

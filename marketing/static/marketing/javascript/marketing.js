@@ -286,6 +286,14 @@ $(document).ready(function() {
       };
     });
   };
+  function updateField(recordId, fieldName, newValue) {
+    fieldToUpdate = $('.person-field[record_id="' + recordId + '"][name="' + fieldName + '"]');
+    if (fieldToUpdate.attr('type') == 'checkbox') {
+      fieldToUpdate.prop('checked', newValue);
+    } else {
+      fieldToUpdate.val(newValue);
+    };
+  };
   $('body').on('click', '#btn-bulk-update', function(){
     if ($(this).hasClass('btn-info')) {
       $(this).removeClass('btn-info');
@@ -344,10 +352,32 @@ $(document).ready(function() {
         },
         dataType: 'json',
         success: function(data){
-          console.log('need to process response');
+          for (var i=0; i<recordsToUpdate.length; i++) {
+            let personId = recordsToUpdate[i];
+            for (var key in updateData) {
+              if (!updateData.hasOwnProperty(key)) continue;
+              updateField(personId, key, updateData[key]);
+            }
+          }
         }
       })
     };
   });
-
+  // Validate update data in browser
+  function isValidEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  };
+  $('body').on('focusout', '.update-input', function(){
+    if ($(this).attr('type') == 'email' && $(this).val().trim() != '') {
+      if (isValidEmail($(this).val())) {
+        $('span[warning-for="' + $(this).attr('update-field') + '"]').removeClass('in');
+      } else {
+        $('span[warning-for="' + $(this).attr('update-field') + '"]').addClass('in');
+        $(this).focus();
+      };
+    } else {
+      $('span[warning-for="' + $(this).attr('update-field') + '"]').removeClass('in');
+    };
+  });
 });

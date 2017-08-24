@@ -405,11 +405,7 @@ class BulkUpdate(View):
         field_data = data['field_dict']
         successful_updates = {}
         Person.objects.filter(id__in=person_ids).update(**field_data)
-        for person_id in person_ids:
-            person = Person.objects.get(pk=person_id)
-            print(person.name)
-
-        return HttpResponse(successful_updates)
+        return HttpResponse(status=204)
 
 
 class DeletePerson(View):

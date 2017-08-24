@@ -2,26 +2,39 @@ $(document).ready(function() {
   let oldValue;
   var filterString = $('#filter-string').val();
   var filterRowVisible = filterString != '';
+  var fieldResizings = {
+    'company': ['mktg-col-xl', 'mktg-col-xxl'],
+    'dept': ['mktg-col-xs', 'mktg-col-md'],
+  };
 
   ///////////////////
   // adjust layout
   ///////////////////
-  $('body').on('click', '#expand-company-btn', function(){
+  $('body').on('click', '#expand-field-btn', function(){
+    var expandField = $(this).attr('expand-field');
     if ($(this).attr('direction') == 'expand') {
       $(this).removeClass('glyphicon-chevron-right');
       $(this).addClass('glyphicon-chevron-left');
       $(this).attr('direction', 'collapse');
-      $('.company-cell').each(function(){
-        $(this).removeClass('mktg-col-xl');
-        $(this).addClass('mktg-col-xxl');
+      $('th[cell-for="' + expandField + '"]').each(function(){
+        $(this).removeClass(fieldResizings[expandField][0]);
+        $(this).addClass(fieldResizings[expandField][1]);
+      });
+      $('td[cell-for="' + expandField + '"]').each(function(){
+        $(this).removeClass(fieldResizings[expandField][0]);
+        $(this).addClass(fieldResizings[expandField][1]);
       });
     } else {
       $(this).removeClass('glyphicon-chevron-left');
       $(this).addClass('glyphicon-chevron-right');
       $(this).attr('direction', 'expand');
-      $('.company-cell').each(function(){
-        $(this).removeClass('mktg-col-xxl');
-        $(this).addClass('mktg-col-xl');
+      $('th[cell-for="' + expandField + '"]').each(function(){
+        $(this).removeClass(fieldResizings[expandField][1]);
+        $(this).addClass(fieldResizings[expandField][0]);
+      });
+      $('td[cell-for="' + expandField + '"]').each(function(){
+        $(this).removeClass(fieldResizings[expandField][1]);
+        $(this).addClass(fieldResizings[expandField][0]);
       });
     };
   });
@@ -277,6 +290,17 @@ $(document).ready(function() {
   ////////////////////
   // bulk update
   ////////////////////
+  function deactivateBulkUpdate(){
+    $('#btn-bulk-update').removeClass('btn-info');
+    $('#btn-bulk-update').addClass('btn-default');
+    $('#bulk-update-row').removeClass('in');
+    clearBulkUpdateRow();
+    removeDeleteStuff();
+    $('#btn-bulk-delete').removeClass('disabled');
+    if (filterRowVisible) {
+      $('#filter-row').addClass('in');
+    };
+  }
   function clearBulkUpdateRow(){
     $('.update-input').each(function(){
       if ($(this).attr('type') == 'checkbox') {
@@ -296,15 +320,7 @@ $(document).ready(function() {
   };
   $('body').on('click', '#btn-bulk-update', function(){
     if ($(this).hasClass('btn-info')) {
-      $(this).removeClass('btn-info');
-      $(this).addClass('btn-default');
-      $('#bulk-update-row').removeClass('in');
-      clearBulkUpdateRow();
-      removeDeleteStuff();
-      $('#btn-bulk-delete').removeClass('disabled');
-      if (filterRowVisible) {
-        $('#filter-row').addClass('in');
-      };
+      deactivateBulkUpdate();
     } else {
       $('#btn-bulk-delete').addClass('disabled');
       var numRows = $('.marketing-table tr').length - 3;
@@ -357,27 +373,28 @@ $(document).ready(function() {
             for (var key in updateData) {
               if (!updateData.hasOwnProperty(key)) continue;
               updateField(personId, key, updateData[key]);
-            }
-          }
+            };
+          };
+          deactivateBulkUpdate();
         }
       })
     };
   });
   // Validate update data in browser
-  function isValidEmail(email) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  };
-  $('body').on('focusout', '.update-input', function(){
-    if ($(this).attr('type') == 'email' && $(this).val().trim() != '') {
-      if (isValidEmail($(this).val())) {
-        $('span[warning-for="' + $(this).attr('update-field') + '"]').removeClass('in');
-      } else {
-        $('span[warning-for="' + $(this).attr('update-field') + '"]').addClass('in');
-        $(this).focus();
-      };
-    } else {
-      $('span[warning-for="' + $(this).attr('update-field') + '"]').removeClass('in');
-    };
-  });
+  // function isValidEmail(email) {
+  //   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  //   return re.test(email);
+  // };
+  // $('body').on('focusout', '.update-input', function(){
+  //   if ($(this).attr('type') == 'email' && $(this).val().trim() != '') {
+  //     if (isValidEmail($(this).val())) {
+  //       $('span[warning-for="' + $(this).attr('update-field') + '"]').removeClass('in');
+  //     } else {
+  //       $('span[warning-for="' + $(this).attr('update-field') + '"]').addClass('in');
+  //       $(this).focus();
+  //     };
+  //   } else {
+  //     $('span[warning-for="' + $(this).attr('update-field') + '"]').removeClass('in');
+  //   };
+  // });
 });

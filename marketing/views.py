@@ -16,7 +16,7 @@ from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 
 from .constants import *
 from .forms import FieldSelectorForm, UploadFileForm
-from .mixins import CSVResponseMixin
+from .mixins import CSVResponseMixin, MarketingPermissionMixin
 from .models import *
 from crm.models import Person, Changes
 from crm.views import add_change_record
@@ -25,7 +25,7 @@ from crm.constants import GEO_CHOICES, CAT_CHOICES, DIV_CHOICES
 ######################
 # Main page views
 ######################
-class Index(CSVResponseMixin, ListView):
+class Index(CSVResponseMixin, MarketingPermissionMixin, ListView):
     template_name = 'marketing/index.html'
     context_object_name = 'records'
     queryset = Person.objects.all()
@@ -202,7 +202,7 @@ class Index(CSVResponseMixin, ListView):
         return context
 
 
-class UploadFile(TemplateView):
+class UploadFile(MarketingPermissionMixin, TemplateView):
     template_name = 'marketing/upload.html'
     error_message = None
     uploaded_file = None
@@ -350,7 +350,7 @@ class UploadFile(TemplateView):
 #####################
 # Ajax views
 #####################
-class Add(TemplateView):
+class Add(MarketingPermissionMixin, TemplateView):
     template_name = 'marketing/index_addins/table_row.html'
 
     def _duplicate_person(self, request):
@@ -394,7 +394,7 @@ class Add(TemplateView):
         return context
 
 
-class BulkUpdate(View):
+class BulkUpdate(MarketingPermissionMixin, View):
 
     def get(self, request, *args, **kwargs):
         raise Http404()
@@ -408,7 +408,7 @@ class BulkUpdate(View):
         return HttpResponse(status=204)
 
 
-class DeletePerson(View):
+class DeletePerson(MarketingPermissionMixin, View):
 
     def get(self, request, *args, **kwargs):
         raise Http404()
@@ -423,7 +423,7 @@ class DeletePerson(View):
         return HttpResponse(status=204)
 
 
-class DeleteUpload(DeleteView):
+class DeleteUpload(MarketingPermissionMixin, DeleteView):
     queryset = UploadedFile.objects.all()
 
     def get(self, request, *args, **kwargs):
@@ -435,7 +435,7 @@ class DeleteUpload(DeleteView):
         return HttpResponse(status=200)
 
 
-class DownloadErrors(View):
+class DownloadErrors(MarketingPermissionMixin, View):
 
     def _build_row_list(self, row):
         row_text = []
@@ -501,13 +501,8 @@ class DownloadErrors(View):
             return self._xlsx_response(filename)
 
 
-class DownloadList(View):
 
-    def get(self, request, *args, **kwargs):
-        pass
-
-
-class FieldMatcher(DetailView):
+class FieldMatcher(MarketingPermissionMixin, DetailView):
     template_name = 'marketing/upload_addins/field_matcher.html'
     queryset = UploadedFile.objects.all()
     context_object_name = 'uploaded_file'
@@ -542,7 +537,7 @@ class FieldMatcher(DetailView):
         return context
 
 
-class ProcessUpload(View):
+class ProcessUpload(MarketingPermissionMixin, View):
 
     def get(self, request, *args, **kwargs):
         raise Http404()
@@ -630,7 +625,7 @@ class ProcessUpload(View):
         return JsonResponse(response_json)
 
 
-class UpdatePerson(View):
+class UpdatePerson(MarketingPermissionMixin, View):
 
     def get(self, request, *args, **kwargs):
         raise Http404()

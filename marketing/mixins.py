@@ -1,4 +1,5 @@
 import csv
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.text import slugify
@@ -79,3 +80,16 @@ class CSVResponseMixin():
         # Business as usual otherwise
         else:
             return super(CSVResponseMixin, self).render_to_response(context, **response_kwargs)
+
+
+class MarketingPermissionMixin(UserPassesTestMixin):
+    def test_func(self):
+        if self.request.user.groups.filter(name='marketing').exists():
+            return True
+        if self.request.user.groups.filter(name='db_admin').exists():
+            return True
+        if self.request.user.groups.filter(name='management').exists():
+            return True
+        if self.request.user.is_superuser:
+            return True
+        return False

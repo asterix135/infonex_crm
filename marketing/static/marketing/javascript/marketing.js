@@ -238,7 +238,7 @@ $(document).ready(function() {
       $('#btn-bulk-update').removeClass('disabled');
     } else {
       $('#btn-bulk-update').addClass('disabled');
-      var numRows = $('.marketing-table tr').length;
+      var numRows = $('.marketing-table tr').length - 3;
       if (numRows > 250) {
         alert('You can only use this for less than 250 records');
       } else {
@@ -287,7 +287,6 @@ $(document).ready(function() {
     });
   };
   $('body').on('click', '#btn-bulk-update', function(){
-    console.log('bulk update');
     if ($(this).hasClass('btn-info')) {
       $(this).removeClass('btn-info');
       $(this).addClass('btn-default');
@@ -300,7 +299,7 @@ $(document).ready(function() {
       };
     } else {
       $('#btn-bulk-delete').addClass('disabled');
-      var numRows = $('.marketing-table tr').length;
+      var numRows = $('.marketing-table tr').length - 3;
       alert('You will be updating ' + numRows + ' records.');
       $('#filter-row').removeClass('in');
       $('#bulk-update-row').addClass('in');
@@ -315,15 +314,40 @@ $(document).ready(function() {
     }
   });
   $('body').on('click', '#btn-do-bulk-update', function(){
-    var update_fields = {};
-    var update_records = [];
+    var updateData = {};
+    var recordsToUpdate = [];
     $('.update-input').each(function(){
-      if ($(this).attr('type') == 'checkbox') {
-        if ($(this).is(':checked')) {
-          var fieldVal = true;
+      if ($(this).val().trim() != '') {
+        var fieldname = $(this).attr('update-field');
+        if ($(this).attr('response-type') == 'bool') {
+          updateData[fieldname] = $(this).val().trim() == 'true';
+        } else {
+          updateData[fieldname] = $(this).val().trim();
+        };
+      };
+    });
+    $('.update-checkbox').each(function(){
+      if ($(this).is(':checked')) {
+        recordsToUpdate.push($(this).attr('record_id'))
+      };
+    });
+    var passedJson = {
+      'record_list': recordsToUpdate,
+      'field_dict': updateData,
+    };
+    if (recordsToUpdate.length > 0 && Object.keys(updateData).length > 0) {
+      $.ajax({
+        url: '/marketing/bulk_update/',
+        type: 'POST',
+        data: {
+          'json': JSON.stringify(passedJson),
+        },
+        dataType: 'json',
+        success: function(data){
+          console.log('need to process response');
         }
-      }
-    })
+      })
+    };
   });
 
 });

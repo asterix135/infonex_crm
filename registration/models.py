@@ -44,8 +44,10 @@ class Registrants(models.Model):
     """
     Personal (not company) information for Event Attendees
     """
-    crm_person = models.ForeignKey('crm.Person', blank=True, null=True)
-    assistant = models.ForeignKey(Assistant, blank=True, null=True)
+    crm_person = models.ForeignKey('crm.Person', blank=True, null=True,
+                                   on_delete=models.SET_NULL)
+    assistant = models.ForeignKey(Assistant, blank=True, null=True,
+                                  on_delete=models.SET_NULL)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     salutation = models.CharField(max_length=15, blank=True, null=True)
     first_name = models.CharField(max_length=100, blank=True, null=True)
@@ -77,8 +79,10 @@ class RegDetails(models.Model):
     """
     contains details on booking for invoicing & event management
     """
-    conference = models.ForeignKey('crm.Event')
-    registrant = models.ForeignKey(Registrants)
+    conference = models.ForeignKey('crm.Event',
+                                   on_delete=models.CASCADE)
+    registrant = models.ForeignKey(Registrants,
+                                   on_delete=models.CASCADE)
     register_date = models.DateField(default=timezone.now)
     cancellation_date = models.DateField(blank=True, null=True)
     registration_status = models.CharField(max_length=2,
@@ -92,7 +96,8 @@ class RegDetails(models.Model):
     date_modified = models.DateTimeField('date modified', auto_now=True)
     modified_by = models.ForeignKey('auth.User',
                                     default=1,
-                                    related_name='reg_modifed_by')
+                                    related_name='reg_modifed_by',
+                                    on_delete=models.SET_DEFAULT)
 
 
 class Invoice(models.Model):

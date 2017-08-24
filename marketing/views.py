@@ -401,9 +401,15 @@ class BulkUpdate(View):
 
     def post(self, request, *arts, **kwargs):
         data = json.loads(request.POST['json'])
+        person_ids = data['record_list']
+        field_data = data['field_dict']
+        successful_updates = {}
+        Person.objects.filter(id__in=person_ids).update(**field_data)
+        for person_id in person_ids:
+            person = Person.objects.get(pk=person_id)
+            print(person.name)
 
-        response_json = {}
-        return HttpResponse(response_json)
+        return HttpResponse(successful_updates)
 
 
 class DeletePerson(View):

@@ -42,7 +42,7 @@ class Index(CSVResponseMixin, MarketingPermissionMixin, ListView):
         'dept': 'dept__icontains',
         'phone': 'phone__icontains',
         'do_not_call': 'do_not_call',
-        'email': 'email__iccontains',
+        'email': 'email__icontains',
         'do_not_email': 'do_not_email',
         'industry': 'industry__icontains',
         'email_alternate': 'email_alternate__icontains'}
@@ -499,7 +499,6 @@ class DownloadErrors(MarketingPermissionMixin, View):
             return self._csv_response(filename)
         else:
             return self._xlsx_response(filename)
-
 
 
 class FieldMatcher(MarketingPermissionMixin, DetailView):

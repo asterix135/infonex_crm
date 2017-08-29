@@ -152,6 +152,7 @@ class Index(CSVResponseMixin, MarketingPermissionMixin, ListView):
     def get_queryset(self):
         queryset = super(Index, self).get_queryset()
         queryset = self.filtered_queryset = self._filter_queryset(queryset)
+        self.queryset_length = queryset.count()
         return queryset
 
     def paginate_queryset(self, queryset, page_size):
@@ -199,6 +200,7 @@ class Index(CSVResponseMixin, MarketingPermissionMixin, ListView):
         context['filter_string'] = self.filter_string
         context['query_prefill'] = self.query_prefill
         context['upload_file_form'] = UploadFileForm()
+        context['queryset_length'] = self.queryset_length
         return context
 
 

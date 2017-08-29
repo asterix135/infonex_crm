@@ -1,4 +1,5 @@
 {% load crm_extras %}
+{% load humanize %}
 <nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -42,6 +43,7 @@
         <span class="glyphicon glyphicon-refresh"></span><br />
         Bulk Update
       </button>
+      <p class="navbar-text navbar-right" style="padding-right: 20px;">{{ queryset_length|intcomma }} records in query</p>
     </div>
   </div>
 </nav>

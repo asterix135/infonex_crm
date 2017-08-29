@@ -24,6 +24,7 @@ from .forms import *
 from .models import *
 from .constants import *
 from delegate.constants import UNPAID_STATUS_VALUES
+from delegate.forms import RegDetailsForm, NewDelegateForm, CompanySelectForm
 from registration.forms import ConferenceSelectForm, ConferenceEditForm
 from registration.models import RegDetails
 
@@ -420,6 +421,10 @@ def detail(request, person_id):
         'new_contact_form': new_contact_form,
         'category_form': category_form,
         'reg_list': reg_list,
+        'conf_select_form': ConferenceSelectForm(),
+        'reg_details_form': RegDetailsForm(),
+        'new_delegate_form': NewDelegateForm(),
+        'company_select_form': CompanySelectForm(),
     }
     return render(request, 'crm/detail.html', context)
 

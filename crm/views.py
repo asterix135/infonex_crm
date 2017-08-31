@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, TemplateView
 
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import letter
@@ -24,9 +24,10 @@ from .forms import *
 from .models import *
 from .constants import *
 from delegate.constants import UNPAID_STATUS_VALUES
-from delegate.forms import RegDetailsForm, NewDelegateForm, CompanySelectForm
+from delegate.forms import RegDetailsForm, NewDelegateForm, CompanySelectForm, \
+    AssistantForm
 from registration.forms import ConferenceSelectForm, ConferenceEditForm
-from registration.models import RegDetails
+from registration.models import RegDetails, EventOptions
 
 
 ##################
@@ -425,6 +426,7 @@ def detail(request, person_id):
         'reg_details_form': RegDetailsForm(),
         'new_delegate_form': NewDelegateForm(),
         'company_select_form': CompanySelectForm(),
+        'assistant_form': AssistantForm(),
     }
     return render(request, 'crm/detail.html', context)
 
@@ -1330,6 +1332,29 @@ def load_staff_member_selects(request):
     }
     return render(request, 'crm/territory_addins/filter_master_option.html',
                   context)
+
+
+class RegOptions(TemplateView):
+    template_name = 'delegate/addins/conference_options.html'
+    http_method_names = ['get',]
+
+    def get(self, request, *args, **kwargs):
+        self._event = get_object_or_404(Event, pk=request.GET.get('event_id', None))
+        person = get_object_or_404(Person,
+                                   pk=request.GET.get('person_id', None))
+        if RegDetails.objects.filter(
+            conference=self._event, registrant__crm_person=person
+        ).count() > 0:
+            return HttpResponse(status=202)
+        context = self.get_context_data(**kwargs)
+        return super(RegOptions, self).render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super(RegOptions, self).get_context_data(**kwargs)
+        context['conference_options'] = EventOptions.objects.filter(
+            event=self._event
+        )
+        return context
 
 
 @login_required

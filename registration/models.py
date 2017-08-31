@@ -171,19 +171,3 @@ class RegEventOptions(models.Model):
 
     class Meta:
         unique_together = ('reg', 'option')
-
-
-# class RegistrationQueue(models.Model):
-#     """
-#     Table to hold information about queued registrations to be processed
-#     """
-#     crm_record = models.ForeignKey('crm.Person', blank=True, null=True)
-#     event = models.ForeignKey('crm.Event')
-#     price = models.DecimalField(max_digits=10, decimal_places=2)
-#     registration_status = models.CharField(max_length=2,
-#                                            choices=REG_STATUS_OPTIONS,
-#                                            default='DU')
-#     payment_method = models.CharField(max_length=1,
-#                                       choices=PAYMENT_METHODS,
-#                                       blank=True,
-#                                       null=True)

@@ -767,6 +767,17 @@ class Territory(GeneratePaginationList, TerritoryList, ListView):
     paginate_by = TERRITORY_RECORDS_PER_PAGE
     context_object_name = 'person_list'
     queryset = Person.objects.none()
+    form_class = SearchForm
+
+    def filter_queryset(self, queryset, search_form=None):
+        filter_options=(('name', 'filter_name', 'name__icontains'),
+                        ('title', 'filter_title', 'title__icontains'),
+                        ('company', 'filter_company', 'company__icontains'),
+                        ('dept', 'filter_dept', 'dept__icontains'),
+                        ('state_province', 'filter_prov'),
+                        ('past_customer', 'filter_customer'))  # flag not in form
+
+        return queryset
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -785,12 +796,43 @@ class Territory(GeneratePaginationList, TerritoryList, ListView):
             )
             return super(Territory, self).dispatch(request, *args, **kwargs)
 
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class=self.form_class()
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        context = self.get_context_data()
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        context = self.get_context_data()
+        return self.render_to_response()
+
     def get_ordering(self):
-        return super(Territory, self).get_ordering()
+        if 'sort' not in self.request.GET:
+            sort_col = request.session.get('filter_sort_col')
+        elif request.GET['sort'] == request.session.get('filter_sort_col'):
+            sort_col = request.session['filter_sort_order'] = 'ASC' if \
+                request.session['filter_sort_order'] == 'DESC' else 'DESC'
+        else:
+            request.session['filter_sort_order'] = 'ASC'
+            sort_col = request.session['filter_sort_col'] = request.GET['sort']
+        # if sort order not set, set to ascending by company name
+        if not sort_col:
+            sort_col = request.session['filter_sort_col'] = 'company'
+        if not sort_order:
+            sort_order = request.session['filter_sort_order'] = 'ASC'
+        if sort_order == 'DESC':
+            sort_col = '-' + sort_col
+        return sort_col
 
     def get_queryset(self):
         queryset = self.build_user_territory_list(self._event_assignment,
                                                   True)
+        queryset = self.filter_queryset(queryset)
+        queryset = queryset.order_by(self.get_ordering())
         return queryset
 
     def paginate_queryset(self, queryset, page_size):

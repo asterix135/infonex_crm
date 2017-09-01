@@ -5,6 +5,9 @@ TODO: Territory pagination_list
 TODO: Add Province select criterion
 
 TODO: Fix territory generation
+  1) Figure out how to include form stuff in Territory class
+  2) figure out how to implement filter_queryset given form data
+  3) rework templates if needed & javascript if needed
 
 TODO: dept on territory view and filter
 

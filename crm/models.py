@@ -51,11 +51,13 @@ class Person(models.Model):
     date_created = models.DateTimeField('date created')
     created_by = models.ForeignKey('auth.User',
                                    default=1,
-                                   related_name='person_created_by')
+                                   related_name='person_created_by',
+                                   on_delete=models.SET_DEFAULT)
     date_modified = models.DateTimeField('date modified')
     modified_by = models.ForeignKey('auth.User',
                                     default=1,
-                                    related_name='person_modifed_by')
+                                    related_name='person_modifed_by',
+                                    on_delete=models.SET_DEFAULT)
 
     def __str__(self):
         return self.name + ' ' + ', ' + self.company
@@ -164,11 +166,13 @@ class Changes(models.Model):
     date_created = models.DateTimeField('date created')
     created_by = models.ForeignKey('auth.User',
                                    default=1,
-                                   related_name='orig_person_created_by')
+                                   related_name='orig_person_created_by',
+                                   on_delete=models.SET_DEFAULT)
     date_modified = models.DateTimeField('date modified')
     modified_by = models.ForeignKey('auth.User',
                                     default=1,
-                                    related_name='orig_person_modifed_by')
+                                    related_name='orig_person_modifed_by',
+                                    on_delete=models.SET_DEFAULT)
 
 
 class Event(models.Model):
@@ -182,9 +186,12 @@ class Event(models.Model):
     event_web_site = models.URLField(max_length=255, blank=True, null=True)
     hotel = models.ForeignKey('registration.Venue', blank=True, null=True,
                               on_delete=models.SET_NULL)
-    registrar = models.ForeignKey('auth.User', related_name='registrar')
+    registrar = models.ForeignKey('auth.User', related_name='registrar',
+                                  on_delete=models.SET_NULL,
+                                  null=True)
     developer = models.ForeignKey('auth.User', blank=True, null=True,
-                                  related_name='developer')
+                                  related_name='developer',
+                                  on_delete=models.SET_NULL)
     state_prov = models.CharField(max_length=25,
                                   choices=STATE_PROV_TUPLE)
     company_brand = models.CharField(max_length=2,
@@ -203,12 +210,14 @@ class Event(models.Model):
                                         default='CAD')
     created_by = models.ForeignKey('auth.User',
                                    default=1,
-                                   related_name='event_created_by')
+                                   related_name='event_created_by',
+                                   on_delete=models.SET_DEFAULT)
     date_created = models.DateTimeField('date created', auto_now_add=True)
     date_modified = models.DateTimeField('date modified', auto_now=True)
     modified_by = models.ForeignKey('auth.User',
                                     default=1,
-                                    related_name='event_modifed_by')
+                                    related_name='event_modifed_by',
+                                    on_delete=models.SET_DEFAULT)
     default_dept = models.CharField(max_length=50, blank=True, null=True)
     default_cat1 = models.CharField(max_length=25,
                                     choices=CAT_CHOICES,
@@ -230,8 +239,10 @@ class Event(models.Model):
 
 
 class EventAssignment(models.Model):
-    user = models.ForeignKey('auth.User')
-    event = models.ForeignKey(Event)
+    user = models.ForeignKey('auth.User',
+                             on_delete=models.CASCADE)
+    event = models.ForeignKey(Event,
+                              on_delete=models.CASCADE)
     role = models.CharField(max_length=2,
                             choices=EVENT_ROLES,
                             default='SA')
@@ -251,7 +262,8 @@ class Contact(models.Model):
     """
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     event = models.ForeignKey(Event)
-    author = models.ForeignKey('auth.User', default=1)
+    author = models.ForeignKey('auth.User', default=1,
+                               on_delete=models.SET_DEFAULT)
     date_of_contact = models.DateTimeField('date of contact')
     notes = models.TextField()
     method = models.CharField(max_length=20,
@@ -278,8 +290,11 @@ class DeletedContact(models.Model):
     """
     original_pk = models.IntegerField()
     original_person_id = models.IntegerField()
-    event = models.ForeignKey(Event)
-    author = models.ForeignKey('auth.User', default=1)
+    event = models.ForeignKey(Event,
+                              on_delete=models.SET_NULL,
+                              null=True)
+    author = models.ForeignKey('auth.User', default=1,
+                               on_delete=models.CASCADE)
     date_of_contact = models.DateTimeField('date of contact')
     notes = models.TextField()
     method = models.CharField(max_length=20)
@@ -309,7 +324,8 @@ class MasterListSelections(models.Model):
         ('NA', 'None'),
         ('', '---'),
     )
-    event = models.ForeignKey(Event)
+    event = models.ForeignKey(Event,
+                              on_delete=models.CASCADE)
     geo = models.CharField(max_length=10,
                            choices=GEO_CHOICES,
                            blank=True,
@@ -369,7 +385,8 @@ class PersonalListSelections(models.Model):
         ('NA', 'Not Determined'),
         ('', '---'),
     )
-    event_assignment = models.ForeignKey(EventAssignment)
+    event_assignment = models.ForeignKey(EventAssignment,
+                                         on_delete=models.CASCADE)
     include_exclude = models.CharField(max_length=7,
                                        choices=(('filter',
                                                  "Filter (exclude values that don't match)"),
@@ -377,7 +394,8 @@ class PersonalListSelections(models.Model):
                                                 ('exclude', 'Exclude from list'),
                                                ),
                                        default='filter')
-    person = models.ForeignKey(Person, blank=True, null=True)
+    person = models.ForeignKey(Person, blank=True, null=True,
+                               on_delete=models.SET_NULL)
     geo = models.CharField(max_length=10,
                            choices=GEO_CHOICES,
                            blank=True,

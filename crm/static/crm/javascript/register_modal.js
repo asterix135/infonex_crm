@@ -74,11 +74,14 @@ $(document).ready(function() {
 
   // Submit forms
   $('body').on('click', '#download-reg-form', function(){
-    
+    alert('Not yet coded');
   });
 
 
 
   // Submit form generation
+  $('body').on('click', '#submit-registration', function(){
+    alert('Not yet coded');
+  });
 
 });

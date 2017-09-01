@@ -21,11 +21,13 @@ from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, Table, TableStyle, SimpleDocTemplate
 
 from .forms import *
+from .mixins import TerritoryList
 from .models import *
 from .constants import *
 from delegate.constants import UNPAID_STATUS_VALUES
 from delegate.forms import RegDetailsForm, NewDelegateForm, CompanySelectForm, \
     AssistantForm
+from marketing.mixins import GeneratePaginationList
 from registration.forms import ConferenceSelectForm, ConferenceEditForm
 from registration.models import RegDetails, EventOptions
 
@@ -758,6 +760,47 @@ def search(request):
         'conference_select_form': conference_select_form,
     }
     return render(request, 'crm/search.html', context)
+
+
+class Territory(GeneratePaginationList, TerritoryList, ListView):
+    template_name = 'crm/territory.html'
+    paginate_by = TERRITORY_RECORDS_PER_PAGE
+    context_object_name = 'person_list'
+    queryset = Person.objects.none()
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        First entry point after as_view initializes Stuff
+        Check that user has an assignment_id selected:
+        If no assignment_id, redirect to base crm
+        Otherwise, set self._event_assignment and proceed as normal
+        """
+        if 'assignment_id' not in request.session or \
+            request.session['assignment_id'] == '':
+            return HttpResponseRedirect('/crm/')
+        else:
+            self._event_assignment = get_object_or_404(
+                EventAssignment,
+                pk=request.session['assignment_id'],
+            )
+            return super(Territory, self).dispatch(request, *args, **kwargs)
+
+    def get_ordering(self):
+        return super(Territory, self).get_ordering()
+
+    def get_queryset(self):
+        queryset = self.build_user_territory_list(self._event_assignment,
+                                                  True)
+        return queryset
+
+    def paginate_queryset(self, queryset, page_size):
+        return super(Territory, self).paginate_queryset(queryset, page_size)
+
+    def get_context_data(self, **kwargs):
+        context = super(Territory, self).get_context_data(**kwargs)
+        if context['is_paginated']:
+            context['pagination_list'] = self._generate_pagination_list(context)
+        return context
 
 
 @login_required
@@ -1650,3 +1693,7 @@ def call_report(request):
     buffr.close()
     response.write(pdf)
     return response
+
+
+class RegistrationForm(View):
+    pass

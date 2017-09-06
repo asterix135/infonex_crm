@@ -429,6 +429,12 @@ class SearchForm(forms.Form):
                                         attrs={'class': 'form-control',
                                                'placeholder': 'yyyy-mm-dd'}
                                     ))
+    dept = forms.CharField(label='Dept',
+                           max_length=50,
+                           required=False,
+                           widget=forms.TextInput(
+                               attrs={'class': 'form-control'}
+                           ))
 
 
 class SelectMyTerritoryForm(forms.Form):

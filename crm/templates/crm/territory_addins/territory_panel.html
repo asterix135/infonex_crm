@@ -1,3 +1,4 @@
+{% load humanize %}
 <div class="row">
   <h1>
     My Prospects for {{ request.session.conference_description }}
@@ -7,7 +8,7 @@
   </div>
 </div>
 <div class="row">
-  <h4>Results:</h4>
+  <h4>Results:  <span class="h6">{{ num_records|intcomma }} in this view</span></h4>
   <div id="my-territory-list-panel">
     {% include 'crm/territory_addins/my_territory_prospects.html' %}
   </div>

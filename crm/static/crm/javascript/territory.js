@@ -117,6 +117,7 @@ $(document).ready(function() {
     $('#id_company').val('');
     $('#id_state_province').val('');
     $('#id_past_customer').val('');
+    $('#id_dept').val('');
     $('#id_flag').val('any');
   };
 
@@ -136,6 +137,7 @@ $(document).ready(function() {
       $('#id_title').val() != '' ||
       $('#id_company').val() != '' ||
       $('#id_state_province').val() != '' ||
+      $('#id_dept').val() != '' ||
       $('#id_past_customer').val() != '' ||
       $('#id_flag').val() != 'any'
     ) {

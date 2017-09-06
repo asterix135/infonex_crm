@@ -17,13 +17,10 @@ class TerritoryList():
     """
     field_dict = {'main_category': 'main_category',
                   'main_category2': 'main_category2',
-                  'division1': 'division1',
-                  'division2': 'division2',
                   'geo': 'geo',
                   'industry': 'industry__icontains',
                   'company': 'company__icontains',
-                  'dept': 'dept__icontains',
-                  'title': 'title__icontains',}
+                  'dept': 'dept__icontains',}
 
     def _starting_personal_territory_list(self, filter_bool):
         if filter_bool:
@@ -41,7 +38,7 @@ class TerritoryList():
         exclude_selects = []
         for list_select in list_selects:
             kwargs = {}
-            if list_select.include_exclude == 'add':
+            if list_select.include_exclude in ('add', 'include'):
                 for field in field_dict:
                     if getattr(list_select, field) not in ('', None):
                         kwargs[field_dict[field]] = getattr(list_select, field)
@@ -87,7 +84,7 @@ class TerritoryList():
         field_dict = self.field_dict.copy()
         field_dict.update({'division1': 'division1',
                            'division2': 'division2',
-                           'title': 'title__icontains'})
+                           'title': 'title__icontains',})
         if for_staff_member:
             field_dict['person'] = 'pk'
         filter_main = self._event_assignment.filter_master_selects
@@ -120,7 +117,7 @@ class TerritoryList():
             return queryset
         exclude_selects, queryset = self._build_select_lists(
             queryset, list_selects
-        )[1:2]
+        )[1:3]
         if len(exclude_selects) == 0:
             return queryset
         return self._process_excludes(exclude_selects, queryset)
@@ -163,7 +160,7 @@ class FilterPersonalTerritory():
         else:
             return queryset
 
-    def _save_filters(self, filter_options, queryset):
+    def _save_filters(self, filter_options, queryset, search_form):
         for option in filter_options:
             if search_form.cleaned_data[option[0]] not in ('', None):
                 self.request.session[option[1]] = \
@@ -185,7 +182,7 @@ class FilterPersonalTerritory():
         # save form values to request.session
         if self.request.method == 'POST' and search_form and \
                 search_form.is_valid():
-            self._save_filters(filter_options, territory_queryset)
+            self._save_filters(filter_options, territory_queryset, search_form)
         # Start filtering
         kwargs = {}
         for option in filter_options[:4]:  # remainder are special cases

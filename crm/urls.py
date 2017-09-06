@@ -21,10 +21,9 @@ urlpatterns = [
     url(r'^new/$', views.new, name='new'),
     url(r'^search/$', views.search, name='search'),
 
-    url(r'^territory_test/$',
+    url(r'^territory/$',
         login_required(views.Territory.as_view()),
         name='territory_test'),
-    url(r'^territory/$', views.territory, name='territory'),
 
     ################
     # AJAX CALLS

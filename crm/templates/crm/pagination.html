@@ -1,45 +1,30 @@
 <div class="pagination-footer">
-  <nav>
-    <ul class="pagination">
-      {% if has_minus4 %}
-      <li><a href="?page=1" aria-label="first"><span aria-hidden="true">&laquo;&laquo;</span></a></li>
+  {% if is_paginated %}
+  <div class="container-fluid">
+    <ul class="pagination pagination-sm">
+      {% if page_obj.has_previous %}
+      <li><a class="same-page" href="?page={{ page_obj.previous_page_number }}{% if sort_by %}&sort_by={{ sort_by }}&order={{ order }}{% endif %}">&laquo;</a></li>
       {% else %}
-      <li class="disabled"><a aria-label="first"><span aria-hidden="true">&laquo;&laquo;</span></a></li>
+      <li class="disabled"><span>&laquo;</span></li>
       {% endif %}
-      {% if person_list.has_previous %}
-      <li><a href="?page={{ person_list.previous_page_number }}" aria-label="previous"><span aria-hidden="true">&laquo;</span></a></li>
+
+      {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+      <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+
+      {% elif i in pagination_list %}
+      <li><a class="same-page" href="?page={{ i }}{% if sort_by %}&sort_by={{ sort_by }}&order={{ order }}{% endif %}">{{ i }}</a></li>
+
+      {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+      <li><a class="same-page" href="?page={{ page_obj.next_page_number }}{% if sort_by %}&sort_by={{ sort_by }}&order={{ order }}{% endif %}">&raquo;</a></li>
       {% else %}
-      <li class="disabled"><a aria-label="previous"><span aria-hidden="true">&laquo;</span></a></li>
-      {% endif %}
-      {% if has_minus3 %}
-      <li><a href="?page={{ minus3 }}">{{ minus3 }}</a></li>
-      {% endif %}
-      {% if has_minus2 %}
-      <li><a href="?page={{ minus2 }}">{{ minus2 }}</a></li>
-      {% endif %}
-      {% if has_minus1 %}
-      <li><a href="?page={{ minus1 }}">{{ minus1 }}</a></li>
-      {% endif %}
-      <li class="active" id="active-page-box" page-val="{{ person_list.number }}"><a href="?page={{ person_list.number }}">{{ person_list.number }}</a></li>
-      {% if has_plus1 %}
-      <li><a href="?page={{ plus1 }}">{{ plus1 }}</a></li>
-      {% endif %}
-      {% if has_plus2 %}
-      <li><a href="?page={{ plus2 }}">{{ plus2 }}</a></li>
-      {% endif %}
-      {% if has_plus3 %}
-      <li><a href="?page={{ plus3 }}">{{ plus3 }}</a></li>
-      {% endif %}
-      {% if person_list.has_next %}
-      <li><a href="?page={{ person_list.next_page_number }}" aria-label="next"><span aria-hidden="true">&raquo;</span></a></li>
-      {% else %}
-      <li class="disabled"><a aria-label="next"><span aria-hidden="true">&raquo;</span></a></li>
-      {% endif %}
-      {% if has_plus4 %}
-      <li><a href="?page={{ person_list.paginator.num_pages }}" aria-label="last"><span aria-hidden="true">&raquo;&raquo;</span></a></li>
-      {% else %}
-      <li class="disabled"><a aria-label="last"><span aria-hidden="true">&raquo;&raquo;</span></a></li>
+      <li class="disabled"><span>&raquo;</span></li>
       {% endif %}
     </ul>
-  </nav>
+  </div>
+  {% endif %}
+
 </div>

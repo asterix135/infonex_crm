@@ -840,9 +840,15 @@ class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,
         return self.render_to_response(context)
 
     def get(self, request, *args, **kwargs):
+        """
+        both get and post follow same logic
+        """
         return self._process_territory(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        """
+        both get and post follow same logic
+        """
         return self._process_territory(request, *args, **kwargs)
 
     def get_ordering(self):
@@ -866,9 +872,7 @@ class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,
         return sort_col
 
     def get_queryset(self):
-        queryset = self.build_user_territory_list(True)
-        queryset = self.filter_queryset(queryset)
-        return queryset
+        return self.build_user_territory_list(True)
 
     def paginate_queryset(self, queryset, page_size):
         return super(Territory, self).paginate_queryset(queryset, page_size)
@@ -880,9 +884,9 @@ class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,
             flags__event_assignment=self._event_assignment
         )
         if 'filter_flag' in self.request.session:
-            context['filter_flag_value'] = self.request.session['filter_flag']
+            context['flag_filter_value'] = self.request.session['filter_flag']
         else:
-            context['filter_flag_value'] = 'any'
+            context['flag_filter_value'] = 'any'
         context['filter_form'] = self.form
         context['my_territories'] = self.get_my_territories()
         context['num_records'] = self.object_list.count()

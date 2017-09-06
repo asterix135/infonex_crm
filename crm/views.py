@@ -20,10 +20,10 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, Table, TableStyle, SimpleDocTemplate
 
-from .forms import *
-from .mixins import TerritoryList
-from .models import *
-from .constants import *
+from crm.forms import *
+from crm.mixins import *
+from crm.models import *
+from crm.constants import *
 from delegate.constants import UNPAID_STATUS_VALUES
 from delegate.forms import RegDetailsForm, NewDelegateForm, CompanySelectForm, \
     AssistantForm
@@ -762,22 +762,13 @@ def search(request):
     return render(request, 'crm/search.html', context)
 
 
-class Territory(GeneratePaginationList, TerritoryList, ListView):
+class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,
+                TerritoryList, ListView):
     template_name = 'crm/territory.html'
     paginate_by = TERRITORY_RECORDS_PER_PAGE
     context_object_name = 'person_list'
     queryset = Person.objects.none()
     form_class = SearchForm
-
-    def filter_queryset(self, queryset, search_form=None):
-        filter_options=(('name', 'filter_name', 'name__icontains'),
-                        ('title', 'filter_title', 'title__icontains'),
-                        ('company', 'filter_company', 'company__icontains'),
-                        ('dept', 'filter_dept', 'dept__icontains'),
-                        ('state_province', 'filter_prov'),
-                        ('past_customer', 'filter_customer'))  # flag not in form
-
-        return queryset
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -797,42 +788,86 @@ class Territory(GeneratePaginationList, TerritoryList, ListView):
             return super(Territory, self).dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
+        """
+        Returns an instance of the form to be used in this view.
+        """
         if form_class is None:
-            form_class=self.form_class()
+            form_class = self.form_class
+        return form_class(**self.get_form_kwargs())
 
-    def get(self, request, *args, **kwargs):
-        self.object_list = self.get_queryset()
-        context = self.get_context_data()
+    def get_form_class(self):
+        """
+        Returns the form class to use in this view
+        """
+        return self.form_class
+
+    def get_form_kwargs(self):
+        kwargs = {
+            'initial': {},
+            'prefix': None,
+        }
+        if self.request.method == 'POST':
+            kwargs.update({
+                'data': self.request.POST,
+            })
+        else:
+            form_data = {}
+            if 'filter_name' in self.request.session:
+                form_data['name'] = self.request.session['filter_name']
+            if 'filter_title' in self.request.session:
+                form_data['title'] = self.request.session['filter_title']
+            if 'filter_company' in self.request.session:
+                form_data['company'] = self.request.session['filter_company']
+            if 'filter_prov' in self.request.session:
+                form_data['prov'] = self.request.session['filter_prov']
+            if 'filter_customer' in self.request.session:
+                form_data['past_customer'] = \
+                    self.request.session['filter_customer']
+            if 'filter_dept' in self.request.session:
+                form_data['dept'] = self.request.session['filter_dept']
+            kwargs.update({
+                'data': form_data,
+            })
+        return kwargs
+
+    def _process_territory(self, request, *args, **kwargs):
+        self.form = self.get_form()
+        queryset = self.get_queryset()
+        queryset = self.filter_queryset(queryset, self.form)
+
+        self.object_list = queryset.order_by(self.get_ordering())
+        context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
+    def get(self, request, *args, **kwargs):
+        return self._process_territory(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
-        self.object_list = self.get_queryset()
-        context = self.get_context_data()
-        return self.render_to_response()
+        return self._process_territory(request, *args, **kwargs)
 
     def get_ordering(self):
         if 'sort' not in self.request.GET:
-            sort_col = request.session.get('filter_sort_col')
-        elif request.GET['sort'] == request.session.get('filter_sort_col'):
-            sort_col = request.session['filter_sort_order'] = 'ASC' if \
-                request.session['filter_sort_order'] == 'DESC' else 'DESC'
+            sort_col = self.request.session.get('filter_sort_col')
+        elif request.GET['sort'] == self.request.session.get('filter_sort_col'):
+            sort_col = self.request.session['filter_sort_order'] = 'ASC' if \
+                self.request.session['filter_sort_order'] == 'DESC' else 'DESC'
         else:
-            request.session['filter_sort_order'] = 'ASC'
-            sort_col = request.session['filter_sort_col'] = request.GET['sort']
+            self.request.session['filter_sort_order'] = 'ASC'
+            sort_col = self.request.session['filter_sort_col'] = \
+                       self.request.GET['sort']
         # if sort order not set, set to ascending by company name
+        sort_order = self.request.session.get('filter_sort_order')
         if not sort_col:
-            sort_col = request.session['filter_sort_col'] = 'company'
+            sort_col = self.request.session['filter_sort_col'] = 'company'
         if not sort_order:
-            sort_order = request.session['filter_sort_order'] = 'ASC'
+            sort_order = self.request.session['filter_sort_order'] = 'ASC'
         if sort_order == 'DESC':
             sort_col = '-' + sort_col
         return sort_col
 
     def get_queryset(self):
-        queryset = self.build_user_territory_list(self._event_assignment,
-                                                  True)
+        queryset = self.build_user_territory_list(True)
         queryset = self.filter_queryset(queryset)
-        queryset = queryset.order_by(self.get_ordering())
         return queryset
 
     def paginate_queryset(self, queryset, page_size):
@@ -840,6 +875,17 @@ class Territory(GeneratePaginationList, TerritoryList, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(Territory, self).get_context_data(**kwargs)
+        context['event_assignment'] = self._event_assignment
+        context['flag_list'] = self.object_list.filter(
+            flags__event_assignment=self._event_assignment
+        )
+        if 'filter_flag' in self.request.session:
+            context['filter_flag_value'] = self.request.session['filter_flag']
+        else:
+            context['filter_flag_value'] = 'any'
+        context['filter_form'] = self.form
+        context['my_territories'] = self.get_my_territories()
+        context['num_records'] = self.object_list.count()
         if context['is_paginated']:
             context['pagination_list'] = self._generate_pagination_list(context)
         return context

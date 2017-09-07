@@ -851,31 +851,8 @@ class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,
         """
         return self._process_territory(request, *args, **kwargs)
 
-    def get_ordering(self):
-        if 'sort' not in self.request.GET:
-            sort_col = self.request.session.get('filter_sort_col')
-        elif request.GET['sort'] == self.request.session.get('filter_sort_col'):
-            sort_col = self.request.session['filter_sort_order'] = 'ASC' if \
-                self.request.session['filter_sort_order'] == 'DESC' else 'DESC'
-        else:
-            self.request.session['filter_sort_order'] = 'ASC'
-            sort_col = self.request.session['filter_sort_col'] = \
-                       self.request.GET['sort']
-        # if sort order not set, set to ascending by company name
-        sort_order = self.request.session.get('filter_sort_order')
-        if not sort_col:
-            sort_col = self.request.session['filter_sort_col'] = 'company'
-        if not sort_order:
-            sort_order = self.request.session['filter_sort_order'] = 'ASC'
-        if sort_order == 'DESC':
-            sort_col = '-' + sort_col
-        return sort_col
-
     def get_queryset(self):
         return self.build_user_territory_list(True)
-
-    def paginate_queryset(self, queryset, page_size):
-        return super(Territory, self).paginate_queryset(queryset, page_size)
 
     def get_context_data(self, **kwargs):
         context = super(Territory, self).get_context_data(**kwargs)
@@ -893,101 +870,6 @@ class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,
         if context['is_paginated']:
             context['pagination_list'] = self._generate_pagination_list(context)
         return context
-
-
-@login_required
-def territory(request):
-    if 'assignment_id' not in request.session or \
-        request.session['assignment_id'] == '':
-        return HttpResponseRedirect('/crm/')
-    if request.method == 'POST':
-        filter_form = SearchForm(request.POST)
-    else:
-        form_data = {}
-        if 'filter_name' in request.session:
-            form_data['name'] = request.session['filter_name']
-        if 'filter_title' in request.session:
-            form_data['title'] = request.session['filter_title']
-        if 'filter_company' in request.session:
-            form_data['company'] = request.session['filter_company']
-        if 'filter_prov' in request.session:
-            form_data['state_province'] = request.session['filter_prov']
-        if 'filter_customer' in request.session:
-            form_data['past_customer'] = request.session['filter_customer']
-        filter_form = SearchForm(form_data)
-    event_assignment = get_object_or_404(EventAssignment,
-                                         pk=request.session['assignment_id'])
-    territory_list = build_user_territory_list(event_assignment, True)
-    territory_list = filter_personal_territory(request, territory_list,
-                                               filter_form)
-    flag_list = territory_list.filter(flags__event_assignment=event_assignment)
-    if 'filter_flag' in request.session:
-        flag_filter_value = request.session['filter_flag']
-    else:
-        flag_filter_value = 'any'
-
-    # Figure out sort order
-    if 'sort' not in request.GET:
-        sort_col = request.session.get('filter_sort_col')
-    else:
-        if request.GET['sort'] == request.session.get('filter_sort_col'):
-            request.session['filter_sort_order'] = 'ASC' if \
-                request.session['filter_sort_order'] == 'DESC' else 'DESC'
-        else:
-            request.session['filter_sort_order'] = 'ASC'
-            request.session['filter_sort_col'] = request.GET['sort']
-        sort_col = request.session['filter_sort_col']
-    sort_order = request.session.get('filter_sort_order')
-    # If sort order not set, set to ascending by company name
-    if not sort_col:
-        sort_col = request.session['filter_sort_col'] = 'company'
-    if not sort_order:
-        sort_order = request.session['filter_sort_order'] = 'ASC'
-    # sort search results
-    if territory_list.exists():
-        if sort_order == 'DESC':
-            sort_col = '-' + sort_col
-        territory_list = territory_list.order_by(sort_col)
-
-    # Paginate results
-    paginator = Paginator(territory_list, TERRITORY_RECORDS_PER_PAGE)
-    if 'page' in request.GET:
-        page = request.session['filter_page'] = request.GET['page']
-    elif 'filter_page' in request.session:
-        page = request.session['filter_page']
-    else:
-        page = request.session['filter_page'] = 1
-    try:
-        person_list = paginator.page(page)
-    except PageNotAnInteger:
-        person_list = paginator.page(1)
-        page = request.session['filter_page'] = 1
-    except EmptyPage:
-        person_list = paginator.page(paginator.num_pages)
-        page = request.session['filter_page'] = paginator.num_pages
-    context = {
-        'event_assignment': event_assignment,
-        'my_territories': get_my_territories(request.user),
-        'person_list': person_list,
-        'filter_form': filter_form,
-        'flag_filter_value': flag_filter_value,
-        'flag_list': flag_list,
-        'has_minus4': int(page) - 4 > 0,
-        'has_minus3': int(page) - 3 > 0,
-        'minus3': str(int(page) - 3),
-        'has_minus2': int(page) - 2 > 0,
-        'minus2': str(int(page) - 2),
-        'has_minus1': int(page) - 1 > 0,
-        'minus1': str(int(page) - 1),
-        'has_plus1': int(page) + 1 <= paginator.num_pages,
-        'plus1': str(int(page) + 1),
-        'has_plus2': int(page) + 2 <= paginator.num_pages,
-        'plus2': str(int(page) + 2),
-        'has_plus3': int(page) + 3 <= paginator.num_pages,
-        'plus3': str(int(page) + 3),
-        'has_plus4': int(page) + 4 <= paginator.num_pages,
-    }
-    return render(request, 'crm/territory.html', context)
 
 
 ##################
@@ -1312,70 +1194,44 @@ def get_recent_contacts(request):
     return render(request, 'crm/addins/recently_viewed.html', context)
 
 
-@login_required
-def group_flag_update(request):
-    if request.method != 'POST':
-        return HttpResponse('')
-    event_assignment = get_object_or_404(EventAssignment,
-                                         pk=request.POST['event_assignment_id'])
-    people_list = request.POST.getlist('checked_people[]')
-    for person_id in people_list:
-        try:
-            person = Person.objects.get(pk=person_id)
-            process_flag_change(request, person, event_assignment)
-        except Person.DoesNotExist:
-            pass
-    territory_list = build_user_territory_list(event_assignment, True)
-    territory_list = filter_personal_territory(request, territory_list)
-    flag_list = territory_list.filter(flags__event_assignment=event_assignment)
+class GroupFlagUpdate(GeneratePaginationList, FilterPersonalTerritory,
+                      TerritoryList, UpdateFlag, ListView):
+    template_name = 'crm/territory_addins/my_territory_prospects.html'
+    paginate_by = TERRITORY_RECORDS_PER_PAGE
+    context_object_name = 'person_list'
+    queryset = Person.objects.none()
 
-    # sort list appropriately
-    sort_col = request.session.get('filter_sort_col')
-    sort_order = request.session.get('filter_sort_order')
-    if not sort_col:
-        sort_col = request.session['filter_sort_col'] = 'company'
-    if not sort_order:
-        sort_order = request.session['filter_sort_order'] = 'ASC'
-    if territory_list.exists():
-        if sort_order == 'DESC':
-            sort_col = '-' + sort_col
-        territory_list = territory_list.order_by(sort_col)
+    def _process_flag_list(self, people_list):
+        for person_id in people_list:
+            try:
+                person = Person.objects.get(pk=person_id)
+                self.process_flag_change(person)
+            except Person.DoesNotExist:
+                pass
 
-    # paginate results
-    paginator = Paginator(territory_list, TERRITORY_RECORDS_PER_PAGE)
-    if 'filter_page' not in request.session:
-        page = request.POST.get('page', 1)
-    else:
-        page = request.session['filter_page']
-    try:
-        person_list = paginator.page(page)
-    except PageNotAnInteger:
-        person_list = paginator.page(1)
-        page = request.session['filter_page'] = 1
-    except EmptyPage:
-        person_list = paginator.page(paginator.num_pages)
-        page = request.session['filter_page'] = paginator.num_pages
+    def post(self, request, *args, **kwargs):
+        self._event_assignment = get_object_or_404(
+            EventAssignment, pk=request.POST['event_assignment_id']
+        )
+        people_list = request.POST.getlist('checked_people[]')
+        self._process_flag_list(people_list)
+        queryset = self.get_queryset()
+        queryset = self.filter_queryset(queryset)
+        self.object_list = queryset.order_by(self.get_ordering())
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
-    context = {
-        'person_list': person_list,
-        'flag_list': flag_list,
-        'has_minus4': int(page) - 4 > 0,
-        'has_minus3': int(page) - 3 > 0,
-        'minus3': str(int(page) - 3),
-        'has_minus2': int(page) - 2 > 0,
-        'minus2': str(int(page) - 2),
-        'has_minus1': int(page) - 1 > 0,
-        'minus1': str(int(page) - 1),
-        'has_plus1': int(page) + 1 <= paginator.num_pages,
-        'plus1': str(int(page) + 1),
-        'has_plus2': int(page) + 2 <= paginator.num_pages,
-        'plus2': str(int(page) + 2),
-        'has_plus3': int(page) + 3 <= paginator.num_pages,
-        'plus3': str(int(page) + 3),
-        'has_plus4': int(page) + 4 <= paginator.num_pages,
-    }
-    return render(request, 'crm/territory_addins/my_territory_prospects.html',
-                  context)
+    def get_queryset(self):
+        return self.build_user_territory_list(True)
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupFlagUpdate, self).get_context_data(**kwargs)
+        context['flag_list'] = self.object_list.filter(
+            flags__event_assignment=self._event_assignment
+        )
+        if context['is_paginated']:
+            context['pagination_list'] = self._generate_pagination_list(context)
+        return context
 
 
 @user_passes_test(has_management_permission, login_url='/crm/',

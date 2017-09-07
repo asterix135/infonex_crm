@@ -5,7 +5,118 @@ from django.utils import timezone
 
 from crm.constants import AC_LOOKUP, FLAG_COLORS
 from crm.models import PersonalListSelections, MasterListSelections, Person, \
-    EventAssignment
+    EventAssignment, Flags
+
+
+class FilterPersonalTerritory():
+
+    def _filter_state(self, queryset):
+        ac_tuple = AC_LOOKUP[self.request.session['filter_prov']]
+        queries = []
+        for ac in ac_tuple:
+            re_term = r'^\s*\(?' + ac
+            queries.append(Q(phone__iregex=re_term))
+        query = queries.pop()
+        for item in queries:
+            query |= item
+        return queryset.filter(query)
+
+    def _filter_customer(self, queryset):
+        if self.request.session['filter_customer'] == 'True':
+            return queryset.filter(registrants__isnull=False).distinct()
+        elif request.session['filter_customer'] == 'False':
+            return queryset.filter(registrants__isnull=True)
+        else:
+            return queryset
+
+    def _filter_flag(self, queryset):
+        event_assignment = EventAssignment.objects.get(
+            pk=self.request.session['assignment_id']
+        )
+        if self.request.session['filter_flag'] not in ('none', 'any'):
+            return queryset.filter(
+                flags__event_assignment=event_assignment,
+                flags__flag=FLAG_COLORS[self.request.session['filter_flag']]
+            )
+        elif self.request.session['filter_flag'] == 'none':
+            return queryset.exclude(
+                flags__event_assignment=event_assignment
+            )
+        else:
+            return queryset
+
+    def _save_filters(self, filter_options, queryset, search_form):
+        for option in filter_options:
+            if search_form.cleaned_data[option[0]] not in ('', None):
+                self.request.session[option[1]] = \
+                    search_form.cleaned_data[option[0]]
+            elif option[1] in self.request.session:
+                del self.request.session[option[1]]
+        if 'flag' in self.request.POST and self.request.POST['flag'] != 'any':
+            self.request.session['filter_flag'] = self.request.POST['flag']
+        elif 'filter_flag' in self.request.session:
+            del self.request.session['filter_flag']
+
+    def filter_queryset(self, territory_queryset, search_form=None):
+        filter_options=(('name', 'filter_name', 'name__icontains'),
+                        ('title', 'filter_title', 'title__icontains'),
+                        ('company', 'filter_company', 'company__icontains'),
+                        ('dept', 'filter_dept', 'dept__icontains'),
+                        ('state_province', 'filter_prov'),
+                        ('past_customer', 'filter_customer'))  # flag not in form
+        # save form values to request.session
+        if self.request.method == 'POST' and search_form and \
+                search_form.is_valid():
+            self._save_filters(filter_options, territory_queryset, search_form)
+        # Start filtering
+        kwargs = {}
+        for option in filter_options[:4]:  # remainder are special cases
+            if option[1] in self.request.session:
+                kwargs[option[2]] = self.request.session[option[1]]
+        territory_queryset = territory_queryset.filter(**kwargs)
+
+        # Deal with state filter
+        if 'filter_prov' in self.request.session and \
+                self.request.session['filter_prov'] != '':
+            territory_queryset = self._filter_state(territory_queryset)
+        # Deal with customer filter
+        if 'filter_customer' in self.request.session:
+            territory_queryset = self._filter_customer(territory_queryset)
+        # Deal with flag filter
+        if 'filter_flag' in self.request.session and \
+                'assignment_id' in self.request.session:
+            territory_queryset = self._filter_flag(territory_queryset)
+        return territory_queryset
+
+
+class MyTerritories():
+    def get_my_territories(self):
+        return EventAssignment.objects.filter(
+            user=self.request.user,
+            event__date_begins__gte=timezone.now()-datetime.timedelta(weeks=4)
+        ).exclude(role='NA')
+
+
+class UpdateFlag():
+    def process_flag_change(self, person, event_assignment=None):
+        if not event_assignment:
+            event_assignment = self._event_assignment
+        try:
+            flag = Flags.objects.get(person=person,
+                                     event_assignment=event_assignment)
+        except Flags.DoesNotExist:
+            flag = Flags(person=person,
+                         event_assignment=event_assignment)
+        if self.request.POST['flag_color'] != 'none':
+            flag.flag = FLAG_COLORS[self.request.POST['flag_color']]
+            if 'followup' in self.request.POST:
+                flag.follow_up_date = self.request.POST['followup']
+            flag.save()
+        else:
+            if flag.id:
+                flag.delete()
+            flag = None
+        return flag
 
 
 class TerritoryList():
@@ -108,6 +219,26 @@ class TerritoryList():
                                               field_dict)
         return queryset
 
+    def get_ordering(self):
+        if 'sort' not in self.request.GET:
+            sort_col = self.request.session.get('filter_sort_col')
+        elif request.GET['sort'] == self.request.session.get('filter_sort_col'):
+            sort_col = self.request.session['filter_sort_order'] = 'ASC' if \
+                self.request.session['filter_sort_order'] == 'DESC' else 'DESC'
+        else:
+            self.request.session['filter_sort_order'] = 'ASC'
+            sort_col = self.request.session['filter_sort_col'] = \
+                       self.request.GET['sort']
+        # if sort order not set, set to ascending by company name
+        sort_order = self.request.session.get('filter_sort_order')
+        if not sort_col:
+            sort_col = self.request.session['filter_sort_col'] = 'company'
+        if not sort_order:
+            sort_order = self.request.session['filter_sort_order'] = 'ASC'
+        if sort_order == 'DESC':
+            sort_col = '-' + sort_col
+        return sort_col
+
     def build_master_territory_list(self):
         list_selects = MasterListSelections.objects.filter(
             event=self._event_assignment.event
@@ -121,92 +252,3 @@ class TerritoryList():
         if len(exclude_selects) == 0:
             return queryset
         return self._process_excludes(exclude_selects, queryset)
-
-
-class FilterPersonalTerritory():
-
-    def _filter_state(self, queryset):
-        ac_tuple = AC_LOOKUP[self.request.session['filter_prov']]
-        queries = []
-        for ac in ac_tuple:
-            re_term = r'^\s*\(?' + ac
-            queries.append(Q(phone__iregex=re_term))
-        query = queries.pop()
-        for item in queries:
-            query |= item
-        return queryset.filter(query)
-
-    def _filter_customer(self, queryset):
-        if self.request.session['filter_customer'] == 'True':
-            return queryset.filter(registrants__isnull=False).distinct()
-        elif request.session['filter_customer'] == 'False':
-            return queryset.filter(registrants__isnull=True)
-        else:
-            return queryset
-
-    def _filter_flag(self, queryset):
-        event_assignment = EventAssignment.objects.get(
-            pk=self.request.session['assignment_id']
-        )
-        if self.request.session['filter_flag'] not in ('none', 'any'):
-            return queryset.filter(
-                flags__event_assignment=event_assignment,
-                flags__flag=FLAG_COLORS[self.request.session['filter_flag']]
-            )
-        elif self.request.session['filter_flag'] == 'none':
-            return queryset.exclude(
-                flags__event_assignment=event_assignment
-            )
-        else:
-            return queryset
-
-    def _save_filters(self, filter_options, queryset, search_form):
-        for option in filter_options:
-            if search_form.cleaned_data[option[0]] not in ('', None):
-                self.request.session[option[1]] = \
-                    search_form.cleaned_data[option[0]]
-            elif option[1] in self.request.session:
-                del self.request.session[option[1]]
-        if 'flag' in self.request.POST and self.request.POST['flag'] != 'any':
-            self.request.session['filter_flag'] = self.request.POST['flag']
-        elif 'filter_flag' in self.request.session:
-            del self.request.session['filter_flag']
-
-    def filter_queryset(self, territory_queryset, search_form=None):
-        filter_options=(('name', 'filter_name', 'name__icontains'),
-                        ('title', 'filter_title', 'title__icontains'),
-                        ('company', 'filter_company', 'company__icontains'),
-                        ('dept', 'filter_dept', 'dept__icontains'),
-                        ('state_province', 'filter_prov'),
-                        ('past_customer', 'filter_customer'))  # flag not in form
-        # save form values to request.session
-        if self.request.method == 'POST' and search_form and \
-                search_form.is_valid():
-            self._save_filters(filter_options, territory_queryset, search_form)
-        # Start filtering
-        kwargs = {}
-        for option in filter_options[:4]:  # remainder are special cases
-            if option[1] in self.request.session:
-                kwargs[option[2]] = self.request.session[option[1]]
-        territory_queryset = territory_queryset.filter(**kwargs)
-
-        # Deal with state filter
-        if 'filter_prov' in self.request.session and \
-                self.request.session['filter_prov'] != '':
-            territory_queryset = self._filter_state(territory_queryset)
-        # Deal with customer filter
-        if 'filter_customer' in self.request.session:
-            territory_queryset = self._filter_customer(territory_queryset)
-        # Deal with flag filter
-        if 'filter_flag' in self.request.session and \
-                'assignment_id' in self.request.session:
-            territory_queryset = self._filter_flag(territory_queryset)
-        return territory_queryset
-
-
-class MyTerritories():
-    def get_my_territories(self):
-        return EventAssignment.objects.filter(
-            user=self.request.user,
-            event__date_begins__gte=timezone.now()-datetime.timedelta(weeks=4)
-        ).exclude(role='NA')

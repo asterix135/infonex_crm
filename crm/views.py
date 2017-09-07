@@ -113,6 +113,12 @@ def build_master_territory_list(list_select_queryset):
     """
     Builds and returns query set based on a territory's master selection
     criteria
+    replaced by Mixin TerritoryList
+    needs to be updated in:
+    - add_master_list_select
+    - build_user_territory_list
+    - create_selection_widget
+    - delete_master_list_select
     """
     field_dict = {'main_category': 'main_category',
                   'main_category2': 'main_category2',
@@ -156,6 +162,8 @@ def build_user_territory_list(event_assignment_object, for_staff_member=False):
     param event_assignment_object: one Event Assignment Records
     param for_staff_member: boolean indicating whether list is for use on a
                             staff member's territory page (True)
+    being replaced by mixin TerritoryList.  Needs updating in:
+    -
     """
     field_dict = {'main_category': 'main_category',
                   'main_category2': 'main_category2',
@@ -278,18 +286,76 @@ def delete(request):
     return HttpResponseRedirect('/crm/search/')
 
 
-class Detail(DetailView):
+class Detail(RecentContact, MyTerritories, TerritoryList, DetailView):
+    context_object_name = 'person'
     template_name = 'crm/detail.html'
     model = Person
+    flag = None
+    in_territory = False
+    event_assignment = None
 
-    def get_context_data(self, **kwargs):
-        print('get context')
-        context = super(Detail, self).get_context_data(**kwargs)
-        return context
+    def _build_reg_list(self):
+        reg_list = None
+        if self.object.registrants_set.exists():
+            for registrant in self.object.registrants_set.all():
+                if not reg_list:
+                    reg_list = registrant.regdetails_set.all()
+                else:
+                    reg_list = reg_list | registrant.regdetails_set.all()
+            if reg_list.count() == 0:
+                return None
+            return reg_list.order_by('-register_date')
+        return None
+
+    def _update_territory_specfics(self):
+        try:
+            self.event_assignment = EventAssignment.objects.get(
+                pk=self.request.session['assignment_id']
+            )
+            my_territory = self.build_user_territory_list(True)
+            self.in_territory = self.object in my_territory
+            if self.in_territory:
+                try:
+                    self.flag = Flags.objects.get(
+                        person=self.object,
+                        event_assignment=self.event_assignment
+                    )
+                except Flags.DoesNotExist:
+                    pass  # default flag=False is fine
+        except EventAssignment.DoesNotExist:
+            pass  # default values are fine
 
     def get(self, request, *args, **kwargs):
-        print('get')
-        super(Detail, self).get(request, *args, **kwargs)
+        self.object = self.get_object()
+        self.add_to_recent_contacts(self.kwargs.get(self.pk_url_kwarg))
+        if 'assignment_id' in request.session:
+            self._update_territory_specfics()
+
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super(Detail, self).get_context_data(**kwargs)
+        # various forms needed in page
+        context['conf_select_form'] = ConferenceSelectForm()
+        context['reg_details_form'] = RegDetailsForm()
+        context['new_delegate_form'] = NewDelegateForm()
+        context['company_select_form'] = CompanySelectForm()
+        context['assistant_form'] = AssistantForm()
+        context['new_contact_form'] = NewContactForm()
+        context['person_details_form'] = PersonDetailsForm(
+            instance=self.object
+        )
+        context['category_form'] = PersonCategoryUpdateForm(
+            instance=self.object
+        )
+        # other data to be passed
+        context['my_territories'] = self.get_my_territories()
+        context['reg_list'] = self._build_reg_list()
+        context['flag'] = self.flag
+        context['in_territory'] = self.in_territory
+        context['event_assignment'] = self.event_assignment
+        return context
 
 
 @login_required
@@ -697,13 +763,13 @@ class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,
         First entry point after as_view initializes Stuff
         Check that user has an assignment_id selected:
         If no assignment_id, redirect to base crm
-        Otherwise, set self._event_assignment and proceed as normal
+        Otherwise, set self.event_assignment and proceed as normal
         """
         if 'assignment_id' not in request.session or \
             request.session['assignment_id'] == '':
             return HttpResponseRedirect('/crm/')
         else:
-            self._event_assignment = get_object_or_404(
+            self.event_assignment = get_object_or_404(
                 EventAssignment,
                 pk=request.session['assignment_id'],
             )
@@ -778,9 +844,9 @@ class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,
 
     def get_context_data(self, **kwargs):
         context = super(Territory, self).get_context_data(**kwargs)
-        context['event_assignment'] = self._event_assignment
+        context['event_assignment'] = self.event_assignment
         context['flag_list'] = self.object_list.filter(
-            flags__event_assignment=self._event_assignment
+            flags__event_assignment=self.event_assignment
         )
         if 'filter_flag' in self.request.session:
             context['flag_filter_value'] = self.request.session['filter_flag']
@@ -914,7 +980,7 @@ class ChangeFlag(UpdateFlag, TemplateView):
     http_method_name = ['get',]
 
     def post(self, request, *args, **kwargs):
-        self._event_assignment = get_object_or_404(
+        self.event_assignment = get_object_or_404(
             EventAssignment, pk=request.POST['event_assignment_id']
         )
         person = get_object_or_404(Person, pk=request.POST['person_id'])
@@ -1132,7 +1198,7 @@ class GroupFlagUpdate(GeneratePaginationList, FilterPersonalTerritory,
                 pass
 
     def post(self, request, *args, **kwargs):
-        self._event_assignment = get_object_or_404(
+        self.event_assignment = get_object_or_404(
             EventAssignment, pk=request.POST['event_assignment_id']
         )
         people_list = request.POST.getlist('checked_people[]')
@@ -1148,9 +1214,9 @@ class GroupFlagUpdate(GeneratePaginationList, FilterPersonalTerritory,
 
     def get_context_data(self, **kwargs):
         context = super(GroupFlagUpdate, self).get_context_data(**kwargs)
-        context['event_assignment'] = self._event_assignment
+        context['event_assignment'] = self.event_assignment
         context['flag_list'] = self.object_list.filter(
-            flags__event_assignment=self._event_assignment
+            flags__event_assignment=self.event_assignment
         )
         if context['is_paginated']:
             context['pagination_list'] = self._generate_pagination_list(context)

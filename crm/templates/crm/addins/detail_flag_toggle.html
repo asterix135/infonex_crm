@@ -1,5 +1,9 @@
 <!-- Called from person_detail.html and from toggle_person_in_territory -->
 <span class="float-right">
+  <div class="collapse">
+    in_territory: {{ in_territory }}<br />
+    flag: {{ flag }}
+  </div>
   {% if event_assignment %}
   {% if in_territory %}
   <span class="btn-group">

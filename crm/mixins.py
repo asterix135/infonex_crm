@@ -97,6 +97,20 @@ class MyTerritories():
         ).exclude(role='NA')
 
 
+class RecentContact():
+
+    def add_to_recent_contacts(self, person_id):
+        if 'recent_contacts' not in self.request.session:
+            recent_contact_list = []
+        else:
+            recent_contact_list = self.request.session['recent_contacts']
+        if person_id in recent_contact_list:
+            recent_contact_list.remove(person_id)
+        recent_contact_list.insert(0, person_id)
+        recent_contact_list = recent_contact_list[:25]
+        self.request.session['recent_contacts'] = recent_contact_list
+
+
 class TerritoryList():
     """
     Builds a territory list.
@@ -185,9 +199,9 @@ class TerritoryList():
                            'title': 'title__icontains',})
         if for_staff_member:
             field_dict['person'] = 'pk'
-        filter_main = self._event_assignment.filter_master_selects
+        filter_main = self.event_assignment.filter_master_selects
         self.user_select_set = PersonalListSelections.objects.filter(
-            event_assignment=self._event_assignment
+            event_assignment=self.event_assignment
         )
         queryset = self._starting_personal_territory_list(filter_main)
         if self.user_select_set.count() == 0:
@@ -230,7 +244,7 @@ class TerritoryList():
 
     def build_master_territory_list(self):
         list_selects = MasterListSelections.objects.filter(
-            event=self._event_assignment.event
+            event=self.event_assignment.event
         )
         queryset = Person.objects.none()
         if list_selects.count() == 0:
@@ -244,10 +258,10 @@ class TerritoryList():
 
 
 class UpdateFlag():
-    
+
     def process_flag_change(self, person, event_assignment=None):
         if not event_assignment:
-            event_assignment = self._event_assignment
+            event_assignment = self.event_assignment
         try:
             flag = Flags.objects.get(person=person,
                                      event_assignment=event_assignment)

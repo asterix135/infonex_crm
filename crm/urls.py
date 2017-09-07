@@ -34,7 +34,11 @@ urlpatterns = [
         name='add_master_list_select'),
     url(r'^add_personal_list_select/$', views.add_personal_list_select,
         name='add_personal_list_select'),
-    url(r'^change_flag/$', views.change_flag, name='change_flag'),
+
+    url(r'^change_flag/$',
+        login_required(views.ChangeFlag.as_view()),
+        name='change_flag'),
+
     url(r'^check_for_dupes/$', views.check_for_dupes, name='check_for_dupes'),
     url(r'^create_selection_widget/$', views.create_selection_widget,
         name='create_selection_widget'),

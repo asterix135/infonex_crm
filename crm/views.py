@@ -93,28 +93,14 @@ def add_to_recent_contacts(request, person_id):
     request.session['recent_contacts'] = recent_contact_list
 
 
-def process_flag_change(request, person, event_assignment):
-    try:
-        flag = Flags.objects.get(person=person,
-                                 event_assignment=event_assignment)
-    except Flags.DoesNotExist:
-        flag = Flags(person = person,
-                     event_assignment = event_assignment)
-    if request.POST['flag_color'] != 'none':
-        flag.flag = FLAG_COLORS[request.POST['flag_color']]
-        if 'followup' in request.POST:
-            flag.follow_up_date = request.POST['followup']
-        flag.save()
-    else:
-        if flag.id:
-            flag.delete()
-        flag = None
-    return flag
-
-
 def get_my_territories(user):
     """
     returns queryset of active EventAssignments for a user
+    to be replaced by MyTerritories mixin in:
+    - detail
+    - index
+    - new
+    - search
     """
     my_assignments = EventAssignment.objects.filter(
         user=user,
@@ -923,23 +909,23 @@ def add_personal_list_select(request):
                   context)
 
 
-@login_required
-def change_flag(request):
-    """
-    ajax call to change flag value for an individual
-    called from territory.html and from detail.html
-    """
-    flag = None
-    if request.method != 'POST':
-        return HttpResponse('')
-    event_assignment = get_object_or_404(EventAssignment,
-                                         pk=request.POST['event_assignment_id'])
-    person = get_object_or_404(Person, pk=request.POST['person_id'])
-    flag = process_flag_change(request, person, event_assignment)
-    context = {
-        'flag': flag,
-    }
-    return render(request, 'crm/territory_addins/new_flag_detail.html', context)
+class ChangeFlag(UpdateFlag, TemplateView):
+    template_name = 'crm/territory_addins/new_flag_detail.html'
+    http_method_name = ['get',]
+
+    def post(self, request, *args, **kwargs):
+        self._event_assignment = get_object_or_404(
+            EventAssignment, pk=request.POST['event_assignment_id']
+        )
+        person = get_object_or_404(Person, pk=request.POST['person_id'])
+        self.flag = self.process_flag_change(person)
+        context = self.get_context_data(**kwargs)
+        return super(ChangeFlag, self).render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super(ChangeFlag, self).get_context_data(**kwargs)
+        context['flag'] = self.flag
+        return context
 
 
 @login_required

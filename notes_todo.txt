@@ -1,15 +1,9 @@
 TODO: registration fails if submit without sales credit
 
-TODO: Territory pagination_list
+TODO: Add Province select criterion to master select stuff
+      - this probably requires first changing views over to CBVs
 
-TODO: Add Province select criterion
-
-TODO: Fix territory generation
-  1) Figure out how to include form stuff in Territory class
-  2) figure out how to implement filter_queryset given form data
-  3) rework templates if needed & javascript if needed
-
-TODO: dept on territory view and filter
+TODO: Add typeahead on territory filter for dept (& others??)
 
 TODO: crm.views.py/Detail - need to switch this over from detail
 
@@ -235,3 +229,9 @@ DONE: TAX EXEMPTION ERROR
       Go into an existing tax-exempt registration - taxes will show
       (is ok when creating a new registration)
 DONE - implement marketing app
+DONE: Territory pagination_list
+DONE: Fix territory generation
+  1) Figure out how to include form stuff in Territory class
+  2) figure out how to implement filter_queryset given form data
+  3) rework templates if needed & javascript if needed
+DONE: dept on territory view and filter

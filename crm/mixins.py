@@ -244,6 +244,7 @@ class TerritoryList():
 
 
 class UpdateFlag():
+    
     def process_flag_change(self, person, event_assignment=None):
         if not event_assignment:
             event_assignment = self._event_assignment

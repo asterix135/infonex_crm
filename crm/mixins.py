@@ -141,6 +141,15 @@ class TerritoryList():
                 exclude_selects.append(list_select)
         return filter_selects, exclude_selects, queryset
 
+    def _add_individual_selects_back_in(self, queryset, list_selects):
+        for list_select in list_selects:
+            if list_select.include_exclude == 'add' and list_select.person:
+                add_person = Person.objects.filter(
+                    pk=list_select.person.pk
+                )
+                queryset = queryset | add_person
+        return queryset
+
     def _process_filters(self, filter_selects, queryset, field_dict=None):
         if field_dict is None:
             field_dict = self.field_dict
@@ -195,6 +204,8 @@ class TerritoryList():
             queryset = self._process_excludes(exclude_selects,
                                               queryset,
                                               field_dict)
+        queryset = self._add_individual_selects_back_in(queryset,
+                                                        self.user_select_set)
         return queryset
 
     def get_ordering(self):

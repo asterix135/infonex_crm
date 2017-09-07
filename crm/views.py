@@ -1355,26 +1355,6 @@ class SelectActiveConference(View):
 
 
 @login_required
-def select_active_conference(request):
-    # context = {
-    #     'my_territories': get_my_territories(request.user),
-    # }
-    if request.method == 'POST':
-        event_assignment = get_object_or_404(EventAssignment,
-                                             pk=request.POST['new_conf_id'])
-        request.session['assignment_id'] = event_assignment.id
-        request.session['conference_description'] = str(event_assignment.event)
-        # delete all request.session cookies related to territory filter_switch
-        for cookie in ['filter_page', 'filter_name', 'filter_company',
-                       'filter_prov', 'filter_customer', 'filter_flag',
-                       'filter_sort_col', 'filter_sort_order',
-                       'filter_hide_options', 'territory_page']:
-            if cookie in request.session:
-                del(request.session[cookie])
-    return HttpResponse('')
-
-
-@login_required
 def suggest_company(request):
     """
     Ajax call (I think?) - returns json of top 25 companies (by number in db)

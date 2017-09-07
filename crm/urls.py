@@ -23,7 +23,7 @@ urlpatterns = [
 
     url(r'^territory/$',
         login_required(views.Territory.as_view()),
-        name='territory_test'),
+        name='territory'),
 
     ################
     # AJAX CALLS

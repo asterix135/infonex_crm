@@ -97,28 +97,6 @@ class MyTerritories():
         ).exclude(role='NA')
 
 
-class UpdateFlag():
-    def process_flag_change(self, person, event_assignment=None):
-        if not event_assignment:
-            event_assignment = self._event_assignment
-        try:
-            flag = Flags.objects.get(person=person,
-                                     event_assignment=event_assignment)
-        except Flags.DoesNotExist:
-            flag = Flags(person=person,
-                         event_assignment=event_assignment)
-        if self.request.POST['flag_color'] != 'none':
-            flag.flag = FLAG_COLORS[self.request.POST['flag_color']]
-            if 'followup' in self.request.POST:
-                flag.follow_up_date = self.request.POST['followup']
-            flag.save()
-        else:
-            if flag.id:
-                flag.delete()
-            flag = None
-        return flag
-
-
 class TerritoryList():
     """
     Builds a territory list.
@@ -252,3 +230,25 @@ class TerritoryList():
         if len(exclude_selects) == 0:
             return queryset
         return self._process_excludes(exclude_selects, queryset)
+
+
+class UpdateFlag():
+    def process_flag_change(self, person, event_assignment=None):
+        if not event_assignment:
+            event_assignment = self._event_assignment
+        try:
+            flag = Flags.objects.get(person=person,
+                                     event_assignment=event_assignment)
+        except Flags.DoesNotExist:
+            flag = Flags(person=person,
+                         event_assignment=event_assignment)
+        if self.request.POST['flag_color'] != 'none':
+            flag.flag = FLAG_COLORS[self.request.POST['flag_color']]
+            if 'followup' in self.request.POST:
+                flag.follow_up_date = self.request.POST['followup']
+            flag.save()
+        else:
+            if flag.id:
+                flag.delete()
+            flag = None
+        return flag

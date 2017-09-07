@@ -1162,6 +1162,7 @@ class GroupFlagUpdate(GeneratePaginationList, FilterPersonalTerritory,
 
     def get_context_data(self, **kwargs):
         context = super(GroupFlagUpdate, self).get_context_data(**kwargs)
+        context['event_assignment'] = self._event_assignment
         context['flag_list'] = self.object_list.filter(
             flags__event_assignment=self._event_assignment
         )

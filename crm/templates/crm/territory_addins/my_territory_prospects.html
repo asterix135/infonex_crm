@@ -44,23 +44,25 @@
             <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" id="flag-button-{{ person.id }}">
 
               {% if person in flag_list %}
-              {% for flag in person.flags_set.all|slice:":1" %}
-              {% if flag.flag == '1' %}
-              <span class="glyphicon glyphicon-flag red-flag"></span>
-              {% elif flag.flag == '2' %}
-              <span class="glyphicon glyphicon-flag green-flag"></span>
-              {% elif flag.flag == '3' %}
-              <span class="glyphicon glyphicon-flag blue-flag"></span>
-              {% elif flag.flag == '4' %}
-              <span class="glyphicon glyphicon-flag black-flag"></span>
-              {% elif flag.flag == '5' %}
-              <span class="glyphicon glyphicon-flag yellow-flag"></span>
+                {% for flag in person.flags_set.all %}
+                  {% if flag.event_assignment == event_assignment %}
+                    {% if flag.flag == '1' %}
+                    <span class="glyphicon glyphicon-flag red-flag"></span>
+                    {% elif flag.flag == '2' %}
+                    <span class="glyphicon glyphicon-flag green-flag"></span>
+                    {% elif flag.flag == '3' %}
+                    <span class="glyphicon glyphicon-flag blue-flag"></span>
+                    {% elif flag.flag == '4' %}
+                    <span class="glyphicon glyphicon-flag black-flag"></span>
+                    {% elif flag.flag == '5' %}
+                    <span class="glyphicon glyphicon-flag yellow-flag"></span>
+                    {% else %}
+                    <span class="glyphicon glyphicon-flag purple-flag"></span>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
               {% else %}
-              <span class="glyphicon glyphicon-flag purple-flag"></span>
-              {% endif %}
-              {% endfor %}
-              {% else %}
-              <span class="glyphicon glyphicon-ban-circle no-flag"></span>
+                <span class="glyphicon glyphicon-ban-circle no-flag"></span>
               {% endif %}
 
             </button>

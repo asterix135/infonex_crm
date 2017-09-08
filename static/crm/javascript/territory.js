@@ -130,7 +130,7 @@ $(document).ready(function() {
 
 
   // check if at least one field is filled in and if so submit filter form
-  $('#btn-submit-filter').click(function(){
+  function submitFilter(){
     var okToSubmit = false;
     if (
       $('#id_name').val() != '' ||
@@ -146,7 +146,16 @@ $(document).ready(function() {
     if (okToSubmit){
       $('#filter-form').submit();
     };
+  };
+  $('#btn-submit-filter').click(function(){
+    submitFilter();
   });
+  $('body').on('keyup', '.search-field', function(e){
+    if (e.which == 13) {
+      submitFilter();
+    }
+  })
+
 
   // reset filter details and submit blank form
   $('#btn-see-all-contacts').click(function(){

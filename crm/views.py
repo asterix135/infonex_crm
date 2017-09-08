@@ -358,69 +358,6 @@ class Detail(RecentContact, MyTerritories, TerritoryList, DetailView):
         return context
 
 
-# @login_required
-# def detail(request, person_id):
-#     """ loads main person page (detail.html) """
-#     new_contact_form = NewContactForm()
-#     reg_list = None
-#     flag = None
-#     in_territory = False
-#     event_assignment = None
-#     try:
-#         person = Person.objects.get(pk=person_id)
-#         add_to_recent_contacts(request, person_id)
-#         if person.registrants_set.exists():
-#             for registrant in person.registrants_set.all():
-#                 # reg_list = registrant.regdetails_set.all()
-#                 if not reg_list:
-#                     reg_list = registrant.regdetails_set.all()
-#                 else:
-#                     reg_list = reg_list | registrant.regdetails_set.all()
-#             if reg_list.count() == 0:
-#                 reg_list = None
-#             else:
-#                 reg_list = reg_list.order_by('-register_date')
-#     except (Person.DoesNotExist, MultiValueDictKeyError):
-#         raise Http404('Person is not in the Database')
-#     person_details_form = PersonDetailsForm(instance=person)
-#     category_form = PersonCategoryUpdateForm(instance=person)
-#
-#     # Check if person is part of current territory - if so fetch flag details
-#     if 'assignment_id' in request.session:
-#         try:
-#             event_assignment = EventAssignment.objects.get(
-#                 pk=request.session['assignment_id']
-#             )
-#             my_territory = build_user_territory_list(event_assignment, True)
-#             if my_territory.filter(id=person.id).exists():
-#                 in_territory = True
-#                 try:
-#                     flag = Flags.objects.get(person=person,
-#                                              event_assignment=event_assignment)
-#                 except Flags.DoesNotExist:
-#                     pass  # default variable settings are fine
-#         except EventAssignment.DoesNotExist:
-#             pass  # default variable settings are fine
-#
-#     context = {
-#         'flag': flag,
-#         'in_territory': in_territory,
-#         'event_assignment': event_assignment,
-#         'my_territories': get_my_territories(request.user),
-#         'person': person,
-#         'person_details_form': person_details_form,
-#         'new_contact_form': new_contact_form,
-#         'category_form': category_form,
-#         'reg_list': reg_list,
-#         'conf_select_form': ConferenceSelectForm(),
-#         'reg_details_form': RegDetailsForm(),
-#         'new_delegate_form': NewDelegateForm(),
-#         'company_select_form': CompanySelectForm(),
-#         'assistant_form': AssistantForm(),
-#     }
-#     return render(request, 'crm/detail.html', context)
-
-
 @login_required
 def index(request):
     initial_event = None

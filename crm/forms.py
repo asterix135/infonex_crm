@@ -393,19 +393,19 @@ class SearchForm(forms.Form):
                            max_length=100,
                            required=False,
                            widget=forms.TextInput(
-                               attrs={'class': 'form-control'}
+                               attrs={'class': 'form-control search-field'}
                            ))
     title = forms.CharField(label="Title",
                             max_length=100,
                             required=False,
                             widget=forms.TextInput(
-                                attrs={'class': 'form-control'}
+                                attrs={'class': 'form-control search-field'}
                             ))
     company = forms.CharField(label='Company',
                               max_length=100,
                               required=False,
                               widget=forms.TextInput(
-                                  attrs={'class': 'form-control'}
+                                  attrs={'class': 'form-control search-field'}
                               ))
     state_province = forms.ChoiceField(label='State/Province',
                                        required=False,
@@ -433,7 +433,7 @@ class SearchForm(forms.Form):
                            max_length=50,
                            required=False,
                            widget=forms.TextInput(
-                               attrs={'class': 'form-control'}
+                               attrs={'class': 'form-control search-field'}
                            ))
 
 

@@ -15,7 +15,6 @@ urlpatterns = [
         login_required(views.Detail.as_view()),
         name='detail'),
 
-    # url(r'^detail/(?P<person_id>[0-9]+)/$', views.detail, name='detail'),
     url(r'^manage_territory/$', views.manage_territory,
         name='manage_territory'),
     url(r'^new/$', views.new, name='new'),

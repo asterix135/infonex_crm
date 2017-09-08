@@ -96,7 +96,7 @@ $(document).ready(function() {
         'industry': industry,
       },
       success: function(data){
-        $('#person-detail-section').html(data);
+        $('#person-detail-edit-panel').html(data);
         successFlag = $('#updated-details-success', data).val();
         if (successFlag == 'True') {
           originalName = $('#id_name', data).val();

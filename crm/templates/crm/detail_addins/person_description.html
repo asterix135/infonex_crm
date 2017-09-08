@@ -1,0 +1,71 @@
+{% load static %}
+
+{% if updated_details_success %}
+<input type="hidden" name="updated-details-success" id="updated-details-success" value="True" />
+{% else %}
+<input type="hidden" name="updated-details-success" id="updated-details-success" value="False" />
+{% endif %}
+<h1>
+  {{ person.name }}
+  <span id="action-buttons">
+    {% include 'crm/addins/detail_flag_toggle.html' %}
+  </span>
+  <span id="linkedin-link" class="float-right">
+    {% if person.linkedin %}
+    <a href="{{ person.linkedin }}" target="_blank">
+      <span class="float-right"><img src={% static 'crm/images/In-2C-128px-TM.png' %} style="width:32px;height:30px;"/></span>
+    </a>
+    {% else %}
+    <a href="{{ person.linkedin }}" target="_blank" style="display:none;">
+      <span class="float-right"><img src={% static 'crm/images/In-2C-128px-TM.png' %} style="width:32px;height:30px;"/></span>
+    </a>
+    {% endif %}
+  </span>
+</h1>
+{% if person.title %}
+<h3 class="title-and-company">{{ person.title }}</h3>
+{% endif %}
+{% if person.company %}
+<h3 class="title-and-company">{{ person.company }}</h3>
+{% endif %}
+<h4>
+  Tel:
+  {% if person.phone %}
+  {{ person.phone }}
+  {% if person.do_not_call %}
+  <span style="color:red;">(Do not call)</span>
+  {% endif %}
+  {% else %}
+  <span style="font-weight: 300; font-style: italic">Unknown</span>
+  {% endif %}
+</h4>
+{% if person.phone_alternate %}
+<h5>
+  Alternate Phone:  {{ person.phone_alternate }}
+  {% if person.do_not_call %}
+  <span style="color:red;">(Do not call)</span>
+  {% endif %}
+</h5>
+{% endif %}
+<h4>
+  Email:
+  {% if person.email and not person.do_not_email %}
+  <a href="mailto:{{ person.email }}">{{ person.email }}</a>
+  {% elif person.email %}
+  {{ person.email }}
+  <span style="color:red;">(Do not email)</span>
+  {% else %}
+  <span style="fornt-weight: 300; font-style: italic">Unknown</span>
+  {% endif %}
+</h4>
+{% if person.email_alternate %}
+<h5>
+  Alternate Email:
+  {% if not person.do_not_email %}
+  <a href="mailto:{{ person.email_alternate }}">{{ person.email_alternate }}</a>
+  {% else %}
+  {{ person.email_alternate }}
+  <span style="color:red;">(Do not email)</span>
+  {% endif %}
+</h5>
+{% endif %}

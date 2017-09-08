@@ -1,4 +1,6 @@
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required, permission_required
+
 from . import views
 
 app_name = 'delegate'
@@ -10,6 +12,10 @@ urlpatterns = [
         name='confirmation_details'),
     url(r'^process_registration/$', views.process_registration,
         name='process_registration'),
+
+    url(r'^test_process/$',
+        login_required(views.ProcessRegistration.as_view()),
+        name='test_process'),
 
     # AJAX CALLS
     url(r'^company_crm_modal/$', views.company_crm_modal,

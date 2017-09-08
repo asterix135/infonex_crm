@@ -8,12 +8,14 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
+from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q, Max, Count
 from django.forms.models import model_to_dict
 from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
+from django.views.generic import FormView
 
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -22,6 +24,7 @@ from .forms import *
 from .constants import *
 from .pdfs import *
 from .guess_company import guess_company, iteratively_replace_and_guess_name
+from crm.mixins import ChangeRecord
 from crm.models import Person, Changes
 from crm.views import add_change_record
 from infonex_crm.settings import BASE_DIR
@@ -538,6 +541,10 @@ def confirmation_details(request):
     return render(request, 'delegate/confirmation_details.html', context)
 
 
+class Index():
+    pass
+
+
 @login_required
 def index(request):
     """ renders base delegate/index.html page """
@@ -711,6 +718,248 @@ def index(request):
         'action_type': action_type,
     }
     return render(request, 'delegate/index.html', context)
+
+
+class ProcessRegistration(ChangeRecord, FormView):
+    template_name = 'delegate/index.html'
+    success_url = reverse_lazy('delegate:process_registration')
+    http_method_names = ['post',]
+
+    def _check_assistant_missing(self, request):
+        if request.POST['contact_option'] in ('A', 'C') and not \
+                request.POST['assistant_email']:
+            self.assistant_missing = True
+        else:
+            self.assistant_missing = False
+
+    def _check_integrity_errors(self, request):
+        self._check_assistant_missing(request)
+        self._check_option_selections(request)
+
+    def _check_option_selections(self, request):
+        self.option_list = []
+        self.option_selection_needed = False
+        if request.POST.getlist('event-option-selection'):
+            for option in request.POST.getlist('event-option-selection'):
+                self.option_list.append(EventOptions.objects.get(pk=option))
+        if len(self.option_list) == 0 and \
+                len(self.conference.eventoptions_set.all()) > 1:
+            self.option_selection_needed = True
+        elif len(option_list) == 0 and len(
+            self.conference.eventoptions_set.all()
+        ) == 1:
+            option.list.append(self.conference.eventoptions_set.all()[0])
+
+    def _get_assistant_form(self, request):
+        if (request.POST['assistant_first_name'] not in ('', None) or
+            request.POST['assistant_last_name'] not in ('', None) or
+            request.POST['assistant_title'] not in ('', None) or
+            request.POST['assistant_email'] not in ('', None) or
+            request.POST['assistant_phone'] not in ('', None)):
+            return AssistantForm({
+                'salutation': request.POST['assistant_salutation'].strip(),
+                'first_name': request.POST['assistant_first_name'].strip(),
+                'last_name': request.POST['assistant_last_name'].strip(),
+                'title': request.POST['assistant_title'].strip(),
+                'email': request.POST['assistant_email'].strip(),
+                'phone': request.POST['assistant_phone'].strip()
+            })
+        return AssistantForm()
+
+    def _get_reg_details_form(self, request):
+        reg_details_data = {
+            'sales_credit': request.POST['sales_credit'],
+            'pre_tax_price': request.POST['pre_tax_price'],
+            'gst_rate': request.POST['gst_rate'] if 'gst_rate' in \
+                request.POST else 0,
+            'hst_rate': request.POST['hst_rate'] if 'hst_rate' in \
+                request.POST else 0,
+            'qst_rate': request.POST['qst_rate'] if 'qst_rate' in \
+                request.POST else 0,
+            'payment_date': request.POST['payment_date'] if 'payment_date' in \
+                request.POST else None,
+            'payment_method': request.POST['payment_method'] if \
+                'payment_method' in request.POST else None,
+            'fx_conversion_rate': request.POST['fx_conversion_rate'] if \
+                'fx_conversion_rate' in request.POST else 1,
+            'register_date': request.POST['register_date'] if (
+                'register_date' in request.POST and
+                request.POST['register_date'] != ''
+            ) else None,
+            'cancellation_date': request.POST['cancellation_date'] if \
+                'cancellation_date' in request.POST else None,
+            'registration_status': request.POST['registration_status'],
+            'invoice_notes': request.POST['invoice_notes'],
+            'registration_notes': request.POST['registration_notes'],
+            'sponsorship_description': request.POST['sponsorship_description'] \
+                if 'sponsorship_description' in request.POST else None,
+            'revised_flag': request.POST['revised_flag'] if 'revised_flag' in \
+                request.POST else False
+        }
+        if request.POST['registration_status'] in NON_INVOICE_VALUES:
+            reg_details_data['sales_credit'] = \
+                self._get_valid_sales_rep_id(request)
+        return RegDetailsForm(reg_details_data)
+
+    def _get_valid_sales_rep_id(self, request):
+        if request.user.groups.filter(name='sales').exists():
+            return request.user.pk
+        if request.user.groups.filter(name='sponsorship').exists():
+            return request.user.pk
+        if User.objects.filter(username__iexact='marketing').exists():
+            return User.objects.filter(username__iexact='marketing')[0].pk
+        return User.objects.filter(groups__name__iexact='sales')[0].pk
+
+    def _set_assistant(self, request):
+        if request.POST['assistant_match_value']:
+            self.assistant = Assistant.objects.get(
+                pk=request.POST['assistant_match_value']
+            )
+        else:
+            self.assistant = None
+
+    def _set_company(self, request):
+        if request.POST['company_match_value'] not in ('new', ''):
+            self.company = Company.objects.get(
+                pk=request.POST['company_match_value']
+            )
+            self.company_error = False
+        elif request.POST['company_match_value'] == 'new':
+            if self.company_select_form.is_valid():
+                self.company = self.company_select_form.save()
+                self.company_error = False
+            else:
+                self.company = None
+                self.company_error = True
+        else:
+            self.company = None
+            self.company_error = True
+
+    def _set_conference(self, request):
+        if request.POST['selected_conference_id']:
+            self.conference = Event.objects.get(
+                pk=request.POST['selected_conference_id']
+            )
+        else:
+            self.conference = None
+
+    def _set_current_registration(self, request):
+        if request.POST['current_regdetail_id']:
+            self.current_registration = RegDetails.objects.get(
+                pk=request.POST['current_regdetail_id']
+            )
+        else:
+            self_current_registration = None
+
+    def _set_crm_match(self, request):
+        if request.POST['crm_match_value'] not in ('', 'new') and \
+                not self.company_error:
+            self.crm_match = Person.objects.get(
+                pk=request.POST['crm_match_value']
+            )
+        else:
+            if request.POST['crm_company'].strip() not in ('', None):
+                crm_company_name = request.POST['crm_company'].strip()
+            else:
+                crm_company_name = request.POST['name'].strip()
+            if self.company:
+                crm_city = company.city
+            else:
+                crm_city = None
+            self.crm_match = Person(
+                name=request.POST['first_name'].strip() + ' ' + \
+                     request.POST['last_name'].strip(),
+                title=request.POST['title'].strip(),
+                company=crm_company_name,
+                phone=request.POST['phone1'].strip(),
+                phone_alternate=request.POST['phone2'].strip(),
+                email=request.POST['email1'].strip(),
+                email_alternate=request.POST['email2'].strip(),
+                city=crm_city,
+                date_created=timezone.now(),
+                created_by=request.user,
+                date_modified=timezone.now(),
+                modified_by=request.user,
+            )
+            if self.conference:
+                if self.conference.default_dept:
+                    self.crm_match.dept = self.conference.default_dept
+                if self.conference.default_cat1:
+                    self.crm_match.main_category = self.conference.default_cat1
+                if self.conference.default_cat2:
+                    self.crm_match.main_category2 = self.conference.default_cat2
+            self.crm_match.save()
+            self.add_change(self.crm_match, 'reg_add')
+
+    def _set_registrant(self, request):
+        if request.POST['current_registrant_id']:
+            self.registrant = Registrants.objects.get(
+                pk=request.POST['current_registrant_id']
+            )
+        else:
+            self.registrant = None
+
+    def _set_substitution_variables(self, request):
+        self.action_type = request.POST['action_type']
+        self.original_registrant = None
+        if self.action_type == 'sub' and \
+                request.POST['original_registrant_id'] not in ('', None):
+            try:
+                self.original_registrant = Registrants.objects.get(
+                    pk=request.POST['original_registratnt_id']
+                )
+            except Registrants.DoesNotExist:
+                pass
+
+    def _set_variables(self, request):
+        self._set_current_registration(request)
+        self._set_substitution_variables(request)
+        self._set_registrant(request)
+        self._set_company(request)
+        self._set_conference(request)
+        self._set_crm_match(request)
+        self._set_assistant(request)
+
+    def post(self, request, *args, **kwargs):
+        self.new_delegate_form = self.get_form(form_class=NewDelegateForm)
+        self.company_select_form = self.get_form(form_class=CompanySelectForm)
+        self.assistant_form = self._get_assistant_form(request)
+        self.reg_details_form = self._get_reg_details_form(request)
+        self._set_variables(request)
+        self._check_integrity_errors(request)
+
+    def get_context_data(self, **kwargs):
+        context = super(ProcessRegistration, self).get_context_data(**kwargs)
+
+        context['new_delegate_form'] = self.new_delegate_form
+        context['company_select_form'] = self.company_select_form
+        context['assistant_form'] = self.assistant_form
+        context['reg_details_form'] = self.reg_details_form
+
+        context['current_registration'] = self.current_registration
+        context['action_type'] = self.action_type
+        context['original_registrant'] = self.original_registrant
+        context['registrant'] = self.registrant
+        context['company'] = self.company
+        context['company_error'] = self.company_error  # DO I NEED THIS??
+        context['conference'] = self.conference
+        context['crm_match'] = self.crm_match
+        context['assistant'] = self.assistant
+        context['assistant_missing'] = self.assistant_missing
+        context['option_selection_needed'] = self.option_selection_needed
+
+        context['data_source'] = None  # CHECK THIS OUT
+        context['company_match_list'] = None
+        context['conference_options'] = None
+        context['options_form'] = None
+        context['crm_match_list'] = None
+        context['new_company_form'] = NewCompanyForm()
+        context['conference_select_form'] = ConferenceSelectForm()
+        context['paid_status_values'] = PAID_STATUS_VALUES
+        context['cxl_values'] = CXL_VALUES
+        context['non_invoice_values'] = NON_INVOICE_VALUES
+
+        return context
 
 
 @login_required

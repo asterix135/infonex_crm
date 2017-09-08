@@ -7,6 +7,38 @@ from crm.constants import AC_LOOKUP, FLAG_COLORS
 from crm.models import PersonalListSelections, MasterListSelections, Person, \
     EventAssignment, Flags
 
+class ChangeRecord():
+
+    def add_change_record(self, person, change_action):
+        if not person.date_created:
+            creation_date = timezone.now()
+        else:
+            creation_date = person.date_created
+        change = Changes(
+            action=change_action,
+            orig_id=person.pk,
+            name=person.name,
+            title=person.title,
+            company=person.company,
+            phone=person.phone,
+            phone_main=person.phone_main,
+            email=person.email,
+            do_not_email=person.do_not_email,
+            do_not_call=person.do_not_call,
+            city=person.city,
+            dept=person.dept,
+            industry=person.industry,
+            geo=person.geo,
+            main_category=person.main_category,
+            main_category2=person.main_category2,
+            division1=person.division1,
+            division2=person.division2,
+            date_created=creation_date,
+            created_by=person.created_by,
+            date_modified=timezone.now(),
+            modified_by=person.created_by,
+        )
+        change.save()
 
 class FilterPersonalTerritory():
 

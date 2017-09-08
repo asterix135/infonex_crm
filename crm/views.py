@@ -38,6 +38,7 @@ from registration.models import RegDetails, EventOptions
 
 def add_change_record(person, change_action):
     """
+    Being Replaced by Mixin ChangeRecord
     Called from updates/changes/deletes
     Records information in changes d/b for review and recovery
     Needs to be called before modification

@@ -27,6 +27,7 @@ from .guess_company import guess_company, iteratively_replace_and_guess_name
 from crm.mixins import ChangeRecord
 from crm.models import Person, Changes
 from crm.views import add_change_record
+from delegate.mixins import ProcessCompleteRegistration
 from infonex_crm.settings import BASE_DIR
 from registration.models import *
 from registration.forms import ConferenceSelectForm
@@ -720,7 +721,11 @@ def index(request):
     return render(request, 'delegate/index.html', context)
 
 
-class ProcessRegistration(ChangeRecord, FormView):
+class ProcessRegistration(ProcessCompleteRegistration, FormView):
+    """
+    Note - ChangeView mixin is necessary, but imported through
+    ProcessCompleteRegistration
+    """
     template_name = 'delegate/index.html'
     success_url = reverse_lazy('delegate:process_registration')
     http_method_names = ['post',]
@@ -745,10 +750,24 @@ class ProcessRegistration(ChangeRecord, FormView):
         if len(self.option_list) == 0 and \
                 len(self.conference.eventoptions_set.all()) > 1:
             self.option_selection_needed = True
-        elif len(option_list) == 0 and len(
+        elif len(self.option_list) == 0 and len(
             self.conference.eventoptions_set.all()
         ) == 1:
-            option.list.append(self.conference.eventoptions_set.all()[0])
+            self.option.list.append(self.conference.eventoptions_set.all()[0])
+
+    def _everything_is_good(self):
+        if self.new_delegate_form.is_valid() and \
+                self.company_select_form.is_valid() and \
+                (not self.has_assistant_data or
+                 self.assistant_form.is_valid()) and \
+                self.reg_details_form.is_valid() and \
+                not self.company_error and \
+                not self.assistant_missing and \
+                not self.option_selection_needed and \
+                self.conference:
+            return True
+        else:
+            return False
 
     def _get_assistant_form(self, request):
         if (request.POST['assistant_first_name'] not in ('', None) or
@@ -756,6 +775,7 @@ class ProcessRegistration(ChangeRecord, FormView):
             request.POST['assistant_title'] not in ('', None) or
             request.POST['assistant_email'] not in ('', None) or
             request.POST['assistant_phone'] not in ('', None)):
+            self.has_assistant_data = True
             return AssistantForm({
                 'salutation': request.POST['assistant_salutation'].strip(),
                 'first_name': request.POST['assistant_first_name'].strip(),
@@ -764,10 +784,11 @@ class ProcessRegistration(ChangeRecord, FormView):
                 'email': request.POST['assistant_email'].strip(),
                 'phone': request.POST['assistant_phone'].strip()
             })
+        self.has_assistant_data = False
         return AssistantForm()
 
     def _get_reg_details_form(self, request):
-        reg_details_data = {
+        self.reg_details_data = {
             'sales_credit': request.POST['sales_credit'],
             'pre_tax_price': request.POST['pre_tax_price'],
             'gst_rate': request.POST['gst_rate'] if 'gst_rate' in \
@@ -797,9 +818,9 @@ class ProcessRegistration(ChangeRecord, FormView):
                 request.POST else False
         }
         if request.POST['registration_status'] in NON_INVOICE_VALUES:
-            reg_details_data['sales_credit'] = \
+            self.reg_details_data['sales_credit'] = \
                 self._get_valid_sales_rep_id(request)
-        return RegDetailsForm(reg_details_data)
+        return RegDetailsForm(self.reg_details_data)
 
     def _get_valid_sales_rep_id(self, request):
         if request.user.groups.filter(name='sales').exists():
@@ -920,6 +941,19 @@ class ProcessRegistration(ChangeRecord, FormView):
         self._set_crm_match(request)
         self._set_assistant(request)
 
+    def form_invalid(self):
+        """
+        Override default
+        """
+        return self.render_to_response(self.get_context_data())
+
+    def form_valid(self):
+        """
+        Overrides default (no form param)
+        If the form is valid, redirect to the supplied URL.
+        """
+        return HttpResponseRedirect(self.get_success_url())
+
     def post(self, request, *args, **kwargs):
         self.new_delegate_form = self.get_form(form_class=NewDelegateForm)
         self.company_select_form = self.get_form(form_class=CompanySelectForm)
@@ -927,6 +961,11 @@ class ProcessRegistration(ChangeRecord, FormView):
         self.reg_details_form = self._get_reg_details_form(request)
         self._set_variables(request)
         self._check_integrity_errors(request)
+        if self._everything_is_good():
+            self.process_complete_registration(request)
+            return self.form_valid()
+        else:
+            return self.form_invalid()
 
     def get_context_data(self, **kwargs):
         context = super(ProcessRegistration, self).get_context_data(**kwargs)

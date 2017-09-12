@@ -76,7 +76,6 @@ class NewDelegateForm(forms.ModelForm):
         cleaned_data = super().clean()
         contact_option = cleaned_data.get('contact_option')
         email = cleaned_data.get('email1')
-
         if contact_option and contact_option in ('D', 'C'):
             if not email:
                 msg = "You must indicate an email address for invoicing"
@@ -85,6 +84,7 @@ class NewDelegateForm(forms.ModelForm):
                                'with this choice')
                 self.add_error('email1',
                                'You must indicate an email address for invoicing')
+        return cleaned_data
 
 
 class CompanySelectForm(forms.ModelForm):

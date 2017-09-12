@@ -74,6 +74,16 @@ class Registrants(models.Model):
     def __str__(self):
         return(self.first_name + ' ' + self.last_name + ', ' + self.company.name)
 
+    def clean(self):
+        """
+        Cleans white space from CharFields and TextFields
+        """
+        for field in self._meta.fields:
+            if isinstance(field, (models.CharField, models.TextField)):
+                value = getattr(self, field.name)
+                if value:
+                    setattr(self, field.name, value.strip())
+
 
 class RegDetails(models.Model):
     """

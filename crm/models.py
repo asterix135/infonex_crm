@@ -62,6 +62,16 @@ class Person(models.Model):
     def __str__(self):
         return self.name + ' ' + ', ' + self.company
 
+    def clean(self):
+        """
+        Cleans white space from CharFields and TextFields
+        """
+        for field in self._meta.fields:
+            if isinstance(field, (models.CharField, models.TextField)):
+                value = getattr(self, field.name)
+                if value:
+                    setattr(self, field.name, value.strip())
+
     def was_added_recently(self):
         now = timezone.now()
         return now - datetime.timedelta(days=14) <= self.date_created <= now

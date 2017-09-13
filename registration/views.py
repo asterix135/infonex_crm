@@ -523,7 +523,7 @@ def index_panel(request):
             invoice = Invoice.objects.get(id=invoice_number)
         except Invoice.DoesNotExist:
             invoice = None
-        if invoice:
+        if invoice and invoice.pre_tax_price:
             taxes = invoice.pre_tax_price * invoice.gst_rate
             taxes += invoice.pre_tax_price * invoice.hst_rate
             taxes += (invoice.pre_tax_price * invoice.gst_rate +
@@ -911,7 +911,8 @@ class UpdateEventOptions(FormView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         if self.event_option:
-            form.instance = self.event_option
+            # form has to be reinstantiated with instance
+            form = form_class(form.data, instance=self.event_option)
         if form.is_valid():
             return self.form_valid(form, **kwargs)
         else:

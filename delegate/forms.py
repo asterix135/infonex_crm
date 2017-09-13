@@ -301,6 +301,7 @@ class RegDetailsForm(forms.ModelForm):
             if not payment_method:
                 self.add_error('payment_method',
                                'You must indicate method of payment')
+        return cleaned_data
 
 
 class AssistantForm(forms.ModelForm):

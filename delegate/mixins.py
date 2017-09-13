@@ -1,10 +1,12 @@
 import re
 
+from django.contrib.auth.models import User
 from django.utils import timezone
 
 from crm.mixins import ChangeRecord
 from delegate.constants import NON_INVOICE_VALUES
-from delegate.forms import AssistantForm
+from delegate.forms import AssistantForm, CompanySelectForm, NewDelegateForm, \
+        RegDetailsForm
 from registration.models import Assistant, Invoice, RegDetails, RegEventOptions
 
 class Substitution():
@@ -25,7 +27,7 @@ class Substitution():
             modified_by = request.user,
             date_modified = timezone.now(),
         )
-        subsititute_reg_record.save()
+        substitute_reg_record.save()
 
 
 class ProcessCompleteRegistration(Substitution, ChangeRecord):
@@ -33,7 +35,7 @@ class ProcessCompleteRegistration(Substitution, ChangeRecord):
     def _set_original_registrant(self, request):
         if self.current_registration and request.POST['action_type'] == 'sub':
             self.original_registrant = self.current_registration.registrant
-            self.reg_details_dat['revised_flag'] = True
+            self.reg_details_form.data['revised_flag'] = True
 
     def _set_session_params(self, request):
         request.session['current_registration'] = self.current_registration.pk
@@ -49,7 +51,10 @@ class ProcessCompleteRegistration(Substitution, ChangeRecord):
             self.assistant = Assistant.objects.get(
                 pk=request.POST['assistant_match_value']
             )
-            self.assistant_form.instance = self.assistant
+            # form has to be reinstantiated with instance
+            self.assistant_form = AssistantForm(
+                self.assistant_form.data, instance=self.assistant
+            )
             self.assistant_form.save()
         elif self.has_assistant_data:
             self.assistant = self.assistant_form.save()
@@ -57,7 +62,11 @@ class ProcessCompleteRegistration(Substitution, ChangeRecord):
             self.assistant = None
 
     def _update_company(self, request):
-        self.company_select_form.instance = self.company
+        # form has to be reinstantiated with instance
+        self.company_select_form = CompanySelectForm(
+            self.company_select_form.data,
+            instance=self.company
+        )
         self.company_select_form.save()
 
     def _update_crm(self, request):
@@ -65,9 +74,9 @@ class ProcessCompleteRegistration(Substitution, ChangeRecord):
                 self.new_delegate_form.cleaned_data['first_name'] + ' ' + \
                 self.new_delegate_form.cleaned_data['last_name']
         self.crm_match.title = self.new_delegate_form.cleaned_data['title']
-        if self.new_delegate_form.cleaned_data['company'] not in ('', None):
+        if self.company_select_form.cleaned_data['name'] not in ('', None):
             self.crm_match.company = \
-                    self.new_delegate_form.cleaned_data['company']
+                    self.company_select_form.cleaned_data['name']
         else:
             self.crm_match.company = self.crm_match.name
         self.crm_match.phone = self.new_delegate_form.cleaned_data['phone1']
@@ -76,7 +85,7 @@ class ProcessCompleteRegistration(Substitution, ChangeRecord):
         self.crm_match.email = self.new_delegate_form.cleaned_data['email1']
         self.crm_match.email_alternate = \
                 self.new_delegate_form.cleaned_data['email2']
-        self.crm_match.city = self.new_delegate_form.cleaned_data['city']
+        self.crm_match.city = self.company_select_form.cleaned_data['city']
         self.crm_match.date_modified = timezone.now()
         self.crm_match.modified_by = request.user
         if not self.crm_match.dept:
@@ -85,11 +94,12 @@ class ProcessCompleteRegistration(Substitution, ChangeRecord):
         self.add_change_record(self.crm_match, 'update')
 
     def _update_database_records(self, request):
-        self._create_assistant(request)
+        self._update_assistant(request)
         self._update_company(request)
         self._update_crm(request)
         self._update_registrant(request)
         self._update_reg_details(request)
+        self._update_invoice(request)
         self._update_event_options(request)
 
     def _update_event_options(self, request):
@@ -116,16 +126,23 @@ class ProcessCompleteRegistration(Substitution, ChangeRecord):
                 current_invoice = None
             else:
                 current_invoice = Invoice(
-                    reg_details=self.current_registration
+                    reg_details=self.current_registration,
                 )
         if current_invoice:
-            self.reg_details_form.instance=current_invoice
+            # form has to be reinstantiated with instance
+            self.reg_details_form = RegDetailsForm(
+                self.reg_details_form.data, instance=current_invoice
+            )
             self.reg_details_form.save()
 
     def _update_registrant(self, request):
         if self.registrant:
-            self.delegate_form.instance = self.registrant
-            self.delegate_form.save()
+            # form has to be reinstantiated with instance
+            self.new_delegate_form = NewDelegateForm(
+                self.new_delegate_form.data,
+                instance = self.registrant
+            )
+            self.new_delegate_form.save()
         else:
             self.registrant = self.new_delegate_form.save(commit=False)
             self.registrant.crm_person = self.crm_match
@@ -149,7 +166,7 @@ class ProcessCompleteRegistration(Substitution, ChangeRecord):
                 self.current_registration = reg_detail_db_check[0]
             else:
                 self.current_registration = RegDetails(
-                    date_created-timezone.now(),
+                    date_created=timezone.now(),
                     created_by=request.user
                 )
             self.current_registration.conference = self.conference
@@ -176,6 +193,6 @@ class ProcessCompleteRegistration(Substitution, ChangeRecord):
 
     def process_complete_registration(self, request):
         self._set_original_registrant(request)
-        self._create_database_records(request)
+        self._update_database_records(request)
 
         self._set_session_params(request)

@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from crm.constants import AC_LOOKUP, FLAG_COLORS
 from crm.models import PersonalListSelections, MasterListSelections, Person, \
-    EventAssignment, Flags
+    EventAssignment, Flags, Changes
 
 class ChangeRecord():
 

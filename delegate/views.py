@@ -11,7 +11,8 @@ from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q, Max, Count
 from django.forms.models import model_to_dict
-from django.http import HttpResponse, JsonResponse, Http404
+from django.http import HttpResponse, JsonResponse, Http404, \
+        HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
@@ -727,7 +728,7 @@ class ProcessRegistration(ProcessCompleteRegistration, FormView):
     ProcessCompleteRegistration
     """
     template_name = 'delegate/index.html'
-    success_url = reverse_lazy('delegate:process_registration')
+    success_url = reverse_lazy('delegate:confirmation_details')
     http_method_names = ['post',]
 
     def _check_assistant_missing(self, request):
@@ -870,7 +871,7 @@ class ProcessRegistration(ProcessCompleteRegistration, FormView):
                 pk=request.POST['current_regdetail_id']
             )
         else:
-            self_current_registration = None
+            self.current_registration = None
 
     def _set_crm_match(self, request):
         if request.POST['crm_match_value'] not in ('', 'new') and \
@@ -884,7 +885,7 @@ class ProcessRegistration(ProcessCompleteRegistration, FormView):
             else:
                 crm_company_name = request.POST['name'].strip()
             if self.company:
-                crm_city = company.city
+                crm_city = self.company.city
             else:
                 crm_city = None
             self.crm_match = Person(
@@ -910,7 +911,7 @@ class ProcessRegistration(ProcessCompleteRegistration, FormView):
                 if self.conference.default_cat2:
                     self.crm_match.main_category2 = self.conference.default_cat2
             self.crm_match.save()
-            self.add_change(self.crm_match, 'reg_add')
+            self.add_change_record(self.crm_match, 'reg_add')
 
     def _set_registrant(self, request):
         if request.POST['current_registrant_id']:
@@ -968,7 +969,13 @@ class ProcessRegistration(ProcessCompleteRegistration, FormView):
             return self.form_invalid()
 
     def get_context_data(self, **kwargs):
-        context = super(ProcessRegistration, self).get_context_data(**kwargs)
+        """
+        overrides default (doesn't include getting 'form')
+        """
+        # context = super(ProcessRegistration, self).get_context_data(**kwargs)
+        context = kwargs
+        if 'view' not in context:
+            context['view'] = self
 
         context['new_delegate_form'] = self.new_delegate_form
         context['company_select_form'] = self.company_select_form

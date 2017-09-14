@@ -40,6 +40,7 @@ class ChangeRecord():
         )
         change.save()
 
+
 class FilterPersonalTerritory():
 
     def _filter_state(self, queryset):

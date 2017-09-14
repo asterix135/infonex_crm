@@ -1,5 +1,3 @@
-TODO: registration fails if submit without sales credit
-
 TODO: Add Province select criterion to master select stuff
       - this probably requires first changing views over to CBVs
 
@@ -235,3 +233,4 @@ DONE: Fix territory generation
   2) figure out how to implement filter_queryset given form data
   3) rework templates if needed & javascript if needed
 DONE: dept on territory view and filter
+DONE?: registration fails if submit without sales credit

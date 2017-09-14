@@ -85,7 +85,7 @@ class GeneratePaginationList():
     Generates page numbers for lengthy paginations
     """
 
-    def _generate_pagination_list(self, context):
+    def generate_pagination_list(self, context):
         paginator = context['paginator']
         page_obj = context['page_obj']
         page_num = page_obj.number

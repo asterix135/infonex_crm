@@ -126,7 +126,7 @@ class Index(CSVResponseMixin, MarketingPermissionMixin, GeneratePaginationList,
         context['cat_choices'] = CAT_CHOICES
         context['div_choices'] = DIV_CHOICES
         if context['is_paginated']:
-            context['pagination_list'] = self._generate_pagination_list(context)
+            context['pagination_list'] = self.generate_pagination_list(context)
         context['order'] = self.order
         sort_by = self.get_ordering()
         if sort_by and sort_by[0] == '-':

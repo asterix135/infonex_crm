@@ -506,8 +506,104 @@ def new(request):
     return HttpResponseRedirect(reverse('crm:detail', args=(person.id,)))
 
 
-class Search(ListView):
-    pass
+class Search(GeneratePaginationList, MyTerritories, ListView):
+    template_name = 'crm/search.html'
+    context_object_name = 'person_list'
+    query_set = Person.objects.none()
+    paginate_by = TERRITORY_RECORDS_PER_PAGE
+    search_form = SearchForm()
+    conference_select_form = ConferenceSelectForm()
+
+    def advanced_search(self, request, *args, **kwargs):
+        self.search_form = SearchForm(request.GET)  # TODO: CHECK THIS IS OK
+        request.session['last_search_type'] = 'advanced'
+        self.search_params = {}
+        self.search_params['name'] = request.session['search_name'] = \
+                request.GET['name']
+        self.search_params['title'] = request.session['search_title'] = \
+                request.GET['title']
+        self.search_params['company'] = request.session['search_company'] = \
+                request.GET['company']
+        self.search_params['prov'] = request.session['search_prov'] = \
+                request.GET['state_province']
+        if request.GET['past_customer'] in ('True', 'False'):
+            self.search_params['customer'] = \
+                request.session['search_customer'] = \
+                request.GET['past_customer']
+        else:
+            self.search_params['customer'] = \
+                    request.session['search_customer'] = None
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+    def attendee_search(self, request, *args, **kwargs):
+        request.session['last_search_type'] = 'attendee'
+        self.conference_select_form = ConferenceSelectForm(request.POST)
+        self.conf_id = request.session['search_conf_id'] = request.POST['event']
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+    def get(self, request, *args, **kwargs):
+        self.search_type = request.session.get('last_search_type')
+        if 'search_terms' in request.GET:
+            return self.quick_search(request, *args, **kwargs)
+        if 'event' in request.GET:
+            return self.attendee_search(request, *args, **kwargs)
+        if 'name' in request.GET:
+            return self.advance_search(request, *args, **kwargs)
+        if ('page' not in request.GET and 'sort' not in request.GET):
+            return self.new_search(request, *args, **kwargs)
+        return self.old_search(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super(Search, self).get_queryset()
+
+        return queryset
+
+    def new_search(self, request, *args, **kwargs):
+        request.session['last_search_type'] = 'advanced'
+        request.session['search_string'] = ''
+        self.search_params = {}
+        self.search_params['name'] = request.session['search_name'] = None
+        self.search_params['title'] = request.session['search_title'] = None
+        self.search_params['company'] = request.session['search_company'] = None
+        self.search_params['prov'] = request.session['search_prov'] = None
+        self.search_params['customer'] = \
+            request.session['search_customer'] = None
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+    def old_search(self, request, *args, **kwargs):
+        if not self.search_type:
+            self.search_type = 'advanced'
+        # This doesn't all need to be done, but it's O(1) so is ok
+        self.search_string = request.session.get('search_string')
+        self.search_params = {}
+        self.search_params['name'] = request.session.get('search_name')
+        self.search_params['title'] = request.session.get('search_title')
+        self.search_params['company'] = request.session.get('search_company')
+        self.search_params['prov'] = request.session.get('search_prov')
+        self.search_params['customer'] = request.session.get('search_customer')
+        self.conf_id = request.session.get('search_conf_id')
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+    def quick_search(self, request, *args, **kwargs):
+        request.session['last_search_type'] = 'quick'
+        request.session['search_string'] = request.GET['search_terms']
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+    def get_context_data(self, **kwargs):
+        context = super(Search, self).get_context_data(**kwargs)
+        context['my_territories'] = self.get_my_territories()
+        if context['is_paginated']:
+            context['pagination_list'] = self.generate_pagination_list(context)
+        context['search_form'] = self.search_form
+
+        # TODO: the next 2 lines shouldn't be here - figure out where to put it
+        self.conference_select_form.fields['event'].queryset = \
+                Event.objects.all().order_by('-number')
+        self.conference_select_form.fields['event'].required = True
+
+        context['conference_select_form'] = self.conference_select_form
+
+        return context
 
 
 @login_required
@@ -794,7 +890,7 @@ class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,
         context['my_territories'] = self.get_my_territories()
         context['num_records'] = self.object_list.count()
         if context['is_paginated']:
-            context['pagination_list'] = self._generate_pagination_list(context)
+            context['pagination_list'] = self.generate_pagination_list(context)
         return context
 
 
@@ -1157,7 +1253,7 @@ class GroupFlagUpdate(GeneratePaginationList, FilterPersonalTerritory,
             flags__event_assignment=self.event_assignment
         )
         if context['is_paginated']:
-            context['pagination_list'] = self._generate_pagination_list(context)
+            context['pagination_list'] = self.generate_pagination_list(context)
         return context
 
 

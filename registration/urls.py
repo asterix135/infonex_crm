@@ -22,9 +22,6 @@ urlpatterns = [
         login_required(views.UpdateEventOptions.as_view()),
         name='update_event_option'),
 
-
-    # url(r'^add_event_option/$', views.add_event_option,
-    #     name='add_event_option'),
     url(r'^add_venue/$', views.add_venue, name='add_venue'),
     url(r'^delete_temp_conf/$', views.delete_temp_conf,
         name='delete_temp_conf'),

@@ -66,7 +66,7 @@
             <li><a href="{% url 'crm:index' %}">CRM</a></li>
             <li><a href="{% url 'registration:index' %}">Registration Home</a></li>
             <li><a href="{% url 'registration:new_delegate_search' %}">New Registration</a></li>
-            {% if request.user|has_group:'marketing' or request.user|has_group:'management' or request.user|has_group:'db_admin' or request.user.is_superuser %}
+            {% if request.user|has_group:'marketing' or request.user|has_group:'db_admin' or request.user.is_superuser %}
             <li>
               <a href="{% url 'marketing:index' %}">Marketing</a>
             </li>

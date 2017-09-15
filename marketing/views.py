@@ -19,8 +19,8 @@ from .forms import FieldSelectorForm, UploadFileForm
 from .mixins import CSVResponseMixin, MarketingPermissionMixin, \
     GeneratePaginationList
 from .models import *
+from crm.mixins import ChangeRecord
 from crm.models import Person, Changes
-from crm.views import add_change_record
 from crm.constants import GEO_CHOICES, CAT_CHOICES, DIV_CHOICES
 
 ######################
@@ -345,7 +345,7 @@ class BulkUpdate(MarketingPermissionMixin, View):
         return HttpResponse(status=204)
 
 
-class DeletePerson(MarketingPermissionMixin, View):
+class DeletePerson(ChangeRecord, MarketingPermissionMixin, View):
 
     def get(self, request, *args, **kwargs):
         raise Http404()
@@ -355,7 +355,7 @@ class DeletePerson(MarketingPermissionMixin, View):
         pk = person.pk
         Changes.objects.filter(orig_id=pk).delete()
         if person.has_registration_history():
-            add_change_record(person, 'delete')
+            self.add_change_record(person, 'delete')
         person.delete()
         return HttpResponse(status=204)
 

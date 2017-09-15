@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db.models import Q
 from django.utils import timezone
 
@@ -68,6 +69,7 @@ class CustomListSort():
         if sort_order == 'DESC':
             sort_col = '-' + sort_col
         return sort_col
+
 
 class FilterPersonalTerritory():
 
@@ -148,6 +150,17 @@ class FilterPersonalTerritory():
                 'assignment_id' in self.request.session:
             territory_queryset = self._filter_flag(territory_queryset)
         return territory_queryset
+
+
+class ManagementPermissionMixin(UserPassesTestMixin):
+    def test_func(self):
+        if self.request.user.groups.filter(name='db_admin').exists():
+            return True
+        if self.request.user.groups.filter(name='management').exists():
+            return True
+        if self.request.user.is_superuser:
+            return True
+        return False
 
 
 class MyTerritories():

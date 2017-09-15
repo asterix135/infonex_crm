@@ -30,6 +30,7 @@ from .pdfs import *
 from crm.models import Person, Event
 from delegate.constants import *
 from infonex_crm.settings import BASE_DIR
+from registration.mixins import RegistrationPermissionMixin
 
 
 ########################
@@ -826,7 +827,7 @@ def update_conference_choices(request):
                   {'conference_select_form': conference_select_form})
 
 
-class UpdateEventOptions(FormView):
+class UpdateEventOptions(RegistrationPermissionMixin, FormView):
     """
     Update, delete or add an EventOptions record for a specific event
     """

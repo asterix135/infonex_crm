@@ -39,7 +39,11 @@ from registration.models import RegDetails, EventOptions
 def add_change_record(person, change_action):
     """
     Being Replaced by Mixin ChangeRecord
-    Called from updates/changes/deletes
+    Still needs to be updated:
+    def delete
+    def new
+
+    updates/changes/deletes
     Records information in changes d/b for review and recovery
     Needs to be called before modification
     :param person: Instance of Person Model pre-modification
@@ -245,6 +249,19 @@ def build_user_territory_list(event_assignment_object, for_staff_member=False):
 
 def has_management_permission(user):
     """
+    Replacing with ManagementPermissionMixin
+
+    used in def index (not as decorator)
+    used in def manage_territory
+    used in def add_master_list_select
+    used in def add_personal_list_select
+    used in def create_selection_widget
+    used in def delete_master_list_select
+    used in def delete_personal_list_select
+    used in def load_staff_category_selects
+    used in def load_staff_member_selects
+    used in def update_user_assignments
+
     To be called by textdecorator @user_passes_test
     Also, any time you need to check if user has management permissions
     """
@@ -667,184 +684,6 @@ class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
         context['quick_search_term'] = self.search_string
         context['show_advanced'] = self.search_type != 'quick'
         return context
-
-
-@login_required
-def search(request):
-    """ renders search.html and/or executes advanced or quick search """
-    search_form = SearchForm()
-    person_list = None
-    search_list = Person.objects.none()
-    search_string = ''
-    search_terms = None
-    search_type = request.session.get('last_search_type')
-    conference_select_form = ConferenceSelectForm()
-    conference_select_form.fields['event'].queryset = \
-        Event.objects.all().order_by('-number')
-    conference_select_form.fields['event'].required = True
-
-    # if new search, parse relevant variables and identify search type
-    if request.method == 'POST' and 'search_terms' in request.POST:
-        search_type = request.session['last_search_type'] = 'quick'
-        search_string = request.session['search_string'] = \
-            request.POST['search_terms']
-    elif request.method == 'POST' and 'event' in request.POST:
-        search_type = request.session['last_search_type'] = 'attendee'
-        conference_select_form = ConferenceSelectForm(request.POST)
-        conference_select_form.fields['event'].queryset = \
-            Event.objects.all().order_by('-number')
-        conf_id = request.session['search_conf_id'] = request.POST['event']
-    elif request.method == 'POST':
-        search_form = SearchForm(request.POST)
-        search_type = request.session['last_search_type'] = 'advanced'
-        search_name = request.session['search_name'] = \
-            request.POST['name']
-        search_name = request.session['search_name'] = request.POST['name']
-        search_title = request.session['search_title'] = request.POST['title']
-        search_company = request.session['search_company'] = \
-            request.POST['company']
-        search_prov = request.session['search_prov'] = \
-            request.POST['state_province']
-        if request.POST['past_customer'] == 'True':
-            search_customer = request.session['search_customer'] = True
-        elif request.POST['past_customer'] == 'False':
-            search_customer = request.session['search_customer'] = False
-        else:
-            search_customer = request.session['search_customer'] = None
-
-    # if no GET parameters, assume it's a new search and set all values to None
-    if request.method == 'GET' and ('page' not in request.GET
-                                    and 'sort' not in request.GET):
-        search_type = request.session['last_search_type'] = 'advanced'
-        search_string = request.session['search_string'] = ''
-        search_name = request.session['search_name'] = None
-        search_title = request.session['search_title'] = None
-        search_company = request.session['search_company'] = None
-        search_prov = request.session['search_prov'] = None
-        search_customer = request.session['search_customer'] = None
-    elif request.method == 'GET':
-        if search_type == None:
-            search_type = 'advanced'
-        search_string = request.session.get('search_string')
-        search_name = request.session.get('search_name')
-        search_title = request.session.get('search_title')
-        search_company = request.session.get('search_company')
-        search_prov = request.session.get('search_prov')
-        search_customer = request.session.get('search_customer')
-        conf_id = request.session.get('search_conf_id')
-
-    # execute quick search
-    if search_type == 'quick' and len(search_string.strip()) > 0 :
-        search_terms = search_string.split()
-        queries = []
-        for term in search_terms:
-            queries.append(Q(name__icontains=term))
-            queries.append(Q(company__icontains=term))
-        # Take one Q object from the list
-        query = queries.pop()
-        # OR the first Q object with the remaining ones in the list
-        for item in queries:
-            query |= item
-        # Query the model
-        search_list = Person.objects.filter(query)
-
-    # execute delegate list search
-    elif search_type == 'attendee':
-        search_list = Person.objects.filter(
-            registrants__regdetails__conference__id=conf_id
-        )
-        conference_select_form = ConferenceSelectForm(
-            {'event': conf_id}
-        )
-        conference_select_form.fields['event'].queryset = \
-            Event.objects.all().order_by('-number')
-
-    # execute advanced search
-    elif (search_name and search_name not in ('', None)) or \
-        (search_title and search_title not in ('', None)) or \
-        (search_company and search_company not in ('', None)) or \
-        (search_prov and search_prov not in ('', None)):
-
-        search_list = Person.objects.filter(name__icontains=search_name,
-                                            title__icontains=search_title,
-                                            company__icontains=search_company,
-                                            )
-        if search_prov:
-            regex_val = r''
-            for area_code in AC_DICT:
-                if AC_DICT[area_code] == search_prov:
-                    regex_val += '^' + area_code + '|^\(' + area_code + '|'
-            regex_val = regex_val[:-1]
-            search_list = search_list.filter(phone__regex=regex_val)
-        if search_customer not in('', None):
-            search_list = search_list.filter(
-                registrants__isnull=not search_customer)
-
-    # Figure out sort order
-    if 'sort' not in request.GET:
-        sort_col = request.session.get('sort_col')
-    else:
-        if request.GET['sort'] == request.session.get('sort_col'):
-            request.session['sort_order'] = 'ASC' if \
-                request.session['sort_order'] == 'DESC' else 'DESC'
-        else:
-            request.session['sort_order'] = 'ASC'
-            request.session['sort_col'] = request.GET['sort']
-        sort_col = request.session['sort_col']
-    sort_order = request.session.get('sort_order')
-    # If sort order not set, set to ascending by company name & set cookies
-    if not sort_col:
-        sort_col = 'company'
-        request.session['sort_col'] = sort_col
-    if not sort_order:
-        sort_order = 'ASC'
-        request.session['sort_order'] = sort_order
-    # sort search results
-    if search_list.exists():
-        if sort_order == 'DESC':
-            sort_col = '-' + sort_col
-        search_list = search_list.order_by(sort_col)
-
-    # paginate results
-    paginator = Paginator(search_list, TERRITORY_RECORDS_PER_PAGE)
-    if 'page' in request.GET:
-        page = request.session['search_page'] = request.GET['page']
-    else:
-        page = request.session['search_page'] = 1
-    try:
-        person_list = paginator.page(page)
-    except PageNotAnInteger:
-        # if page not an integer, deliver first page
-        person_list = paginator.page(1)
-        page = request.session['search_page'] = 1
-    except EmptyPage:
-        # if page out of range, deliver last page of results
-        person_list = paginator.page(paginator.num_pages)
-        page = request.session['search_page'] = paginator.num_pages
-
-    context = {
-        'my_territories': get_my_territories(request.user),
-        'quick_search_terms': search_string,
-        'show_advanced': search_type!='quick',
-        'search_form': search_form,
-        'person_list': person_list,
-        'has_minus4': int(page) - 4 > 0,
-        'has_minus3': int(page) - 3 > 0,
-        'minus3': str(int(page) - 3),
-        'has_minus2': int(page) - 2 > 0,
-        'minus2': str(int(page) - 2),
-        'has_minus1': int(page) - 1 > 0,
-        'minus1': str(int(page) - 1),
-        'has_plus1': int(page) + 1 <= paginator.num_pages,
-        'plus1': str(int(page) + 1),
-        'has_plus2': int(page) + 2 <= paginator.num_pages,
-        'plus2': str(int(page) + 2),
-        'has_plus3': int(page) + 3 <= paginator.num_pages,
-        'plus3': str(int(page) + 3),
-        'has_plus4': int(page) + 4 <= paginator.num_pages,
-        'conference_select_form': conference_select_form,
-    }
-    return render(request, 'crm/search.html', context)
 
 
 class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,

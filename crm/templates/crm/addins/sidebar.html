@@ -9,8 +9,7 @@
 
     <div class="list-group-item">
       <h5>Quick Search</h5>
-      <form action = "/crm/search/" method="post">
-        {% csrf_token %}
+      <form action = "/crm/search/" method="get">
         <div class="input-group add-on">
           <input class="form-control" placeholder="Search Name and/or Company" name="search_terms"
             id="quick-search-term" type="text" value="{{ quick_search_terms }}">

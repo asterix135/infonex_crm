@@ -18,7 +18,11 @@ urlpatterns = [
     url(r'^manage_territory/$', views.manage_territory,
         name='manage_territory'),
     url(r'^new/$', views.new, name='new'),
-    url(r'^search/$', views.search, name='search'),
+    # url(r'^search/$', views.search, name='search'),
+
+    url(r'^search/$',
+        login_required(views.Search.as_view()),
+        name='search'),
 
     url(r'^territory/$',
         login_required(views.Territory.as_view()),

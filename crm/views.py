@@ -98,7 +98,6 @@ def get_my_territories(user):
     """
     returns queryset of active EventAssignments for a user
     to be replaced by MyTerritories mixin in:
-    - detail
     - index
     - new
     - search
@@ -294,6 +293,8 @@ class Detail(RecentContact, MyTerritories, TerritoryList, DetailView):
     flag = None
     in_territory = False
     event_assignment = None
+    session_sort_vars = {'col': 'filter_sort_col',
+                         'order': 'filter_sort_order'}
 
     def _build_reg_list(self):
         reg_list = None
@@ -506,40 +507,99 @@ def new(request):
     return HttpResponseRedirect(reverse('crm:detail', args=(person.id,)))
 
 
-class Search(GeneratePaginationList, MyTerritories, ListView):
+class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
     template_name = 'crm/search.html'
     context_object_name = 'person_list'
-    query_set = Person.objects.none()
+    queryset = Person.objects.none()
     paginate_by = TERRITORY_RECORDS_PER_PAGE
+    search_string = None
     search_form = SearchForm()
     conference_select_form = ConferenceSelectForm()
+    session_sort_vars = {'col': 'sort_col',
+                         'order': 'sort_order'}
+
+    def _execute_advanced_search(self, search_params, *args, **kwargs):
+        # make sure there is something to search
+        if (search_params['name'] in ('', None) and
+            search_params['title'] in ('', None) and
+            search_params['company'] in ('', None) and
+            search_params['prov'] in ('', None) and
+            search_params['customer'] in ('', None)):
+            return self.new_search(self.request, *args, **kwargs)
+        # Update self.queryset first so can use default methods
+        self.queryset = Person.objects.filter(
+            name__icontains=search_params['name'],
+            title__icontains=search_params['title'],
+            company__icontains=search_params['company']
+        )
+        if search_params['prov'] not in ('', None):
+            regex_val = r''
+            for area_code in AC_DICT:
+                if AC_DICT[area_code] == search_params['prov']:
+                    regex_val += '^' + area_code + '|^\(' + area_code + '|'
+            regex_val = regex_val[:-1]
+            self.queryset = self.queryset.filter(phone__regex=regex_val)
+        print(search_params['customer'])
+        print(type(search_params['customer']))
+        print(search_params['customer'] in ('', None))
+        if search_params['customer'] not in ('', None):
+            self.queryset = self.queryset.filter(
+                registrants__isnull = (search_params['customer'] in ('False', False))
+            )
+        self.object_list = self.get_queryset()
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+    def _execute_attendee_search(self, **kwargs):
+        # Update self.queryset first so can use default methods
+        self.queryset = Person.objects.filter(
+            registrants__regdetails__conference__id=self.conf_id
+        )
+        self.object_list = self.get_queryset()
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+    def _execute_quick_search(self, request, *args, **kwargs):
+        # Only execute if there is actually text in the search string
+        if len(self.search_string.strip()) == 0:
+            return self.new_search(request, *args, **kwargs)
+        search_terms = self.search_string.split()
+        queries = []
+        for term in search_terms:
+            queries.append(Q(name__icontains=term))
+            queries.append(Q(company__icontains=term))
+        query = queries.pop()
+        for item in queries:
+            query |= item
+        # Update self.queryset first so can use default methods
+        self.queryset = Person.objects.filter(query)
+        self.object_list = self.get_queryset()
+        return self.render_to_response(self.get_context_data(**kwargs))
 
     def advanced_search(self, request, *args, **kwargs):
         self.search_form = SearchForm(request.GET)  # TODO: CHECK THIS IS OK
-        request.session['last_search_type'] = 'advanced'
-        self.search_params = {}
-        self.search_params['name'] = request.session['search_name'] = \
+        self.search_type = request.session['last_search_type'] = 'advanced'
+        search_params = {}
+        search_params['name'] = request.session['search_name'] = \
                 request.GET['name']
-        self.search_params['title'] = request.session['search_title'] = \
+        search_params['title'] = request.session['search_title'] = \
                 request.GET['title']
-        self.search_params['company'] = request.session['search_company'] = \
+        search_params['company'] = request.session['search_company'] = \
                 request.GET['company']
-        self.search_params['prov'] = request.session['search_prov'] = \
+        search_params['prov'] = request.session['search_prov'] = \
                 request.GET['state_province']
         if request.GET['past_customer'] in ('True', 'False'):
-            self.search_params['customer'] = \
+            search_params['customer'] = \
                 request.session['search_customer'] = \
                 request.GET['past_customer']
         else:
-            self.search_params['customer'] = \
+            search_params['customer'] = \
                     request.session['search_customer'] = None
-        return self.render_to_response(self.get_context_data(**kwargs))
+        return self._execute_advanced_search(search_params, *args, **kwargs)
 
     def attendee_search(self, request, *args, **kwargs):
-        request.session['last_search_type'] = 'attendee'
-        self.conference_select_form = ConferenceSelectForm(request.POST)
-        self.conf_id = request.session['search_conf_id'] = request.POST['event']
-        return self.render_to_response(self.get_context_data(**kwargs))
+        self.search_type = request.session['last_search_type'] = 'attendee'
+        self.conference_select_form = ConferenceSelectForm(request.GET)
+        self.conf_id = request.session['search_conf_id'] = request.GET['event']
+        return self._execute_attendee_search(**kwargs)
 
     def get(self, request, *args, **kwargs):
         self.search_type = request.session.get('last_search_type')
@@ -548,26 +608,21 @@ class Search(GeneratePaginationList, MyTerritories, ListView):
         if 'event' in request.GET:
             return self.attendee_search(request, *args, **kwargs)
         if 'name' in request.GET:
-            return self.advance_search(request, *args, **kwargs)
+            return self.advanced_search(request, *args, **kwargs)
         if ('page' not in request.GET and 'sort' not in request.GET):
             return self.new_search(request, *args, **kwargs)
         return self.old_search(request, *args, **kwargs)
 
-    def get_queryset(self):
-        queryset = super(Search, self).get_queryset()
-
-        return queryset
-
     def new_search(self, request, *args, **kwargs):
-        request.session['last_search_type'] = 'advanced'
+        self.search_type = request.session['last_search_type'] = 'advanced'
         request.session['search_string'] = ''
-        self.search_params = {}
-        self.search_params['name'] = request.session['search_name'] = None
-        self.search_params['title'] = request.session['search_title'] = None
-        self.search_params['company'] = request.session['search_company'] = None
-        self.search_params['prov'] = request.session['search_prov'] = None
-        self.search_params['customer'] = \
-            request.session['search_customer'] = None
+        search_params = {}
+        search_params['name'] = request.session['search_name'] = None
+        search_params['title'] = request.session['search_title'] = None
+        search_params['company'] = request.session['search_company'] = None
+        search_params['prov'] = request.session['search_prov'] = None
+        search_params['customer'] = request.session['search_customer'] = None
+        self.object_list = self.get_queryset()
         return self.render_to_response(self.get_context_data(**kwargs))
 
     def old_search(self, request, *args, **kwargs):
@@ -575,19 +630,26 @@ class Search(GeneratePaginationList, MyTerritories, ListView):
             self.search_type = 'advanced'
         # This doesn't all need to be done, but it's O(1) so is ok
         self.search_string = request.session.get('search_string')
-        self.search_params = {}
-        self.search_params['name'] = request.session.get('search_name')
-        self.search_params['title'] = request.session.get('search_title')
-        self.search_params['company'] = request.session.get('search_company')
-        self.search_params['prov'] = request.session.get('search_prov')
-        self.search_params['customer'] = request.session.get('search_customer')
+        search_params = {}
+        search_params['name'] = request.session.get('search_name')
+        search_params['title'] = request.session.get('search_title')
+        search_params['company'] = request.session.get('search_company')
+        search_params['prov'] = request.session.get('search_prov')
+        search_params['customer'] = request.session.get('search_customer')
         self.conf_id = request.session.get('search_conf_id')
-        return self.render_to_response(self.get_context_data(**kwargs))
+        if self.search_type == 'advanced':
+            return self._execute_advanced_search(search_params, *args, **kwargs)
+        if self.search_type == 'quick':
+            return self._execute_quick_search(request, *args, **kwargs)
+        if self.search_type == 'attendee':
+            return self._execute_attendee_search(**kwargs)
+        return self.new_search(request, *args, **kwargs)
 
     def quick_search(self, request, *args, **kwargs):
-        request.session['last_search_type'] = 'quick'
-        request.session['search_string'] = request.GET['search_terms']
-        return self.render_to_response(self.get_context_data(**kwargs))
+        self.search_type = request.session['last_search_type'] = 'quick'
+        self.search_string = request.session['search_string'] = \
+                request.GET['search_terms']
+        return self._execute_quick_search(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(Search, self).get_context_data(**kwargs)
@@ -602,7 +664,8 @@ class Search(GeneratePaginationList, MyTerritories, ListView):
         self.conference_select_form.fields['event'].required = True
 
         context['conference_select_form'] = self.conference_select_form
-
+        context['quick_search_term'] = self.search_string
+        context['show_advanced'] = self.search_type != 'quick'
         return context
 
 
@@ -791,6 +854,8 @@ class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,
     context_object_name = 'person_list'
     queryset = Person.objects.none()
     form_class = SearchForm
+    session_sort_vars = {'col': 'filter_sort_col',
+                         'order': 'filter_sort_order'}
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -1222,6 +1287,8 @@ class GroupFlagUpdate(GeneratePaginationList, FilterPersonalTerritory,
     paginate_by = TERRITORY_RECORDS_PER_PAGE
     context_object_name = 'person_list'
     queryset = Person.objects.none()
+    session_sort_vars = {'col': 'filter_sort_col',
+                         'order': 'filter_sort_order'}
 
     def _process_flag_list(self, people_list):
         for person_id in people_list:

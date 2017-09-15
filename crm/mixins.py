@@ -41,6 +41,34 @@ class ChangeRecord():
         change.save()
 
 
+class CustomListSort():
+    def get_ordering(self):
+        """
+        Should override default method
+        """
+        col_val = self.session_sort_vars.get('col', 'sort_col')
+        order_val = self.session_sort_vars.get('order', 'sort_order')
+        sort_col = None
+        sort_order = None
+        if 'sort' not in self.request.GET:
+            sort_col = self.request.session.get(col_val)
+        elif self.request.GET['sort'] == self.request.session.get(col_val):
+            sort_order = self.request.session[order_val] = 'ASC' if \
+                    self.request.session[order_val] == 'DESC' else 'DESC'
+            sort_col = self.request.GET['sort']
+        else:
+            self.request.session[order_val] = 'ASC'
+            sort_col = self.request.session[col_val] = self.request.GET['sort']
+        # if sort order not set, set to ascending by company name
+        sort_order = self.request.session.get(order_val)
+        if not sort_col:
+            sort_col = self.request.session[col_val] = 'company'
+        if not sort_order:
+            sort_order = self.request.session[order_val] = 'ASC'
+        if sort_order == 'DESC':
+            sort_col = '-' + sort_col
+        return sort_col
+
 class FilterPersonalTerritory():
 
     def _filter_state(self, queryset):
@@ -144,7 +172,7 @@ class RecentContact():
         self.request.session['recent_contacts'] = recent_contact_list
 
 
-class TerritoryList():
+class TerritoryList(CustomListSort):
     """
     Builds a territory list.
     Note: This version has removed the ability to filter down from the
@@ -254,26 +282,6 @@ class TerritoryList():
         queryset = self._add_individual_selects_back_in(queryset,
                                                         self.user_select_set)
         return queryset
-
-    def get_ordering(self):
-        if 'sort' not in self.request.GET:
-            sort_col = self.request.session.get('filter_sort_col')
-        elif request.GET['sort'] == self.request.session.get('filter_sort_col'):
-            sort_col = self.request.session['filter_sort_order'] = 'ASC' if \
-                self.request.session['filter_sort_order'] == 'DESC' else 'DESC'
-        else:
-            self.request.session['filter_sort_order'] = 'ASC'
-            sort_col = self.request.session['filter_sort_col'] = \
-                       self.request.GET['sort']
-        # if sort order not set, set to ascending by company name
-        sort_order = self.request.session.get('filter_sort_order')
-        if not sort_col:
-            sort_col = self.request.session['filter_sort_col'] = 'company'
-        if not sort_order:
-            sort_order = self.request.session['filter_sort_order'] = 'ASC'
-        if sort_order == 'DESC':
-            sort_col = '-' + sort_col
-        return sort_col
 
     def build_master_territory_list(self):
         list_selects = MasterListSelections.objects.filter(

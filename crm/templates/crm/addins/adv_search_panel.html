@@ -13,8 +13,7 @@
 {% else %}
 <div class="panel-body collapse advanced-search-panel" id="search-panel">
 {% endif %}
-  <form action="{% url 'crm:search' %}" method="post">
-    {% csrf_token %}
+  <form action="{% url 'crm:search' %}" method="get">
     <div class="form-group row">
       <label for="{{ search_form.name.id_for_label }}"
         class="col-sm-2 form-control-label">Name</label>
@@ -65,8 +64,7 @@
 {% else %}
 <div class="panel-body collapse advanced-search-panel">
 {% endif %}
-  <form action="{% url 'crm:search' %}" method="post">
-    {% csrf_token %}
+  <form action="{% url 'crm:search' %}" method="get">
     <div class="form-group row col-sm-12">
       {{ conference_select_form }}
     </div>

@@ -1,5 +1,6 @@
 import csv
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.core.paginator import EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
 from django.utils import timezone
 
@@ -151,6 +152,30 @@ class GeneratePaginationList():
             pagination_list.append(last_page)
 
         return pagination_list
+
+    def paginate_queryset(self, queryset, page_size):
+        """
+        Overrides ListView method to redirect to first or last page
+        rather than throwing an 404 error
+        """
+        paginator = self.get_paginator(
+            queryset, page_size, orphans=self.get_paginate_orphans(),
+            allow_empty_first_page=self.get_allow_empty())
+        page_kwarg = self.page_kwarg
+        page = self.kwargs.get(page_kwarg) or self.request.GET.get(page_kwarg) \
+               or 1
+        try:
+            page_number = int(page)
+        except ValueError:
+            if page == 'last':
+                page_number = paginator.num_pages
+            else:
+                page_number = 1
+        try:
+            page = paginator.page(page_number)
+        except EmptyPage:
+            page = paginator.page(paginator.num_pages)
+        return (paginator, page, page.object_list, page.has_other_pages())
 
 
 class MarketingPermissionMixin(UserPassesTestMixin):

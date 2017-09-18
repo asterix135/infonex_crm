@@ -847,22 +847,28 @@ def company_crm_modal(request):
     if request.method != 'POST':
         return HttpResponse('')
     # Set up various variables
-    company = None
-    crm_match = None
     company_suggest_list = None
     crm_suggest_list = None
     company_best_guess = None  # This is a company object or None
     crm_best_guess = None  # This is a person object or None
-    if request.POST['company_id'] != '':
+    if request.POST['company_id'] == 'new':
+        company = None
+    elif request.POST['company_id'] != '':
         try:
             company = Company.objects.get(pk=request.POST['company_id'])
         except Company.DoesNotExist:
-            pass
-    if request.POST['crm_id'] != '':
+            company = None
+    else:
+        company = None
+    if request.POST['crm_id'] == 'new':
+        crm_match = None
+    elif request.POST['crm_id'] != '':
         try:
             crm_match = Person.objects.get(pk=request.POST['crm_id'])
         except Person.DoesNotExist:
-            pass
+            crm_match = None
+    else:
+        crm_match = None
     company_name = request.POST['company_name']
     address1 = request.POST['address1']
     address2 = request.POST['address2']

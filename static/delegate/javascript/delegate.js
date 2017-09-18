@@ -736,7 +736,6 @@ $(document).ready(function(){
   $('.assistant-field').keyup(function(){
     var currentField = $(this).attr('id');
     asstQueryField = currentField.slice(10)
-    console.log(asstQueryField);
   });
 
   // Autocomplete for company name

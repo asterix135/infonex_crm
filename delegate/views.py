@@ -963,6 +963,7 @@ def get_company_details(request):
             company = None
     if company:
         company_data = model_to_dict(company)
+        company_data['company_name'] = company_data.pop('name')
     else:
         company_data = {'id': None}
     return JsonResponse(company_data)

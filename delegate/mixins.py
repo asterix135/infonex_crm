@@ -1,6 +1,7 @@
 import re
 
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.utils import timezone
 
 from crm.mixins import ChangeRecord
@@ -196,3 +197,17 @@ class ProcessCompleteRegistration(Substitution, ChangeRecord):
         self._update_database_records(request)
 
         self._set_session_params(request)
+
+
+class PdfResponseMixin():
+    pdf_name = 'output'
+
+    def get_pdf_name(self):
+        return self.pdf_name
+
+    def render_to_response(self, context, **response_kwargs):
+        pdf = response_kwargs.pop('pdf', None)
+        response = HttpResponse(content_type='application/pdf')
+        file_details = 'inline; filename="{0}.pdf"'.format(self.get_pdf_name())
+        response.write(pdf)
+        return response

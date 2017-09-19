@@ -1557,6 +1557,15 @@ def call_report(request):
     return response
 
 
-class RegistrationForm(View):
+class RegistrationForm(PdfResponseMixin, DetailView):
+    model = Person
+
+    def get_pdf_name(self):
+        return self.object.name + '_reg_form_' + self.conference.number
+
+    def get_conference(self):
+        return None
+
     def get(self, request, *args, **kwargs):
-        pass
+        self.conference = self.get_conference()
+        return super(RegistrationForm, self).get(request, *args, **kwargs)

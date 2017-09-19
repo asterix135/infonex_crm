@@ -3,8 +3,6 @@ TODO: Add Province select criterion to master select stuff
 
 TODO: Add typeahead on territory filter for dept (& others??)
 
-TODO: crm.views.py/Detail - need to switch this over from detail
-
 TODO: delegate.views.py/index really needs to be reworked.  It's too hard to follow
 
 TODO: Toggle modal to ask about removing Revised Stamp
@@ -12,8 +10,6 @@ TODO: Toggle modal to ask about removing Revised Stamp
 TODO: Find people registered for specific option
 
 TODO: Registration processing page - if matching delegate exists, need a pop-up to say same or new or additional invoice
-
-TODO: Make it possible to mass-delete people from territory
 
 TODO: Make crm so you can filter to people in territory you havent' contacted
 
@@ -234,3 +230,5 @@ DONE: Fix territory generation
   3) rework templates if needed & javascript if needed
 DONE: dept on territory view and filter
 DONE?: registration fails if submit without sales credit
+DONE: crm.views.py/Detail - need to switch this over from detail
+DONE: Make it possible to mass-delete people from territory

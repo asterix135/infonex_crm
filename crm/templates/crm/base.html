@@ -46,6 +46,8 @@
         <script src="{% static 'crm/javascript/ajax_setup.js' %}" type="text/javascript"></script>
         <script src="{% static 'crm/javascript/jquery_scripts.js' %}" type="text/javascript"></script>
         <script type="text/javascript" src="{% static 'crm/javascript/crm_scripts.js' %}"></script>
+        <script type="text/javascript" src="{% static 'registration/javascript/update_reg_queue_count.js' %}"></script>
+
         {% block script_includes %}{% endblock %}
 
         <title>{% block title %}{% endblock %}Infonex CRM</title>
@@ -68,7 +70,7 @@
             <li><a href="{% url 'crm:index' %}">CRM</a></li>
             {% if request.user|has_group:'db_admin' or request.user|has_group:'management' or request.user|has_group:'registration' or request.user.is_superuser %}
             <li>
-              <a href="{% url 'registration:index' %}">Registration</a>
+              <a href="{% url 'registration:index' %}">Registration <span class="badge" id="pending-registrations"></span></a>
             </li>
             {% endif %}
             {% if request.user|has_group:'marketing' or request.user|has_group:'db_admin' or request.user.is_superuser %}

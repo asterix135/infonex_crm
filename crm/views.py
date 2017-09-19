@@ -20,10 +20,11 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, Table, TableStyle, SimpleDocTemplate
 
+from crm.constants import *
 from crm.forms import *
 from crm.mixins import *
 from crm.models import *
-from crm.constants import *
+from crm.pdfs import RegForm
 from delegate.constants import UNPAID_STATUS_VALUES
 from delegate.forms import RegDetailsForm, NewDelegateForm, CompanySelectForm, \
     AssistantForm
@@ -1347,6 +1348,10 @@ class SelectActiveConference(View):
         return HttpResponseRedirect(reverse('crm:territory'))
 
 
+class SubmitRegistration(View):
+    pass
+
+
 @login_required
 def suggest_company(request):
     """
@@ -1553,4 +1558,5 @@ def call_report(request):
 
 
 class RegistrationForm(View):
-    pass
+    def get(self, request, *args, **kwargs):
+        pass

@@ -44,6 +44,7 @@
     <script src="{% static 'crm/javascript/ajax_setup.js' %}" type="text/javascript"></script>
     <script type="text/javascript" src="{% static 'registration/javascript/reg_scripts.js' %}"></script>
     <script type="text/javascript" src="{% static 'registration/javascript/reg_jquery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'registration/javascript/update_reg_queue_count.js' %}"></script>
     {% block script_includes %}{% endblock %}
 
     <title>{% block title %}{% endblock %}Infonex Registration System</title>
@@ -64,7 +65,7 @@
         <div class="navbar-collapse collapse" id="base-navbar">
           <ul class="nav navbar-nav">
             <li><a href="{% url 'crm:index' %}">CRM</a></li>
-            <li><a href="{% url 'registration:index' %}">Registration Home</a></li>
+            <li><a href="{% url 'registration:index' %}">Registration Home <span class="badge" id="pending-registrations"></span></a></li>
             <li><a href="{% url 'registration:new_delegate_search' %}">New Registration</a></li>
             {% if request.user|has_group:'marketing' or request.user|has_group:'db_admin' or request.user.is_superuser %}
             <li>

@@ -82,6 +82,9 @@ $(document).ready(function() {
   // Submit form generation
   $('body').on('click', '#submit-registration', function(){
     alert('Not yet coded');
+    // 1. Verify form
+    // 2. Submit via Ajax
+    // 3. If successful: update contact history section
   });
 
 });

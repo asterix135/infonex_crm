@@ -23,6 +23,7 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <link href="{% static 'home/home.css' %}" rel="stylesheet" type="text/css" />
     <script src="{% static 'home/javascript/home.js' %}"></script>
+    <script type="text/javascript" src="{% static 'registration/javascript/update_reg_queue_count.js' %}"></script>
 
     <!-- For testing Chartist integration -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
@@ -49,7 +50,7 @@
           <ul class="nav navbar-nav">
             <li><a href="{% url 'crm:index' %}">CRM</a></li>
             {% if reg_permission_ok %}
-            <li><a href="{% url 'registration:index' %}">Registration</a></li>
+            <li><a href="{% url 'registration:index' %}">Registration <span class="badge" id="pending-registrations"></span></a></li>
             {% endif %}
             {% if request.user|has_group:'marketing' or request.user|has_group:'db_admin' or request.user.is_superuser %}
             <li>

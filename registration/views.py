@@ -16,6 +16,7 @@ from django.template import RequestContext
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
+from django.views import View
 
 from django.views.generic.edit import FormView
 
@@ -29,6 +30,7 @@ from .models import *
 from .pdfs import *
 from crm.models import Person, Event
 from delegate.constants import *
+from delegate.models import QueuedOrders
 from infonex_crm.settings import BASE_DIR
 from registration.mixins import RegistrationPermissionMixin
 
@@ -952,6 +954,15 @@ class UpdateEventOptions(RegistrationPermissionMixin, FormView):
         context['event_option_set'] = self.event_option_set
         context['conference_option_form'] = context.pop('form')
         return context
+
+
+class UpdateQueueCount(View):
+
+    def get(self, request, *args, **kwargs):
+        response_json = {
+            'count': QueuedOrders.objects.all().count()
+        }
+        return JsonResponse(response_json)
 
 
 @login_required

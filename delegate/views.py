@@ -564,7 +564,7 @@ class ProcessRegistration(RegistrationPermissionMixin,
         elif len(self.option_list) == 0 and len(
             self.conference.eventoptions_set.all()
         ) == 1:
-            self.option.list.append(self.conference.eventoptions_set.all()[0])
+            self.option_list.append(self.conference.eventoptions_set.all()[0])
 
     def _everything_is_good(self):
         if self.new_delegate_form.is_valid() and \
@@ -806,7 +806,7 @@ class ProcessRegistration(RegistrationPermissionMixin,
 
         context['data_source'] = None  # CHECK THIS OUT
         context['company_match_list'] = None
-        context['conference_options'] = None
+        context['conference_options'] = self.conference.eventoptions_set.all()
         context['options_form'] = None
         context['crm_match_list'] = None
         context['new_company_form'] = NewCompanyForm()

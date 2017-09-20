@@ -84,4 +84,8 @@ urlpatterns = [
     ################
     url(r'^call_report/$', views.call_report, name='call_report'),
 
+    url(r'^registration_form/(?P<pk>[0-9]+)/$',
+        login_required(views.RegistrationForm.as_view()),
+        name='registration_form'),
+
 ]

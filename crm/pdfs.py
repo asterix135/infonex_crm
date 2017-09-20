@@ -14,7 +14,7 @@ LOGO_PATH = os.path.join(BASE_DIR,
 PAGE_HEIGHT = letter[1]
 PAGE_WIDTH = letter[0]
 
-class RegForm:
+class RegFormPdf:
     """
     Generate pdf reg form for a specific crm contact
     """

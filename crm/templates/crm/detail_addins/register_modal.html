@@ -224,6 +224,15 @@
           </div>
 
           <div id="noteFields">
+            <div class="row" id="cxl-policy" class="collapse">
+              <div class="col-sm-12 col-md-5">
+                {{ reg_details_form.cxl_policy_ok.label_tag }}
+                {{ reg_details_form.cxl_policy_ok.errors }}
+              </div>
+              <div class="col-sm-12 col-md-1">
+                {{ reg_details_form.cxl_policy_ok }}
+              </div>
+            </div>
             <div class="row">
               <div class="col-sm-12">
                 {{ reg_details_form.registration_notes.label_tag }}

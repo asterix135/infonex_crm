@@ -206,7 +206,10 @@ class PdfResponseMixin():
         return self.pdf_name
 
     def render_to_response(self, context, **response_kwargs):
-        pdf = response_kwargs.pop('pdf', None)
+        try:
+            pdf = response_kwargs.pop('pdf')
+        except KeyError:
+            pdf = context.pop('pdf', None)
         response = HttpResponse(content_type='application/pdf')
         file_details = 'inline; filename="{0}.pdf"'.format(self.get_pdf_name())
         response.write(pdf)

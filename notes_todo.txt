@@ -1,6 +1,8 @@
 TODO: Add Province select criterion to master select stuff
       - this probably requires first changing views over to CBVs
 
+TODO: Make invoice show revised when price changed in existing record
+
 TODO: Add typeahead on territory filter for dept (& others??)
 
 TODO: delegate.views.py/index really needs to be reworked.  It's too hard to follow

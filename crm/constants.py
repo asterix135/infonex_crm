@@ -20,6 +20,38 @@ CONTACT_CHOICES = (
     ('Research', 'PD Research Call')
 )
 
+REG_FORM_FIELDS = [
+    'registration_status',
+    'pre_tax_price',
+    'payment_method',
+    'hst_rate',
+    'gst_rate',
+    'qst_rate',
+    'salutation',
+    'first_name',
+    'last_name',
+    'title',
+    'email1',
+    'email2',
+    'phone1',
+    'phone2',
+    'name',
+    'address1',
+    'address2',
+    'city',
+    'state_prov',
+    'postal_code',
+    'country',
+    'assistant_salutation',
+    'assistant_first_name',
+    'assistant_last_name',
+    'assistant_title',
+    'assistant_email',
+    'assistant_phone',
+    'cxl_policy_ok',
+    'registration_notes'
+]
+
 GEO_CHOICES = (
     ('East', 'East'),
     ('West', 'West'),

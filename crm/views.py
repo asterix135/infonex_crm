@@ -24,10 +24,11 @@ from crm.constants import *
 from crm.forms import *
 from crm.mixins import *
 from crm.models import *
-from crm.pdfs import RegForm
+from crm.pdfs import RegFormPdf
 from delegate.constants import UNPAID_STATUS_VALUES
 from delegate.forms import RegDetailsForm, NewDelegateForm, CompanySelectForm, \
     AssistantForm
+from delegate.mixins import PdfResponseMixin
 from marketing.mixins import GeneratePaginationList
 from registration.forms import ConferenceSelectForm, ConferenceEditForm
 from registration.models import RegDetails, EventOptions
@@ -358,7 +359,7 @@ class Detail(RecentContact, MyTerritories, TerritoryList, DetailView):
         context = super(Detail, self).get_context_data(**kwargs)
         # various forms needed in page
         context['conf_select_form'] = ConferenceSelectForm()
-        context['reg_details_form'] = RegDetailsForm()
+        context['reg_details_form'] = CrmRegDetailsForm()
         context['new_delegate_form'] = NewDelegateForm()
         context['company_select_form'] = CompanySelectForm()
         context['assistant_form'] = AssistantForm()
@@ -1560,12 +1561,25 @@ def call_report(request):
 class RegistrationForm(PdfResponseMixin, DetailView):
     model = Person
 
+    def get_addl_details(self, request):
+        reg_detail_dict = {}
+        for field_name in REG_FORM_FIELDS:
+            reg_detail_dict[field_name] = request.GET.get(field_name)
+        return reg_detail_dict
+
+    def get_conference(self):
+        return Event.objects.get(pk=self.request.GET.get('event'))
+
     def get_pdf_name(self):
         return self.object.name + '_reg_form_' + self.conference.number
 
-    def get_conference(self):
-        return None
+    def get_context_data(self, **kwargs):
+        context = super(RegistrationForm, self).get_context_data(**kwargs)
+        report = RegFormPdf(self.object, self.conference, self.addl_details)
+        context['pdf'] = report.generate_report()
+        return context
 
     def get(self, request, *args, **kwargs):
         self.conference = self.get_conference()
+        self.addl_details = self.get_addl_details(request)
         return super(RegistrationForm, self).get(request, *args, **kwargs)

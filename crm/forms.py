@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from .models import *
 from .constants import STATE_PROV_TUPLE, FLAG_CHOICES
-from delegate.forms import set_field_html_name
+from delegate.forms import set_field_html_name, RegDetailsForm
 
 
 #################
@@ -26,9 +26,20 @@ class EventAssignmentChoiceField(ModelChoiceField):
         # print(str(obj))
         return str(obj.event)
 
+
 #################
 # Forms
 #################
+class CrmRegDetailsForm(RegDetailsForm):
+    cxl_policy_ok = forms.BooleanField(
+        label='Cancellation Policy Verified with Client',
+        initial=False,
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={'class': 'form-control pull-left'}
+        )
+    )
+
 class MasterTerritoryForm(forms.ModelForm):
 
     class Meta:

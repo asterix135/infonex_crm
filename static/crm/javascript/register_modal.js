@@ -2,6 +2,10 @@ $(document).ready(function() {
   // Globals
   const PAID_STATUS_VALUES = ['DP', 'SP', 'DX'];
   const SPEAKER_VALUES = ['K', 'KX',];
+  const REQUIRED_FIELDS = ['registration_status',
+                           'first_name',
+                           'last_name',
+                           'name']
 
 
   // Fix ids for input fields in modal to make them unique
@@ -66,22 +70,60 @@ $(document).ready(function() {
     };
     if ($.inArray(regStatus, SPEAKER_VALUES) > -1) {
       $('#payment-option-details').removeClass('in');
+      $('#cxl-policy').removeClass('in');
     } else {
       $('#payment-option-details').addClass('in');
+      $('#cxl-policy').removeClass('in');
     };
   })
 
+  ///////////////////////
+  // Reg Form submission to d/b or for a forms
+  ///////////////////////
 
-  // Submit forms
+  function harvestRegFormDetails(){
+    var regDetails = {};
+    var okToSubmit = true;
+    $('[id^=reg_fld]').each(function(){
+      if ($.inArray($(this).attr('name'), REQUIRED_FIELDS) > -1) {
+        if ($(this).val().trim() == '') {
+          okToSubmit = false;
+        };
+      };
+      if ($(this).attr('type') == 'checkbox') {
+        regDetails[$(this).attr('name')] = $(this).prop('checked');
+      } else {
+        regDetails[$(this).attr('name')] = $(this).val();
+      }
+    });
+    return [regDetails, okToSubmit];
+  };
+
+  function buildPdfUrl(regDetailDict) {
+    var url = '/crm/registration_form/';
+    url += $('#person_id').val() + '/?';
+    for (key in regDetailDict) {
+      url += key + '=' + regDetailDict[key] + '&';
+    };
+    return url.slice(0, -1)
+  };
+
+  // Download Reg Form (From Button)
   $('body').on('click', '#download-reg-form', function(){
-    alert('Not yet coded');
+    var [regDetails, okToSubmit] = harvestRegFormDetails();
+    if (okToSubmit) {
+      var url = buildPdfUrl(regDetails);
+      $('#registrationModal').modal('hide');
+      window.open(url, '_blank');
+    };
   });
 
 
 
-  // Submit form generation
+  // Submit reg to database
   $('body').on('click', '#submit-registration', function(){
     alert('Not yet coded');
+    var [regDetails, okToSubmit] = harvestRegFormDetails();
     // 1. Verify form
     // 2. Submit via Ajax
     // 3. If successful: update contact history section

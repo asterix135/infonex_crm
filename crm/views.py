@@ -1575,7 +1575,8 @@ class RegistrationForm(PdfResponseMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(RegistrationForm, self).get_context_data(**kwargs)
-        report = RegFormPdf(self.object, self.conference, self.addl_details)
+        report = RegFormPdf(self.object, self.conference,
+                            self.request.user, self.addl_details)
         context['pdf'] = report.generate_report()
         return context
 

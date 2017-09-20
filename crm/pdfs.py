@@ -1,9 +1,9 @@
+from datetime import datetime
 from io import BytesIO
 import os
 
 from infonex_crm.settings import BASE_DIR
 
-from django.utils import timezone
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
@@ -40,7 +40,7 @@ class RegFormPdf:
         canvas.drawRightString(PAGE_WIDTH-(0.5*inch), 10.15*inch,
                                'REGISTRATION FORM')
         footer_text = 'This form created on '
-        footer_text += timezone.now().strftime('%Y-%m-%d %I:%M:%S %p')
+        footer_text += datetime.now().strftime('%Y-%m-%d %I:%M:%S %p')
         footer_text += ' by '
         footer_text += self.user.first_name + ' ' + self.user.last_name
         canvas.setFont('Helvetica', 9)

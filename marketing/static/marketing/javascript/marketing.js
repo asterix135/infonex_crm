@@ -4,7 +4,7 @@ $(document).ready(function() {
   var filterRowVisible = filterString != '';
   var fieldResizings = {
     'company': ['mktg-col-xl', 'mktg-col-xxl', 'mktg-col-xxxl'],
-    'dept': ['mkgt-col-xs', 'mktg-col-md', 'mktg-col-lg'],
+    'dept': ['mktg-col-xs', 'mktg-col-md', 'mktg-col-lg'],
   };
 
   ///////////////////

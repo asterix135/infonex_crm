@@ -1566,12 +1566,12 @@ class RegistrationForm(PdfResponseMixin, DetailView):
         for field_name in REG_FORM_FIELDS:
             if field_name[1] == 'val':
                 reg_detail_dict[field_name[0]] = request.GET.get(field_name[0])
-            else:
+            else:  # currently only for int_list - can expand if needed
                 list_contents = request.GET.get(field_name[0])
-                list_contents = None
-                reg_detail_dict[field_name[0]] = \
-                        request.GET.getlist(field_name[0])
-                print(reg_detail_dict[field_name[0]])
+                list_contents = [int(x.strip())
+                                 for x in list_contents.split(',')
+                                 if x != '']
+                reg_detail_dict[field_name[0]] = list_contents
         return reg_detail_dict
 
     def get_conference(self):

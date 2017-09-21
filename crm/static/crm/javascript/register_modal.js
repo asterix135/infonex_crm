@@ -37,6 +37,18 @@ $(document).ready(function() {
 
 
   // Respond to choice of Event
+  function decideToShowEventOptions(){
+    if (
+      $('#reg_fld_registration_status').val() != '' &&
+      $.inArray($('#reg_fld_registration_status').val(), SPEAKER_VALUES) == -1 &&
+      $('#reg_fld_event') != ''
+    ) {
+      $('#event-options').addClass('in');
+    } else {
+      $('#event-options').removeClass('in');
+    };
+  };
+
   $('body').on('change', '#reg_fld_event', function(){
     let eventId = $(this).val();
     let personId = $('#person_id').val();
@@ -53,10 +65,11 @@ $(document).ready(function() {
         } else {
           $('#conf-select-error').removeClass('in');
           $('#event-options').html(data);
-          $('#event-options').addClass('in');
-        }
+          $('#event-options').children('h1').remove();
+          decideToShowEventOptions();
+        };
       }
-    })
+    });
   });
 
 
@@ -76,6 +89,7 @@ $(document).ready(function() {
       $('#payment-option-details').addClass('in');
       $('#cxl-policy').removeClass('in');
     };
+    decideToShowEventOptions();
   })
 
   ///////////////////////

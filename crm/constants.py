@@ -50,7 +50,7 @@ REG_FORM_FIELDS = [
     ('assistant_phone', 'val'),
     ('cxl_policy_ok', 'val'),
     ('registration_notes', 'val'),
-    ('event_options', 'list'),
+    ('event_options', 'int_list'),
 ]
 
 GEO_CHOICES = (

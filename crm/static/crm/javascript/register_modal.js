@@ -97,6 +97,14 @@ $(document).ready(function() {
         regDetails[$(this).attr('name')] = $(this).val();
       }
     });
+    // Have to do event options separately b/c of Ajax nature of loading
+    eventOptions = []
+    $('input[name="event-option-selection"]').each(function(){
+      if ($(this).prop('checked')) {
+        eventOptions.push($(this).val());
+      }
+    });
+    regDetails['event_options'] = eventOptions;
     return [regDetails, okToSubmit];
   };
 

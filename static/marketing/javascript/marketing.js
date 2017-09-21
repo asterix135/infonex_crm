@@ -3,7 +3,7 @@ $(document).ready(function() {
   var filterString = $('#filter-string').val();
   var filterRowVisible = filterString != '';
   var fieldResizings = {
-    'company': ['mktg-col-xl', 'mktg-col-xxl'],
+    'company': ['mktg-col-xl', 'mktg-col-xxl', 'mktg-col-xxxl'],
     'dept': ['mkgt-col-xs', 'mktg-col-md', 'mktg-col-lg'],
   };
 
@@ -51,17 +51,17 @@ $(document).ready(function() {
       $(this).removeClass('glyphicon-backward');
       $(this).addClass('glyphicon-forward');
       $(this).attr('direction', 'expand-large');
-      $(`.expand-field-btn[expand-field="${expandField}"][direction="expand"]`).removeClass('glyphicon-chevron-right');
-      $(`.expand-field-btn[expand-field="${expandField}"][direction="expand"]`).addClass('glyphicon-chevron-left');
-      $(`.expand-field-btn[expand-field="${expandField}"][direction="expand"]`).attr('direction', 'collapse');
+      $(`.expand-field-btn[expand-field="${expandField}"][direction="collapse"]`).removeClass('glyphicon-chevron-left');
+      $(`.expand-field-btn[expand-field="${expandField}"][direction="collapse"]`).addClass('glyphicon-chevron-right');
+      $(`.expand-field-btn[expand-field="${expandField}"][direction="collapse"]`).attr('direction', 'expand');
       resizeFields(0, expandField);
     } else {
       $(this).removeClass('glyphicon-chevron-left');
       $(this).addClass('glyphicon-chevron-right');
       $(this).attr('direction', 'expand');
-      $(`.expand-field-btn[expand-field="${expandField}"][direction="expand-large"]`).removeClass('glyphicon-forward');
-      $(`.expand-field-btn[expand-field="${expandField}"][direction="expand-large"]`).addClass('glyphicon-backward');
-      $(`.expand-field-btn[expand-field="${expandField}"][direction="expand-large"]`).attr('direction', 'collapse-large');
+      $(`.expand-field-btn[expand-field="${expandField}"][direction="collapse-large"]`).removeClass('glyphicon-backward');
+      $(`.expand-field-btn[expand-field="${expandField}"][direction="collapse-large"]`).addClass('glyphicon-forward');
+      $(`.expand-field-btn[expand-field="${expandField}"][direction="collapse-large"]`).attr('direction', 'expand-large');
       resizeFields(0, expandField);
     };
   });

@@ -67,6 +67,19 @@ class RegFormPdf:
         canvas.setFont('Helvetica', 10)
         canvas.drawString(0.5*inch, 8.5*inch,
                           'Section B - Delegate Information')
+        canvas.setLineWidth(1)
+        canvas.setFillColor(colors.black)
+        canvas.rect(0.5*inch, 5.9*inch,
+                    PAGE_WIDTH-inch, 2.5*inch)
+        canvas.drawString(0.7 * inch, 8.15*inch, 'Honorific:')
+        # put salutation in here
+        canvas.line(0.5*inch, 8*inch, PAGE_WIDTH-0.5*inch, 8*inch)
+        canvas.drawString(0.7*inch, 7.75*inch, 'Delegate Name:')
+        # Put name in here
+        canvas.line(0.5*inch, 7.6*inch, PAGE_WIDTH-0.5*inch, 7.6*inch)
+        canvas.drawString(0.7*inch, 7.35*inch, 'Title:')
+        # Put title in here
+        canvas.line(0.5*inch, 7.2*inch, PAGE_WIDTH-0.5*inch, 7.2*inch)
 
     def _draw_stuff(self, canvas):
         self._1_page_outline(canvas)

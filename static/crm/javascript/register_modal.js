@@ -53,6 +53,7 @@ $(document).ready(function() {
         } else {
           $('#conf-select-error').removeClass('in');
           $('#event-options').html(data);
+          $('#event-options').addClass('in');
         }
       }
     })

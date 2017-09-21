@@ -18,7 +18,7 @@ class Person(models.Model):
     """
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, blank=True, null=True)
-    company = models.CharField(max_length=255, blank=True, null=True)
+    company = models.CharField(max_length=500, blank=True, null=True)
     url = models.URLField(max_length=200, blank=True, null=True)
     linkedin = models.URLField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)

@@ -18,7 +18,6 @@ LOGO_PATH = os.path.join(
 )
 PAGE_HEIGHT = letter[1]
 PAGE_WIDTH = letter[0]
-BLACK = colors.black
 
 class RegFormPdf:
     """
@@ -46,10 +45,33 @@ class RegFormPdf:
         canvas.setFont('Helvetica', 9)
         canvas.drawRightString(PAGE_WIDTH-(0.5*inch), 0.5*inch, footer_text)
 
+    def _2_conference_details(self, canvas):
+        canvas.setFillColor(colors.blue)
+        canvas.setFont('Helvetica', 10)
+        canvas.drawString(0.5*inch, 9.5*inch,
+                          'Section A - Conference Information')
+        canvas.setFillColor(colors.black)
+        canvas.setLineWidth(1)
+        canvas.rect(0.5*inch, 9*inch,
+                    PAGE_WIDTH-inch, 0.4*inch)
+        canvas.line(2.5*inch, 9*inch, 2.5*inch, 9.4*inch)
+        canvas.setFillColor(colors.red)
+        canvas.drawString(0.7*inch, 9.15*inch,
+                          self.event.number)
+        canvas.setFillColor(colors.black)
+        canvas.drawString(2.7*inch, 9.15*inch,
+                          self.event.title)
+
+    def _3_delegate_information(self, canvas):
+        canvas.setFillColor(colors.blue)
+        canvas.setFont('Helvetica', 10)
+        canvas.drawString(0.5*inch, 8.5*inch,
+                          'Section B - Delegate Information')
 
     def _draw_stuff(self, canvas):
-        # list of subroutines to add stuff to page
         self._1_page_outline(canvas)
+        self._2_conference_details(canvas)
+        self._3_delegate_information(canvas)
 
     def generate_report(self):
         report_name = 'Conference Registration Form'

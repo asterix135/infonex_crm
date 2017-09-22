@@ -95,6 +95,25 @@ $(document).ready(function() {
   ///////////////////////
   // Reg Form submission to d/b or for a forms
   ///////////////////////
+  function addRegDetailstoContactHistory(eventId) {
+    let personId = $('#person_id').val();
+    let contactMethod = 'Registration';
+    let contactNotes = 'Created pdf registration form. Registration status is ';
+    contactNotes += $('#reg_fld_registration_status option:selected').text()
+    $.ajax({
+      url: '/crm/add_contact_history/',
+      type: 'POST',
+      data: {
+        'person_id': personId,
+        'event': eventId,
+        'method': contactMethod,
+        'notes': contactNotes,
+      },
+      success: function(data){
+        $('#person-contact-history-panel').html(data);
+      }
+    });
+  };
 
   function harvestRegFormDetails(){
     var regDetails = {};
@@ -135,6 +154,7 @@ $(document).ready(function() {
   $('body').on('click', '#download-reg-form', function(){
     var [regDetails, okToSubmit] = harvestRegFormDetails();
     if (okToSubmit) {
+      addRegDetailstoContactHistory(regDetails['event'])
       var url = buildPdfUrl(regDetails);
       $('#registrationModal').modal('hide');
       window.open(url, '_blank');
@@ -145,8 +165,10 @@ $(document).ready(function() {
 
   // Submit reg to database
   $('body').on('click', '#submit-registration', function(){
-    alert('Not yet coded');
+    // alert('Not yet coded');
     var [regDetails, okToSubmit] = harvestRegFormDetails();
+    // addRegDetailstoContactHistory(regDetails['event'])
+
     // 1. Verify form
     // 2. Submit via Ajax
     // 3. If successful: update contact history section

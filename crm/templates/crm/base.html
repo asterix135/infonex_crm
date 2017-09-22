@@ -46,7 +46,9 @@
         <script src="{% static 'crm/javascript/ajax_setup.js' %}" type="text/javascript"></script>
         <script src="{% static 'crm/javascript/jquery_scripts.js' %}" type="text/javascript"></script>
         <script type="text/javascript" src="{% static 'crm/javascript/crm_scripts.js' %}"></script>
+        {% if request.user|has_group:'db_admin' or request.user|has_group:'management' or request.user|has_group:'registration' or request.user.is_superuser %}
         <script type="text/javascript" src="{% static 'registration/javascript/update_reg_queue_count.js' %}"></script>
+        {% endif %}
 
         {% block script_includes %}{% endblock %}
 

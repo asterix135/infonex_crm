@@ -23,7 +23,9 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <link href="{% static 'home/home.css' %}" rel="stylesheet" type="text/css" />
     <script src="{% static 'home/javascript/home.js' %}"></script>
+    {% if request.user|has_group:'db_admin' or request.user|has_group:'management' or request.user|has_group:'registration' or request.user.is_superuser %}
     <script type="text/javascript" src="{% static 'registration/javascript/update_reg_queue_count.js' %}"></script>
+    {% endif %}
 
     <!-- For testing Chartist integration -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">

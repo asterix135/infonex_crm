@@ -663,7 +663,7 @@ $(document).ready(function(){
           'company': selectedCompanyId,
         },
         success: function(data){
-          $('#id_company_name').val(data.name);
+          $('#id_company_name').val(data.company_name);
           $('#id_name_for_badges').val(data.name_for_badges);
           $('#id_address1').val(data.address1);
           $('#id_address2').val(data.address2);

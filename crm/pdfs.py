@@ -190,7 +190,7 @@ class RegFormPdf:
         style = style_sheet['BodyText']
         para = Paragraph(address, style)
         h = para.wrap(4.7 * inch, 0.9* inch)[1]
-        para.drawOn(canvas, 2.7 * inch, start_posn-h-0.35*inch)
+        para.drawOn(canvas, 2.7 * inch, start_posn-h-0.45*inch)
         self.start_posn = start_posn-1.45*inch
 
     def _add_registration_details(self, canvas):

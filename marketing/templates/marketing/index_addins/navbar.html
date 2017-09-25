@@ -43,6 +43,14 @@
         <span class="glyphicon glyphicon-refresh"></span><br />
         Bulk Update
       </button>
+      {% if request.user.is_superuser %}
+      <a href = "{% url 'marketing:changes' %}">
+        <button type="button" class="btn btn-default navbar-btn" id="process-changes">
+          <span class="glyphicon glyphicon-transfer"></span><br />
+          Process Changes
+        </button>
+      </a>
+      {% endif %}
       <p class="navbar-text navbar-right" style="padding-right: 20px;">{{ queryset_length|intcomma }} records in query</p>
     </div>
   </div>

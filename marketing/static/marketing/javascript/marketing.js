@@ -407,21 +407,5 @@ $(document).ready(function() {
       })
     };
   });
-  // Validate update data in browser
-  // function isValidEmail(email) {
-  //   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  //   return re.test(email);
-  // };
-  // $('body').on('focusout', '.update-input', function(){
-  //   if ($(this).attr('type') == 'email' && $(this).val().trim() != '') {
-  //     if (isValidEmail($(this).val())) {
-  //       $('span[warning-for="' + $(this).attr('update-field') + '"]').removeClass('in');
-  //     } else {
-  //       $('span[warning-for="' + $(this).attr('update-field') + '"]').addClass('in');
-  //       $(this).focus();
-  //     };
-  //   } else {
-  //     $('span[warning-for="' + $(this).attr('update-field') + '"]').removeClass('in');
-  //   };
-  // });
+
 });

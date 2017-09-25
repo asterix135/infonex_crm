@@ -1,0 +1,15 @@
+{% extends 'crm/base.html' %}
+{% load staticfiles %}
+{% load crm_extras %}
+
+{% block script_includes %}
+<script type="text/javascript" src="{% static 'marketing/javascript/changes.js' %}"></script>
+<link href="{% static 'marketing/css/marketing.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'marketing/css/upload_modal.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block content %}
+
+<h1>This is the process changes page</h1>
+
+{% endblock %}

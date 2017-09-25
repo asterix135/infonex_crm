@@ -8,7 +8,12 @@ urlpatterns = [
     ################
     # Base views
     ################
-    url(r'^$', login_required(views.Index.as_view()), name='index'),
+    url(r'^$',
+        login_required(views.Index.as_view()),
+        name='index'),
+    url(r'^changes/$',
+        login_required(views.ProcessChanges.as_view()),
+        name='changes'),
     url(r'^upload/$',
         login_required(views.UploadFile.as_view()),
         name='upload'),

@@ -139,6 +139,10 @@ class Index(CSVResponseMixin, MarketingPermissionMixin, GeneratePaginationList,
         return context
 
 
+class ProcessChanges(MarketingPermissionMixin, TemplateView):
+    template_name = 'marketing/changes.html'
+
+
 class UploadFile(MarketingPermissionMixin, TemplateView):
     template_name = 'marketing/upload.html'
     error_message = None

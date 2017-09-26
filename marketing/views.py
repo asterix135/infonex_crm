@@ -139,8 +139,19 @@ class Index(CSVResponseMixin, MarketingPermissionMixin, GeneratePaginationList,
         return context
 
 
-class ProcessChanges(MarketingPermissionMixin, TemplateView):
+class ProcessChanges(MarketingPermissionMixin, GeneratePaginationList,
+                     ListView):
     template_name = 'marketing/changes.html'
+    context_object_name = 'all_changes'
+    queryset = Changes.objects.all()
+    paginate_by=25
+
+    def get_context_data(self, **kwargs):
+        context = super(ProcessChanges, self).get_context_data(**kwargs)
+        if context['is_paginated']:
+            context['pagination_list'] = self.generate_pagination_list(context)
+        context['total_qs_length'] = self.object_list.count()
+        return context
 
 
 class UploadFile(MarketingPermissionMixin, TemplateView):
@@ -347,6 +358,10 @@ class BulkUpdate(MarketingPermissionMixin, View):
         successful_updates = {}
         Person.objects.filter(id__in=person_ids).update(**field_data)
         return HttpResponse(status=204)
+
+
+class ChangeDetails(MarketingPermissionMixin, TemplateView):
+    template_name = 'marketing/changes_addins/compare_panel.html'
 
 
 class DeletePerson(ChangeRecord, MarketingPermissionMixin, View):

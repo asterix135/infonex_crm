@@ -1,6 +1,14 @@
 from django import forms
 
-from crm.models import Person
+from crm.models import Changes, Person
+
+
+class ChangesDetailForm(forms.ModelForm):
+
+    class Meta:
+        model = Changes
+        fields = '__all__'
+
 
 class FieldSelectorForm(forms.Form):
     field_option = forms.ChoiceField(

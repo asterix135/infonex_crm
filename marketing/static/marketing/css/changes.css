@@ -1,0 +1,39 @@
+.list-panel {
+  position:fixed;
+  width:100%;
+  height: 30vh;
+  top:40px;
+  left:0;
+  overflow-y: scroll;
+  background-color: whitesmoke;
+  padding-top: 20px;
+}
+.comparison-panel {
+  position:fixed;
+  width: 100%;
+  height: 65vh;
+  top: 35vh;
+  left: 0;
+  overflow-y: scroll;
+  padding-top: 20px;
+}
+.list-title {
+  margin-top: 10px;
+  color: #265a88;
+}
+.change-row > td {
+  vertical-align: middle !important;
+  padding-top: 1px !important;
+  padding-bottom: 1px !important;
+  cursor: pointer;
+}
+.comparison-placeholder {
+  vertical-align: middle;
+  text-align: center;
+  top: 50%;
+  position: relative;
+}
+.stacked-panel {
+  padding-left: 0;
+  padding-right: 0;
+}

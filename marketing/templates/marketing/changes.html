@@ -15,10 +15,7 @@
   <table class="table table-bordered table-hover">
     <thead>
       <tr>
-        <th class="col-sm-1 col-md-1">
-          Select?
-        </th>
-        <th class="col-sm-5 col-md-3">
+        <th class="col-sm-6 col-md-3">
           Kind of Change
         </th>
         <th class="col-sm-6 col-md-3">
@@ -35,9 +32,6 @@
     {% for change in all_changes %}
     <tbody>
       <tr class="change-row" change-record-id="{{ change.id }}">
-        <td>
-          <input type="checkbox" class="form-control" />
-        </td>
         <td>
           {{ change.action }}
         </td>

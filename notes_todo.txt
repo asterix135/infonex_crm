@@ -1,3 +1,6 @@
+TODO: So you do have a "Marketing" option when creating a territory.
+      I created a list for 1268. There are over 23,000 contacts. Would just need an export function.
+
 TODO: Jim page to review changes (& purge that part of the db)
 
 TODO: Add Province select criterion to master select stuff

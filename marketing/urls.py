@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^bulk_update/$',
         login_required(views.BulkUpdate.as_view()),
         name='bulk_update'),
-    url(r'^change_details/$',
+    url(r'^change_details/(?P<pk>[0-9]+)/$',
         login_required(views.ChangeDetails.as_view()),
         name='change_details'),
     url(r'^delete/$',

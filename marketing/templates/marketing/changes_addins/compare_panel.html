@@ -6,23 +6,15 @@
     <div class="panel-body col-sm-12">
       <div class="panel panel-info col-sm-6 stacked-panel" id="current-record-panel">
         <div class="panel-heading">
-          Current Record
+          <b>What's in the Database Right Now</b>
         </div>
-        <div class="panel-body">
-          <p>
-            Info on current record goes here
-          </p>
-        </div>
+        {% include 'marketing/changes_addins/live_record_subpanel.html' %}
       </div>
-      <div class="panel panel-default col-sm-6 stacked-panel" id="original-record-panel">
+      <div class="panel panel-default col-sm-6 stacked-panel" id="change-record-panel">
         <div class="panel-heading">
-          Original Record
+          <b>What was there before the change</b>
         </div>
-        <div class="panel-body">
-          <p>
-            Info on original record goes here
-          </p>
-        </div>
+        {% include 'marketing/changes_addins/change_record_subpanel.html' %}
       </div>
     </div>
   </div>

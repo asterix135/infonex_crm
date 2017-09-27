@@ -12,16 +12,18 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
-from django.views.generic import DeleteView, DetailView, ListView, TemplateView
+from django.views.generic import DeleteView, DetailView, FormView, ListView, \
+        TemplateView
+from django.views.generic.edit import ModelFormMixin
 
-from .constants import *
-from .forms import FieldSelectorForm, UploadFileForm
-from .mixins import CSVResponseMixin, MarketingPermissionMixin, \
-    GeneratePaginationList
-from .models import *
 from crm.mixins import ChangeRecord
 from crm.models import Person, Changes
 from crm.constants import GEO_CHOICES, CAT_CHOICES, DIV_CHOICES
+from marketing.constants import *
+from marketing.forms import *
+from marketing.mixins import CSVResponseMixin, MarketingPermissionMixin, \
+    GeneratePaginationList
+from marketing.models import *
 
 ######################
 # Main page views
@@ -144,7 +146,7 @@ class ProcessChanges(MarketingPermissionMixin, GeneratePaginationList,
     template_name = 'marketing/changes.html'
     context_object_name = 'all_changes'
     queryset = Changes.objects.all()
-    paginate_by=25
+    paginate_by=250
 
     def get_context_data(self, **kwargs):
         context = super(ProcessChanges, self).get_context_data(**kwargs)
@@ -360,8 +362,36 @@ class BulkUpdate(MarketingPermissionMixin, View):
         return HttpResponse(status=204)
 
 
-class ChangeDetails(MarketingPermissionMixin, TemplateView):
+class ChangeDetails(MarketingPermissionMixin, ModelFormMixin, DetailView):
     template_name = 'marketing/changes_addins/compare_panel.html'
+    form_class = PersonDetailForm
+    model = Changes
+    person_exists = False
+
+    def _get_changes_form(self):
+        if hasattr(self, 'changes_obj') and self.changes_obj is not None:
+            return ChangesDetailForm(instance=self.changes_obj)
+        return ChangesDetailForm()
+
+    def get_context_data(self, **kwargs):
+        context = super(ChangeDetails, self).get_context_data(**kwargs)
+        context['person_exists'] = self.person_exists
+        context['changes_form'] = self._get_changes_form()
+        return context
+
+    def get_object(self, queryset=None):
+        """
+        Extends default method because we need to return a Person object
+        and the method is called with the pk for a Changes object
+        (Default method will return a Changes record)
+        """
+        self.changes_obj = super(ChangeDetails, self).get_object()
+        try:
+            obj = Person.objects.get(pk=self.changes_obj.orig_id)
+            self.person_exists = True
+        except Person.DoesNotExist:
+            obj = None
+        return obj
 
 
 class DeletePerson(ChangeRecord, MarketingPermissionMixin, View):

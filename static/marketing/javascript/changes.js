@@ -4,7 +4,7 @@ $(document).ready(function() {
   // Load change records and highlight differences
   ////////////////////////
 
-  const formGroupBefore = '<span class="input-group-addon revert-field"><span class=" glyphicon glyphicon-arrow-left"></span></span>'
+  const formGroupBefore = '<span class="input-group-addon revert-field"><span class="glyphicon glyphicon-arrow-left"></span></span>'
 
   const highlightChanges = () => {
     $('#change-record-panel input').each(function(){
@@ -13,11 +13,10 @@ $(document).ready(function() {
         var thisIsChecked = $(this).prop('checked');
         var thatIsChecked = $('#current-record-panel input[name="' + fieldName + '"]').prop('checked');
         if (thisIsChecked !== thatIsChecked) {
-          // $(this).addClass('yellow-box');
           $(this).wrap('<div class="input-group yellow-box"></div>');
           $(this).before(formGroupBefore);
         };
-      } else if ($(this).val() !== $('#current-record-panel input[name="' + fieldName + '"]').val()) {
+      } else if ($(this).val() !== $('#current-record-panel').find('[name="' + fieldName + '"]').val()) {
         $(this).addClass('yellow-box');
         $(this).wrap('<div class="input-group"></div>');
         $(this).before(formGroupBefore);
@@ -64,7 +63,16 @@ $(document).ready(function() {
   // Revert field to pre-change value
   ///////////////////////
   $('body').on('click', '.revert-field', function(){
-    console.log('we are going back');
-  })
+    const fieldName = $(this).next().attr('name');
+    if ($(this).next().attr('type') === 'checkbox') {
+      const changeFieldVal = $(this).next().prop('checked');
+      console.log(fieldName + ' value is ' + changeFieldVal);
+      $('#current-record-panel').find('[name="' + fieldName + '"]').prop('checked', changeFieldVal);
+    } else {
+      const changeFieldVal = $(this).next().val();
+      console.log(fieldName + ' value is ' + changeFieldVal);
+      $('#current-record-panel').find('[name="' + fieldName + '"]').val(changeFieldVal);
+    }
+  });
 
 });

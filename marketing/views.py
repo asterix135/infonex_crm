@@ -7,6 +7,8 @@ import codecs
 from openpyxl import load_workbook, Workbook
 from time import strftime
 
+from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
 from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -15,14 +17,14 @@ from django.views import View
 from django.views.generic import DeleteView, DetailView, FormView, ListView, \
         TemplateView
 from django.views.generic.edit import ModelFormMixin
+from django.views.generic.detail import SingleObjectMixin
 
 from crm.mixins import ChangeRecord
 from crm.models import Person, Changes
 from crm.constants import GEO_CHOICES, CAT_CHOICES, DIV_CHOICES
 from marketing.constants import *
 from marketing.forms import *
-from marketing.mixins import CSVResponseMixin, MarketingPermissionMixin, \
-    GeneratePaginationList
+from marketing.mixins import *
 from marketing.models import *
 
 ######################
@@ -373,10 +375,22 @@ class ChangeDetails(MarketingPermissionMixin, ModelFormMixin, DetailView):
             return ChangesDetailForm(instance=self.changes_obj)
         return ChangesDetailForm()
 
+    def delete(self):
+        self.changes_obj.delete()
+
+    def form_valid(self, form):
+        """
+        Overriding because Ajax and don't want Redirect
+        """
+        self.object = form.save()
+        self.delete()
+        return HttpResponse(status=299)
+
     def get_context_data(self, **kwargs):
         context = super(ChangeDetails, self).get_context_data(**kwargs)
         context['person_exists'] = self.person_exists
         context['changes_form'] = self._get_changes_form()
+        context['changes_record'] = self.changes_obj
         return context
 
     def get_object(self, queryset=None):
@@ -392,6 +406,26 @@ class ChangeDetails(MarketingPermissionMixin, ModelFormMixin, DetailView):
         except Person.DoesNotExist:
             obj = None
         return obj
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.form = self.get_form()
+        if self.form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+
+class DeleteChange(MarketingPermissionMixin, DeleteView):
+    model = Changes
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Override default method b/c AJAX and don't want a redirect
+        """
+        self.object = self.get_object()
+        self.object.delete()
+        return HttpResponse(status=200)
 
 
 class DeletePerson(ChangeRecord, MarketingPermissionMixin, View):
@@ -608,6 +642,45 @@ class ProcessUpload(MarketingPermissionMixin, View):
             'rowsImported': self.rows_imported
         }
         return JsonResponse(response_json)
+
+
+class RestoreDeletedRecord(MarketingPermissionMixin, JsonResponseMixin,
+                           SingleObjectMixin, View):
+    model = Changes
+    http_method_names = ['post',]
+
+    def _restore_person(self):
+        restore_vals = model_to_dict(self.changes_obj)
+        # need to restore original id value
+        restore_vals['id'] = restore_vals.pop('orig_id')
+        # ForeignKeys are returned as keys -> need to convert to objects
+        for key in ('created_by', 'modified_by'):
+            restore_vals[key] = User.objects.get(pk=restore_vals.pop(key))
+        # action is not in Person model so remove kwarg
+        restore_vals.pop('action')
+        for key in restore_vals:
+            print(key, restore_vals[key])
+        self.object = Person(**restore_vals)
+        self.object.save()
+
+    def delete(self, request, *args, **kwargs):
+        self.deleted_pk = self.changes_obj.pk
+        self.changes_obj.delete()
+        return self.render_to_response(**kwargs)
+
+    def get_json_data(self, **kwargs):
+        return {
+            'change_id': kwargs['pk'],
+            'person_id': self.object.pk,
+        }
+
+    def post(self, request, *args, **kwargs):
+        self.changes_obj = self.get_object()
+        self._restore_person()
+        print('\n\nkwargs follow')
+        for kwarg in kwargs:
+            print(kwarg, kwargs[kwarg])
+        return self.delete(request, *args, **kwargs)
 
 
 class UpdatePerson(MarketingPermissionMixin, View):

@@ -37,7 +37,7 @@ class ChangeRecord():
             date_created=creation_date,
             created_by=person.created_by,
             date_modified=timezone.now(),
-            modified_by=person.created_by,
+            modified_by=self.request.user,
         )
         change.save()
 

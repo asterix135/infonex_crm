@@ -1,8 +1,12 @@
 <div class="panel-body">
   {% if person_exists %}
+  
   {{ form }}
-  <button class="btn btn-primary bottom-btn col-sm-12">foo</button>
+  <button class="btn btn-warning bottom-btn col-sm-12">Update Database Record</button>
   {% else %}
-  <h2 class="no-record">No current record</h2>
+  <div class="row no-record col-sm-12">
+    <h2 class="text-center">No current record</h2>
+    <button class="btn btn-warning bottom-btn col-sm-12" id="restore-deleted-record" record-id="{{ changes_record.pk }}">Restore deleted record</button>
+  </div>
   {% endif %}
 </div>

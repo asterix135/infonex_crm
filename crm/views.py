@@ -38,7 +38,7 @@ from registration.models import RegDetails, EventOptions
 # HELPER FUNCTIONS
 ##################
 
-def add_change_record(person, change_action):
+def add_change_record(person, change_action, user):
     """
     Being Replaced by Mixin ChangeRecord
     Still needs to be updated:
@@ -77,7 +77,7 @@ def add_change_record(person, change_action):
         date_created=creation_date,
         created_by=person.created_by,
         date_modified=timezone.now(),
-        modified_by=person.created_by,
+        modified_by=user,
     )
     change.save()
 
@@ -300,7 +300,7 @@ def delete(request):
             method=contact.notes,
         )
         del_contact.save()
-    add_change_record(person, 'delete')
+    add_change_record(person, 'delete', request.user)
     person.delete()
     return HttpResponseRedirect('/crm/search/')
 
@@ -520,7 +520,7 @@ def new(request):
     person.save()
 
     # Add person to changes Table
-    add_change_record(person, 'new')
+    add_change_record(person, 'new', request.user)
 
     add_to_recent_contacts(request, person.pk)
     return HttpResponseRedirect(reverse('crm:detail', args=(person.id,)))
@@ -1311,6 +1311,8 @@ def save_person_details(request):
     if request.method == 'POST':
         try:
             person = Person.objects.get(pk=request.POST['person_id'])
+            add_change_record(person, 'update', request.user)
+            print(person.title)
             add_to_recent_contacts(request, request.POST['person_id'])
             person_details_form = PersonDetailsForm(request.POST,
                                                     instance=person)

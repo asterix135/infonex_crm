@@ -158,19 +158,24 @@ class Changes(models.Model):
                             null=True)
     industry = models.TextField(blank=True,
                                 null=True)  # free-form descripton
-    geo = models.CharField(max_length=10,
+    geo = models.CharField(max_length=20,
+                           choices=GEO_CHOICES,
                            blank=True,
                            null=True)
     main_category = models.CharField(max_length=25,
+                                     choices=CAT_CHOICES,
                                      blank=True,
                                      null=True)
     main_category2 = models.CharField(max_length=15,
+                                      choices=CAT_CHOICES,
                                       blank=True,
                                       null=True)
     division1 = models.CharField(max_length=20,
+                                 choices=DIV_CHOICES,
                                  blank=True,
                                  null=True)
     division2 = models.CharField(max_length=20,
+                                 choices=DIV_CHOICES,
                                  blank=True,
                                  null=True)
     date_created = models.DateTimeField('date created')

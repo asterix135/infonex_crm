@@ -53,7 +53,6 @@ $(document).ready(function() {
         } else {
           const changeHeight = $('#change-record-panel').height();
           $('#current-record-panel').css({height: changeHeight});
-          console.log(changeHeight);
         };
       }
     })
@@ -73,6 +72,35 @@ $(document).ready(function() {
       console.log(fieldName + ' value is ' + changeFieldVal);
       $('#current-record-panel').find('[name="' + fieldName + '"]').val(changeFieldVal);
     }
+  });
+
+  //////////////////////
+  // Delete change record and update DOM
+  //////////////////////
+  $('body').on('click', '#delete-change-record', function(){
+    const changeId = $(this).attr('record-id');
+    $.ajax({
+      url: '/marketing/delete_change/' + changeId + '/',
+      type: 'POST',
+      success: function(){
+        location.reload();
+      }
+    })
+  })
+
+  //////////////////////
+  // Restore deleted record
+  //////////////////////
+  $('body').on('click', '#restore-deleted-record', function(){
+    const changeId = $(this).attr('record-id');
+    $.ajax({
+      url: '/marketing/restore_deleted_record/' + changeId + '/',
+      type: 'POST',
+      success: function(data){
+        $('#comparison-panel').html('<h3 class="comparison-placeholder">Record Restored</h3>');
+        $('.change-row[change-record-id="' + data.change_id + '"]').remove();
+      }
+    });
   });
 
 });

@@ -1,8 +1,9 @@
 import csv
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.paginator import EmptyPage, PageNotAnInteger
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
+from django.views.generic.detail import SingleObjectMixin
 
 
 class CSVResponseMixin():
@@ -176,6 +177,15 @@ class GeneratePaginationList():
         except EmptyPage:
             page = paginator.page(paginator.num_pages)
         return (paginator, page, page.object_list, page.has_other_pages())
+
+
+class JsonResponseMixin():
+
+    def get_json_data(self, **kwargs):
+        return {}
+
+    def render_to_response(self, context=None, **response_kwargs):
+        return JsonResponse(self.get_json_data(**response_kwargs))
 
 
 class MarketingPermissionMixin(UserPassesTestMixin):

@@ -66,10 +66,10 @@
   <td>
     <input type="checkbox" class="form-control filter-input" filter-field="do_not_email" {% if 'do_not_email' in query_prefill and query_prefill.do_not_email == 'true' %}checked{% endif %} />
   </td>
-
-  <td>
-    <input class="form-control filter-input" filter-field="email_alternate" {% if 'email_alternate' in query_prefill %}value="{{ query_prefill.email_alternate}}"{% endif %} />
-  </td>
+  <th></th>  <!-- modified_by -->
+  <th></th>  <!-- date_modified -->
+  <th></th>  <!-- created_by -->
+  <th></th>  <!-- date_created -->
   <td>
     <select class="form-control filter-input" filter-field="main_category2">
       <option value="">
@@ -92,11 +92,10 @@
       {% endfor %}
     </select>
   </td>
-  <th></th>
-  <th></th>
-  <th></th>
-  <th></th>
   <td>
     <input type="checkbox" class="form-control filter-input" filter-field="do_not_call" {% if 'do_not_call' in query_prefill and query_prefill.do_not_call == 'true' %}checked{% endif %} />
+  </td>
+  <td>
+    <input class="form-control filter-input" filter-field="email_alternate" {% if 'email_alternate' in query_prefill %}value="{{ query_prefill.email_alternate}}"{% endif %} />
   </td>
 </tr>

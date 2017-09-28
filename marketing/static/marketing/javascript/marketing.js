@@ -351,7 +351,6 @@ $(document).ready(function() {
     } else {
       $('#btn-bulk-delete').addClass('disabled');
       var numRows = $('.marketing-table tr').length - 3;
-      alert('You will be updating ' + numRows + ' records.');
       $('#filter-row').removeClass('in');
       $('#bulk-update-row').addClass('in');
       $(this).removeClass('btn-default');

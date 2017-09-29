@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
 from django.views.generic import DetailView, FormView, ListView, TemplateView
+from django.views.generic.edit import FormMixin
 
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import letter
@@ -119,11 +120,10 @@ def build_master_territory_list(list_select_queryset):
     """
     Builds and returns query set based on a territory's master selection
     criteria
-    replaced by Mixin TerritoryList
+    replaced by Mixin TerritoryListMixin
     needs to be updated in:
     - add_master_list_select
     - build_user_territory_list
-    - create_selection_widget
     - delete_master_list_select
     """
     field_dict = {'main_category': 'main_category',
@@ -168,7 +168,7 @@ def build_user_territory_list(event_assignment_object, for_staff_member=False):
     param event_assignment_object: one Event Assignment Records
     param for_staff_member: boolean indicating whether list is for use on a
                             staff member's territory page (True)
-    being replaced by mixin TerritoryList.  Needs updating in:
+    being replaced by mixin TerritoryListMixin.  Needs updating in:
     -
     """
     field_dict = {'main_category': 'main_category',
@@ -305,7 +305,7 @@ def delete(request):
     return HttpResponseRedirect('/crm/search/')
 
 
-class Detail(RecentContact, MyTerritories, TerritoryList, DetailView):
+class Detail(RecentContact, MyTerritories, TerritoryListMixin, DetailView):
     context_object_name = 'person'
     template_name = 'crm/detail.html'
     model = Person
@@ -687,7 +687,7 @@ class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
 
 
 class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,
-                TerritoryList, ListView):
+                TerritoryListMixin, ListView):
     template_name = 'crm/territory.html'
     paginate_by = TERRITORY_RECORDS_PER_PAGE
     context_object_name = 'person_list'
@@ -966,6 +966,57 @@ def check_for_dupes(request):
     return render(request, 'crm/addins/possible_dupe_modal.html', context)
 
 
+class CreateSelectionWidget(ManagementPermissionMixin, TerritoryListMixin,
+                            FormMixin, DetailView):
+    template_name = 'crm/territory_addins/territory_builder.html'
+    context_object_name = 'event'
+    model = Event
+    form_class = MasterTerritoryForm
+
+    def _add_staff_selection_details_to_context(self, context):
+        sales_assigned = User.objects.filter(
+            eventassignment__event=self.object,
+            eventassignment__role='SA',
+            is_active=True
+        )
+        sponsorship_assigned = User.objects.filter(
+            eventassignment__event=self.object,
+            eventassignment__role='SP',
+            is_active=True
+        )
+        pd_assigned = User.objects.filter(
+            eventassignment__event=self.object,
+            eventassignment__role="PD",
+            is_active=True
+        )
+        userlist = User.objects.filter(is_active=True) \
+                .exclude(id__in=sales_assigned) \
+                .exclude(id__in=sponsorship_assigned) \
+                .exclude(id__in=pd_assigned) \
+                .order_by('username')
+        context['userlist'] = userlist
+        context['sales_assigned'] = sales_assigned
+        context['sponsorship_assigned'] = sponsorship_assigned
+        context['pd_assigned'] = pd_assigned
+        return context
+
+    def _add_master_list_details_to_context(self, context):
+        list_selects = MasterListSelections.objects.filter(event=self.object)
+        sample_select = self.build_master_territory_list(list_selects)
+        context['select_count'] = sample_select.count()
+        sample_select = sample_select.order_by('?')[:250]
+        sample_select = sorted(sample_select, key=lambda o: o.company)
+        context['sample_select'] = sample_select
+        return context
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateSelectionWidget, self).get_context_data(**kwargs)
+        context = self._add_staff_selection_details_to_context(context)
+        context = self._add_master_list_details_to_context(context)
+        context['select_form'] = context.pop('form')
+        return context
+
+
 @user_passes_test(has_management_permission, login_url='/crm/',
                   redirect_field_name=None)
 def create_selection_widget(request):
@@ -1121,7 +1172,7 @@ def get_recent_contacts(request):
 
 
 class GroupFlagUpdate(GeneratePaginationList, FilterPersonalTerritory,
-                      TerritoryList, UpdateFlag, ListView):
+                      TerritoryListMixin, UpdateFlag, ListView):
     template_name = 'crm/territory_addins/my_territory_prospects.html'
     paginate_by = TERRITORY_RECORDS_PER_PAGE
     context_object_name = 'person_list'

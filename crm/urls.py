@@ -17,9 +17,7 @@ urlpatterns = [
     url(r'^manage_territory/$',
         login_required(views.ManageTerritory.as_view()),
         name='manage_territory'),
-    
-    # url(r'^manage_territory/$', views.manage_territory,
-    #     name='manage_territory'),
+
     url(r'^new/$', views.new, name='new'),
 
     url(r'^search/$',
@@ -44,8 +42,14 @@ urlpatterns = [
         name='change_flag'),
 
     url(r'^check_for_dupes/$', views.check_for_dupes, name='check_for_dupes'),
-    url(r'^create_selection_widget/$', views.create_selection_widget,
+
+    url(r'^create_selection_widget/(?P<pk>[0-9]+)/$',
+        login_required(views.CreateSelectionWidget.as_view()),
         name='create_selection_widget'),
+
+    # url(r'^create_selection_widget/$', views.create_selection_widget,
+    #     name='create_selection_widget'),
+
     url(r'^delete_contact_history/$', views.delete_contact_history,
         name='delete_contact_history'),
     url(r'^delete_master_list_select/$', views.delete_master_list_select,

@@ -185,7 +185,7 @@ class RecentContact():
         self.request.session['recent_contacts'] = recent_contact_list
 
 
-class TerritoryList(CustomListSort):
+class TerritoryListMixin(CustomListSort):
     """
     Builds a territory list.
     Note: This version has removed the ability to filter down from the
@@ -296,10 +296,11 @@ class TerritoryList(CustomListSort):
                                                         self.user_select_set)
         return queryset
 
-    def build_master_territory_list(self):
-        list_selects = MasterListSelections.objects.filter(
-            event=self.event_assignment.event
-        )
+    def build_master_territory_list(self, list_selects=None):
+        if list_selects is None:
+            list_selects = MasterListSelections.objects.filter(
+                event=self.event_assignment.event
+            )
         queryset = Person.objects.none()
         if list_selects.count() == 0:
             return queryset

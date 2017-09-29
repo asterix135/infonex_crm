@@ -53,11 +53,11 @@ $(document).ready(function() {
   $('body').on('click', '#select-conference', function(){
     var confId = $('#id_event').val();
     $.ajax({
-      url: '/crm/create_selection_widget/',
-      type: 'POST',
-      data: {
-        'conf_id': confId,
-      },
+      url: '/crm/create_selection_widget/' + confId + '/',
+      type: 'GET',
+      // data: {
+      //   'conf_id': confId,
+      // },
       success: function(data){
         $('#selection-widget').html(data);
         startDragDrop();

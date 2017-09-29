@@ -1017,56 +1017,6 @@ class CreateSelectionWidget(ManagementPermissionMixin, TerritoryListMixin,
         return context
 
 
-@user_passes_test(has_management_permission, login_url='/crm/',
-                  redirect_field_name=None)
-def create_selection_widget(request):
-    """
-    Adds territory builder to manage_territory.html
-    """
-    if request.method != 'POST':
-        return HttpResponse('')
-    try:
-        event = Event.objects.get(pk=request.POST['conf_id'])
-    except (Event.DoesNotExist, MultiValueDictKeyError):
-        raise Http404('Something is wrong - that event does not exist')
-    except ValueError:
-        return HttpResponse('')
-    # Stuff for staff selection pane
-    sales_assigned = User.objects.filter(eventassignment__event=event,
-                                         eventassignment__role='SA',
-                                         is_active=True)
-    sponsorship_assigned = User.objects.filter(eventassignment__event=event,
-                                               eventassignment__role='SP',
-                                               is_active=True)
-    pd_assigned = User.objects.filter(eventassignment__event=event,
-                                      eventassignment__role="PD",
-                                      is_active=True)
-    userlist = User.objects.filter(is_active=True) \
-        .exclude(id__in=sales_assigned).exclude(id__in=sponsorship_assigned) \
-        .exclude(id__in=pd_assigned)
-
-    # Stuff for master list selection pane
-    select_form = MasterTerritoryForm()
-    list_selects = MasterListSelections.objects.filter(event=event)
-    sample_select = build_master_territory_list(list_selects)
-    select_count = sample_select.count()
-    sample_select = sample_select.order_by('?')[:250]
-    sample_select = sorted(sample_select, key=lambda o: o.company)
-    context = {
-        'event': event,
-        'userlist': userlist,
-        'sales_assigned': sales_assigned,
-        'sponsorship_assigned': sponsorship_assigned,
-        'pd_assigned': pd_assigned,
-        'select_form': select_form,
-        'list_selects': list_selects,
-        'sample_select': sample_select,
-        'select_count': select_count,
-    }
-    return render(request, 'crm/territory_addins/territory_builder.html',
-                  context)
-
-
 @login_required
 def delete_contact_history(request):
     person = None

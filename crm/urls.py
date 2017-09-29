@@ -47,8 +47,6 @@ urlpatterns = [
         login_required(views.CreateSelectionWidget.as_view()),
         name='create_selection_widget'),
 
-    # url(r'^create_selection_widget/$', views.create_selection_widget,
-    #     name='create_selection_widget'),
 
     url(r'^delete_contact_history/$', views.delete_contact_history,
         name='delete_contact_history'),

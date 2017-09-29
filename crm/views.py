@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DetailView, FormView, ListView, TemplateView
 
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import letter
@@ -426,29 +426,27 @@ def index(request):
     return render(request, 'crm/index.html', context)
 
 
-@user_passes_test(has_management_permission, login_url='/crm/',
-                  redirect_field_name=None)
-def manage_territory(request):
-    """
-    Loads manage territory page as a GET request
-    Also responds to form in add_conference_modal to validate/add new conference
-    and reload manage_territory page with new event
-    """
-    conference_select_form = ConferenceSelectForm()
-    new_conference_form = ConferenceEditForm()
-    if request.method == 'POST':
-        new_conference_form = ConferenceEditForm(request.POST)
-        if new_conference_form.is_valid():
-            new_event = new_conference_form.save(commit=False)
-            new_event.created_by = request.user
-            new_event.modified_by = request.user
-            new_event.save()
-            new_conference_form = ConferenceEditForm()
-    context = {
-        'conference_select_form': conference_select_form,
-        'new_conference_form': new_conference_form
-    }
-    return render(request, 'crm/manage_territory.html', context)
+class ManageTerritory(ManagementPermissionMixin, FormView):
+    template_name = 'crm/manage_territory.html'
+    form_class = ConferenceEditForm
+
+    def form_valid(self, form):
+        """
+        Override because we don't want to redirect.
+        Also, becasue we actually want to save imput
+        """
+        new_event = form.save(commit=False)
+        new_event.created_by = self.request.user
+        new_event.modified_by = self.request.user
+        new_event.save()
+        form = self.form_class()
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_context_data(self, **kwargs):
+        context = super(ManageTerritory, self).get_context_data(**kwargs)
+        context['new_conference_form'] = context.pop('form')
+        context['conference_select_form'] = ConferenceSelectForm()
+        return context
 
 
 @login_required
@@ -1163,6 +1161,14 @@ class GroupFlagUpdate(GeneratePaginationList, FilterPersonalTerritory,
         if context['is_paginated']:
             context['pagination_list'] = self.generate_pagination_list(context)
         return context
+
+
+class LoadStaffCategorySelects(ManagementPermissionMixin, View):
+    role_map_dict = {
+        'activate-sales': ('SA', 'Sales Staff'),
+        'activate-sponsorship': ('SP', 'Sponsorship Staff'),
+        'activate-pd': ('PD', 'PD Staff'),
+    }
 
 
 @user_passes_test(has_management_permission, login_url='/crm/',

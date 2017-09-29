@@ -14,9 +14,12 @@ urlpatterns = [
     url(r'^detail/(?P<pk>[0-9]+)/$',
         login_required(views.Detail.as_view()),
         name='detail'),
-
-    url(r'^manage_territory/$', views.manage_territory,
+    url(r'^manage_territory/$',
+        login_required(views.ManageTerritory.as_view()),
         name='manage_territory'),
+    
+    # url(r'^manage_territory/$', views.manage_territory,
+    #     name='manage_territory'),
     url(r'^new/$', views.new, name='new'),
 
     url(r'^search/$',
@@ -54,10 +57,13 @@ urlpatterns = [
     url(r'^group_flag_update/$',
         login_required(views.GroupFlagUpdate.as_view()),
         name='group_flag_update'),
+
     url(r'^load_staff_category_selects/$', views.load_staff_category_selects,
         name='load_staff_category_selects'),
+
     url(r'^load_staff_member_selects/$', views.load_staff_member_selects,
         name='load_staff_member_selects'),
+
     url(r'^reg_options/$',
         login_required(views.RegOptions.as_view()),
         name='reg_options'),

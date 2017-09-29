@@ -1,8 +1,10 @@
 <div class="panel-body">
   {% if person_exists %}
-  
-  {{ form }}
-  <button class="btn btn-warning bottom-btn col-sm-12">Update Database Record</button>
+  <form id="update-record-form" record-id="{{ changes_record.pk }}">
+    {% csrf_token %}
+    {{ form }}
+    <button class="btn btn-warning bottom-btn col-sm-12" id="update-database-record" record-id="{{ changes_record.pk }}" type="submit">Update Database Record</button>
+  </form>
   {% else %}
   <div class="row no-record col-sm-12">
     <h2 class="text-center">No current record</h2>

@@ -103,4 +103,27 @@ $(document).ready(function() {
     });
   });
 
+  $('body').on('submit', '#update-record-form', function(e){
+    e.preventDefault();
+    const changeId = $(this).attr('record-id');
+    $.ajax({
+      url: '/marketing/change_details/' + changeId + '/',
+      type: 'POST',
+      data: $("#update-record-form").serialize(),
+      success: function(data, status, xhr) {
+        const ct = xhr.getResponseHeader('content-type') || '';
+        if (ct.indexOf('html') > -1) {
+          $('#comparison-panel').html(data);
+          highlightChanges();
+        } else {
+          $('.change-row[change-record-id="' + changeId + '"]').remove();
+          $('#comparison-panel').html(
+            '<h3 class="comparison-placeholder">Update Successful</h3>'
+          );
+        }
+      }
+    })
+
+  })
+
 });

@@ -384,7 +384,7 @@ class ChangeDetails(MarketingPermissionMixin, ModelFormMixin, DetailView):
         """
         self.object = form.save()
         self.delete()
-        return HttpResponse(status=299)
+        return JsonResponse({})
 
     def get_context_data(self, **kwargs):
         context = super(ChangeDetails, self).get_context_data(**kwargs)
@@ -411,9 +411,9 @@ class ChangeDetails(MarketingPermissionMixin, ModelFormMixin, DetailView):
         self.object = self.get_object()
         self.form = self.get_form()
         if self.form.is_valid():
-            return self.form_valid(form)
+            return self.form_valid(self.form)
         else:
-            return self.form_invalid(form)
+            return self.form_invalid(self.form)
 
 
 class DeleteChange(MarketingPermissionMixin, DeleteView):

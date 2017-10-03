@@ -47,7 +47,6 @@ urlpatterns = [
         login_required(views.CreateSelectionWidget.as_view()),
         name='create_selection_widget'),
 
-
     url(r'^delete_contact_history/$', views.delete_contact_history,
         name='delete_contact_history'),
     url(r'^delete_master_list_select/$', views.delete_master_list_select,
@@ -56,26 +55,29 @@ urlpatterns = [
         name='delete_personal_list_select'),
     url(r'^get_recent_contacts/$', views.get_recent_contacts,
         name='get_recent_contacts'),
+
     url(r'^group_flag_update/$',
         login_required(views.GroupFlagUpdate.as_view()),
         name='group_flag_update'),
-
-    url(r'^load_staff_category_selects/$', views.load_staff_category_selects,
+    url(r'^load_staff_category_selects/$',
+        login_required(views.LoadStaffCategorySelects.as_view()),
         name='load_staff_category_selects'),
-
-    url(r'^load_staff_member_selects/$', views.load_staff_member_selects,
+    url(r'^load_staff_member_selects/$',
+        login_required(views.LoadStaffMemberSelects.as_view()),
         name='load_staff_member_selects'),
-
     url(r'^reg_options/$',
         login_required(views.RegOptions.as_view()),
         name='reg_options'),
+
     url(r'^save_category_changes/$', views.save_category_changes,
         name='save_category_changes'),
     url(r'^save_person_details/$', views.save_person_details,
         name='save_person_details'),
+
     url(r'^select_active_conference/$',
         login_required(views.SelectActiveConference.as_view()),
         name='select_active_conference'),
+
     url(r'^suggest_company/$', views.suggest_company, name='suggest_company'),
     url(r'^suggest_dept/$', views.suggest_dept, name='suggest_dept'),
     url(r'^suggest_industry/$', views.suggest_industry,

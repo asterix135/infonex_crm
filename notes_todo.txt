@@ -1,6 +1,8 @@
 TODO: So you do have a "Marketing" option when creating a territory.
       I created a list for 1268. There are over 23,000 contacts. Would just need an export function.
 
+TODO: View list of companies in Territory view
+
 TODO: Add Province select criterion to master select stuff
       - this probably requires first changing views over to CBVs
 

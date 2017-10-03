@@ -169,7 +169,8 @@ def build_user_territory_list(event_assignment_object, for_staff_member=False):
     param for_staff_member: boolean indicating whether list is for use on a
                             staff member's territory page (True)
     being replaced by mixin TerritoryListMixin.  Needs updating in:
-    -
+    - add_personal_list_select
+    - delete_personal_list_select
     """
     field_dict = {'main_category': 'main_category',
                   'main_category2': 'main_category2',
@@ -1164,103 +1165,74 @@ class GroupFlagUpdate(GeneratePaginationList, FilterPersonalTerritory,
         return context
 
 
-class LoadStaffCategorySelects(ManagementPermissionMixin, View):
-    role_map_dict = {
-        'activate-sales': ('SA', 'Sales Staff'),
-        'activate-sponsorship': ('SP', 'Sponsorship Staff'),
-        'activate-pd': ('PD', 'PD Staff'),
-    }
+class LoadStaffCategorySelects(ManagementPermissionMixin, TemplateView):
+    template_name = 'crm/territory_addins/personal_select_person_chooser.html'
 
-
-@user_passes_test(has_management_permission, login_url='/crm/',
-                  redirect_field_name=None)
-def load_staff_category_selects(request):
-    """
-    Loads panel showing staff members assigned to Sales, PD or Sponsorship for
-    a particular event
-    Called from staff-select pulldown on territory_builder.html
-    """
-    role_map_dict = {
-        'activate-sales': ('SA', 'Sales Staff'),
-        'activate-sponsorship': ('SP', 'Sponsorship Staff'),
-        'activate-pd': ('PD', 'PD Staff'),
-    }
-    staff_group = User.objects.none()
-    staff_label = None
-    if request.method == 'POST':
-        section_chosen = request.POST['section_chosen']
-    try:
-        event = Event.objects.get(pk=request.POST['conf_id'])
-        staff_group = User.objects.filter(
+    def get_context_data(self, **kwargs):
+        role_map_dict = {'SA': 'Sales Staff',
+                         'SP': 'Sponsorship Staff',
+                         'PD': 'PD Staff'}
+        context = super(LoadStaffCategorySelects, self) \
+                    .get_context_data(**kwargs)
+        event = Event.objects.get(pk=self.request.GET['conf_id'])
+        section_chosen = self.request.GET['section_chosen']
+        context['staff_label'] = role_map_dict[section_chosen]
+        context['staff_group'] = User.objects.filter(
             eventassignment__event=event,
-            eventassignment__role=role_map_dict[section_chosen][0],
-            is_active=True
+            eventassignment__role=section_chosen
         )
-        staff_label = role_map_dict[section_chosen][1]
-    except (Event.DoesNotExist, MultiValueDictKeyError, KeyError):
-        pass
-    context = {
-        'staff_group': staff_group,
-        'staff_label': staff_label,
-    }
-    return render(request,
-                  'crm/territory_addins/personal_select_person_chooser.html',
-                  context)
+        return context
 
 
-@user_passes_test(has_management_permission, login_url='/crm/',
-                  redirect_field_name=None)
-def load_staff_member_selects(request):
-    """
-    Loads details on a particular staff member's personal territory selects
-    Called from ??? pulldown on ???
-    Also called to change filter method
-    """
-    if request.method != 'POST':
-        return HttpResponse('')
-    try:
-        event = Event.objects.get(pk=request.POST['event_id'])
-        user = User.objects.get(pk=request.POST['user_id'])
-        event_assignment = EventAssignment.objects.get(event=event, user=user)
-    except Event.DoesNotExist:
-        raise Http404('Something is wrong - that event no longer exists')
-    except User.DoesNotExist:
-        raise Http404('Something is wrong - that staff member no longer exists')
-    except EventAssignment.DoesNotExist:
-        raise Http404('Something is wrong - that staff member is not '
-                      'assigned to this conference.')
+class LoadStaffMemberSelects(ManagementPermissionMixin, TerritoryListMixin,
+                             ListView):
+    template_name = 'crm/territory_addins/filter_master_option.html'
+    context_object_name = 'list_selects'
+    model = PersonalListSelections
 
-    # Optionally process change to filter value
-    if 'filter_switch' in request.POST:
-        filter_switch = request.POST['filter_switch'] == 'True'
-        event_assignment.filter_master_selects = filter_switch
-        event_assignment.save()
+    def _get_forms(self):
+        form_dict = {}
+        form_dict['select_form'] = PersonalTerritorySelects(
+            filter_master_bool=self.event_assignment.filter_master_selects
+        )
+        form_dict['territory_select_method_form'] = \
+                PersonTerritorySelectMethodForm(instance=self.event_assignment)
+        return form_dict
 
-    territory_select_method_form = PersonTerritorySelectMethodForm(
-        instance=event_assignment
-    )
-    select_form = PersonalTerritorySelects(
-        filter_master_bool=event_assignment.filter_master_selects
-    )
-    list_selects = PersonalListSelections.objects.filter(
-        event_assignment=event_assignment
-    )
-    sample_select = build_user_territory_list(event_assignment)
-    select_count = sample_select.count()
-    sample_select = sample_select.order_by('?')[:250]
-    sample_select = sorted(sample_select, key=lambda o: o.company)
+    def _get_sample_select(self):
+        sample_select_data = {}
+        sample_select = self.build_user_territory_list()
+        sample_select_data['select_count'] = sample_select.count()
+        sample_select = sample_select.order_by('?')[:250]
+        sample_select = sorted(sample_select, key=lambda o: o.company)
+        sample_select_data['sample_select'] = sample_select
+        return sample_select_data
 
-    context={
-        'filter_value': event_assignment.filter_master_selects,
-        'territory_select_method_form': territory_select_method_form,
-        'staff_rep': user,
-        'select_form': select_form,
-        'list_selects': list_selects,
-        'sample_select': sample_select,
-        'select_count': select_count,
-    }
-    return render(request, 'crm/territory_addins/filter_master_option.html',
-                  context)
+    def _process_filter_switch(self):
+        filter_switch = request.GET['filter_switch'] == 'True'
+        self.event_assignment.filter_master_selects = filter_switch
+        self.event_assignment.save()
+
+    def get(self, request, *args, **kwargs):
+        event = Event.objects.get(pk=request.GET['event_id'])
+        self.user = User.objects.get(pk=request.GET['user_id'])
+        self.event_assignment = EventAssignment.objects.get(
+            event=event, user=self.user
+        )
+        if 'filter_switch' in request.GET:
+            self._process_filter_switch()
+        return super(LoadStaffMemberSelects, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(LoadStaffMemberSelects, self).get_context_data(**kwargs)
+        context['filter_value'] = self.event_assignment.filter_master_selects
+        context['staff_rep'] = self.user
+        context.update(self._get_forms())
+        context.update(self._get_sample_select())
+        return context
+
+    def get_queryset(self):
+        return self.model.objects.filter(event_assignment=self.event_assignment)
 
 
 class RegOptions(TemplateView):

@@ -307,11 +307,11 @@ $(document).ready(function() {
 
   // load appropriate staff GROUP content into personal select panel
   $('body').on('click', '.staff-select', function(){
-    var sectionChosen = $(this).attr('id');
+    var sectionChosen = $(this).attr('select-key');
     var confId = $('#id_event').val();
     $.ajax({
       url: '/crm/load_staff_category_selects/',
-      type: 'POST',
+      type: 'GET',
       data: {
         'conf_id': confId,
         'section_chosen': sectionChosen,
@@ -341,7 +341,7 @@ $(document).ready(function() {
     };
     $.ajax({
       url: '/crm/load_staff_member_selects/',
-      type: 'POST',
+      type: 'GET',
       data: ajaxData,
       success: function(data){
         $('#personal-select-details').html(data);

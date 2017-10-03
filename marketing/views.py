@@ -30,8 +30,8 @@ from marketing.models import *
 ######################
 # Main page views
 ######################
-class Index(CSVResponseMixin, MarketingPermissionMixin, GeneratePaginationList,
-            ListView):
+class Index(IndexCSVResponseMixin, MarketingPermissionMixin,
+            GeneratePaginationList, ListView):
     template_name = 'marketing/index.html'
     context_object_name = 'records'
     queryset = Person.objects.all()

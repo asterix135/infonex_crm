@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.views.generic.detail import SingleObjectMixin
 
 
-class CSVResponseMixin():
+class IndexCSVResponseMixin():
     """
     A generic mixin that constructs a CSV response from the context data if
     the CSV export option was provided in the request.

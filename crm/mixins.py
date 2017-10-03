@@ -42,6 +42,10 @@ class ChangeRecord():
         change.save()
 
 
+class CsvResponseMixin():
+    pass
+
+
 class CustomListSort():
     def get_ordering(self):
         """

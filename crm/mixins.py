@@ -1,7 +1,9 @@
+import csv
 import datetime
 
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db.models import Q
+from django.http import HttpResponse
 from django.utils import timezone
 
 from crm.constants import AC_LOOKUP, FLAG_COLORS
@@ -43,10 +45,41 @@ class ChangeRecord():
 
 
 class CsvResponseMixin():
-    pass
+    """
+    Mixin designed to render a object_list from a ListView (or similar)
+    to a csv file.
+    By default returns all fields
+    """
+
+    filename = 'csv_download'
+
+    def get_csv_file_details(self):
+        return 'attachment; filename="' + self.filename + '.csv"'
+
+    def render_to_response(self, context, **kwargs):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = self.get_csv_file_details()
+        response = self.write_csv(response, context)
+        return response
+
+    def write_csv(self, response, context):
+        writer = csv.writer(response)
+        queryset = context['object_list']
+        field_row = [f.name for f in queryset.model._meta.get_fields()
+                     if not f.one_to_many]
+        writer.writerow(field_row)
+        for record in queryset:
+            record_row = []
+            for field_name in field_row:
+                record_row.append(getattr(record, field_name))
+            writer.writerow(record_row)
+        return response
 
 
 class CustomListSort():
+    session_sort_vars = {'col': 'sort_col',
+                         'order': 'sort_order'}
+
     def get_ordering(self):
         """
         Should override default method

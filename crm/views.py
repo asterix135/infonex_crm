@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
 from django.views.generic import DetailView, FormView, ListView, TemplateView
+from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormMixin
 
 from reportlab.lib.enums import TA_LEFT
@@ -1105,6 +1106,26 @@ def delete_personal_list_select(request):
                   context)
 
 
+class ExportListSelects(ManagementPermissionMixin, CsvResponseMixin,
+                        TerritoryListMixin, SingleObjectMixin, ListView):
+    model = EventAssignment
+
+    def get(self, request, *args, **kwargs):
+        self.event_assignment = self.object = self.get_object(
+            queryset=self.model._default_manager.all()
+        )
+        return super(ExportListSelects, self).get(request, *args, **kwargs)
+
+    def get_csv_file_details(self):
+        details = 'attachment; filename="list_selects_'
+        details += self.event_assignment.event.number + '_'
+        details += self.event_assignment.user.username + '.csv"'
+        return details
+
+    def get_queryset(self):
+        return self.build_user_territory_list()
+
+
 @login_required
 def get_recent_contacts(request):
     """ ajax call to populate recent contacts on sidebar """
@@ -1227,6 +1248,7 @@ class LoadStaffMemberSelects(ManagementPermissionMixin, TerritoryListMixin,
         context = super(LoadStaffMemberSelects, self).get_context_data(**kwargs)
         context['filter_value'] = self.event_assignment.filter_master_selects
         context['staff_rep'] = self.user
+        context['event_assignment'] = self.event_assignment
         context.update(self._get_forms())
         context.update(self._get_sample_select())
         return context

@@ -1,7 +1,13 @@
 <!-- Called from personal_select_person_chooser.html -->
 <input type="hidden" id="active-staff-id" value={{ staff_rep.id }} />
 <div class="row form-group">
-  <h2>Personal selections for {{ staff_rep.username }}<button class="btn btn-default pull-right" id="btn-export-list">Export List</button></h2>
+  <h2>Personal selections for {{ staff_rep.username }}
+    <a href="/crm/export_list_selects/{{ event_assignment.pk }}/" target="_blank">
+      <button class="btn btn-default pull-right" id="btn-export-list">
+        Export List
+      </button>
+    </a>
+  </h2>
   <h4>{{ territory_select_method_form.filter_master_selects.label_tag }}</h4>
   {{ territory_select_method_form.filter_master_selects.errors }}
   {{ territory_select_method_form.filter_master_selects }}

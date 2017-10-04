@@ -53,12 +53,14 @@ urlpatterns = [
         name='delete_master_list_select'),
     url(r'^delete_personal_list_select/$', views.delete_personal_list_select,
         name='delete_personal_list_select'),
+
+    url(r'^export_list_selects/(?P<pk>[0-9]+)/$',
+        login_required(views.ExportListSelects.as_view()),
+        name='export_list_selects'),
+
     url(r'^get_recent_contacts/$', views.get_recent_contacts,
         name='get_recent_contacts'),
 
-    url(r'^group_flag_update/$',
-        login_required(views.GroupFlagUpdate.as_view()),
-        name='group_flag_update'),
     url(r'^load_staff_category_selects/$',
         login_required(views.LoadStaffCategorySelects.as_view()),
         name='load_staff_category_selects'),

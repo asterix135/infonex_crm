@@ -139,7 +139,8 @@ $(document).ready(function() {
       $('#id_state_province').val() != '' ||
       $('#id_dept').val() != '' ||
       $('#id_past_customer').val() != '' ||
-      $('#id_flag').val() != 'any'
+      $('#id_flag').val() != 'any' ||
+      $('#id_area_code').val() != ''
     ) {
       okToSubmit = true;
     };

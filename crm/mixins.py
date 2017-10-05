@@ -111,6 +111,10 @@ class CustomListSort():
 
 class FilterPersonalTerritory():
 
+    def _filter_area_code(self, queryset):
+        re_term = r'^\s*\(?' + self.request.session['filter_area_code']
+        return queryset.filter(phone__iregex=re_term)
+
     def _filter_state(self, queryset):
         ac_tuple = AC_LOOKUP[self.request.session['filter_prov']]
         queries = []
@@ -163,6 +167,7 @@ class FilterPersonalTerritory():
                         ('title', 'filter_title', 'title__icontains'),
                         ('company', 'filter_company', 'company__icontains'),
                         ('dept', 'filter_dept', 'dept__icontains'),
+                        ('area_code', 'filter_area_code'),
                         ('state_province', 'filter_prov'),
                         ('past_customer', 'filter_customer'))  # flag not in form
         # save form values to request.session
@@ -175,6 +180,11 @@ class FilterPersonalTerritory():
             if option[1] in self.request.session:
                 kwargs[option[2]] = self.request.session[option[1]]
         territory_queryset = territory_queryset.filter(**kwargs)
+
+        # Deal with area_code filter
+        if 'filter_area_code' in self.request.session and \
+                self.request.session['filter_area_code'] != '':
+            territory_queryset = self._filter_area_code(territory_queryset)
 
         # Deal with state filter
         if 'filter_prov' in self.request.session and \

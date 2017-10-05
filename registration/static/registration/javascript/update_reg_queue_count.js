@@ -12,7 +12,7 @@ $(document).ready(function() {
       },
       complete: function() {
         // Schedule the next request when the current one's complete
-        setTimeout(worker, 60000);
+        setTimeout(worker, 300000);
       }
     });
   })();

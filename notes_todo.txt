@@ -1,6 +1,3 @@
-TODO: So you do have a "Marketing" option when creating a territory.
-      I created a list for 1268. There are over 23,000 contacts. Would just need an export function.
-
 TODO: View list of companies in Territory view
 
 TODO: Add Province select criterion to master select stuff
@@ -242,3 +239,5 @@ DONE?: registration fails if submit without sales credit
 DONE: crm.views.py/Detail - need to switch this over from detail
 DONE: Make it possible to mass-delete people from territory
 DONE: Jim page to review changes (& purge that part of the db)
+DONE: So you do have a "Marketing" option when creating a territory.
+      I created a list for 1268. There are over 23,000 contacts. Would just need an export function.

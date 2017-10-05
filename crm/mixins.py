@@ -48,6 +48,7 @@ class CsvResponseMixin():
     """
     Mixin designed to render a object_list from a ListView (or similar)
     to a csv file.
+    requires 'object_list' in context and overrides default render_to_response
     By default returns all fields
     """
 

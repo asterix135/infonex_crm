@@ -79,7 +79,9 @@ class IndexCSVResponseMixin():
             return response
         # Business as usual otherwise
         else:
-            return super(CSVResponseMixin, self).render_to_response(context, **response_kwargs)
+            return super(IndexCSVResponseMixin, self).render_to_response(
+                context, **response_kwargs
+            )
 
 
 class GeneratePaginationList():

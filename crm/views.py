@@ -1230,7 +1230,7 @@ class LoadStaffMemberSelects(ManagementPermissionMixin, TerritoryListMixin,
         return sample_select_data
 
     def _process_filter_switch(self):
-        filter_switch = request.GET['filter_switch'] == 'True'
+        filter_switch = self.request.GET['filter_switch'] == 'True'
         self.event_assignment.filter_master_selects = filter_switch
         self.event_assignment.save()
 

@@ -118,6 +118,7 @@ $(document).ready(function() {
     $('#id_state_province').val('');
     $('#id_past_customer').val('');
     $('#id_dept').val('');
+    $('#id_area_code').val('');
     $('#id_flag').val('any');
   };
 

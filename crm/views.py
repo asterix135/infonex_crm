@@ -758,12 +758,21 @@ class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,
             })
         return kwargs
 
+    def is_company_list(self, request):
+        if 'view' in request.GET and request.GET['view'] == 'company':
+            return True
+        return False
+
     def _process_territory(self, request, *args, **kwargs):
         self.form = self.get_form()
         queryset = self.get_queryset()
         queryset = self.filter_queryset(queryset, self.form)
-
-        self.object_list = queryset.order_by(self.get_ordering())
+        self.company_view = self.is_company_list(request)
+        if self.company_view:
+            self.object_list = queryset.values('company').order_by('company'). \
+                    annotate(num_records=Count('company'))
+        else:
+            self.object_list = queryset.order_by(self.get_ordering())
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
@@ -795,6 +804,7 @@ class Territory(GeneratePaginationList, FilterPersonalTerritory, MyTerritories,
         context['filter_form'] = self.form
         context['my_territories'] = self.get_my_territories()
         context['num_records'] = self.object_list.count()
+        context['company_view'] = self.company_view
         if context['is_paginated']:
             context['pagination_list'] = self.generate_pagination_list(context)
         return context

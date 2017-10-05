@@ -166,4 +166,22 @@ $(document).ready(function() {
     $('#filter-form').submit();
   });
 
+
+  // Toggle company view
+  $('body').on('click', '#toggle-company-view', function(){
+    let targetUrl = window.location.href;
+    const idxOfQuestionMark = targetUrl.indexOf('?');
+    if (idxOfQuestionMark > -1) {
+      if (targetUrl.includes('view=company')) {
+        targetUrl = targetUrl.slice(0, idxOfQuestionMark);
+      } else {
+        targetUrl = targetUrl.slice(0, idxOfQuestionMark) + '?view=company';
+      }
+    } else {
+      targetUrl = targetUrl.slice(0, idxOfQuestionMark) + '?view=company';
+    }
+    window.location.href = targetUrl;
+  });
+
+
 });

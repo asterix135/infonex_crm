@@ -2,16 +2,28 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th class="col-sm-4">
+        <th class="col-sm-8">
           Company Name
-        </th>
-        <th class="col-sm-4">
-          City/Prov
         </th>
         <th class="co-sm-4">
           Number of Prospects
         </th>
       </tr>
     </thead>
+    <tbody>
+      {% for company in person_list %}
+      <tr>
+        <td>
+          {{ company.company }}
+        </td>
+        <td>
+          {{ company.num_records }}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
+</div>
+<div id="search-pagination">
+  {% include 'crm/pagination.html' %}
 </div>

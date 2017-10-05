@@ -10,10 +10,18 @@
 <div class="row">
   <h4>Results:  <span class="h6">{{ num_records|intcomma }} in this view</span>
     <button class="btn btn-default pull-right" id="toggle-company-view">
+      {% if company_view %}
+      Prospect List View
+      {% else %}
       Company List View
+      {% endif %}
     </button>
   </h4>
   <div id="my-territory-list-panel">
+    {% if company_view %}
+    {% include 'crm/territory_addins/company_list_view.html' %}
+    {% else %}
     {% include 'crm/territory_addins/my_territory_prospects.html' %}
+    {% endif %}
   </div>
 </div>

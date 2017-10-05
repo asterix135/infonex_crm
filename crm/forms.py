@@ -446,6 +446,12 @@ class SearchForm(forms.Form):
                            widget=forms.TextInput(
                                attrs={'class': 'form-control search-field'}
                            ))
+    area_code = forms.CharField(label="Area Code",
+                                max_length=3,
+                                required=False,
+                                widget=forms.TextInput(
+                                    attrs={'class': 'form-control search-field'}
+                                ))
 
 
 class SelectMyTerritoryForm(forms.Form):

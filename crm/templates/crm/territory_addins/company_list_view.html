@@ -14,7 +14,7 @@
       {% for company in person_list %}
       <tr>
         <td>
-          {{ company.company }}
+          <a class="company-name-as-link">{{ company.company }}</a>
         </td>
         <td>
           {{ company.num_records }}

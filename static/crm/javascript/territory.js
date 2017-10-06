@@ -183,5 +183,13 @@ $(document).ready(function() {
     window.location.href = targetUrl;
   });
 
+  // Select company from company view
+  $('body').on('click', '.company-name-as-link', function(){
+    const companyName = $(this).text();
+    clearFilterForm();
+    $('#id_company').val(companyName);
+    $('#filter-form').submit();
+  })
+
 
 });

@@ -19,3 +19,13 @@
   background-color: #0069D9;
   color: white;
 }
+.company-name-as-link {
+  color: #337ab7;
+  text-decoration: none;
+  cursor: pointer;
+}
+.company-name-as-link:hover, .company-name-as-link:focus {
+  color: #23527c;
+  text-decoration: underline;
+  outline: 0;
+}

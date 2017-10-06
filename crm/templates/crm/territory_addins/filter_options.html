@@ -1,3 +1,4 @@
+
 <div class="panel-heading">
   <h2 class="panel-title">
     Filter/Search Contacts
@@ -14,7 +15,7 @@
 {% else %}
 <div class="panel-body collapse in" id="filter-panel">
 {% endif %}
-  <form action="" method="post" id="filter-form">
+  <form action="{% url 'crm:territory' %}" method="post" id="filter-form">
     {% csrf_token %}
     <div class="form-group row">
       <div class="col-sm-2">

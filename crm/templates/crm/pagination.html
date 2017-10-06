@@ -3,7 +3,7 @@
   <div class="container-fluid">
     <ul class="pagination pagination-sm">
       {% if page_obj.has_previous %}
-      <li><a class="same-page" href="?page={{ page_obj.previous_page_number }}{% if sort_by %}&sort_by={{ sort_by }}&order={{ order }}{% endif %}">&laquo;</a></li>
+      <li><a class="same-page" href="?page={{ page_obj.previous_page_number }}{% if sort_by %}&sort_by={{ sort_by }}&order={{ order }}{% endif %}{%if company_view %}&view=company{% endif %}">&laquo;</a></li>
       {% else %}
       <li class="disabled"><span>&laquo;</span></li>
       {% endif %}
@@ -13,13 +13,13 @@
       <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
 
       {% elif i in pagination_list %}
-      <li><a class="same-page" href="?page={{ i }}{% if sort_by %}&sort_by={{ sort_by }}&order={{ order }}{% endif %}">{{ i }}</a></li>
+      <li><a class="same-page" href="?page={{ i }}{% if sort_by %}&sort_by={{ sort_by }}&order={{ order }}{% endif %}{%if company_view %}&view=company{% endif %}">{{ i }}</a></li>
 
       {% endif %}
       {% endfor %}
 
       {% if page_obj.has_next %}
-      <li><a class="same-page" href="?page={{ page_obj.next_page_number }}{% if sort_by %}&sort_by={{ sort_by }}&order={{ order }}{% endif %}">&raquo;</a></li>
+      <li><a class="same-page" href="?page={{ page_obj.next_page_number }}{% if sort_by %}&sort_by={{ sort_by }}&order={{ order }}{% endif %}{%if company_view %}&view=company{% endif %}">&raquo;</a></li>
       {% else %}
       <li class="disabled"><span>&raquo;</span></li>
       {% endif %}

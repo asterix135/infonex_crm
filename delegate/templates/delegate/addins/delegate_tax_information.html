@@ -34,7 +34,7 @@
   {{ reg_details_form.qst_rate.errors }}
   <div class="input-group">
     {% if reg_details_form.qst_rate.errors or data_source != 'new' %}
-    {{ reg_details.form.qst_rate }}
+    {{ reg_details_form.qst_rate }}
     {% else %}
     <input id="id_qst_rate" class="form-control cost-field" name="qst_rate" step="0.001"
       required="" type="number" value="{{ conference.qst_rate }}" />

@@ -109,6 +109,24 @@
   </div>
   <div class="form-group row">
     <div class="col-sm-2">
+      {{ new_person_form.assistant_name.label_tag }}
+    </div>
+    <div class="col-sm-10">
+      {{ new_person_form.assistant_name.errors }}
+      {{ new_person_form.assistant_name }}
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-2">
+      {{ new_person_form.assistant_email.label_tag }}
+    </div>
+    <div class="col-sm-10">
+      {{ new_person_form.assistant_email.errors }}
+      {{ new_person_form.assistant_email }}
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-2">
       {{ new_person_form.linkedin.label_tag }}
     </div>
     <div class="col-sm-10">

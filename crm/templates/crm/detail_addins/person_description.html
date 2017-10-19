@@ -1,10 +1,5 @@
 {% load static %}
 
-{% if updated_details_success %}
-<input type="hidden" name="updated-details-success" id="updated-details-success" value="True" />
-{% else %}
-<input type="hidden" name="updated-details-success" id="updated-details-success" value="False" />
-{% endif %}
 <h1>
   {{ person.name }}
   <span id="action-buttons">
@@ -30,42 +25,65 @@
 {% endif %}
 <h4>
   Tel:
-  {% if person.phone %}
-  {{ person.phone }}
-  {% if person.do_not_call %}
-  <span style="color:red;">(Do not call)</span>
-  {% endif %}
-  {% else %}
-  <span style="font-weight: 300; font-style: italic">Unknown</span>
-  {% endif %}
+  <span id="display-phone">
+    {% if person.phone %}
+    {{ person.phone }}
+    {% if person.do_not_call %}
+    <span style="color:red;">(Do not call)</span>
+    {% endif %}
+    {% else %}
+    <span style="font-weight: 300; font-style: italic">Unknown</span>
+    {% endif %}
+  </span>
 </h4>
-{% if person.phone_alternate %}
-<h5>
-  Alternate Phone:  {{ person.phone_alternate }}
-  {% if person.do_not_call %}
-  <span style="color:red;">(Do not call)</span>
+<div id="display-phone-alternate">
+  {% if person.phone_alternate %}
+  <h5>
+    Alternate Phone:
+    {{ person.phone_alternate }}
+    {% if person.do_not_call %}
+    <span style="color:red;">(Do not call)</span>
+    {% endif %}
+  </h5>
   {% endif %}
-</h5>
-{% endif %}
+</div>
 <h4>
   Email:
-  {% if person.email and not person.do_not_email %}
-  <a href="mailto:{{ person.email }}">{{ person.email }}</a>
-  {% elif person.email %}
-  {{ person.email }}
-  <span style="color:red;">(Do not email)</span>
-  {% else %}
-  <span style="fornt-weight: 300; font-style: italic">Unknown</span>
-  {% endif %}
+  <span id="display-email">
+    {% if person.email and not person.do_not_email %}
+    <a href="mailto:{{ person.email }}">{{ person.email }}</a>
+    {% elif person.email %}
+    {{ person.email }}
+    <span style="color:red;">(Do not email)</span>
+    {% else %}
+    <span style="font-weight: 300; font-style: italic">Unknown</span>
+    {% endif %}
+  </span>
 </h4>
-{% if person.email_alternate %}
-<h5>
-  Alternate Email:
-  {% if not person.do_not_email %}
-  <a href="mailto:{{ person.email_alternate }}">{{ person.email_alternate }}</a>
-  {% else %}
-  {{ person.email_alternate }}
-  <span style="color:red;">(Do not email)</span>
+<div id="display-email-alternate">
+  {% if person.email_alternate %}
+  <h5>
+    Alternate Email:
+    {% if not person.do_not_email %}
+    <a href="mailto:{{ person.email_alternate }}">{{ person.email_alternate }}</a>
+    {% else %}
+    {{ person.email_alternate }}
+    <span style="color:red;">(Do not email)</span>
+    {% endif %}
+  </h5>
   {% endif %}
-</h5>
-{% endif %}
+</div>
+
+<div id="display-assistant">
+  {% if person.assistant_name or person.assistant_email %}
+  <h5>
+    Assistant:&nbsp;&nbsp;
+    {% if person.assistant_name %}
+    {{ person.assistant_name }}&nbsp;&nbsp;
+    {% endif %}
+    {% if person.assistant_email %}
+    <a href="mailto:{{ person.assistant_email }}">{{ person.assistant_email }}</a>
+    {% endif %}
+  </h5>
+  {% endif %}
+</div>

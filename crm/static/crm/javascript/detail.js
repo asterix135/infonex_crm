@@ -13,6 +13,8 @@ $(document).ready(function() {
   var originalDoNotCall = $('#id_do_not_call').prop('checked');
   var originalEmail = $('#id_email').val();
   var originalEmailAlternate = $('#id_email_alternate').val();
+  var originalAssistantName = $('#id_assistant_name').val();
+  var originalAssistantEmail = $('#id_assistant_email').val();
   var originalDoNotEmail = $('#id_do_not_email').prop('checked');
   var originalLinkedIn = $('#id_linkedin').val();
   var originalUrl = $('#id_url').val();
@@ -50,6 +52,8 @@ $(document).ready(function() {
     $('#id_email').val(originalEmail);
     $('#id_email_alternate').val(originalEmailAlternate);
     $('#id_do_not_email').prop('checked', originalDoNotEmail);
+    $('#id_assistant_name').val(originalAssistantName);
+    $('#id_assistant_email').val(originalAssistantEmail);
     $('#id_linkedin').val(originalLinkedIn);
     $('#id_url').val(originalUrl);
     $('#id_industry').val(originalIndustry);
@@ -57,6 +61,88 @@ $(document).ready(function() {
 
 
   // submit changes to person details and update that portion of page
+  function updateHeader(data) {
+    const newPhone = $('#id_phone', data).val();
+    const newAltPhone = $('#id_phone_alternate', data).val();
+    const newEmail = $('#id_email', data).val();
+    const newAltEmail = $('#id_email_alternate', data).val();
+    const newDoNotCall = $('#id_do_not_call', data).prop('checked');
+    const newDoNotEmail = $('#id_do_not_email', data).prop('checked');
+    const newAsstName = $('#id_assistant_name', data).val();
+    const newAsstEmail = $('#id_assistant_email', data).val();
+    if (newPhone !== originalPhone || newDoNotCall !== originalDoNotCall) {
+      let newPhoneHtml;
+      if (newPhone) {
+        newPhoneHtml = newPhone;
+        if (newDoNotCall) {
+           newPhoneHtml += '&nbsp;&nbsp;<span style="color:red;">(Do not call)</span>';
+        };
+      } else {
+        newPhoneHtml = '<span style="font-weight:300; font-style:italic;">Unknown</span>';
+      };
+      $('#display-phone').html(newPhoneHtml);
+    };
+    if (newAltPhone !== originalPhoneAlternate || newDoNotCall !== originalDoNotCall) {
+      let newAltPhoneHtml;
+      if (newAltPhone) {
+        newAltPhoneHtml = '<h5>Alternate Phone: ' + newAltPhone;
+        if (newDoNotCall) {
+          newAltPhoneHtml += '&nbsp;&nbsp;<span style="color:red;">(Do Not Call)</span>';
+        }
+        newAltPhoneHtml += '</h5>'
+      } else {
+        newAltPhoneHtml = '';
+      };
+      $('#display-phone-alternate').html(newAltPhoneHtml);
+    };
+    if (newEmail !== originalEmail || newDoNotEmail !== originalDoNotEmail) {
+      let newEmailHtml;
+      if (newEmail) {
+        if (newDoNotEmail) {
+          newEmailHtml = newEmail + '&nbsp;&nbsp;<span style="color:red">(Do not email)</span>';
+        } else {
+          newEmailHtml = '<a href="mailto:' + newEmail + '">' + newEmail + '</a>'
+        }
+      } else {
+        newEmailHtml = '<span style="font-weight: 300; font-style: italic">Unknown</span>';
+      };
+      $('#display-email').html(newEmailHtml);
+    };
+    if (newAltEmail !== originalEmailAlternate || newDoNotEmail !== originalDoNotEmail) {
+      let newAltEmailHtml;
+      if (newAltEmail) {
+        newAltEmailHtml = '<h5>Alternate Email: ';
+        if (newDoNotEmail) {
+          newAltEmailHtml += newAltEmail + '&nbsp;&nbsp;<span style="color:red;">(Do not email)</span>';
+        } else {
+          newAltEmailHtml += '<a href="mailto:' + newAltEmail + '">' + newAltEmail + '</a>'
+        }
+        newAltEmailHtml += '</h5>'
+      } else {
+        newAltEmailHtml = '';
+      };
+      $('#display-email-alternate').html(newAltEmailHtml);
+    };
+    if (newAsstName !== originalAssistantName || newAsstEmail !== originalAssistantEmail) {
+      let newAsstHtml;
+      if (newAsstName || newAsstEmail) {
+        newAsstHtml = '<h5>Assistant:&nbsp;&nbsp;';
+        if (newAsstName) {
+          newAsstHtml += newAsstName + '&nbsp;&nbsp;'
+        };
+        if (newAsstEmail) {
+          newAsstHtml += '<a href="mailto:' + newAsstEmail + '">' + newAsstEmail + '</a>';
+        };
+        newAsstHtml += '</h5>'
+      } else {
+        newAsstHtml = ''
+      };
+      $('#display-assistant').html(newAsstHtml);
+    }
+
+  };
+
+
   $('body').on('click', '#save-person-details-form', function(){
     var personId = $('#person_id').val();
     var name = $('#id_name').val();
@@ -70,6 +156,8 @@ $(document).ready(function() {
     var doNotCall = $('#id_do_not_call').prop('checked');
     var email = $('#id_email').val();
     var emailAlternate = $('#id_email_alternate').val();
+    var assistantName = $('#id_assistant_name').val();
+    var assistantEmail = $('#id_assistant_email').val();
     var doNotEmail = $('#id_do_not_email').prop('checked');
     var linkedIn = $('#id_linkedin').val();
     var url = $('#id_url').val();
@@ -91,6 +179,8 @@ $(document).ready(function() {
         'email': email,
         'email_alternate': emailAlternate,
         'do_not_email': doNotEmail,
+        'assistant_name': assistantName,
+        'assistant_email': assistantEmail,
         'linkedin': linkedIn,
         'url': url,
         'industry': industry,
@@ -99,6 +189,7 @@ $(document).ready(function() {
         $('#person-detail-edit-panel').html(data);
         successFlag = $('#updated-details-success', data).val();
         if (successFlag == 'True') {
+          updateHeader(data);
           originalName = $('#id_name', data).val();
           originalTitle = $('#id_title', data).val();
           originalDept = $('#id_dept', data).val();
@@ -111,6 +202,8 @@ $(document).ready(function() {
           originalEmail = $('#id_email', data).val();
           originalEmailAlternate = $('#id_email_alternate', data).val();
           originalDoNotEmail = $('#id_do_not_email', data).prop('checked');
+          originalAssistantName = $('#id_assistant_name', data).val();
+          originalAssistantEmail = $('#id_assistant_email', data).val();
           originalLinkedIn = $('#id_linkedin', data).val();
           originalUrl = $('#id_url', data).val();
           originalIndustry = $('id_industry', data).val();

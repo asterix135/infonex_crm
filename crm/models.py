@@ -26,6 +26,8 @@ class Person(models.Model):
     phone_main = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     email_alternate = models.EmailField(blank=True, null=True)
+    assistant_name = models.CharField(max_length=100, blank=True, null=True)
+    assistant_email = models.EmailField(blank=True, null=True)
     do_not_email = models.BooleanField(default=False)
     do_not_call = models.BooleanField(default=False)
     city = models.CharField(max_length=50, blank=True, null=True)

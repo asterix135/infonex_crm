@@ -85,7 +85,8 @@ class NewPersonForm(forms.ModelForm):
                   'phone_main', 'email', 'do_not_call', 'do_not_email',
                   'city', 'dept', 'industry', 'geo', 'main_category',
                   'main_category2', 'division1', 'division2',
-                  'phone_alternate', 'email_alternate')
+                  'phone_alternate', 'email_alternate',
+                  'assistant_name', 'assistant_email')
         labels = {
             'url': _('Website'),
             'linkedin': _('LinkedIn Profile'),
@@ -130,6 +131,12 @@ class NewPersonForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
             'email_alternate': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'assistant_name': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'assistant_email': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
             'do_not_call': forms.CheckboxInput(
@@ -198,7 +205,8 @@ class PersonDetailsForm(forms.ModelForm):
         model = Person
         fields = ('name', 'title', 'company', 'url', 'phone', 'phone_main',
                   'do_not_call', 'email', 'do_not_email', 'industry',
-                  'city', 'linkedin', 'phone_alternate', 'email_alternate',)
+                  'city', 'linkedin', 'phone_alternate', 'email_alternate',
+                  'assistant_name', 'assistant_email')
         labels = {
             'url': _('Website'),
             'linkedin': _('LinkedIn Profile'),
@@ -235,6 +243,12 @@ class PersonDetailsForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
             'email_alternate': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'assistant_name': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'assistant_email': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
             'industry': forms.Textarea(

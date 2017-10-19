@@ -1015,6 +1015,7 @@ class CreateSelectionWidget(ManagementPermissionMixin, TerritoryListMixin,
     def _add_master_list_details_to_context(self, context):
         list_selects = MasterListSelections.objects.filter(event=self.object)
         sample_select = self.build_master_territory_list(list_selects)
+        context['list_selects'] = list_selects
         context['select_count'] = sample_select.count()
         sample_select = sample_select.order_by('?')[:250]
         sample_select = sorted(sample_select, key=lambda o: o.company)

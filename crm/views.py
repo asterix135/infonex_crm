@@ -558,9 +558,6 @@ class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
                     regex_val += '^' + area_code + '|^\(' + area_code + '|'
             regex_val = regex_val[:-1]
             self.queryset = self.queryset.filter(phone__regex=regex_val)
-        print(search_params['customer'])
-        print(type(search_params['customer']))
-        print(search_params['customer'] in ('', None))
         if search_params['customer'] not in ('', None):
             self.queryset = self.queryset.filter(
                 registrants__isnull = (search_params['customer'] in ('False', False))
@@ -1324,7 +1321,6 @@ def save_person_details(request):
         try:
             person = Person.objects.get(pk=request.POST['person_id'])
             add_change_record(person, 'update', request.user)
-            print(person.title)
             add_to_recent_contacts(request, request.POST['person_id'])
             person_details_form = PersonDetailsForm(request.POST,
                                                     instance=person)

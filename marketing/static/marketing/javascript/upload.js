@@ -120,7 +120,6 @@ $(document).ready(function() {
   };
   function startImport(fieldMatches){
     var ignoreFirstRow = $('#id_import_first_row').prop('checked');
-    console.log(ignoreFirstRow);
     var passedJson = {
       'file_id': activeUpload,
       'field_matches': fieldMatches,
@@ -180,7 +179,7 @@ $(document).ready(function() {
     $('#incomplete-upload-data').removeClass('in');
     $('tr[file_id=' + activeUpload + ']').remove();
     activeUpload = null;
-    $('#field-matcher').html('');    
+    $('#field-matcher').html('');
   })
 
 });

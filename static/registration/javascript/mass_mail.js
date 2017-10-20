@@ -68,7 +68,6 @@ $(document).ready(function(){
 
   $('body').on('click', '.add-email-btn', function(){
     var rowId = $(this).attr('related-email');
-    console.log(rowId);
     var newEmailAddress = $('#' + rowId).val()
     if (isEmail(newEmailAddress)){
       $(this).removeClass('add-email-btn');

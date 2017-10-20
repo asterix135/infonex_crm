@@ -658,8 +658,6 @@ class RestoreDeletedRecord(MarketingPermissionMixin, JsonResponseMixin,
             restore_vals[key] = User.objects.get(pk=restore_vals.pop(key))
         # action is not in Person model so remove kwarg
         restore_vals.pop('action')
-        for key in restore_vals:
-            print(key, restore_vals[key])
         self.object = Person(**restore_vals)
         self.object.save()
 
@@ -677,9 +675,6 @@ class RestoreDeletedRecord(MarketingPermissionMixin, JsonResponseMixin,
     def post(self, request, *args, **kwargs):
         self.changes_obj = self.get_object()
         self._restore_person()
-        print('\n\nkwargs follow')
-        for kwarg in kwargs:
-            print(kwarg, kwargs[kwarg])
         return self.delete(request, *args, **kwargs)
 
 

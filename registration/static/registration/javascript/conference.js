@@ -245,8 +245,6 @@ $(document).ready(function() {
           $('#conference-select-dropdown').html(data);
         }
       });
-
-      console.log(buttonText);
     }
   });
 

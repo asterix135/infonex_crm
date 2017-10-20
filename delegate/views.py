@@ -16,19 +16,20 @@ from django.http import HttpResponse, JsonResponse, Http404, \
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
-from django.views.generic import FormView
+from django.views.generic import FormView, ListView
 
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-from .forms import *
-from .constants import *
-from .pdfs import *
 from .guess_company import guess_company, iteratively_replace_and_guess_name
 from crm.mixins import ChangeRecord
 from crm.models import Person, Changes
 from crm.views import add_change_record
+from delegate.constants import *
+from delegate.forms import *
 from delegate.mixins import ProcessCompleteRegistration
+from delegate.models import QueuedOrders
+from delegate.pdfs import *
 from infonex_crm.settings import BASE_DIR
 from registration.mixins import RegistrationPermissionMixin
 from registration.models import *
@@ -816,6 +817,12 @@ class ProcessRegistration(RegistrationPermissionMixin,
         context['non_invoice_values'] = NON_INVOICE_VALUES
 
         return context
+
+
+class Queue(ListView):
+    context_object_name = 'queue_list'
+    model = QueuedOrders
+    template_name = 'delegate/queue.html'
 
 
 #######################

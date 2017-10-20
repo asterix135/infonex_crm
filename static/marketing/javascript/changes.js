@@ -65,11 +65,9 @@ $(document).ready(function() {
     const fieldName = $(this).next().attr('name');
     if ($(this).next().attr('type') === 'checkbox') {
       const changeFieldVal = $(this).next().prop('checked');
-      console.log(fieldName + ' value is ' + changeFieldVal);
       $('#current-record-panel').find('[name="' + fieldName + '"]').prop('checked', changeFieldVal);
     } else {
       const changeFieldVal = $(this).next().val();
-      console.log(fieldName + ' value is ' + changeFieldVal);
       $('#current-record-panel').find('[name="' + fieldName + '"]').val(changeFieldVal);
     }
   });

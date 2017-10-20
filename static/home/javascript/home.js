@@ -3,7 +3,6 @@ $(document).ready(function() {
 
   $('body').on('click', '.glyph-button', function(){
     var toggleObject = $(this).attr('toggle-obj');
-    console.log(toggleObject);
     if ($(this).hasClass('glyphicon-chevron-down')) {
       $(this).removeClass('glyphicon-chevron-down');
       $(this).addClass('glyphicon-chevron-up');

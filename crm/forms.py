@@ -23,7 +23,6 @@ class HorizontalRadioRenderer(forms.RadioSelect.renderer):
 #################
 class EventAssignmentChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        # print(str(obj))
         return str(obj.event)
 
 

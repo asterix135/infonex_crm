@@ -5,6 +5,8 @@ from registration.constants import STATE_PROV_TUPLE, REG_STATUS_OPTIONS, \
 
 class QueuedOrders(models.Model):
     date_created = models.DateTimeField('date created', auto_now_add=True)
+    crm_person = models.ForeignKey('crm.Person', blank=True, null=True,
+                                   on_delete=models.SET_NULL)
     # fields for Registrant table
     salutation = models.CharField(max_length=15, blank=True, null=True)
     first_name = models.CharField(max_length=100, blank=True, null=True)

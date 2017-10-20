@@ -16,6 +16,9 @@ urlpatterns = [
     url(r'^process_registration/$',
         login_required(views.ProcessRegistration.as_view()),
         name='process_registration'),
+    url(r'^queue/$',
+        login_required(views.Queue.as_view()),
+        name='queue'),
 
     # AJAX CALLS
     url(r'^company_crm_modal/$', views.company_crm_modal,

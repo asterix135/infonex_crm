@@ -1,0 +1,18 @@
+{% extends 'registration/base.html' %}
+{% load staticfiles %}
+
+{% block title %}Register Delegate | {% endblock %}
+
+{% block script_includes %}
+<script type="text/javascript" src = "{% static 'delegate/javascript/queue.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid fill">
+  <div class="row col-sm-12">
+    <h1>Registration Queue</h1>
+  </div>
+</div>
+
+
+{% endblock %}

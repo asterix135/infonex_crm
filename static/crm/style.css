@@ -29,6 +29,10 @@ h1, h2, h3 {
 .page-header small, .page-header small a, .page-header small a:visited, .page-header small a:active {
     color: #E8E8E8;
 }
+.badge{
+  background-color: red;
+  color: white;
+}
 .red-link-icons, .red-link-icons:hover, .red-link-icons:visited {
     color: #D41919;
     float: right;

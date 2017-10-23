@@ -28,7 +28,7 @@ from crm.views import add_change_record
 from delegate.constants import *
 from delegate.forms import *
 from delegate.mixins import ProcessCompleteRegistration
-from delegate.models import QueuedOrders
+from delegate.models import QueuedOrder
 from delegate.pdfs import *
 from infonex_crm.settings import BASE_DIR
 from registration.mixins import RegistrationPermissionMixin
@@ -817,12 +817,6 @@ class ProcessRegistration(RegistrationPermissionMixin,
         context['non_invoice_values'] = NON_INVOICE_VALUES
 
         return context
-
-
-class Queue(ListView):
-    context_object_name = 'queue_list'
-    model = QueuedOrders
-    template_name = 'delegate/queue.html'
 
 
 #######################

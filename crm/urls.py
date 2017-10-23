@@ -79,6 +79,9 @@ urlpatterns = [
     url(r'^select_active_conference/$',
         login_required(views.SelectActiveConference.as_view()),
         name='select_active_conference'),
+    url(r'^submit_registration/$',
+        login_required(views.SubmitRegistration.as_view()),
+        name='submit_registration'),
 
     url(r'^suggest_company/$', views.suggest_company, name='suggest_company'),
     url(r'^suggest_dept/$', views.suggest_dept, name='suggest_dept'),

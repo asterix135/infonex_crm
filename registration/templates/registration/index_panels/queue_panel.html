@@ -1,0 +1,79 @@
+{% load staticfiles %}
+
+<script type="text/javascript" src = "{% static 'delegate/javascript/queue.js' %}"></script>
+
+{% block content %}
+<div class="container-fluid fill">
+  <div class="row col-sm-12">
+    <h1>Registration Queue</h1>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>
+          Process
+        </th>
+        <th>
+          RegStatus
+        </th>
+        <th>
+          Company
+        </th>
+        <th>
+          Delegate Name
+        </th>
+        <th>
+          AddedBy
+        </th>
+        <th>
+          AddDate
+        </th>
+        <th>
+          $ Value
+        </th>
+        <th>
+          Delete
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for reg in queue_list %}
+      <tr>
+        <td>
+          <button class="btn btn-success process-queue" type="button" queue-id="{{ reg.pk }}">Process</button>
+        </td>
+        <td>
+          {{ reg.get_registration_status_display }}
+        </td>
+        <td>
+          {{ reg.company_name }}
+        </td>
+        <td>
+          {{ reg.first_name }}&nbsp;{{ reg.last_name }}
+        </td>
+        <td>
+          {{ reg.sales_credit.username }}
+        </td>
+        <td>
+          {{ reg.date_created }}
+        </td>
+        <td>
+          {{ reg.pre_tax_price }}
+        </td>
+        <td>
+          <button class="btn btn-xs btn-danger delete-queue" type="button" queue-id="{{ reg.pk }}">Delete</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+<div class="container">
+  <div class="row col-sm-12">
+    <button type="button" id="spam-add" class="btn btn-default col-sm-4">Spam Adds</button>
+  </div>
+</div>
+
+
+{% endblock %}

@@ -10,15 +10,10 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^confirmation_details/$', views.confirmation_details,
         name='confirmation_details'),
-    # url(r'^process_registration/$', views.process_registration,
-    #     name='process_registration'),
 
     url(r'^process_registration/$',
         login_required(views.ProcessRegistration.as_view()),
         name='process_registration'),
-    url(r'^queue/$',
-        login_required(views.Queue.as_view()),
-        name='queue'),
 
     # AJAX CALLS
     url(r'^company_crm_modal/$', views.company_crm_modal,

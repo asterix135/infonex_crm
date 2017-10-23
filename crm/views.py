@@ -31,6 +31,7 @@ from delegate.constants import UNPAID_STATUS_VALUES
 from delegate.forms import RegDetailsForm, NewDelegateForm, CompanySelectForm, \
     AssistantForm
 from delegate.mixins import PdfResponseMixin
+from delegate.models import QueuedOrder
 from marketing.mixins import GeneratePaginationList
 from registration.forms import ConferenceSelectForm, ConferenceEditForm
 from registration.models import RegDetails, EventOptions
@@ -1360,7 +1361,30 @@ class SelectActiveConference(View):
 
 
 class SubmitRegistration(View):
-    pass
+    def post(self, request, *args, **kwargs):
+        person = Person.objects.all()[0]
+        event = Event.objects.all()[Event.objects.all().count() - 1]
+        rep = User.objects.all()[0]
+        queued_order = QueuedOrder(
+            crm_person=person,
+            salutation='Mr.',
+            first_name='Donald',
+            last_name='Duck',
+            title='Quacker',
+            email1='donald@duck.com',
+            phone1='416-555-1212',
+            company_name='Disney on Ice',
+            address1='123 Main Street',
+            city='Disneyland',
+            state_prov='CA',
+            postal_code='99666',
+            conference=event,
+            registration_status='K',
+            registration_notes='Hard to understand this guy',
+            sales_credit=rep,
+        )
+        queued_order.save()
+        return HttpResponse()
 
 
 @login_required

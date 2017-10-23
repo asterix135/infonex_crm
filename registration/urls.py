@@ -7,7 +7,11 @@ app_name = 'registration'
 
 urlpatterns = [
     # BASE URLS
-    url(r'^$', views.index, name='index'),
+
+    url(r'^$',
+        login_required(views.Index.as_view()),
+        name='index'),
+
     url(r'^conference/$', views.add_edit_conference,
         name='conference'),
     url(r'^mass_mail$', views.mass_mail, name='mass_mail'),

@@ -17,22 +17,23 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
-
+from django.views.generic import ListView
 from django.views.generic.edit import FormView
+
 
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate
 
-from .forms import *
-from .mass_mail import MassMail
-from .models import *
-from .pdfs import *
 from crm.models import Person, Event
 from delegate.constants import *
-from delegate.models import QueuedOrders
+from delegate.models import QueuedOrder
 from infonex_crm.settings import BASE_DIR
+from registration.forms import *
+from registration.mass_mail import MassMail
 from registration.mixins import RegistrationPermissionMixin
+from registration.models import *
+from registration.pdfs import *
 
 
 ########################
@@ -134,6 +135,11 @@ def add_edit_conference(request):
 def index(request):
     return render(request, 'registration/index.html')
 
+
+class Index(RegistrationPermissionMixin, ListView):
+    context_object_name = 'queue_list'
+    model = QueuedOrder
+    template_name = 'registration/index.html'
 
 @login_required
 def mass_mail(request):
@@ -564,6 +570,12 @@ def index_panel(request):
             'conference_select_form': conference_select_form,
             'mass_mail_options_form': mass_mail_options_form,
         }
+    elif request.GET['panel'] == 'queue':
+        response_url = 'registration/index_panels/queue_panel.html'
+        queue_list = QueuedOrder.objects.all()
+        context = {
+            'queue_list': queue_list,
+        }
 
     else:
         raise Http404('Invalid panel name')
@@ -960,7 +972,7 @@ class UpdateQueueCount(View):
 
     def get(self, request, *args, **kwargs):
         response_json = {
-            'count': QueuedOrders.objects.all().count()
+            'count': QueuedOrder.objects.all().count()
         }
         return JsonResponse(response_json)
 

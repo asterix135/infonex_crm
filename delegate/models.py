@@ -3,8 +3,13 @@ from django.db import models
 from registration.constants import STATE_PROV_TUPLE, REG_STATUS_OPTIONS, \
     PAYMENT_METHODS
 
-class QueuedOrders(models.Model):
+class QueuedOrder(models.Model):
     date_created = models.DateTimeField('date created', auto_now_add=True)
+    added_by = models.ForeignKey('auth.User',
+                                 blank=True,
+                                 null=True,
+                                 related_name='order_added_by',
+                                 on_delete=models.SET_NULL)
     crm_person = models.ForeignKey('crm.Person', blank=True, null=True,
                                    on_delete=models.SET_NULL)
     # fields for Registrant table
@@ -32,8 +37,11 @@ class QueuedOrders(models.Model):
                                          default='DU')
     registration_notes=models.TextField(blank=True, null=True)
     # fields for Invoice table
-    sales_credit = models.ForeignKey('auth.User', on_delete=models.SET_NULL,
-                                     blank=True, null=True)
+    sales_credit = models.ForeignKey('auth.User',
+                                     on_delete=models.SET_NULL,
+                                     blank=True,
+                                     null=True,
+                                     related_name='reg_sales_credit')
     pre_tax_price = models.DecimalField(max_digits=10, decimal_places=2,
                                         null=True, blank=True)
     gst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0.05,

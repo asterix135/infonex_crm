@@ -1,5 +1,10 @@
 // Javascript for territory.html page
+if(performance.navigation.type == 2){
+   location.reload(true);
+}
+
 $(document).ready(function() {
+
   var eventAssignmentId = $('#my-event-assignment').val();
   var blankFormSubmitOK = true;
 

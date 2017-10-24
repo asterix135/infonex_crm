@@ -1,6 +1,5 @@
 {% load staticfiles %}
 
-<script type="text/javascript" src = "{% static 'delegate/javascript/queue.js' %}"></script>
 
 {% block content %}
 <div class="container-fluid fill">
@@ -67,9 +66,16 @@
       {% endfor %}
     </tbody>
   </table>
-
 </div>
-<div class="container">
+
+<div class="hidden">
+  <form action="" method="get">
+    {% csrf_token %}
+    <input type="hidden" name="salutation" value="foo" />
+  </form>
+</div>
+
+<div class="container hidden">
   <div class="row col-sm-12">
     <button type="button" id="spam-add" class="btn btn-default col-sm-4">Spam Adds</button>
   </div>

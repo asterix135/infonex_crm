@@ -16,7 +16,8 @@ from django.http import HttpResponse, JsonResponse, Http404, \
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
-from django.views.generic import FormView, ListView
+from django.views.generic import FormView, ListView, TemplateView
+from django.views.generic.edit import ModelFormMixin
 
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -353,8 +354,181 @@ def confirmation_details(request):
     return render(request, 'delegate/confirmation_details.html', context)
 
 
-class Index():
-    pass
+class Index(RegistrationPermissionMixin, TemplateView):
+    template_name = 'delegate/index.html'
+    redirect_url = '/registration/'
+    all_forms = {
+        'new_delegate_form': NewDelegateForm,
+        'company_select_form': CompanySelectForm,  # 1/4 set in _with_registrant
+        'new_company_form': NewCompanyForm,
+        'assistant_form': AssistantForm,
+        'conference_select_form': ConferenceSelectForm, # set in _set_conference_details
+        'reg_details_form': RegDetailsForm,
+        'options_form': OptionsForm,  # set in _set_conference_details
+    }
+    additional_context = {}
+
+    def _check_for_existing_regdetails(self):
+        try:
+            self.current_registration = RegDetails.objects.get(
+                registrant=self.registrant, conference=self.conference
+            )
+            self.action_type = 'edit'
+        except RegDetails.DoesNotExist:
+            self.current_registration = None
+
+    def _instantiate_model_form(self, form_klass_name, instance):
+        if instance is not None:
+            self.all_forms[form_klass_name] = self.all_forms[form_klass_name](
+                instance=instance
+            )
+        else:
+            self.all_forms[form_klass_name] = self.all_form[form_klass_name]()
+
+    def _initialize_existing_reg(self):
+        self.action_type = 'edit'
+        self.current_registration = get_object_or_404(
+            RegDetails, pk=request.GET['reg_id']
+        )
+        self.conference = self.current_registration.conference
+        try:
+            crm_id = current_registration.registrant.crm_person.pk
+            self.crm_match = Person.objects.get(pk=crm_id)
+        except (AttributeError, Person.DoesNotExist):
+            self.crm_match = None
+        self._set_registrant(current_registration.registrant.pk)
+
+    def _initialize_new_reg(self, request):
+        self.action_type = 'new'
+        self.current_registration = None
+        self.conference = Event.objects.get(pk=request.GET['conf_id'])
+        crm_id = request.GET.get('crm_id', None)
+        registrant_id = request.GET.get('registrant_id', None)
+        if registrant_id in ('', None) and crm_id not in ('', None):
+            try:
+                self.crm_match = Person.objects.get(pk=crm_id)
+                if Registrants.objects.filter(crm_person=self.crm_match).exists():
+                    registrant_id = Registrant.objects.filter(
+                        crm_person=self.crm_match
+                    )
+            except Person.DoesNotExist:
+                self.crm_match = None
+        self._set_registrant(registrant_id)
+
+    def _initialize_queued_reg(self, request):
+        self.action_type = 'queue'
+        self.current_registration = None
+        queue_object = QueuedOrder.objects.get(pk=request.GET['queue_id'])
+        self.conference = queue_object.conference
+        self.crm_match = queue.object.crm_person
+        self._set_registrant(request.GET.get('registrant_id'), None)
+
+    def _main_setup(self):
+        if self.action_type=='queue':
+            self._set_details_with_queued()
+        elif self.registrant is not None:
+            self._set_details_with_registrant()
+        elif self.crm_person is not None:
+            self._set_details_with_crm_value()
+        else:
+            self._set_details_with_new()
+
+    def _regdata_for_registration(self):
+        reg_data = {
+            'register_date': self.current_registration.register_date,
+            'cancellation_date': self.current_registration.cancellation_date,
+            'registration_status': self.current_registration.registration_status,
+            'registration_notes': self.current_registration.registration_notes,
+        }
+        if hasattr(self.current_registration, 'invoice'):
+            invoice = self.current_registration.invoice
+            reg_data['sales_credit'] = invoice.sales_credit
+            reg_data['pre_tax_price'] = invoice.pre_tax_price
+            reg_data['gst_rate'] = invoice.gst_rate
+            reg_data['hst_rate'] = invoice.hst_rate
+            reg_data['qst_rate'] = invoice.qst_rate
+            reg_data['payment_date'] = invoice.payment_date
+            reg_data['payment_method'] = invoice.payment_method
+            reg_data['fx_conversion_rate'] = invoice.fx_conversion_rate
+            reg_data['invoice_notes'] = invoice.invoice_notes
+            reg_data['sponsorship_description'] = invoice.sponsorship_description
+        else:
+            if self.company.gst_hst_exempt:
+                reg_data['gst_rate'] = 0
+                reg_data['hst_rate'] = 0
+            if self.company.qst_exempt:
+                reg_data['qst_rate'] = 0
+        return reg_data
+
+    def _set_conference_details(self):
+        self.all_forms['options_form'] = OptionsForm(self.conference)
+        self.all_forms['conference_select_form'] = ConferenceSelectForm(
+            {'event': self.conference.pk }
+        )
+
+    def _set_details_with_registrant(self):
+        self.company = self.registrant.company
+        self._instantiate_model_form('company_select_form', self.company)
+        self.assistant = registrant.assistant
+
+
+    def _set_details_with_crm_value(self):
+        self.assistant = None
+        pass
+
+    def _set_details_with_queued(self):
+        pass
+
+    def _set_details_with_new(self):
+        self.assistant = None
+
+    def _set_initial(self, request):
+        if 'reg_id' in request.GET:
+            self._initialize_existing_reg()
+        elif 'queue_id' in request.GET:
+            self._initialize_queued_reg(request)
+        elif 'conf_id' in request.GET:
+            self._initialize_new_reg(request)
+        else:
+            return 'redirect'
+
+    def _set_registrant(self, registrant_id):
+        if registrant_id not in ('', None):
+            self.registrant = Registrants.objects.get(pk=registrant_id)
+            self.data_source = 'delegate'
+            self._check_for_existing_regdetails()
+        else:
+            self.registrant = None
+            self.current_registration = None
+
+    def get(self, request, *args, **kwargs):
+        # Initialize variables based on type of registration requested
+        if self._set_initial(request) is not None:
+            return redirect(self.redirect_url)
+        # initialize forms that are the same no matter what
+        self._set_conference_details()
+        # set most of the rest of the details
+        self._main_setup()
+
+        # Form instantiation can be done with self variables in a new method
+
+        return super(Index, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(Index, self).get_context_data(**kwargs)
+        context['action_type'] = self.action_type
+        context['conference'] = self.conference
+        context['current_registration'] = self.current_registration
+        context['registrant'] = self.registrant
+        context['company'] = self.company
+        context['conference_options'] = self.conference.eventoptions_set.all()
+
+        context['paid_status_values'] = PAID_STATUS_VALUES
+        context['cxl_values'] = CXL_VALUES
+        context['non_invoice_values'] = NON_INVOICE_VALUES
+        context.update(self.all_forms)
+
+        return context
 
 
 @login_required
@@ -515,7 +689,7 @@ def index(request):
         'conference_select_form': conference_select_form,
         'reg_details_form': reg_details_form,
         'conference': conference,
-        'conference_options': conference_options,  # remove when form working
+        'conference_options': conference_options,
         'options_form': options_form,
         'registrant': registrant,
         'company': company,

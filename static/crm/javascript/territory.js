@@ -1,4 +1,6 @@
 // Javascript for territory.html page
+
+// Force page to reload on back button
 if(performance.navigation.type == 2){
    location.reload(true);
 }

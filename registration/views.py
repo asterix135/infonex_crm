@@ -1067,6 +1067,11 @@ def get_admin_reports(request):
                 str(event.number) + '.pdf"'
             response['Content-Disposition'] = file_details
             pdf = report.delegate_count()
+        elif report_type == 'Speaker':
+            file_details = destination = '; filename=speaker_list_' + \
+                str(event.number) + '.pdf"'
+            response['Content-Disposition'] = file_details
+            pdf = report.speaker_list()
         else:  # Invalid report type
             buffr.close()
             raise Http404('Invalid report type')

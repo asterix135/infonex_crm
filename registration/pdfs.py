@@ -967,15 +967,126 @@ class ConferenceReportPdf:
         pdf = buffer.getvalue()
         return pdf
 
+    def speaker_list(self):
+        report_name = 'Faculty List'
+        buffer = self._buffer
+        style = getSampleStyleSheet()
+        doc = SimpleDocTemplate(buffer,
+                                rightMargin=inch/2,
+                                leftMargin=inch/2,
+                                topMargin=1.0*inch,
+                                bottomMargin=0.75*inch,
+                                pagesize=self._pagesize)
+        elements = []
+        table_data = []
+        header_style = ParagraphStyle(
+            name='headerStyle',
+            fontName='Helvetica-Bold',
+            fontSize=20,
+            leading=24,
+            alignment=TA_CENTER,
+        )
+        subheader_style = ParagraphStyle(
+            name="subHeadStyle",
+            fontName='Helvetica-Bold',
+            fontSize=16,
+            leading=19,
+            alignment=TA_CENTER,
+        )
+        speakerStyle = ParagraphStyle(
+            name='speakerDetailStyle',
+            fontName='Helvetica',
+            fontSize=11,
+            leading=13,
+            alignment=TA_LEFT,
+        )
+        sorts = ['registrant__last_name',
+                 'registrant__first_name',
+                 'registrant__company__name']
+        reg_list = self._event.regdetails_set.filter(
+            registration_status='K'
+        ).order_by(*sorts)
+        speaker_row = []
+        row_heights = []
+        row_height = 0.2 * inch
+        for reg in reg_list:
+            speaker = '<b>' + reg.registrant.first_name + \
+                    ' ' + reg.registrant.last_name + '</b><br/>'
+            if reg.registrant.title:
+                speaker += reg.registrant.title + '<br/>'
+            if reg.registrant.company.name:
+                speaker += reg.registrant.company.name + '<br/>'
+            if reg.registrant.company.address1:
+                speaker += reg.registrant.company.address1 + '<br/>'
+            if reg.registrant.company.address2:
+                speaker += reg.registrant.company.address2 + '<br/>'
+            city_line = ''
+            if reg.registrant.company.city:
+                city_line += reg.registrant.company.city
+            if reg.registrant.company.state_prov:
+                if len(city_line):
+                    city_line += ', ' + reg.registrant.company.state_prov
+                else:
+                    city_line += reg.registrant.company.state_prov
+            if reg.registrant.company.postal_code and len(city_line):
+                city_line += ' ' + reg.registrant.company.postal_code
+            if len(city_line):
+                speaker += city_line + '<br/>'
+            if reg.registrant.phone1:
+                speaker += '<b>Phone: </b>' + reg.registrant.phone1 + '<br/>'
+            if reg.registrant.email1:
+                speaker += '<b>Email: </b>' + reg.registrant.email1 + '<br/>'
+            speaker = Paragraph(speaker, speakerStyle)
+            cell_height = speaker.wrap(doc.width/2.0, inch * 9.0)[1]
+            if cell_height > row_height:
+                row_height = cell_height
+            speaker_row.append(speaker)
+            if len(speaker_row) == 2:
+                table_data.append(speaker_row)
+                speaker_row = []
+                row_heights.append(row_height + 18)
+                row_height = 0.2 * inch
+        if len(speaker_row) == 1:  # Case with unever # of speakers
+            table_data.append(speaker_row)
+            row_heights.append(row_height + 18)
+        if len(table_data) > 0:
+            table = Table(table_data,
+                          colWidths=[doc.width/2.0] * 2,
+                          rowHeights = row_heights)
+            table.setStyle(TableStyle([
+                ('VALIGN', (0,0), (-1, -1), 'TOP'),
+                ('TOPPADDING', (0,0), (-1, -1), inch),
+                ('LEFTPADDING', (0,0), (-1, -1), cm),
+                ('RIGHTPADDING', (0,0), (-1, -1), cm),
+                ('BOTTOMPADDING', (0,0), (-1, -1), cm),
+            ]))
+            elements.append(table)
+        doc.build(elements,
+                  onFirstPage=partial(self._header,
+                                      event=self._event,
+                                      report_title=report_name,
+                                      confidential=False,
+                                      offset=0.15),
+                  onLaterPages=partial(self._header,
+                                      event=self._event,
+                                      report_title=report_name,
+                                      confidential=False,
+                                      offset=0.15),
+                  canvasmaker=NumberedCanvas,
+                  )
+
+        pdf = buffer.getvalue()
+        return pdf
+
 
     @staticmethod
-    def _header(canvas, doc, event, report_title):
+    def _header(canvas, doc, event, report_title, confidential=True, offset=0):
         canvas.saveState()
         styles = getSampleStyleSheet()
         canvas.drawImage(LOGO_PATH, 0.45 * inch, PAGE_HEIGHT - inch * 0.75,
                          height=0.5*inch, width=1.875*inch)
         canvas.setFont('Helvetica-Bold', 18)
-        y_coord = PAGE_HEIGHT - inch * 0.45
+        y_coord = PAGE_HEIGHT - inch * 0.45 - offset * inch
         canvas.drawString(2.75 * inch, y_coord, report_title)
         canvas.setFont('Helvetica', 16)
         event_title = str(event.number) + ' - ' + event.title
@@ -991,10 +1102,11 @@ class ConferenceReportPdf:
         event_venue += event.city + ', ' + event.state_prov
         y_coord -= 14
         canvas.drawString(2.75 * inch, y_coord, event_venue)
-        canvas.setFont('Helvetica', 16)
-        y_coord -= 30
-        canvas.drawString(2.75 * inch, y_coord, 'Do Not Copy or Distribute')
-        canvas.restoreState()
+        if confidential:
+            canvas.setFont('Helvetica', 16)
+            y_coord -= 30
+            canvas.drawString(2.75 * inch, y_coord, 'Do Not Copy or Distribute')
+            canvas.restoreState()
 
     @staticmethod
     def _unpaid_list_header(canvas, doc, event):

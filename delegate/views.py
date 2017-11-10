@@ -10,7 +10,8 @@ from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q, Max, Count
-from django.forms.models import model_to_dict
+from django.forms.forms import DeclarativeFieldsMetaclass  # For isinstance
+from django.forms.models import model_to_dict, ModelFormMetaclass
 from django.http import HttpResponse, JsonResponse, Http404, \
         HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -359,13 +360,14 @@ class Index(RegistrationPermissionMixin, TemplateView):
     redirect_url = '/registration/'
     all_forms = {
         'new_delegate_form': NewDelegateForm,
-        'company_select_form': CompanySelectForm,  # 1/4 set in _with_registrant
+        'company_select_form': CompanySelectForm,  # 3/4 set in _with_registrant, _with_crm_value, _with_new,
         'new_company_form': NewCompanyForm,
         'assistant_form': AssistantForm,
         'conference_select_form': ConferenceSelectForm, # set in _set_conference_details
         'reg_details_form': RegDetailsForm,
         'options_form': OptionsForm,  # set in _set_conference_details
     }
+    queued_order_id = None
     additional_context = {}
 
     def _check_for_existing_regdetails(self):
@@ -377,13 +379,25 @@ class Index(RegistrationPermissionMixin, TemplateView):
         except RegDetails.DoesNotExist:
             self.current_registration = None
 
-    def _instantiate_model_form(self, form_klass_name, instance):
+    def _instantiate_model_form(self, form_klass_name,
+                                instance=None, initial=None):
         if instance is not None:
             self.all_forms[form_klass_name] = self.all_forms[form_klass_name](
                 instance=instance
             )
+        elif initial is not None:
+            self.all_forms[form_klass_name] = self.all_forms[form_klass_name](
+                initial=initial
+            )
         else:
-            self.all_forms[form_klass_name] = self.all_form[form_klass_name]()
+            self.all_forms[form_klass_name] = self.all_forms[form_klass_name]()
+
+    def _instantiate_remaining_forms(self):
+        for form_name in self.all_forms:
+            if not isinstance(self.all_forms[form_name], (
+                DeclarativeFieldsMetaclass, ModelFormMetaclass
+            )):
+                self._instantiate_model_form(form_name)
 
     def _initialize_existing_reg(self):
         self.action_type = 'edit'
@@ -418,41 +432,54 @@ class Index(RegistrationPermissionMixin, TemplateView):
     def _initialize_queued_reg(self, request):
         self.action_type = 'queue'
         self.current_registration = None
-        queue_object = QueuedOrder.objects.get(pk=request.GET['queue_id'])
-        self.conference = queue_object.conference
-        self.crm_match = queue.object.crm_person
+        self.queue_object = QueuedOrder.objects.get(pk=request.GET['queue_id'])
+        self.conference = self.queue_object.conference
+        self.crm_match = self.queue.object.crm_person
         self._set_registrant(request.GET.get('registrant_id'), None)
 
     def _main_setup(self):
         if self.action_type=='queue':
-            self._set_details_with_queued()
+            reg_data = self._set_details_with_queued()
+            self.data_source = 'queue'
         elif self.registrant is not None:
-            self._set_details_with_registrant()
+            reg_data = self._set_details_with_registrant()
+            self.data_source = 'delegate'
         elif self.crm_person is not None:
-            self._set_details_with_crm_value()
+            reg_data = self._set_details_with_crm_value()
+            self.data_source = 'crm'
         else:
-            self._set_details_with_new()
+            reg_data = self._set_details_with_new()
+            self.data_source = 'new'
+        self._instantiate_model_form('reg_details_form', initial=reg_data)
 
     def _regdata_for_registration(self):
-        reg_data = {
-            'register_date': self.current_registration.register_date,
-            'cancellation_date': self.current_registration.cancellation_date,
-            'registration_status': self.current_registration.registration_status,
-            'registration_notes': self.current_registration.registration_notes,
-        }
-        if hasattr(self.current_registration, 'invoice'):
-            invoice = self.current_registration.invoice
-            reg_data['sales_credit'] = invoice.sales_credit
-            reg_data['pre_tax_price'] = invoice.pre_tax_price
-            reg_data['gst_rate'] = invoice.gst_rate
-            reg_data['hst_rate'] = invoice.hst_rate
-            reg_data['qst_rate'] = invoice.qst_rate
-            reg_data['payment_date'] = invoice.payment_date
-            reg_data['payment_method'] = invoice.payment_method
-            reg_data['fx_conversion_rate'] = invoice.fx_conversion_rate
-            reg_data['invoice_notes'] = invoice.invoice_notes
-            reg_data['sponsorship_description'] = invoice.sponsorship_description
+        if self.current_registration:
+            reg_data = {
+                'register_date': self.current_registration.register_date,
+                'cancellation_date': self.current_registration.cancellation_date,
+                'registration_status': self.current_registration.registration_status,
+                'registration_notes': self.current_registration.registration_notes,
+            }
+            if hasattr(self.current_registration, 'invoice'):
+                invoice = self.current_registration.invoice
+                reg_data['sales_credit'] = invoice.sales_credit
+                reg_data['pre_tax_price'] = invoice.pre_tax_price
+                reg_data['gst_rate'] = invoice.gst_rate
+                reg_data['hst_rate'] = invoice.hst_rate
+                reg_data['qst_rate'] = invoice.qst_rate
+                reg_data['payment_date'] = invoice.payment_date
+                reg_data['payment_method'] = invoice.payment_method
+                reg_data['fx_conversion_rate'] = invoice.fx_conversion_rate
+                reg_data['invoice_notes'] = invoice.invoice_notes
+                reg_data['sponsorship_description'] = invoice.sponsorship_description
+            else:
+                if self.company.gst_hst_exempt:
+                    reg_data['gst_rate'] = 0
+                    reg_data['hst_rate'] = 0
+                if self.company.qst_exempt:
+                    reg_data['qst_rate'] = 0
         else:
+            reg_data = {}
             if self.company.gst_hst_exempt:
                 reg_data['gst_rate'] = 0
                 reg_data['hst_rate'] = 0
@@ -467,20 +494,91 @@ class Index(RegistrationPermissionMixin, TemplateView):
         )
 
     def _set_details_with_registrant(self):
+        # set company and company_select_form
         self.company = self.registrant.company
-        self._instantiate_model_form('company_select_form', self.company)
+        self._instantiate_model_form('company_select_form',
+                                     instance=self.company)
+        # set assistant
         self.assistant = registrant.assistant
-
+        # get data for new_delegate_form
+        return self._regdata_for_registration()
 
     def _set_details_with_crm_value(self):
+        # Set company and company_select_form
+        self.company = None
+        self._instantiate_model_form(
+            'company_select_form',
+            initial={
+                'name': self.crm_match.company,
+                'name_for_badges': self.crm_match.company[:30],
+                'city': self.crm_match.city,
+            }
+        )
+        # Set assistant
         self.assistant = None
-        pass
+        # get data for new_delegate_form
+        # tokenize name into first_name/last_name guesses
+        name_tokens = self.crm_match.name.split()
+        if len(name_tokens) == 1:
+            first_name_guess = ''
+            last_name_guess = name_tokens[0]
+        elif len(name_tokens) > 1:
+            first_name_guess = name_tokens[0]
+            last_name_guess = ' '.join(name_tokens[1:])
+        else:
+            first_name_guess = last_name_guess = ''
+        # return dict for form's initial values
+        return {
+            'first_name': first_name_guess,
+            'last_name': last_name_guess,
+            'title': crm_match.title,
+            'email1': crm_match.email,
+            'email2': crm_match.email_alternate,
+            'phone1': crm_match.phone,
+            'phone2': crm_match.phone_alternate,
+            'contact_option': 'D'
+        }
+
+    def _guess_company(self):
+        company_list = Company.objects.filter(name=self.queue_object.name)
+        if company_list.count() == 0:
+            company_initial = {
+                'name': self.queue_object.name,
+                'name_for_badges': self.queue_object.name[:30],
+                'address1': self.queue_object.address1,
+
+            }
 
     def _set_details_with_queued(self):
-        pass
+        # try setting company
+        if self.registrant:
+            self.company = self.registrant.company
+        else:
+            self.company = self._guess_company()
+
+
+
+
+        # set company and company_select_form
+        self.company = None
+
+        self._instantiate_model_form('company_select_form', instance=self.company, initial=None)
+
+        # set assistant
+        self.assistant = None
+
+        # get data for new_delegate_form
+        form_data = {}
+        return form_data
 
     def _set_details_with_new(self):
+        # Set company and company_select_form
+        self.company = None
+        self._instantiate_model_form('company_select_form')
+        # Set assistant
         self.assistant = None
+        # get data for new_delegate_form (empty dict)
+        return {}
 
     def _set_initial(self, request):
         if 'reg_id' in request.GET:
@@ -510,8 +608,8 @@ class Index(RegistrationPermissionMixin, TemplateView):
         # set most of the rest of the details
         self._main_setup()
 
-        # Form instantiation can be done with self variables in a new method
-
+        # Instantiate any forms not yet instantiated
+        self._instantiate_remaining_forms()
         return super(Index, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -522,6 +620,7 @@ class Index(RegistrationPermissionMixin, TemplateView):
         context['registrant'] = self.registrant
         context['company'] = self.company
         context['conference_options'] = self.conference.eventoptions_set.all()
+        context['queued_order_id'] = self.queued_order_id
 
         context['paid_status_values'] = PAID_STATUS_VALUES
         context['cxl_values'] = CXL_VALUES

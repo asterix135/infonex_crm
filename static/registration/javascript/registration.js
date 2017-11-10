@@ -86,6 +86,7 @@ $(document).ready(function(){
         case 'Delegate':
         case 'Registration':
         case 'Phone':
+        case "Speaker":
           enableAllRadios();
           break;
         case 'NoName':
@@ -112,10 +113,6 @@ $(document).ready(function(){
           enableAllRadios();
           disableSort();
           disableDataExport();
-          break;
-        case "Speaker":
-          enableAllRadios();
-          disablePdf();
           break;
       }
   });

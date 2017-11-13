@@ -61,6 +61,10 @@ urlpatterns = [
     url(r'^get_recent_contacts/$', views.get_recent_contacts,
         name='get_recent_contacts'),
 
+    url(r'^group_flag_update/$',
+        login_required(views.GroupFlagUpdate.as_view()),
+        name='group_flag_update'),
+
     url(r'^load_staff_category_selects/$',
         login_required(views.LoadStaffCategorySelects.as_view()),
         name='load_staff_category_selects'),

@@ -1,5 +1,7 @@
 TODO: View list of companies in Territory view
 
+TODO: Horizontal renderer is obsolete - need to move to template renderer
+
 TODO: Add Province select criterion to master select stuff
       - this probably requires first changing views over to CBVs
 

@@ -11,14 +11,6 @@ from delegate.forms import set_field_html_name, RegDetailsForm
 
 
 #################
-# Renderers
-#################
-class HorizontalRadioRenderer(forms.RadioSelect.renderer):
-    def render(self):
-        return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
-
-
-#################
 # Model fields
 #################
 class EventAssignmentChoiceField(ModelChoiceField):
@@ -314,7 +306,6 @@ class PersonTerritorySelectMethodForm(forms.ModelForm):
         self.fields['filter_master_selects'] = forms.ChoiceField(
             choices=PERSON_MASTER_RELATION_CHOICES,
             widget=forms.RadioSelect(
-                renderer=HorizontalRadioRenderer,
                 attrs={'class': 'radio-inline'}
             ),
         )

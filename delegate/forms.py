@@ -145,18 +145,29 @@ class CompanySelectForm(forms.ModelForm):
             ),
         }
     def clean_name(self):
-        return self.cleaned_data.get('name', '').strip()
+        if self.cleaned_data.get('name', ''):
+            return self.cleaned_data.get('name', '').strip()
+        return self.cleaned_data.get('name')
     def clean_name_for_badges(self):
-        return self.cleaned_data.get('name_for_badges', '').strip()
+        if self.cleaned_data.get('name_for_badges'):
+            return self.cleaned_data.get('name_for_badges', '').strip()
+        return self.cleaned_data.get('name_for_badges')
     def clean_city(self):
-        return self.cleaned_data.get('city', '').strip()
+        if self.cleaned_data.get('city', ''):
+            return self.cleaned_data.get('city', '').strip()
+        return self.cleaned_data.get('city')
     def clean_country(self):
-        return self.cleaned_data.get('country', '').strip()
+        if self.cleaned_data.get('country', ''):
+            return self.cleaned_data.get('country', '').strip()
+        return self.cleaned_data.get('country')
     def clean_postal_code(self):
-        pc = self.cleaned_data.get('postal_code', '').strip()
-        if re.match(r'\b\w\d\w\d\w\d\b', pc):
-            mtch = re.match(r'\b\w\d\w\d\w\d\b', pc).group(0)
-            pc = mtch[:3] + ' ' + mtch[-3:]
+        if self.cleaned_data.get('postal_code', ''):
+            pc = self.cleaned_data.get('postal_code', '').strip()
+            if re.match(r'\b\w\d\w\d\w\d\b', pc):
+                mtch = re.match(r'\b\w\d\w\d\w\d\b', pc).group(0)
+                pc = mtch[:3] + ' ' + mtch[-3:]
+        else:
+            pc = self.cleaned_data.get('postal_code')
         return pc
 
 
@@ -355,17 +366,29 @@ class AssistantForm(forms.ModelForm):
         }
 
     def clean_salutation(self):
-        return self.cleaned_data.get('salutation', '').strip()
+        if self.cleaned_data.get('salutation', ''):
+            return self.cleaned_data.get('salutation', '').strip()
+        return self.cleaned_data.get('salutation', '')
     def clean_first_name(self):
-        return self.cleaned_data.get('first_name', '').strip()
+        if self.cleaned_data.get('first_name', ''):
+            return self.cleaned_data.get('first_name', '').strip()
+        return self.cleaned_data.get('first_name', '')
     def clean_last_name(self):
-        return self.cleaned_data.get('last_name', '').strip()
+        if self.cleaned_data.get('last_name', ''):
+            return self.cleaned_data.get('last_name', '').strip()
+        return self.cleaned_data.get('last_name', '')
     def clean_title(self):
-        return self.cleaned_data.get('title', '').strip()
+        if self.cleaned_data.get('title', ''):
+            return self.cleaned_data.get('title', '').strip()
+        return self.cleaned_data.get('title', '')
     def clean_email(self):
-        return self.cleaned_data.get('email', '').strip()
+        if self.cleaned_data.get('email', ''):
+            return self.cleaned_data.get('email', '').strip()
+        return self.cleaned_data.get('email', '')
     def clean_phone(self):
-        return self.cleaned_data.get('phone', '').strip()
+        if self.cleaned_data.get('phone', ''):
+            return self.cleaned_data.get('phone', '').strip()
+        return self.cleaned_data.get('phone', '')
 
 
 class OptionsForm(forms.Form):

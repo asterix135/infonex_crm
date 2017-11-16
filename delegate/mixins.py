@@ -1,14 +1,17 @@
 import re
 
 from django.contrib.auth.models import User
+from django.db.models import Count, Q
 from django.http import HttpResponse
 from django.utils import timezone
 
 from crm.mixins import ChangeRecord
-from delegate.constants import NON_INVOICE_VALUES
+from delegate.constants import NON_INVOICE_VALUES, STOPWORDS, \
+        SEARCH_SUBSTITUTIONS
 from delegate.forms import AssistantForm, CompanySelectForm, NewDelegateForm, \
         RegDetailsForm
-from registration.models import Assistant, Invoice, RegDetails, RegEventOptions
+from registration.models import Assistant, Company, Invoice, RegDetails, \
+        RegEventOptions
 
 class Substitution():
 
@@ -214,3 +217,186 @@ class PdfResponseMixin():
         file_details = 'inline; filename="{0}.pdf"'.format(self.get_pdf_name())
         response.write(pdf)
         return response
+
+
+class GuessCompanyMixin():
+
+    def _get_match_1(self, company_name, postal_code, city, search_by_name_first):
+        if search_by_name_first and postal_code in ('', None) and \
+                city in ('', None):
+            return Company.objects.filter(name__iexact=company_name)
+        if search_by_name_first and city not in ('', None):
+            return Company.objects.filter(name__iexact=company_name,
+                                          city__iexact=city)
+        return Company.objects.filter(name__iexact=company_name,
+                                      city__iexact=city)
+
+    def _get_match_2(self, company_name, search_by_name_first, city, postal_code):
+        match2 = self._iteratively_replace_and_guess_name(company_name)
+        if search_by_name_first and city not in ('', None):
+            return match2.filter(city__icontains=city)
+        if postal_code not in ('', None) or not search_by_name_first:
+            return match2.filter(postal_code__iexact=postal_code)
+        return match2
+
+    def _get_weaker_matches(self, company_name, search_by_name_first, city,
+                            postal_code, match1, match2):
+        # check for companies containing name as is
+        match3 = Company.objects.filter(name__icontains=company_name)
+        if match3.count() > 0:
+            match3 = match3.exclude(id__in=match1).exclude(id__in=match2)
+            ordered_list = self._order_list_by_registrants(match3)
+            self.company_suggest_list.extend(list(ordered_list))
+        # set up stuff for subsequent searches
+        if search_by_name_first and postal_code in ('', None):
+            match_base = Company.objects.all()
+        else:
+            match_base = Company.objects.filter(postal_code=postal_code)
+        match4 = Company.objects.none()
+        match5 = Company.objects.none()
+        # first try trigrams
+        if len(company_name.split()) > 3 and len(self.company_suggest_list) < 15:
+            queries = []
+            trigram_list = zip(company_name.split(),
+                               company_name.split()[1:],
+                               company_name.split()[2:])
+            for trigram in trigram_list:
+                if trigram[0] not in STOPWORDS or trigram[1] not in STOPWORDS \
+                    or trigram[2] not in STOPWORDS:
+                    search_term = ' '.join(trigram)
+                    queries.append(Q(name__icontains=search_term))
+            if len(queries) > 0:
+                query = queries.pop()
+                for item in queries:
+                    query |= item
+                match4 = match_base.filter(query)
+                match4 = match4.exclude(id__in=match1).exclude(id__in=match2). \
+                    exclude(id__in=match3)
+                ordered_list = self._order_list_by_registrants(match4)
+                self.company_suggest_list.extend(list(
+                    ordered_list[:15-len(self.company_suggest_list)]
+                ))
+
+        # next try bigrams
+        if len(company_name.split()) > 2 and len(self.company_suggest_list) < 15:
+            queries = []
+            bigram_list = zip(company_name.split(),
+                              company_name.split()[1:])
+            for bigram in bigram_list:
+                if bigram[0] not in STOPWORDS or bigram[1] not in STOPWORDS:
+                    search_term = ' '.join(bigram)
+                    queries.append(Q(name__icontains=search_term))
+            if len(queries) > 0:
+                query = queries.pop()
+                for item in queries:
+                    query |= item
+                match5 = match_base.filter(query)
+                match5 = match5.exclude(id__in=match1).exclude(id__in=match2). \
+                    exclude(id__in=match3).exclude(id__in=match4)
+                ordered_list = self._order_list_by_registrants(match5)
+                self.company_suggest_list.extend(list(
+                    ordered_list[:15-len(self.company_suggest_list)]
+                ))
+
+        # finally try keywords
+        if len(self.company_suggest_list) < 15:
+            queries = []
+            name_tokens = [x for x in company_name.split() if x not in STOPWORDS]
+            for token in name_tokens:
+                queries.append(Q(name__icontains=token))
+            if len(queries) > 0:
+                query = queries.pop()
+                for item in queries:
+                    query |= item
+                match6 = match_base.filter(query)
+                match6 = match6.exclude(id__in=match1).exclude(id__in=match2). \
+                    exclude(id__in=match3).exclude(id__in=match4). \
+                    exclude(id__in=match5)
+                ordered_list = self._order_list_by_registrants(match6)
+                self.company_suggest_list.extend(list(
+                    ordered_list[:15-len(self.company_suggest_list)]
+                ))
+
+    def _iteratively_replace_and_guess_name(self, company_name):
+        alternate_names = []
+        name_with_all_replacements1 = company_name
+        name_with_all_replacements2 = company_name
+        for substitution in SEARCH_SUBSTITUTIONS:
+            regex1 = re.compile(r'\b' + substitution[0].lower() + r'\b')
+            regex2 = re.compile(r'\b' + substitution[1].lower() + r'\b')
+            if regex1.search(company_name):
+                alternate_names.append(
+                    regex1.sub(substitution[1], company_name)
+                )
+                name_with_all_replacements1 = regex1.sub(
+                    substitution[1], name_with_all_replacements1
+                )
+            if regex2.search(company_name):
+                alternate_names.append(
+                    regex2.sub(substitution[0], company_name)
+                )
+                name_with_all_replacements2 = regex2.sub(
+                    substitution[0], name_with_all_replacements2
+                )
+        if name_with_all_replacements1 != company_name:
+            alternate_names.append(name_with_all_replacements1)
+        if name_with_all_replacements2 != company_name:
+            alternate_names.append(name_with_all_replacements2)
+        queries = []
+        for name in alternate_names:
+            if len(name) > 2:
+                queries.append(Q(name__icontains=name))
+            else:
+                queries.append(Q(name__iexact=name))
+        if len(queries) > 0:
+            query = queries.pop()
+            for item in queries:
+                query |= item
+            return Company.objects.filter(query)
+        return Company.objects.none()
+
+    def _order_list_by_registrants(self, queryset):
+        return queryset.annotate(
+            num_customers=Count('registrants')
+        ).order_by('-num_customers')
+
+    def guess_company(self, request, search_by_name_first=False):
+        """
+        Returns company_best_guess and sets self.company_suggest_list
+        """
+        # Set empty variables to be returned if nothing found or added
+        company_best_guess = None
+        self.company_suggest_list = []
+        # skip all this if we have a company match
+        if self.company:
+            return company_best_guess
+
+        # Extract search data from request.GET
+        company_name = ' '.join(request.GET['company_name'].lower().strip().split())
+        address1 = request.GET['address1']
+        city = request.GET['city']
+        postal_code = request.GET['postal_code']
+
+        # get most likely best match and - if exists - update reutrn variables
+        match1 = self._get_match_1(company_name, postal_code,
+                                   city, search_by_name_first)
+        if match1.count() > 0:
+            ordered_list = self._order_list_by_registrants(match1)
+            company_best_guess = ordered_list[0]
+            self.company_suggest_list.extend(list(ordered_list))
+
+        # check alternate names/spellings
+        match2 = self._get_match_2(company_name, search_by_name_first,
+                                   city, postal_code)
+        if match2.count() > 0:
+            ordered_list = self._order_list_by_registrants(match2)
+            if not company_best_guess:
+                company_best_guess = ordered_list[0]
+            self.company_suggest_list.extend(list(ordered_list))
+
+        # following searches only update self.company_suggest_list
+        # they aren't reliable to update company_best_guess
+        if len(self.company_suggest_list) < 15:
+            self._get_weaker_matches(company_name, search_by_name_first,
+                                     city, postal_code, match1, match2)
+        return company_best_guess

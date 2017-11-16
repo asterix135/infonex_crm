@@ -64,12 +64,14 @@ class Registrants(models.Model):
     speaker_bio = models.TextField(blank=True, null=True)
     created_by = models.ForeignKey('auth.User',
                                    default=1,
-                                   related_name='del_created_by')
+                                   related_name='del_created_by',
+                                   on_delete=models.SET_DEFAULT)
     date_created = models.DateTimeField('date created', auto_now_add=True)
     date_modified = models.DateTimeField('date modified', auto_now=True)
     modified_by = models.ForeignKey('auth.User',
                                     default=1,
-                                    related_name='del_modifed_by')
+                                    related_name='del_modifed_by',
+                                    on_delete=models.SET_DEFAULT)
 
     def __str__(self):
         return(self.first_name + ' ' + self.last_name + ', ' + self.company.name)
@@ -101,7 +103,8 @@ class RegDetails(models.Model):
     registration_notes = models.TextField(blank=True, null=True)
     created_by = models.ForeignKey('auth.User',
                                    default=1,
-                                   related_name='reg_created_by')
+                                   related_name='reg_created_by',
+                                   on_delete=models.SET_DEFAULT)
     date_created = models.DateTimeField('date created', auto_now_add=True)
     date_modified = models.DateTimeField('date modified', auto_now=True)
     modified_by = models.ForeignKey('auth.User',
@@ -119,7 +122,9 @@ class Invoice(models.Model):
         on_delete=models.CASCADE,
     )
     sales_credit = models.ForeignKey('auth.User',
-                                     related_name='sales_credit')
+                                     related_name='sales_credit',
+                                     default=1,
+                                     on_delete=models.SET_DEFAULT)
     pre_tax_price = models.DecimalField(max_digits=10, decimal_places=2,
                                         null=True, blank=True)
     gst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0.05,

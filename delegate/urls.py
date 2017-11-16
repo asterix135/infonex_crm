@@ -16,8 +16,12 @@ urlpatterns = [
         name='process_registration'),
 
     # AJAX CALLS
-    url(r'^company_crm_modal/$', views.company_crm_modal,
+    url(r'^company_crm_modal/$',
+        login_required(views.CompanyCrmModal.as_view()),
         name='company_crm_modal'),
+
+    # url(r'^company_crm_modal/$', views.company_crm_modal,
+    #     name='company_crm_modal'),
     url(r'^conf_has_regs/$', views.conf_has_regs, name='conf_has_regs'),
     url(r'^get_company_details/$', views.get_company_details,
         name='get_company_details'),

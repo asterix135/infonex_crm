@@ -129,10 +129,9 @@ class FilterPersonalTerritory():
     def _filter_customer(self, queryset):
         if self.request.session['filter_customer'] == 'True':
             return queryset.filter(registrants__isnull=False).distinct()
-        elif request.session['filter_customer'] == 'False':
+        if self.request.session['filter_customer'] == 'False':
             return queryset.filter(registrants__isnull=True)
-        else:
-            return queryset
+        return queryset
 
     def _filter_flag(self, queryset):
         event_assignment = EventAssignment.objects.get(

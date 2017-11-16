@@ -29,7 +29,7 @@ from crm.models import Person, Changes
 from crm.views import add_change_record
 from delegate.constants import *
 from delegate.forms import *
-from delegate.mixins import ProcessCompleteRegistration
+from delegate.mixins import ProcessCompleteRegistration, GuessCompanyMixin
 from delegate.models import QueuedOrder
 from delegate.pdfs import *
 from infonex_crm.settings import BASE_DIR
@@ -852,6 +852,15 @@ class ProcessRegistration(RegistrationPermissionMixin,
                 self.conference:
             return True
         else:
+            print('\n\ninvalid\n')
+            print('new_delegate_form: ', self.new_delegate_form.is_valid())
+            print('company_select_form: ', self.company_select_form.is_valid())
+            print('assistant: ', (not self.has_assistant_data or self.assistant_form.is_valid()))
+            print('reg_details: ', self.reg_details_form.is_valid())
+            print('company_error: ', self.company_error)
+            print('assistant_missing: ', self.assistant_missing)
+            print('option_selection_needed: ', self.option_selection_needed)
+            print('conference: ', self.conference is not None)
             return False
 
     def _get_assistant_form(self, request):
@@ -1109,6 +1118,157 @@ def conf_has_regs(request):
         'conference': conference,
     }
     return render(request, 'delegate/addins/conf_setup_modal.html', context)
+
+
+class CompanyCrmModal(RegistrationPermissionMixin, GuessCompanyMixin,
+                      TemplateView):
+    template_name = 'delegate/addins/company_crm_modal.html'
+
+    def check_for_params(self):
+        for param_name in ('company_id', 'crm_id', 'company_name', 'address1',
+                           'address2', 'city', 'state_prov', 'city',
+                           'state_prov', 'postal_code', 'first_name',
+                           'last_name', 'title', 'email'):
+            if param_name not in self.request.GET:
+                raise Http404('Invalid Request: Missing param ' + param_name)
+
+    def get(self, request, *args, **kwargs):
+        self.check_for_params()
+        return super(CompanyCrmModal, self).get(request, *args, **kwargs)
+
+    def get_company(self):
+        company_id = self.request.GET['company_id']
+        if company_id == 'new':
+            self.company = None
+        elif company_id != '':
+            try:
+                self.company = Company.objects.get(pk=company_id)
+            except Company.DoesNotExist:
+                self.company = None
+        else:
+            self.company = None
+        return self.company
+
+    def get_crm_match(self):
+        crm_id = self.request.GET['crm_id']
+        if crm_id == 'new':
+            self.crm_match = None
+        elif crm_id != '':
+            try:
+                self.crm_match = Person.objects.get(pk=crm_id)
+            except Person.DoesNotExist:
+                self.crm_match = None
+        else:
+            self.crm_match = None
+        return self.crm_match
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyCrmModal, self).get_context_data(**kwargs)
+        context['company'] = self.get_company()
+        context['crm_match'] = self.get_crm_match()
+        context['company_best_guess'] = self.guess_company(self.request)
+        context['company_suggest_list'] = self.company_suggest_list
+        context['crm_best_guess'] = self.guess_crm(self.request)
+        context['crm_suggest_list'] = self.crm_suggest_list
+        context['have_suggestions'] = len(self.crm_suggest_list) + \
+                len(self.company_suggest_list) > 0
+        return context
+
+    def guess_crm(self, request):
+        """
+        returns crm_best_guess and sets self.crm_suggest_list
+        """
+        # set empty variables to be returned if nothing found
+        crm_best_guess = self.crm_match
+        self.crm_suggest_list = []
+        # skip this whole thing if we have a match already
+        if self.crm_match:
+            return
+
+        # base variables
+        crm_best_guess = self.crm_match
+        self.crm_suggest_list = []
+        name_tokens = request.GET['company_name'].strip().split()
+        person_name = request.GET['first_name'].strip() + ' ' + \
+                request.GET['last_name'].strip()
+        email = request.GET['email'].strip()
+        company_name = ' '.join(request.GET['company_name'].lower().strip().split())
+        first_name = request.GET['first_name'].strip()
+        last_name = request.GET['last_name'].strip()
+
+        # Try to match on email
+        if email not in ('', None):
+            match1 = Person.objects.filter(email=email)
+        else:
+            match1 = Person.objects.none()
+        match0 = Person.objects.none()
+        if match1.count() == 1:
+            crm_best_guess = match1[0]
+        # deal with case where more than one Person matches on email
+        elif match1.count() > 1:
+            match0 = match1.filter(name=person_name)
+            if match0.count() > 1:
+                crm_best_guess = match0[0]
+                match0 = match0.filter(company=company_name)
+                if match0.count() > 0:
+                    crm_best_guess = match0[0]
+            elif match0.count() == 1:
+                crm_best_guess = match0[0]
+            else:
+                crm_best_guess = match1[0]
+        self.crm_suggest_list = match0 | match1
+        # Only proceed if we have fewer than 10 suggestions
+        if self.crm_suggest_list.count() > 9:
+            return crm_best_guess
+
+        # match on name and company
+        match2 = Person.objects.filter(name=person_name,
+                                       company=company_name)
+        if not crm_best_guess and match2.count() > 0:
+            crm_best_guess = match2[0]
+        self.crm_suggest_list = self.crm_suggest_list | match2
+        # only proceed if we have fewer than 10 suggestions
+        if self.crm_suggest_list.count() > 9:
+            return crm_best_guess
+
+        # match on either first or last name and company name
+        name_qs1 = Person.objects.filter(name__icontains=first_name,
+                                         company=company_name)
+        name_qs2 = Person.objects.filter(name__icontains=last_name,
+                                         company=company_name)
+        self.crm_suggest_list = self.crm_suggest_list | name_qs1 | name_qs2
+        # only proceed if we have fewer than 10 suggestions and company name
+        if self.crm_suggest_list.count() > 9 or len(name_tokens) == 0:
+            return crm_best_guess
+
+        # match on full name and company tokens
+        match3 = Person.objects.filter(name=person_name)
+        queries = []
+        for token in name_tokens:
+            queries.append(Q(company__icontains=token))
+        query = queries.pop()
+        for item in queries:
+            query |= item
+        match3 = match3.filter(query)
+        if match3.count() > 9:
+            self.crm_suggest_list = list(set(list(self.crm_suggest_list) +
+                                             list(match3[:10])))
+        else:
+            self.crm_suggest_list = self.crm_suggest_list | match3
+        # only proceed if we have fewer than 10 suggestions
+        if self.crm_suggest_list.count() > 9:
+            return crm_best_guess
+
+        match4a = Person.objects.filter(name__icontains=first_name)
+        match4b = Person.objects.filter(name__icontains=last_name)
+        match4 = match4a | match4b
+        match4 = match4.filter(company__icontains=company_name)
+        if match4.count() > 9:
+            self.crm_suggest_lsit = list(set(list(self.crm_suggest_list) +
+                                             list(match4[:10])))
+        else:
+            self.crm_suggest_list = self.crm_suggest_list | match4
+        return crm_best_guess
 
 
 @login_required

@@ -394,7 +394,7 @@ $(document).ready(function(){
         },
         success: function(data){
           $('#company-crm-modal').html(data);
-          var haveSuggestions = $('#have-suggestions', data).val();
+          // var haveSuggestions = $('#have-suggestions', data).val();
           var bestGuessCrmId = $('input[name="crm-select"]:checked', data).val();
           if (bestGuessCrmId == 'new') {
             var bestGuessCrmName = companyName;
@@ -404,17 +404,17 @@ $(document).ready(function(){
           $('#crm-new-name-label').html('<input id="crm_company_change_to_new" value="change" type="radio" name="crm-name-action" />' + companyName);
           $('#crm-stet-name-label').html('<input id="crm_company_do_not_change" value="stet" type="radio" name="crm-name-action" checked />' + bestGuessCrmName);
           $('#id_crm_company').val(bestGuessCrmName);
-          if (haveSuggestions) {
+          // if (haveSuggestions) {
             $('#companyCrmModal').modal('show');
-          } else {
-            if (!$('#crm-match-value').val()) {
-              $('#crm-match-value').val('new');
-            }
-            if (!$('#company-match-value').val()) {
-              $('#company-match-value').val('new');
-            }
-            $('#registration-form').submit();
-          }
+          // } else {
+          //   if (!$('#crm-match-value').val()) {
+          //     $('#crm-match-value').val('new');
+          //   }
+          //   if (!$('#company-match-value').val()) {
+          //     $('#company-match-value').val('new');
+          //   }
+          //   $('#registration-form').submit();
+          // }
         }
       });
     } else {

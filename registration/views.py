@@ -1068,7 +1068,7 @@ def get_admin_reports(request):
             response['Content-Disposition'] = file_details
             pdf = report.delegate_count()
         elif report_type == 'Speaker':
-            file_details = destination = '; filename=speaker_list_' + \
+            file_details = destination + '; filename="speaker_list_' + \
                 str(event.number) + '.pdf"'
             response['Content-Disposition'] = file_details
             pdf = report.speaker_list()

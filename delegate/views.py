@@ -323,9 +323,12 @@ def confirmation_details(request):
     Renders confirmation_details page
     as redirect from form submission on index
     """
-    reg_details = RegDetails.objects.get(
-        pk=request.session['current_registration']
-    )
+    try:
+        reg_details = RegDetails.objects.get(
+            pk=request.session['current_registration']
+        )
+    except KeyError:
+        return redirect('/registration/')
     try:
         invoice = Invoice.objects.get(reg_details=reg_details)
     except Invoice.DoesNotExist:

@@ -124,6 +124,7 @@ class Invoice(models.Model):
     sales_credit = models.ForeignKey('auth.User',
                                      related_name='sales_credit',
                                      default=1,
+                                     blank=True,
                                      on_delete=models.SET_DEFAULT)
     pre_tax_price = models.DecimalField(max_digits=10, decimal_places=2,
                                         null=True, blank=True)

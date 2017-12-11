@@ -488,6 +488,7 @@ class Index(RegistrationPermissionMixin, TemplateView):
                 reg_data['hst_rate'] = 0
             if self.company.qst_exempt:
                 reg_data['qst_rate'] = 0
+            reg_data['sales_credit'] = None
         return reg_data
 
     def _set_conference_details(self):

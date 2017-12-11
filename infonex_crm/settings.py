@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'registration.apps.RegistrationConfig',
     'marketing.apps.MarketingConfig',
     'delegate.apps.DelegateConfig',
+    'dashboard.apps.DashboardConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

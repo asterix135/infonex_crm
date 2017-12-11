@@ -1,0 +1,89 @@
+{% extends 'crm/base.html' %}
+{% load staticfiles %}
+{% load crm_extras %}
+
+{% block script_includes %}
+<link rel="stylesheet"
+      href="{% static 'dashboard/css/chartist_override.css' %}" />
+<link rel="stylesheet"
+      href="{% static 'dashboard/chartist/dist/chartist.min.css' %}" />
+<script src="{% static 'dashboard/chartist/dist/chartist.min.js' %}"></script>
+
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+      <h1>Revenue Breakdown - Broadest</h1>
+
+      <div class="row">
+        <div class="col-md-4">
+          <h2>2015</h2>
+          <div class="ct-chart ct-perfect-fifth ct-label2" id="top-2015"></div>
+        </div>
+        <div class="col-md-4">
+          <h2>2016</h2>
+          <div class="ct-chart ct-perfect-fifth" id="top-2016"></div>
+        </div>
+        <div class="col-md-4">
+          <h2>2017</h2>
+          <div class="ct-chart ct-perfect-fifth" id="top-2017"></div>
+        </div>
+      </div>
+    </div>
+
+    <h1>Revenue Breakdown - More Granular</h1>
+    <div class="row">
+      <div class="col-md-4">
+        <h2>2015</h2>
+        <div class="ct-chart ct-perfect-fifth" id="revenue-2015"></div>
+      </div>
+      <div class="col-md-4">
+        <h2>2016</h2>
+        <div class="ct-chart ct-perfect-fifth" id="revenue-2016"></div>
+      </div>
+      <div class="col-md-4">
+        <h2>2017</h2>
+        <div class="ct-chart ct-perfect-fifth" id="revenue-2017"></div>
+      </div>
+    </div>
+
+    <h1>Sales vs Marketing Revenue Breakdown</h1>
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Marketing - 2016</h2>
+        <div class="ct-chart ct-perfect-fifth" id="marketing-2016"></div>
+      </div>
+      <div class="col-md-6">
+        <h2>Sales - 2016</h2>
+        <div class="ct-chart ct-perfect-fifth" id="sales-2016"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Marketing - 2017</h2>
+        <div class="ct-chart ct-perfect-fifth" id="marketing-2017"></div>
+      </div>
+      <div class="col-md-6">
+        <h2>Sales - 2017</h2>
+        <div class="ct-chart ct-perfect-fifth" id="sales-2017"></div>
+      </div>
+    </div>
+
+    <h1>Year-to-Year Actuals (2015, 16, 17)</h1>
+    <div class="row">
+      <div class="col-sm-12">
+        <h2>Top-Level Categories</h2>
+        <div class="ct-chart ct-double-octave" id="top-bar"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <h2>Detailed Categories</h2>
+        <div class="ct-chart ct-double-octave" id="detail-bar"></div>
+      </div>
+    </div>
+
+    <script src="{% static 'dashboard/javascript/chart_builder.js' %}"></script>
+
+
+{% endblock %}

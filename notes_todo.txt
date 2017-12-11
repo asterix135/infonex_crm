@@ -1,3 +1,6 @@
+TODO: View only flagged people in CRM (any flag value)
+TODO: Allow to import flags from previous event
+
 TODO: View list of companies in Territory view
 
 TODO: Horizontal renderer is obsolete - need to move to template renderer

@@ -6,7 +6,9 @@ class UploadedFile(models.Model):
     """
     filename = models.CharField(max_length=255)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    uploaded_by = models.ForeignKey('auth.User')
+    uploaded_by = models.ForeignKey('auth.User',
+                                    null=True,
+                                    on_delete=models.SET_NULL)
     num_columns = models.IntegerField()
 
 

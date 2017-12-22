@@ -278,7 +278,8 @@ class Contact(models.Model):
     Records contact history with an individual person
     """
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event)
+    event = models.ForeignKey(Event,
+                              on_delete=models.CASCADE)
     author = models.ForeignKey('auth.User', default=1,
                                on_delete=models.SET_DEFAULT)
     date_of_contact = models.DateTimeField('date of contact')

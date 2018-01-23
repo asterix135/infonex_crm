@@ -1036,7 +1036,7 @@ class ConferenceReportPdf:
                 speaker += '<b>Phone: </b>' + reg.registrant.phone1 + '<br/>'
             if reg.registrant.email1:
                 speaker += '<b>Email: </b>' + reg.registrant.email1 + '<br/>'
-            speaker = Paragraph(speaker, speakerStyle)
+            speaker = Paragraph(speaker + '<br/>', speakerStyle)
             cell_height = speaker.wrap(doc.width/2.0, inch * 9.0)[1]
             if cell_height > row_height:
                 row_height = cell_height

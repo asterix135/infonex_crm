@@ -8,13 +8,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
-from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q, Max, Count
 from django.forms.forms import DeclarativeFieldsMetaclass  # For isinstance
 from django.forms.models import model_to_dict, ModelFormMetaclass
 from django.http import HttpResponse, JsonResponse, Http404, \
         HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.generic import FormView, ListView, TemplateView

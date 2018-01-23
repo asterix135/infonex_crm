@@ -15,7 +15,7 @@ class Assistant(models.Model):
     last_name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    phone = models.CharField(max_length=25, blank=True, null=True)
+    phone = models.CharField(max_length=40, blank=True, null=True)
     address_personal = models.CharField(max_length=255, blank=True, null=True)
 
 
@@ -55,8 +55,8 @@ class Registrants(models.Model):
     title = models.CharField(max_length=100, blank=True, null=True)
     email1 = models.EmailField(blank=True, null=True)
     email2 = models.EmailField(blank=True, null=True)
-    phone1 = models.CharField(max_length=25, blank=True, null=True)
-    phone2 = models.CharField(max_length=25, blank=True, null=True)
+    phone1 = models.CharField(max_length=40, blank=True, null=True)
+    phone2 = models.CharField(max_length=40, blank=True, null=True)
     contact_option = models.CharField(max_length=1,
                                choices=CONTACT_OPTIONS,
                                default='D')

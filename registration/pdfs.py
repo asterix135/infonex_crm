@@ -975,7 +975,7 @@ class ConferenceReportPdf:
                                 rightMargin=inch/2,
                                 leftMargin=inch/2,
                                 topMargin=1.0*inch,
-                                bottomMargin=0.75*inch,
+                                bottomMargin=1.5*inch,
                                 pagesize=self._pagesize)
         elements = []
         table_data = []

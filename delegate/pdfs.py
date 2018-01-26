@@ -366,7 +366,8 @@ def generate_reg_note(canv, reg_details, invoice=None):
     canv.drawRightString(6.0 * inch, 7.7 * inch - 11, 'Email:')
     canv.drawRightString(1.6 * inch, 6.5 * inch, 'Company ID No:')
     canv.setFont('Helvetica', 9)
-    canv.drawString(6.1 * inch, 7.7 * inch, reg_details.registrant.phone1)
+    if reg_details.registrant.phone1:
+        canv.drawString(6.1 * inch, 7.7 * inch, reg_details.registrant.phone1)
     canv.drawString(1.7 * inch, 6.5 * inch,
                     str(reg_details.registrant.company.pk))
     if reg_details.registrant.company.gst_hst_exemption_number:

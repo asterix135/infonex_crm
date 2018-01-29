@@ -380,11 +380,14 @@ class ConferenceReportPdf:
                 Paragraph(reg_detail.registrant.title, delegate_style),
                 Paragraph(reg_detail.registrant.company.name, delegate_style)
             ]]
+            if reg_detail.registrant.phone2:
+                phone2 = reg_detail.registrant.phone2
+            else:
+                phone2 = ''
 
             table2_data = [[
                 Paragraph('Phone 1:<br/>Phone 2:', label_style),
-                Paragraph(reg_detail.registrant.phone1 + '<br/>' + \
-                              reg_detail.registrant.phone2,
+                Paragraph(reg_detail.registrant.phone1 + '<br/>' + phone2,
                           delegate_style),
                 Paragraph('Email 1:<br/>Email 2:', label_style),
                 Paragraph(reg_detail.registrant.email1 + '<br/>' + \

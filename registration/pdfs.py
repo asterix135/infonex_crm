@@ -384,7 +384,7 @@ class ConferenceReportPdf:
                 phone2 = reg_detail.registrant.phone2
             else:
                 phone2 = ''
-            if reg_detai.registrant.email2:
+            if reg_detail.registrant.email2:
                 email2 = reg_detail.registrant.email2
             else:
                 email2 = ''

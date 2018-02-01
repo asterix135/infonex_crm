@@ -56,7 +56,8 @@ def sales_report_row(regdetail):
     registrant = regdetail.registrant
     try:
         invoice_num = regdetail.invoice.pk
-        pre_tax_price = regdetail.invoice.pre_tax_price
+        pre_tax_price = regdetail.invoice.pre_tax_price if \
+            regdetail.invoice.pre_tax_price is not None else 0
         pay_date = regdetail.invoice.payment_date
         pay_method = regdetail.invoice.get_payment_method_display()
         fx_rate = regdetail.invoice.fx_conversion_rate

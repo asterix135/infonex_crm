@@ -380,15 +380,29 @@ class ConferenceReportPdf:
                 Paragraph(reg_detail.registrant.title, delegate_style),
                 Paragraph(reg_detail.registrant.company.name, delegate_style)
             ]]
+            if reg_detail.registrant.phone1:
+                phone1 = reg_detail.registrant.phone1
+            else:
+                phone1 = ''
+            if reg_detail.registrant.phone2:
+                phone2 = reg_detail.registrant.phone2
+            else:
+                phone2 = ''
+            if reg_detail.registrant.email1:
+                email1 = reg_detail.registrant.email1
+            else:
+                email1 = ''
+            if reg_detail.registrant.email2:
+                email2 = reg_detail.registrant.email2
+            else:
+                email2 = ''
 
             table2_data = [[
                 Paragraph('Phone 1:<br/>Phone 2:', label_style),
-                Paragraph(reg_detail.registrant.phone1 + '<br/>' + \
-                              reg_detail.registrant.phone2,
+                Paragraph(phone1 + '<br/>' + phone2,
                           delegate_style),
                 Paragraph('Email 1:<br/>Email 2:', label_style),
-                Paragraph(reg_detail.registrant.email1 + '<br/>' + \
-                              reg_detail.registrant.email2,
+                Paragraph(email1 + '<br/>' + email2,
                           delegate_style)
             ]]
 
@@ -975,7 +989,7 @@ class ConferenceReportPdf:
                                 rightMargin=inch/2,
                                 leftMargin=inch/2,
                                 topMargin=1.0*inch,
-                                bottomMargin=0.75*inch,
+                                bottomMargin=1.5*inch,
                                 pagesize=self._pagesize)
         elements = []
         table_data = []

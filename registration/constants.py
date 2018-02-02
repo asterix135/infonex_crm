@@ -40,7 +40,8 @@ ADMIN_REPORTS = (('Delegate', 'Delegate List'),
                  ('Speaker', 'Speaker List'),)
 
 MASS_MAIL_CHOICES = (('venue', 'Venue Announcement'),
-                     ('docs', 'Doc Download Instructions'),)
+                     ('docs', 'Doc Download Instructions'),
+                     ('thanks', 'Thank You For Attending'))
 
 STATE_PROV_TUPLE =  (
     ('', 'Any'),

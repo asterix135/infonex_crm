@@ -2,10 +2,14 @@
 functions related to processing & sending mass mail to delegates
 """
 
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.template.loader import render_to_string
+from email.mime.image import MIMEImage
+import os
 import time
 
 from registration.models import RegDetails, EventOptions
+from infonex_crm.settings import BASE_DIR
 
 
 class MassMail():
@@ -121,6 +125,12 @@ class MassMail():
     def send_mail(self):
         # need to ensure address is minimally valid email
         sent_emails = ['', None]
+        with open(os.path.join(
+            BASE_DIR,
+            'registration/static/registration/email_text/genericbanner.png'
+        ), 'rb') as fp:
+            image1 = MIMEImage(fp.read())
+        image1.add_header('Content-ID', '<{}>'.format('image1'))
         for key in self._recipients:
             reg_id = key
             address = self._recipients[key]['email']
@@ -130,14 +140,17 @@ class MassMail():
                 if salutation not in ('', None):
                     email_body = 'Dear ' + salutation + ':<br/><br/>' + \
                         self._message
-                if self._msg_type == 'docs':
+                if self._msg_type in ('docs', 'thanks'):
                     email_body = self._insert_passwords(email_body, key)
+                email_body = '<img src="cid:image1" style="width:auto; max-width:100%;"/><br/><br/>' + email_body
                 email = EmailMessage(
                     subject = self._subject,
                     body = email_body,
                     to = [address]
                 )
                 email.content_subtype = 'html'
+                email.mixed_subtype = 'related'
+                email.attach(image1)
                 email.send()
                 sent_emails.append(address)
                 time.sleep(0.5)

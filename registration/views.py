@@ -152,13 +152,15 @@ def mass_mail(request):
     ).order_by('registrant__company__name', 'registrant__last_name')
     mass_mail_message = request.POST['mass_mail_message']
     email_merge_fields = {
-        'venue_details': request.POST['venue_details'].strip(),
         'event_registrar': request.POST['event_registrar'].strip(),
         'conference_name': request.POST['conference_name'].strip(),
         'conference_location': request.POST['conference_location'].strip(),
         'start_date': request.POST['start_date'].strip()
     }
     email_subject = 'Infonex - ' + request.POST['conference_name'].strip() + ' - '
+    if request.POST['mass_mail_message'] in ('venue', 'docs'):
+        email_merge_fields['venue_details'] = \
+                request.POST['venue_details'].strip()
 
     if request.POST['mass_mail_message'] == 'venue':
         email_body_path = os.path.join(
@@ -199,6 +201,19 @@ def mass_mail(request):
         email_merge_fields['opening_remarks_time'] = \
             request.POST['opening_remarks_time'].strip()
         email_subject += 'DOCUMENT ACCESS'
+
+    elif request.POST['mass_mail_message'] == 'thanks':
+        email_body_path = os.path.join(
+            BASE_DIR,
+            'registration/static/registration/email_text/delegate_thank_you.txt'
+        )
+        email_merge_fields['download_link'] = \
+            request.POST['download_link'].strip()
+        email_merge_fields['survey_link'] = \
+            '<a href="' + request.POST['survey_url'].strip() + \
+            '">here</a>'
+        email_subject = 'Thank you for attending ' + email_subject
+
 
     else:
         raise Http404('Invalid mail choice')
@@ -272,7 +287,7 @@ def process_mass_email(request):
     email_body = email_body.replace('\n', '<br/>')
     # recipient_list = mass_mail_email_list(request)
     message_type = request.POST['mass_mail_message']
-    if message_type == 'docs':
+    if message_type in ('docs', 'thanks'):
         email_body = email_body.replace(
             'Login credentials are as follows:',
             '<b>Login credentials are as follows:</b>'
@@ -282,10 +297,6 @@ def process_mass_email(request):
             '<b>Download presentations by using the following link</b>'
         )
         email_body = email_body.replace(
-            'Venue Information:',
-            '<b>Venue Information:</b>'
-        )
-        email_body = email_body.replace(
             'Both username and password are case sensitive',
             '<em>Both username and password are case sensitive</em>'
         )
@@ -293,13 +304,23 @@ def process_mass_email(request):
             'Unauthorized distribution of any downloads off the website is strictly prohibited.',
             '<b>Unauthorized distribution of any downloads off the website is strictly prohibited.</b>'
         )
-    else:
+    if message_type == 'docs':
+        email_body = email_body.replace(
+            'Venue Information:',
+            '<b>Venue Information:</b>'
+        )
+    elif message_type == 'venue':
         email_body = email_body.replace(
             'The venue is as follows:',
             '<b>The venue is as follows:</b>'
         )
+    elif message_type == 'thanks':
+        email_body = email_body.replace(
+            'Post-conference evaluation',
+            '<b>Post-conference evaluation</b>'
+        )
     mailer = MassMail(email_subject, email_body, message_type, request.POST)
-    if message_type == 'docs':
+    if message_type in ('docs', 'thanks'):
         mailer.set_passwords(request.POST)
         mailer.set_event(Event.objects.get(pk=request.POST['event_id']))
     mailer.send_mail()
@@ -642,19 +663,24 @@ def mass_mail_details(request):
 
     if message == 'venue':
         detail_panel = 'registration/index_panels/mass_mail_venue.html'
-        merge_field_form = MailMergeDetailsForm(initial=form_data)
 
     elif message == 'docs':
         detail_panel = 'registration/index_panels/mass_mail_docs.html'
         download_link = 'http://www.infonex.ca/' + event.number + \
             '/download.shtml'
         form_data['download_link'] = download_link
-        merge_field_form = MailMergeDetailsForm(initial=form_data)
+
+    elif message == 'thanks':
+        detail_panel = 'registration/index_panels/mass_mail_thanks.html'
+        download_link = 'http://www.infonex.ca/' + event.number + \
+            '/download.shtml'
+        form_data['download_link'] = download_link
+
     else:
         raise Http404('Invalid Message')
 
     context = {
-        'merge_field_form': merge_field_form,
+        'merge_field_form': MailMergeDetailsForm(initial=form_data),
         'event': event,
     }
     return render(request, detail_panel, context)

@@ -44,7 +44,7 @@
     <div class="row">
       <h1>Email All Conference Attendees</h1>
       <h3>Please confirm and/or update details below</h3>
-      {% if mass_mail_message == 'docs' %}
+      {% if mass_mail_message == 'docs' or mass_mail_message == 'thanks' %}
       {% include 'registration/addins/doc_passwords.html' %}
       {% endif %}
       <div class="panel panel-primary">

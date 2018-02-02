@@ -1,0 +1,20 @@
+On behalf of Infonex and our speakers, we would like to thank you for attending {conference_name} on {start_date} in {conference_location}. We hope that you found the event informative and worthwhile.
+
+As a reminder, we have posted the presentations on the download page and invite you to visit the site.
+
+You can download presentations by using the following link:
+{download_link}
+
+Login credentials are as follows:
+**!!DO NOT CHANGE THIS LINE!!**
+Both username and password are case sensitive
+
+In order to make our future conferences even more successful, we request you fill out this post-event survey if you haven't already done so. We thank you in advance for your comments and suggestions. Please click {survey_link} to complete the survey.
+
+We look forward to seeing you at future Infonex events!
+
+Sincerely,
+
+Christopher Graham
+Vice President, Conferences
+Infonex

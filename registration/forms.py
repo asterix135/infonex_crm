@@ -387,7 +387,8 @@ class MailMergeDetailsForm(forms.Form):
         label='Conference Download URL',
         required=True,
         widget=forms.URLInput(
-            attrs={'class': 'form-control'}
+            attrs={'class': 'form-control',
+                   'placeholder': 'must start with http://'}
         )
     )
     registration_start = forms.CharField(
@@ -404,5 +405,14 @@ class MailMergeDetailsForm(forms.Form):
         widget=forms.TextInput(
             attrs={'class': 'form-control',
                    'placeholder': 'e.g.: 9:00 am'}
+        )
+    )
+    survey_url = forms.URLField(
+        label = 'SurveyMonkey URL',
+        required=True,
+        initial='http://',
+        widget=forms.URLInput(
+            attrs={'class': 'form-control',
+                   'placeholder': 'must start with http://'},
         )
     )

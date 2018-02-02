@@ -1,0 +1,42 @@
+<div id="venue-details-panel">
+  <div class="row col-sm-12">
+    <h4>Please verify/input/change the following merge fields</h4>
+    <p class="errorlist">
+      If there are eny egregious errors, you may want to
+      <a href="/registration/conference/?action=edit&id={{ event.pk }}">
+        edit this conference
+      </a>
+      before proceeding.
+    </p>
+  </div>
+  <div class="row col-sm-12">
+    {{ merge_field_form.download_link.label_tag }}
+    {{ merge_field_form.download_link.errors }}
+    {{ merge_field_form.download_link }}
+  </div>
+  <div class="row col-sm-12">
+    {{ merge_field_form.conference_name.label_tag }}
+    {{ merge_field_form.conference_name.errors }}
+    {{ merge_field_form.conference_name }}
+  </div>
+  <div class="row col-sm-12">
+    {{ merge_field_form.start_date.label_tag }}
+    {{ merge_field_form.start_date.errors }}
+    {{ merge_field_form.start_date }}
+  </div>
+  <div class="row col-sm-12">
+    {{ merge_field_form.conference_location.label_tag }}
+    {{ merge_field_form.conference_location.errors }}
+    {{ merge_field_form.conference_location }}
+  </div>
+  <div class="row col-sm-12">
+    {{ merge_field_form.survey_url.label_tag }}
+    {{ merge_field_form.survey_url.errors }}
+    {{ merge_field_form.survey_url }}
+  </div>
+  <div class="row col-sm-12">
+    {{ merge_field_form.event_registrar.label_tag }}
+    {{ merge_field_form.event_registrar.errors }}
+    {{ merge_field_form.event_registrar }}
+  </div>
+</div>

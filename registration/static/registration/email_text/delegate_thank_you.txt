@@ -9,6 +9,8 @@ Login credentials are as follows:
 **!!DO NOT CHANGE THIS LINE!!**
 Both username and password are case sensitive
 
+Post-conference evaluation:
+
 In order to make our future conferences even more successful, we request you fill out this post-event survey if you haven't already done so. We thank you in advance for your comments and suggestions. Please click {survey_link} to complete the survey.
 
 We look forward to seeing you at future Infonex events!

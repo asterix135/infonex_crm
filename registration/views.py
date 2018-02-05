@@ -212,7 +212,7 @@ def mass_mail(request):
         email_merge_fields['survey_link'] = \
             '<a href="' + request.POST['survey_url'].strip() + \
             '">here</a>'
-        email_subject = 'Thank you for attending ' + email_subject
+        email_subject = 'Thank you for attending ' + email_subject[:-2]
 
 
     else:
@@ -316,8 +316,8 @@ def process_mass_email(request):
         )
     elif message_type == 'thanks':
         email_body = email_body.replace(
-            'Post-conference evaluation',
-            '<b>Post-conference evaluation</b>'
+            'Post-conference evaluation:',
+            '<b>Post-conference evaluation:</b>'
         )
     mailer = MassMail(email_subject, email_body, message_type, request.POST)
     if message_type in ('docs', 'thanks'):

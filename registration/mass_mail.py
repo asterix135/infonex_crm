@@ -83,7 +83,7 @@ class MassMail():
                     self._password_dict[str(option.option.pk)]['username'] + \
                     '<br/>PASSWORD: ' + \
                     self._password_dict[str(option.option.pk)]['password'] + \
-                    '<br/><br>'
+                    '<br/><br/>'
         msg_body = msg_body.replace(
             '**!!DO NOT CHANGE THIS LINE!!**',
             password_text[:-5]  # Remove final <br/>
@@ -142,7 +142,8 @@ class MassMail():
                         self._message
                 if self._msg_type in ('docs', 'thanks'):
                     email_body = self._insert_passwords(email_body, key)
-                email_body = '<img src="cid:image1" style="width:auto; max-width:100%;"/><br/><br/>' + email_body
+                email_body = '<img src="cid:image1" style="width:auto; max-width:90%;"/><br/><br/>' + email_body
+                email_body = '<html><body>' + email_body + '</body></html>'
                 email = EmailMessage(
                     subject = self._subject,
                     body = email_body,

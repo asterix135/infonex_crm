@@ -9,7 +9,7 @@
   <div class="col-sm-12">
     <div id="crm-title-div" {% if not crm_match %}style="display:none;"{% endif %}>
       <label for="id_crm_company">Company Name for CRM Record</label>
-      <input id="id_crm_company" class="form-control" maxlength="100" name="crm_company" value="{{ crm_match.company }}" type="text" />
+      <input id="id_crm_company" class="form-control" maxlength="500" name="crm_company" value="{{ crm_match.company }}" type="text" />
     </div>
     {{ company_select_form.name_for_badges.label_tag }}
     {{ company_select_form.name_for_badges.errors }}

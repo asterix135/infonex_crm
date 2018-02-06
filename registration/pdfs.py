@@ -112,16 +112,16 @@ class ConferenceReportPdf:
         ).order_by(*sorts)
         for i, reg_detail in enumerate(reg_list):
             name = Paragraph(
-                reg_detail.registrant.first_name + ' ' + \
-                    reg_detail.registrant.last_name,
+                (reg_detail.registrant.first_name or '') + ' ' + \
+                    (reg_detail.registrant.last_name or ''),
                 cell_style
             )
             title = Paragraph(
-                reg_detail.registrant.title,
+                (reg_detail.registrant.title or ''),
                 cell_style
             )
             company = Paragraph(
-                reg_detail.registrant.company.name,
+                (reg_detail.registrant.company.name or ''),
                 cell_style
             )
             table_data.append([name, title, company])
@@ -175,11 +175,11 @@ class ConferenceReportPdf:
         ).order_by(*sorts)
         for i, reg_detail in enumerate(reg_list):
             title = Paragraph(
-                reg_detail.registrant.title,
+                (reg_detail.registrant.title or ''),
                 cell_style
             )
             company = Paragraph(
-                reg_detail.registrant.company.name,
+                (reg_detail.registrant.company.name or ''),
                 cell_style
             )
             table_data.append([title, company])
@@ -242,7 +242,6 @@ class ConferenceReportPdf:
                      'registrant__title',
                      'registrant__last_name',
                      'registrant__first_name']
-        # reg_list = self._event.regdetails_set.all().order_by(*sorts)
         reg_list = self._event.regdetails_set.filter(
             invoice__isnull=False
         ).order_by(*sorts)
@@ -274,10 +273,10 @@ class ConferenceReportPdf:
                 )
             ]
             cell3 = Paragraph(
-                reg_detail.registrant.first_name + ' ' + \
-                    reg_detail.registrant.last_name + '<br/>' + \
-                    reg_detail.registrant.title + '<br/>' +
-                    reg_detail.registrant.company.name,
+                (reg_detail.registrant.first_name or '') + ' ' + \
+                    (reg_detail.registrant.last_name or '') + '<br/>' + \
+                    (reg_detail.registrant.title or '') + '<br/>' +
+                    (reg_detail.registrant.company.name or ''),
                 cell_style_left
             )
             location = ''
@@ -474,12 +473,12 @@ class ConferenceReportPdf:
         max_height = inch * 0.5
         for i, reg_detail in enumerate(reg_list):
             name = Paragraph(
-                reg_detail.registrant.last_name + ', ' + \
-                    reg_detail.registrant.first_name,
+                (reg_detail.registrant.last_name or '') + ', ' + \
+                    (reg_detail.registrant.first_name or ''),
                 cell_style
             )
             company = Paragraph(
-                reg_detail.registrant.company.name,
+                (reg_detail.registrant.company.name or ''),
                 cell_style
             )
             table_data.append([name, company, '', ''])
@@ -549,14 +548,14 @@ class ConferenceReportPdf:
         max_height = inch * 0.2
         for i, reg_detail in enumerate(reg_list):
             name = Paragraph(
-                '<b>' + reg_detail.registrant.first_name + ' ' + \
-                    reg_detail.registrant.last_name + '</b><br/>' + \
+                '<b>' + (reg_detail.registrant.first_name or '') + ' ' + \
+                    (reg_detail.registrant.last_name or '') + '</b><br/>' + \
                     reg_detail.get_registration_status_display(),
                 cell_style
             )
             company = Paragraph(
-                reg_detail.registrant.company.name + '<br/>' + \
-                    reg_detail.registrant.phone1,
+                (reg_detail.registrant.company.name or '') + '<br/>' + \
+                    (reg_detail.registrant.phone1 or ''),
                 cell_style
             )
             checkbox = Image(CHECKBOX_PATH)
@@ -641,8 +640,8 @@ class ConferenceReportPdf:
         ).order_by(*sorts)
         max_height = inch * 0.2
         for i, reg_detail in enumerate(reg_list):
-            person_name = '<b>' + reg_detail.registrant.first_name + ' ' + \
-                reg_detail.registrant.last_name + '</b><br/>'
+            person_name = '<b>' + (reg_detail.registrant.first_name or '') + ' ' + \
+                (reg_detail.registrant.last_name or '') + '</b><br/>'
             if reg_detail.registrant.title:
                 person_name += reg_detail.registrant.title + '<br/>'
             if reg_detail.registrant.company.name:
@@ -729,14 +728,15 @@ class ConferenceReportPdf:
         for reg in reg_list:
             if badge_type == 'bigCompany':
                 badge_text = '<font size="2"> </font><br/>' + \
-                    '<font size="18">' + reg.registrant.first_name + \
-                    ' ' + reg.registrant.last_name + '</font><br/>' + \
+                    '<font size="18">' + (reg.registrant.first_name or '') + \
+                    ' ' + (reg.registrant.last_name or '') + '</font><br/>' + \
                     '<font size="22"><b>' + \
-                    reg.registrant.company.name_for_badges + \
+                    (reg.registrant.company.name_for_badges or '') + \
                     '</b></font>'
             else:
-                badge_text = '<font size = "22">' + reg.registrant.first_name + \
-                    '</font><br/>' + reg.registrant.last_name + '<br/>'
+                badge_text = '<font size = "22">' + \
+                    (reg.registrant.first_name or '') + \
+                    '</font><br/>' + (reg.registrant.last_name or '') + '<br/>'
                 if reg.registrant.company.name:
                     badge_text += '<font size="14">' + \
                         reg.registrant.company.name + '</font>'
@@ -1011,8 +1011,8 @@ class ConferenceReportPdf:
         row_heights = []
         row_height = 0.2 * inch
         for reg in reg_list:
-            speaker = '<b>' + reg.registrant.first_name + \
-                    ' ' + reg.registrant.last_name + '</b><br/>'
+            speaker = '<b>' + (reg.registrant.first_name or '') + \
+                    ' ' + (reg.registrant.last_name or '') + '</b><br/>'
             if reg.registrant.title:
                 speaker += reg.registrant.title + '<br/>'
             if reg.registrant.company.name:

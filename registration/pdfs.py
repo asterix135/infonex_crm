@@ -373,29 +373,20 @@ class ConferenceReportPdf:
             HRFlowable(width='100%', thickness=2, color=colors.black)
         )
         for i, reg_detail in enumerate(reg_list):
+            first_name = reg_detail.registrant.first_name or ''
+            last_name = reg_detail.registrant.last_name or ''
+            title = reg_detail.registrant.title or ''
+            company = reg_detail.registrant.company.name or ''
             table1_data = [[
-                Paragraph(reg_detail.registrant.first_name + ' ' + \
-                            reg_detail.registrant.last_name,
+                Paragraph(first_name + ' ' + last_name,
                           delegate_style),
-                Paragraph(reg_detail.registrant.title, delegate_style),
-                Paragraph(reg_detail.registrant.company.name, delegate_style)
+                Paragraph(title, delegate_style),
+                Paragraph(company, delegate_style)
             ]]
-            if reg_detail.registrant.phone1:
-                phone1 = reg_detail.registrant.phone1
-            else:
-                phone1 = ''
-            if reg_detail.registrant.phone2:
-                phone2 = reg_detail.registrant.phone2
-            else:
-                phone2 = ''
-            if reg_detail.registrant.email1:
-                email1 = reg_detail.registrant.email1
-            else:
-                email1 = ''
-            if reg_detail.registrant.email2:
-                email2 = reg_detail.registrant.email2
-            else:
-                email2 = ''
+            phone1 = reg_detail.registrant.phone1 or ''
+            phone2 = reg_detail.registrant.phone2 or ''
+            email1 = reg_detail.registrant.email1 or ''
+            email2 = reg_detail.registrant.email2 or ''
 
             table2_data = [[
                 Paragraph('Phone 1:<br/>Phone 2:', label_style),
@@ -427,10 +418,6 @@ class ConferenceReportPdf:
             ]))
             elements.append(table1)
             elements.append(table2)
-        # else:
-        #     notice_style = styles['h2']
-        #     notice_style.alignment = TA_CENTER
-        #     elements.append(Paragraph('No delegates', notice_style))
         doc.build(elements,
                   onFirstPage=partial(self._header, event=self._event,
                                       report_title = report_name),

@@ -35,7 +35,6 @@ from registration.mixins import RegistrationPermissionMixin
 from registration.models import *
 from registration.pdfs import *
 
-# Test commit 
 
 ########################
 # HELPER FUNCTIONS

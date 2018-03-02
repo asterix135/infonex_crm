@@ -1231,7 +1231,7 @@ class LoadStaffMemberSelects(ManagementPermissionMixin, TerritoryListMixin,
 
     def _get_sample_select(self):
         sample_select_data = {}
-        sample_select = self.build_user_territory_list()
+        sample_select = self.build_user_territory_list(True)
         sample_select_data['select_count'] = sample_select.count()
         sample_select = sample_select.order_by('?')[:250]
         sample_select = sorted(sample_select, key=lambda o: o.company)

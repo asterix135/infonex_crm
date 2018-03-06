@@ -11,6 +11,7 @@ import time
 from registration.models import RegDetails, EventOptions
 from infonex_crm.settings import BASE_DIR
 
+SLEEP_TIME = 0.1
 
 class MassMail():
     def __init__(self, subject, message, msg_type, post_data, event=None):
@@ -154,4 +155,4 @@ class MassMail():
                 email.attach(image1)
                 email.send()
                 sent_emails.append(address)
-                time.sleep(0.5)
+                time.sleep(SLEEP_TIME)

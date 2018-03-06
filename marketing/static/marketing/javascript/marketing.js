@@ -5,6 +5,7 @@ $(document).ready(function() {
   var fieldResizings = {
     'company': ['mktg-col-xl', 'mktg-col-xxl', 'mktg-col-xxxl'],
     'dept': ['mktg-col-xs', 'mktg-col-md', 'mktg-col-lg'],
+    'phone': ['mktg-col-md', 'mktg-col-lg'],
   };
 
   ///////////////////

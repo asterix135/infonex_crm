@@ -37,7 +37,7 @@
   <td class="text-input mktg-col-xs" cell-for="dept">
     <input class="form-control table-field record-field person-field" record_id="{{ record.pk }}" name="dept" value="{{ record.dept|default_if_none:'' }}" />
   </td>
-  <td class="text-input mktg-col-md">
+  <td class="text-input mktg-col-md" cell-for="phone">
     <input class="form-control table-field record-field person-field" record_id="{{ record.pk }}" name="phone" value="{{ record.phone|default_if_none:'' }}" />
   </td>
   <td class="text-input mktg-col-ml">

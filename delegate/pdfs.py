@@ -442,8 +442,8 @@ def generate_reg_note(canv, reg_details, invoice=None):
         fontSize = 9,
         leading = 11,
     )
-    name = reg_details.registrant.first_name + ' ' + \
-        reg_details.registrant.last_name
+    name = (reg_details.registrant.first_name or '') + ' ' + \
+            reg_details.registrant.last_name
     para = Paragraph(name, style)
     h = para.wrap(2.1 * inch, 1 * inch)[1]
     para.drawOn(canv, 0.45 * inch, 5.1 * inch - h + 9)

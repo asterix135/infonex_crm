@@ -112,16 +112,16 @@ class ConferenceReportPdf:
         ).order_by(*sorts)
         for i, reg_detail in enumerate(reg_list):
             name = Paragraph(
-                reg_detail.registrant.first_name + ' ' + \
-                    reg_detail.registrant.last_name,
+                (reg_detail.registrant.first_name or '') + ' ' + \
+                    (reg_detail.registrant.last_name or ''),
                 cell_style
             )
             title = Paragraph(
-                reg_detail.registrant.title,
+                reg_detail.registrant.title or '',
                 cell_style
             )
             company = Paragraph(
-                reg_detail.registrant.company.name,
+                reg_detail.registrant.company.name or '',
                 cell_style
             )
             table_data.append([name, title, company])
@@ -175,11 +175,11 @@ class ConferenceReportPdf:
         ).order_by(*sorts)
         for i, reg_detail in enumerate(reg_list):
             title = Paragraph(
-                reg_detail.registrant.title,
+                reg_detail.registrant.title or '',
                 cell_style
             )
             company = Paragraph(
-                reg_detail.registrant.company.name,
+                reg_detail.registrant.company.name or '',
                 cell_style
             )
             table_data.append([title, company])

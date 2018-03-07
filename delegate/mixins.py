@@ -75,8 +75,8 @@ class ProcessCompleteRegistration(Substitution, ChangeRecord):
 
     def _update_crm(self, request):
         self.crm_match.name = \
-                self.new_delegate_form.cleaned_data['first_name'] + ' ' + \
-                self.new_delegate_form.cleaned_data['last_name']
+                (self.new_delegate_form.cleaned_data['first_name'] or '') + \
+                  ' ' + self.new_delegate_form.cleaned_data['last_name']
         self.crm_match.title = self.new_delegate_form.cleaned_data['title']
         if self.company_select_form.cleaned_data['name'] not in ('', None):
             self.crm_match.company = \

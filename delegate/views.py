@@ -71,8 +71,9 @@ def build_email_message(reg_details, invoice):
             email_merge_fields['salutation'] = reg_details.registrant.salutation + \
                 ' ' + reg_details.registrant.last_name
         else:
-            email_merge_fields['salutation'] = reg_details.registrant.first_name + \
-                ' ' + reg_details.registrant.last_name
+            email_merge_fields['salutation'] = \
+                (reg_details.registrant.first_name or '') + \
+                 ' ' + reg_details.registrant.last_name
     else:
         email_merge_fields['whose_registration'] = \
             reg_details.registrant.first_name + ' ' + \

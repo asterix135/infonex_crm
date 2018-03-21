@@ -1268,7 +1268,9 @@ def get_admin_reports(request):
         raise Http404('Invalid Report Choice for CSV Export')
 
     elif doc_format == 'xlsx':
-        response = HttpResponse(content_type='application/vnd.ms-excel')
+        response = HttpResponse(
+            content_type='application/application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
         wb = Workbook()
         ws = wb.active
 
@@ -1374,12 +1376,13 @@ def get_admin_reports(request):
                 registrant = record.registrant
                 letter_name = ''
                 if registrant.salutation:
-                    letter_name += registrant.salutation + ' '
+                    letter_name += (registrant.salutation or '') + ' '
                 else:
-                    letter_name += registrant.first_name + ' '
-                letter_name += registrant.last_name
+                    letter_name += (registrant.first_name or '') + ' '
+                letter_name += (registrant.last_name or '')
                 ws.append([
-                    registrant.first_name + ' ' + registrant.last_name,
+                    (registrant.first_name or '') + ' ' \
+                        + (registrant.last_name or ''),
                     registrant.title,
                     registrant.company.name,
                     registrant.email1,

@@ -274,10 +274,10 @@ class ConferenceReportPdf:
                 )
             ]
             cell3 = Paragraph(
-                reg_detail.registrant.first_name + ' ' + \
-                    reg_detail.registrant.last_name + '<br/>' + \
-                    reg_detail.registrant.title + '<br/>' +
-                    reg_detail.registrant.company.name,
+                (reg_detail.registrant.first_name or '') + ' ' + \
+                    (reg_detail.registrant.last_name or '') + '<br/>' + \
+                    (reg_detail.registrant.title or '') + '<br/>' +
+                    (reg_detail.registrant.company.name or ''),
                 cell_style_left
             )
             location = ''

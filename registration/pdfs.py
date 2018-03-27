@@ -922,7 +922,7 @@ class ConferenceReportPdf:
             else:
                 sales_credit = record.sales_credit.username
             invoice_num = Paragraph(str(record.pk), cell_style)
-            company = Paragraph(record.reg_details.registrant.company.name,
+            company = Paragraph((record.reg_details.registrant.company.name or ''),
                                 cell_style)
             sales_credit = Paragraph(sales_credit, cell_style)
             pre_tax_price = Paragraph(

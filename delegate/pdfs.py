@@ -329,7 +329,7 @@ def generate_reg_note(canv, reg_details, invoice=None):
     canv.setFont('Helvetica-Bold', 11)
     canv.drawRightString(1.6 * inch, 7.7 * inch, 'Sold To:')
 
-    customer_company_details = reg_details.registrant.company.name
+    customer_company_details = reg_details.registrant.company.name or ''
     if reg_details.registrant.company.address1:
         customer_company_details += '<br/>'
         customer_company_details += reg_details.registrant.company.address1

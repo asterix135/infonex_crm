@@ -6,7 +6,10 @@
         <th class="col-sm-3"><a href="?sort=title">Title</a></th>
         <th class="col-sm-3"><a href="?sort=company">Company</a></th>
         <th class="col-sm-2">Phone</th>
-        <th class="col-sm-2"><a href="?sort=date_modified">Last Modified</a></th>
+        <th class="col-sm-1"><a href="?sort=date_modified">Last Modified</a></th>
+        <th class="col-sm-1">
+          Division
+        </th>
         <th class="col-sm-1">Customer?</th>
       </tr>
     </thead>
@@ -22,7 +25,10 @@
         <td class="col-sm-3">{{ person.title }}</td>
         <td class="col-sm-3">{{ person.company}}</td>
         <td class="col-sm-2">{{ person.phone }}</td>
-        <td class="col-sm-2">{{ person.date_modified }}</td>
+        <td class="col-sm-1">{{ person.date_modified }}</td>
+        <td class="col-sm-1">
+          {{ person.division1}}
+        </td>
         <td class="col-sm-1">
           {% if person.has_registration_history %}
           <span class="glyphicon glyphicon-ok alert-success"

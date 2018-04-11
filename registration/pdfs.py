@@ -729,17 +729,18 @@ class ConferenceReportPdf:
         for reg in reg_list:
             if badge_type == 'bigCompany':
                 badge_text = '<font size="2"> </font><br/>' + \
-                    '<font size="18">' + reg.registrant.first_name + \
-                    ' ' + reg.registrant.last_name + '</font><br/>' + \
+                    '<font size="18">' + (reg.registrant.first_name or '') + \
+                    ' ' + (reg.registrant.last_name or '') + '</font><br/>' + \
                     '<font size="22"><b>' + \
-                    reg.registrant.company.name_for_badges + \
+                    (reg.registrant.company.name_for_badges or '') + \
                     '</b></font>'
             else:
-                badge_text = '<font size = "22">' + reg.registrant.first_name + \
-                    '</font><br/>' + reg.registrant.last_name + '<br/>'
+                badge_text = '<font size = "22">' + \
+                    (reg.registrant.first_name or '') + \
+                    '</font><br/>' + (reg.registrant.last_name or '') + '<br/>'
                 if reg.registrant.company.name:
                     badge_text += '<font size="14">' + \
-                        reg.registrant.company.name + '</font>'
+                        (reg.registrant.company.name or '') + '</font>'
             badge = Paragraph(badge_text, badge_style)
             badge_row.append(badge)
             if len(badge_row) == 2:

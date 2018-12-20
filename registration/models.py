@@ -23,21 +23,21 @@ class Company(models.Model):
     """
     Company Details
     """
-    name = models.CharField(max_length=255, blank=True, null=True)
-    name_for_badges = models.CharField(max_length=30, blank=True, null=True)
-    address1 = models.CharField(max_length=255, blank=True, null=True)
-    address2 = models.CharField(max_length=255, blank=True, null=True)
-    city = models.CharField(max_length=100, blank=True, null=True)
-    state_prov = models.CharField(max_length=25, blank=True, null=True,
-                                  choices=STATE_PROV_TUPLE)
-    postal_code = models.CharField(max_length=15, blank=True, null=True)
-    country = models.CharField(max_length=25, blank=True, null=True)
+    name = models.CharField(max_length=255, blank=True, default="")
+    name_for_badges = models.CharField(max_length=30, blank=True, default="")
+    address1 = models.CharField(max_length=255, blank=True, default="")
+    address2 = models.CharField(max_length=255, blank=True, default="")
+    city = models.CharField(max_length=100, blank=True, default="")
+    state_prov = models.CharField(max_length=25, blank=True,
+                                  choices=STATE_PROV_TUPLE, default="")
+    postal_code = models.CharField(max_length=15, blank=True, default="")
+    country = models.CharField(max_length=25, blank=True, default="")
     gst_hst_exempt = models.BooleanField(default=False)
     qst_exempt = models.BooleanField(default=False)
     gst_hst_exemption_number = models.CharField(max_length=25,
-                                                blank=True, null=True)
+                                                blank=True, default="")
     qst_exemption_number = models.CharField(max_length=25,
-                                            blank=True, null=True)
+                                            blank=True, default="")
 
 
 class Registrants(models.Model):

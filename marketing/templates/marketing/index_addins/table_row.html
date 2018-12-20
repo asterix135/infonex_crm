@@ -51,9 +51,6 @@
     <span class="glyphicon glyphicon-ok"></span>
     {% endif %}
   </td>
-  <td class="select-display mktg-col-xs font-sm">
-    <span name="state_prov" record_id="{{ record.id }}">{{ record.state_prov }}</span>
-  </td>
   <td class="select-input mktg-col-xs">
     <select class="form-control record-select person-field" record_id="{{ record.pk }}" name="geo">
       {% for option in geo_choices %}
@@ -65,6 +62,10 @@
   </td>
   <td class="select-input mktg-col-xs">
     <input type="checkbox" class="form-control record-checkbox person-field" record_id="{{ record.pk }}" name="do_not_email" {% if record.do_not_email %}checked{% endif %} />
+  </td>
+  <!-- State/prov field -->
+  <td class="select-display mktg-col-xs font-sm">
+    <span name="state_prov" record_id="{{ record.id }}">{{ record.state_prov }}</span>
   </td>
   <td class="text-display mktg-col-sm">
     <span name="modified_by" record_id="{{ record.id }}">

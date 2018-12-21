@@ -16,7 +16,8 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.http import HttpResponse
-import django.contrib.auth.views
+# import django.contrib.auth.views
+from django.contrib.auth import views
 import home.views
 
 urlpatterns = [
@@ -26,13 +27,13 @@ urlpatterns = [
     url(r'^marketing/', include('marketing.urls')),
     url(r'^dashboard/', include('dashboard.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^accounts/login/$', django.contrib.auth.views.login),
-    url(r'^accounts/logout/$', django.contrib.auth.views.logout, {'next_page': '/'}),
+    url(r'^accounts/login/$', views.LoginView.as_view()),
+    url(r'^accounts/logout/$', views.LogoutView.as_view(), {'next_page': '/'}),
     url(r'^robots\.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /*", content_type="text/plain")),
     # currently redirects base page to crm home
     # url(r'^$', home.views.index),
-    url(r'^login/$', django.contrib.auth.views.login, name='login'),
-    url(r'^logout/$', django.contrib.auth.views.logout, name='logout'),
+    url(r'^login/$', views.LoginView.as_view(), name='login'),
+    url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
     url(r'^', include('home.urls')),
 
 ]

@@ -10,13 +10,13 @@ class Assistant(models.Model):
     """
     Details on person/people to receive copy of invoice (cc or attn:)
     """
-    salutation = models.CharField(max_length=15, blank=True, null=True)
-    first_name = models.CharField(max_length=100, blank=True, null=True)
+    salutation = models.CharField(max_length=15, blank=True, default="")
+    first_name = models.CharField(max_length=100, blank=True, default="")
     last_name = models.CharField(max_length=100)
-    title = models.CharField(max_length=100, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
-    phone = models.CharField(max_length=40, blank=True, null=True)
-    address_personal = models.CharField(max_length=255, blank=True, null=True)
+    title = models.CharField(max_length=100, blank=True, default="")
+    email = models.EmailField(blank=True, default="")
+    phone = models.CharField(max_length=40, blank=True, default="")
+    address_personal = models.CharField(max_length=255, blank=True, default="")
 
 
 class Company(models.Model):
@@ -49,19 +49,19 @@ class Registrants(models.Model):
     assistant = models.ForeignKey(Assistant, blank=True, null=True,
                                   on_delete=models.SET_NULL)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    salutation = models.CharField(max_length=15, blank=True, null=True)
-    first_name = models.CharField(max_length=100, blank=True, null=True)
+    salutation = models.CharField(max_length=15, blank=True, default="")
+    first_name = models.CharField(max_length=100, blank=True, default="")
     last_name = models.CharField(max_length=100)
-    title = models.CharField(max_length=100, blank=True, null=True)
-    email1 = models.EmailField(blank=True, null=True)
-    email2 = models.EmailField(blank=True, null=True)
-    phone1 = models.CharField(max_length=40, blank=True, null=True)
-    phone2 = models.CharField(max_length=40, blank=True, null=True)
+    title = models.CharField(max_length=100, blank=True, default="")
+    email1 = models.EmailField(blank=True, default="")
+    email2 = models.EmailField(blank=True, default="")
+    phone1 = models.CharField(max_length=40, blank=True, default="")
+    phone2 = models.CharField(max_length=40, blank=True, default="")
     contact_option = models.CharField(max_length=1,
                                choices=CONTACT_OPTIONS,
                                default='D')
-    delegate_notes = models.TextField(blank=True, null=True)
-    speaker_bio = models.TextField(blank=True, null=True)
+    delegate_notes = models.TextField(blank=True, default="")
+    speaker_bio = models.TextField(blank=True, default="")
     created_by = models.ForeignKey('auth.User',
                                    default=1,
                                    related_name='del_created_by',
@@ -100,7 +100,7 @@ class RegDetails(models.Model):
     registration_status = models.CharField(max_length=2,
                                            choices=REG_STATUS_OPTIONS,
                                            default='DU')
-    registration_notes = models.TextField(blank=True, null=True)
+    registration_notes = models.TextField(blank=True, default="")
     created_by = models.ForeignKey('auth.User',
                                    default=1,
                                    related_name='reg_created_by',
@@ -127,13 +127,13 @@ class Invoice(models.Model):
                                      blank=True,
                                      on_delete=models.SET_DEFAULT)
     pre_tax_price = models.DecimalField(max_digits=10, decimal_places=2,
-                                        null=True, blank=True)
+                                        default=0, blank=True)
     gst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0.05,
-                                   blank=True, null=True)
+                                   blank=True)
     hst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0.13,
-                                   blank=True, null=True)
+                                   blank=True)
     qst_rate = models.DecimalField(max_digits=6, decimal_places=5,
-                                   default=0.09975, blank=True, null=True)
+                                   default=0.09975, blank=True)
     pst_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0)
     payment_date = models.DateField(blank=True, null=True)
     payment_method = models.CharField(max_length=1,
@@ -142,8 +142,8 @@ class Invoice(models.Model):
                                       null=True)
     fx_conversion_rate = models.DecimalField(max_digits=10, decimal_places=6,
                                              default=1.0)
-    invoice_notes = models.TextField(blank=True, null=True)
-    sponsorship_description = models.TextField(blank=True, null=True)
+    invoice_notes = models.TextField(blank=True, default="")
+    sponsorship_description = models.TextField(blank=True, default="")
     revised_flag = models.BooleanField(default=False)
 
 

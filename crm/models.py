@@ -17,22 +17,22 @@ class Person(models.Model):
     Basic person model for CRM
     """
     name = models.CharField(max_length=100)
-    title = models.CharField(max_length=100, blank=True, null=True)
-    company = models.CharField(max_length=500, blank=True, null=True)
-    url = models.URLField(max_length=200, blank=True, null=True)
-    linkedin = models.URLField(max_length=255, blank=True, null=True)
-    phone = models.CharField(max_length=40, blank=True, null=True)
-    phone_alternate = models.CharField(max_length=40, blank=True, null=True)
-    phone_main = models.CharField(max_length=40, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
-    email_alternate = models.EmailField(blank=True, null=True)
-    assistant_name = models.CharField(max_length=100, blank=True, null=True)
-    assistant_email = models.EmailField(blank=True, null=True)
+    title = models.CharField(max_length=100, blank=True, default="")
+    company = models.CharField(max_length=500, blank=True, default="")
+    url = models.URLField(max_length=200, blank=True, default="")
+    linkedin = models.URLField(max_length=255, blank=True, default="")
+    phone = models.CharField(max_length=40, blank=True, default="")
+    phone_alternate = models.CharField(max_length=40, blank=True, default="")
+    phone_main = models.CharField(max_length=40, blank=True, default="")
+    email = models.EmailField(blank=True, default="")
+    email_alternate = models.EmailField(blank=True, default="")
+    assistant_name = models.CharField(max_length=100, blank=True, default="")
+    assistant_email = models.EmailField(blank=True, default="")
     do_not_email = models.BooleanField(default=False)
     do_not_call = models.BooleanField(default=False)
-    city = models.CharField(max_length=50, blank=True, null=True)
-    dept = models.CharField(max_length=50, blank=True, null=True)  # General area of job
-    industry = models.TextField(blank=True, null=True)  # free-form descripton
+    city = models.CharField(max_length=50, blank=True, default="")
+    dept = models.CharField(max_length=50, blank=True, default="")  # General area of job
+    industry = models.TextField(blank=True, default="")  # free-form descripton
     geo = models.CharField(max_length=20,
                            choices=GEO_CHOICES,
                            default='Unknown')
@@ -48,8 +48,7 @@ class Person(models.Model):
     division2 = models.CharField(max_length=20,
                                  choices=DIV_CHOICES,
                                  default='NA',
-                                 blank=True,
-                                 null=True)  # for splitting leads
+                                 blank=True)  # for splitting leads
     date_created = models.DateTimeField('date created')
     created_by = models.ForeignKey('auth.User',
                                    default=1,
@@ -135,51 +134,51 @@ class Changes(models.Model):
     orig_id = models.IntegerField()
     name = models.CharField(max_length=100,
                             blank=True,
-                            null=True)
+                            default="")
     title = models.CharField(max_length=100,
                              blank=True,
-                             null=True)
+                             default="")
     company = models.CharField(max_length=100,
                                blank=True,
-                               null=True)
+                               default="")
     phone = models.CharField(max_length=40,
                              blank=True,
-                             null=True)
+                             default="")
     phone_main = models.CharField(max_length=40,
                                   blank=True,
-                                  null=True)
+                                  default="")
     email = models.EmailField(blank=True,
-                              null=True)
+                              default="")
     do_not_email = models.BooleanField(default=False)
     do_not_call = models.BooleanField(default=False)
     city = models.CharField(max_length=50,
                             blank=True,
-                            null=True)
+                            default="")
     dept = models.CharField(max_length=50,
                             blank=True,
-                            null=True)
+                            default="")
     industry = models.TextField(blank=True,
-                                null=True)  # free-form descripton
+                                default="")  # free-form descripton
     geo = models.CharField(max_length=20,
                            choices=GEO_CHOICES,
                            blank=True,
-                           null=True)
+                           default="")
     main_category = models.CharField(max_length=25,
                                      choices=CAT_CHOICES,
                                      blank=True,
-                                     null=True)
+                                     default="")
     main_category2 = models.CharField(max_length=15,
                                       choices=CAT_CHOICES,
                                       blank=True,
-                                      null=True)
+                                      default="")
     division1 = models.CharField(max_length=20,
                                  choices=DIV_CHOICES,
                                  blank=True,
-                                 null=True)
+                                 default="")
     division2 = models.CharField(max_length=20,
                                  choices=DIV_CHOICES,
                                  blank=True,
-                                 null=True)
+                                 default="")
     date_created = models.DateTimeField('date created')
     created_by = models.ForeignKey('auth.User',
                                    default=1,
@@ -200,7 +199,7 @@ class Event(models.Model):
     title = models.CharField(max_length=100)
     city = models.CharField(max_length=50)
     date_begins = models.DateField()
-    event_web_site = models.URLField(max_length=255, blank=True, null=True)
+    event_web_site = models.URLField(max_length=255, blank=True, default="")
     hotel = models.ForeignKey('registration.Venue', blank=True, null=True,
                               on_delete=models.SET_NULL)
     registrar = models.ForeignKey('auth.User', related_name='registrar',
@@ -235,17 +234,15 @@ class Event(models.Model):
                                     default=1,
                                     related_name='event_modifed_by',
                                     on_delete=models.SET_DEFAULT)
-    default_dept = models.CharField(max_length=50, blank=True, null=True)
+    default_dept = models.CharField(max_length=50, blank=True, default="")
     default_cat1 = models.CharField(max_length=25,
                                     choices=CAT_CHOICES,
                                     default='Industry',
-                                    blank=True,
-                                    null=True)
+                                    blank=True)
     default_cat2 = models.CharField(max_length=15,
                                     choices=CAT_CHOICES,
                                     default='NA',
-                                    blank=True,
-                                    null=True)
+                                    blank=True)
 
 
     def __str__(self):
@@ -434,10 +431,10 @@ class PersonalListSelections(models.Model):
                                  choices=DIV_CHOICES,
                                  blank=True,
                                  default='')  # for splitting leads
-    company = models.CharField(max_length=100, blank=True, null=True)
-    title = models.CharField(max_length=100, blank=True, null=True)
-    industry = models.CharField(max_length=100, blank=True, null=True)
-    dept = models.CharField(max_length=255, blank=True, null=True)
+    company = models.CharField(max_length=100, blank=True, default="")
+    title = models.CharField(max_length=100, blank=True, default="")
+    industry = models.CharField(max_length=100, blank=True, default="")
+    dept = models.CharField(max_length=255, blank=True, default="")
 
 
 class Flags(models.Model):
@@ -466,7 +463,7 @@ class UserProfile(models.Model):
     Extends base user profile with additional information
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=25, blank=True, null=True)
+    phone = models.CharField(max_length=25, blank=True, default="")
 
 
 @receiver(post_save, sender=User)

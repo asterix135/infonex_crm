@@ -22,8 +22,7 @@ class UploadedRow(models.Model):
     has_error = models.BooleanField(default=False)
     error_message = models.CharField(max_length=255,
                                      blank=True,
-                                     null=True,
-                                     default=None)
+                                     default="")
 
 
 class UploadedCell(models.Model):
@@ -32,4 +31,4 @@ class UploadedCell(models.Model):
     """
     parent_row = models.ForeignKey('UploadedRow', on_delete=models.CASCADE)
     cell_order = models.IntegerField()
-    content = models.TextField(blank=True, null=True)
+    content = models.TextField(blank=True, default="")

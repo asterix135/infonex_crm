@@ -16,7 +16,6 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.http import HttpResponse
-# import django.contrib.auth.views
 from django.contrib.auth import views
 import home.views
 

@@ -1173,7 +1173,7 @@ class ConferenceReportPdf:
                     total_lines_for_day = 0
                     for num in range(date_diff + 1):
                         self._label += option.name + ' Day ' + str(num + 1) \
-                            + ' Arr:<br/><br/>Dep:<br/><br/><br/>'
+                            + ' Arr:<br/><br/>Dep:<br/><br/>'
                         total_lines_for_day += 2
                     self._line_groups.append(total_lines_for_day)
                 else:

@@ -47,6 +47,14 @@ class IndexCSVResponseMixin():
                 'DateEntered',
             ])
             for person in self.filtered_queryset:
+                if person.date_modified:
+                    person_date_modified = person.date_modified.strftime('%Y-%b-%d')
+                else:
+                    person_date_modified = '')
+                if person.date_created:
+                    person_date_created = person.date_created.strftime('%Y-%b-%d')
+                else:
+                    person_date_created = ''
                 writer.writerow([
                     person.name,
                     person.title,
@@ -65,8 +73,10 @@ class IndexCSVResponseMixin():
                     person.state_prov(),
                     person.has_registration_history(),
                     person.created_by.username,
-                    person.date_modified.strftime('%Y-%b-%d'),
-                    person.date_created.strftime('%Y-%b-%d'),
+                    person_date_modified,
+                    person_date_created,
+                    # person.date_modified.strftime('%Y-%b-%d'),
+                    # person.date_created.strftime('%Y-%b-%d'),
                 ])
             return response
         # Business as usual otherwise

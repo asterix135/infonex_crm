@@ -50,7 +50,7 @@ class IndexCSVResponseMixin():
                 if person.date_modified:
                     person_date_modified = person.date_modified.strftime('%Y-%b-%d')
                 else:
-                    person_date_modified = '')
+                    person_date_modified = ''
                 if person.date_created:
                     person_date_created = person.date_created.strftime('%Y-%b-%d')
                 else:

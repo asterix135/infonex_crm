@@ -24,7 +24,7 @@ class IndexCSVResponseMixin():
             response['Content-Disposition'] = 'attachment; filename=' + \
                 export_file_name
 
-            writer = csv.writer(response)
+            writer = csv.writer(response, quotechar='"', quoting=csv.QUOTE_MINIMAL)
             writer.writerow([
                 'Name',
                 'Title',

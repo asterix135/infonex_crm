@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [  # local_ip,
                 'ip-172-31-12-214.us-west-2.compute.internal',
                 '52.41.58.66',
                 'infonex-crm.com',
+                'www.infonex-crm.com',
                 ]
 
 # Application definition

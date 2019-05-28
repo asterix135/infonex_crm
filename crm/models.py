@@ -90,9 +90,11 @@ class Person(models.Model):
     def state_prov(self):
         phone_pattern = re.compile(r'(\d{3})\D*(\d{3})\D*(\d{4})\D*(\d*)$')
         if self.phone and phone_pattern.search(self.phone):
-            ac = phone_pattern.search(self.phone).groups()[0]
-            if ac in AC_DICT:
-                return AC_DICT[ac]
+            stripped_phone = self.phone.strip('()')
+            if phone_pattern.search(stripped_phone):
+                ac = phone_pattern.search(stripped_phone).groups()[0]
+                if ac in AC_DICT:
+                    return AC_DICT[ac]
         return "UNKNOWN"
 
     def has_registration_history(self):

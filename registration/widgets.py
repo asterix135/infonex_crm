@@ -37,7 +37,7 @@ class MonthYearWidget(Widget):
             start_year = max(2015, this_year - 3)
             self.years = range(start_year, this_year+1)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         try:
             year_val, month_val = value.year, value.month
         except AttributeError:

@@ -728,6 +728,10 @@ def search_dels(request):
     AJAX call to get matching delegates and crm contacts for new_delegate_search
     """
     if request.method == 'POST':
+        try:
+            conference = Event.objects.get(pk=request.POST['event'])
+        except (ValueError, Event.DoesNotExist):
+            conference = None
         if (request.POST['first_name'] == '' and
             request.POST['last_name'] == '' and
             request.POST['company'] == '' and
@@ -736,7 +740,6 @@ def search_dels(request):
             past_customer_list = None
             crm_list = None
             search_entered = True
-            conference = None
         else:
             filterargs = {
                 'first_name__icontains': request.POST['first_name'],
@@ -751,10 +754,7 @@ def search_dels(request):
                 Q(company__icontains=request.POST['company'])
             ).order_by('company', 'name')[:100]
             search_entered = True
-            try:
-                conference = Event.objects.get(pk=request.POST['event'])
-            except (ValueError, Event.DoesNotExist):
-                conference = None
+
     else:
         past_customer_list = None
         crm_list = None

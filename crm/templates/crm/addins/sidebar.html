@@ -1,3 +1,4 @@
+{% load crm_extras %}
 <div class="col-xs-6 col-sm-3 col-sm-pull-9 sidebar-offcanvas venue-sidebar fill"
   id="crm-sidebar">
   <div class="list-group">
@@ -33,7 +34,7 @@
     <a class="list-group-item" href="/crm/new/">Add new contact</a>
     {% endif %}
 
-    {% if perms.crm.change_territoryselects %}
+    {% if user_is_admin %}
     <a href="/crm/manage_territory/" class="list-group-item">
       Manage sales territories
     </a>

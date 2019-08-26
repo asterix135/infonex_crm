@@ -1,5 +1,6 @@
 import datetime
 import json
+import re
 from io import BytesIO
 
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -578,14 +579,12 @@ class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
         # Only execute if there is actually text in the search string
         if len(self.search_string.strip()) == 0:
             return self.new_search(request, *args, **kwargs)
-        search_terms = self.search_string.split()
-        queries = []
-        for term in search_terms:
-            queries.append(Q(name__icontains=term))
-            queries.append(Q(company__icontains=term))
-        query = queries.pop()
-        for item in queries:
-            query |= item
+        search_term = self.search_string.strip()
+        search_term = re.sub(' +', ' ', search_term)
+        query = Q(name__icontains=search_term)
+        query |= Q(company__icontains=search_term)
+        query |= Q(title__icontains=search_term)
+
         # Update self.queryset first so can use default methods
         self.queryset = Person.objects.filter(query)
         self.object_list = self.get_queryset()

@@ -543,6 +543,7 @@ class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
         # make sure there is something to search
         if (search_params['name'] in ('', None) and
             search_params['title'] in ('', None) and
+            search_params['dept'] in ('', None) and
             search_params['company'] in ('', None) and
             search_params['prov'] in ('', None) and
             search_params['customer'] in ('', None)):
@@ -551,7 +552,8 @@ class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
         self.queryset = Person.objects.filter(
             name__icontains=search_params['name'],
             title__icontains=search_params['title'],
-            company__icontains=search_params['company']
+            company__icontains=search_params['company'],
+            dept__icontains=search_params['dept']
         )
         if search_params['prov'] not in ('', None):
             regex_val = r''
@@ -598,6 +600,8 @@ class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
                 request.GET['name']
         search_params['title'] = request.session['search_title'] = \
                 request.GET['title']
+        search_params['dept'] = request.session['search_dept'] = \
+                request.GET['dept']
         search_params['company'] = request.session['search_company'] = \
                 request.GET['company']
         search_params['prov'] = request.session['search_prov'] = \
@@ -635,6 +639,7 @@ class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
         search_params = {}
         search_params['name'] = request.session['search_name'] = None
         search_params['title'] = request.session['search_title'] = None
+        search_params['dept'] = request.session['search_dept'] = None
         search_params['company'] = request.session['search_company'] = None
         search_params['prov'] = request.session['search_prov'] = None
         search_params['customer'] = request.session['search_customer'] = None
@@ -649,6 +654,7 @@ class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
         search_params = {}
         search_params['name'] = request.session.get('search_name')
         search_params['title'] = request.session.get('search_title')
+        search_params['dept'] = request.session.get('search_dept')
         search_params['company'] = request.session.get('search_company')
         search_params['prov'] = request.session.get('search_prov')
         search_params['customer'] = request.session.get('search_customer')

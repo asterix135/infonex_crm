@@ -546,14 +546,17 @@ class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
             search_params['dept'] in ('', None) and
             search_params['company'] in ('', None) and
             search_params['prov'] in ('', None) and
-            search_params['customer'] in ('', None)):
+            search_params['customer'] in ('', None) and
+            search_params['phone_number'] in ('', None)):
             return self.new_search(self.request, *args, **kwargs)
-        # Update self.queryset first so can use default methods
         self.queryset = Person.objects.filter(
-            name__icontains=search_params['name'],
-            title__icontains=search_params['title'],
-            company__icontains=search_params['company'],
-            dept__icontains=search_params['dept']
+            (Q(name__icontains=search_params['name']) &
+            Q(title__icontains=search_params['title']) &
+            Q(company__icontains=search_params['company']) &
+            Q(dept__icontains=search_params['dept'])) &
+            (Q(phone__icontains=search_params['phone_number']) |
+             Q(phone_main__icontains=search_params['phone_number']) |
+             Q(phone_alternate__icontains=search_params['phone_number']))
         )
         if search_params['prov'] not in ('', None):
             regex_val = r''
@@ -606,6 +609,8 @@ class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
                 request.GET['company']
         search_params['prov'] = request.session['search_prov'] = \
                 request.GET['state_province']
+        search_params['phone_number'] = request.session['phone_number'] = \
+                request.GET['phone_number']
         if request.GET['past_customer'] in ('True', 'False'):
             search_params['customer'] = \
                 request.session['search_customer'] = \
@@ -643,6 +648,7 @@ class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
         search_params['company'] = request.session['search_company'] = None
         search_params['prov'] = request.session['search_prov'] = None
         search_params['customer'] = request.session['search_customer'] = None
+        search_params['phone_number'] = request.session['phone_number'] = None
         self.object_list = self.get_queryset()
         return self.render_to_response(self.get_context_data(**kwargs))
 
@@ -658,6 +664,7 @@ class Search(CustomListSort, GeneratePaginationList, MyTerritories, ListView):
         search_params['company'] = request.session.get('search_company')
         search_params['prov'] = request.session.get('search_prov')
         search_params['customer'] = request.session.get('search_customer')
+        search_params['phone_number'] = request.session.get('phone_number')
         self.conf_id = request.session.get('search_conf_id')
         if self.search_type == 'advanced':
             return self._execute_advanced_search(search_params, *args, **kwargs)

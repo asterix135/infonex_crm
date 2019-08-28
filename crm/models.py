@@ -204,6 +204,7 @@ class Event(models.Model):
     event_web_site = models.URLField(max_length=255, blank=True, default="")
     hotel = models.ForeignKey('registration.Venue', blank=True, null=True,
                               on_delete=models.SET_NULL)
+    room_rate = models.TextField(blank=True, default="")
     registrar = models.ForeignKey('auth.User', related_name='registrar',
                                   on_delete=models.SET_NULL,
                                   null=True)

@@ -53,6 +53,7 @@ def build_email_message(reg_details, invoice):
         'event_name': reg_details.conference.title,
         'venue_name': '',
         'venue_details': '',
+        'room_rate': '',
         'event_url': CANADA_WEBSITE,
         'reg_options': '',
         'cxl_policy': CANADA_CXL_POLICY,
@@ -119,6 +120,13 @@ def build_email_message(reg_details, invoice):
             email_merge_fields['venue_details'] += '\nVenue Web Site: ' + \
                 reg_details.conference.hotel.hotel_url
         email_merge_fields['venue_details'] += '\n'
+
+        # If have hotel, then build room block info if available:
+        if reg_details.conference.room_rate:
+            email_merge_fields['room_rate'] = \
+                'Please note the following details to book a room: \n\n'
+            email_merge_fields['room_rate'] += reg_details.conference.room_rate
+            email_merge_fields['room_rate'] += '\n\n'
 
     if reg_details.conference.event_web_site:
         email_merge_fields['event_url'] = reg_details.conference.event_web_site

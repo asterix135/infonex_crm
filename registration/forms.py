@@ -354,27 +354,6 @@ class MailMergeDetailsForm(forms.Form):
                    'rows': '3'}
         )
     )
-    # room_rate = forms.CharField(
-    #     label='Bedroom rate',
-    #     required=False,
-    #     widget=forms.TextInput(
-    #         attrs={'class': 'form-control',
-    #                'placeholder': 'e.g.: $249 per night'}
-    #     )
-    # )
-    # room_rate_code = forms.CharField(
-    #     required=False,
-    #     widget=forms.TextInput(
-    #         attrs={'class': 'form-control'}
-    #     )
-    # )
-    # room_booking_phone = forms.CharField(
-    #     required=False,
-    #     label='Bedroom reservation number',
-    #     widget=forms.TextInput(
-    #         attrs={'class': 'form-control'}
-    #     )
-    # )
     conference_name = forms.CharField(
         label='Conference Name',
         required=True,

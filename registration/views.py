@@ -167,26 +167,6 @@ def mass_mail(request):
             BASE_DIR,
             'registration/static/registration/email_text/venue_details.txt'
         )
-        # if request.POST['room_rate'] not in ('', None):
-        #     room_rate_text = '\nThe hotel is able to offer you a special ' + \
-        #                      'guest room rate of '
-        #     room_rate_text += request.POST['room_rate'].strip() + '. '
-        #     if request.POST['room_rate_code'] not in ('', None):
-        #         if request.POST['room_booking_phone'] not in ('', None):
-        #             room_rate_text += '\nPlease call ' + \
-        #                 request.POST['room_booking_phone'].strip() + \
-        #                 ' directly and quote reservation code: "' + \
-        #                 request.POST['room_rate_code'].strip() + \
-        #                 '" when booking your room.\n'
-        #         else:
-        #             room_rate_text += '\nPlease quote reservation code: "' + \
-        #                 request.POST['room_rate_code'].strip() + \
-        #                 '" when booking your room.\n'
-        #     else:
-        #         room_rate_text += '\n'
-        # else:
-        #     room_rate_text = ''
-        # email_merge_fields['room_rate_text'] = room_rate_text
         email_merge_fields['room_rate_text'] = '\n' + request.POST['room_rate'] + '\n'
         email_subject += 'VENUE UPDATE'
 
@@ -632,7 +612,6 @@ def mass_mail_details(request):
             registrar_string += '\nregister@infonex.ca'
 
     venue_details = ''
-    # booking_phone = ''
     if event.hotel:
         hotel = event.hotel
         if hotel.name:
@@ -662,7 +641,6 @@ def mass_mail_details(request):
         'conference_location': event.city + ', ' + event.state_prov,
         'start_date': start_date,
         'room_rate': room_rate,
-        # 'room_booking_phone': booking_phone,
     }
 
     if message == 'venue':

@@ -631,7 +631,7 @@ def mass_mail_details(request):
             registrar_string += '\nregister@infonex.ca'
 
     venue_details = ''
-    booking_phone = ''
+    # booking_phone = ''
     if event.hotel:
         hotel = event.hotel
         if hotel.name:
@@ -646,6 +646,8 @@ def mass_mail_details(request):
             booking_phone = hotel.phone
         if event.hotel.hotel_url:
             venue_details += '\nHotel Website: ' + hotel.hotel_url
+        if event.room_rate:
+            room_rate = event.room_rate
 
     try:
         start_date = event.date_begins.strftime('%A, %-d %B, %Y')
@@ -658,7 +660,8 @@ def mass_mail_details(request):
         'conference_name': event.title,
         'conference_location': event.city + ', ' + event.state_prov,
         'start_date': start_date,
-        'room_booking_phone': booking_phone,
+        'room_rate': room_rate,
+        # 'room_booking_phone': booking_phone,
     }
 
     if message == 'venue':

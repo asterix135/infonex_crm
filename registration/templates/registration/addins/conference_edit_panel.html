@@ -54,6 +54,13 @@
   {% include 'registration/addins/conference_venue_choices.html' %}
 </div>
 <div class="row">
+  <div class="col-sm-11">
+    {{ conference_edit_form.room_rate.label_tag }}
+    {{ conference_edit_form.room_rate.errors }}
+    {{ conference_edit_form.room_rate }}
+  </div>
+</div>
+<div class="row">
   <div class="col-sm-5">
     {{ conference_edit_form.registrar.label_tag }}
     {{ conference_edit_form.registrar.errors }}

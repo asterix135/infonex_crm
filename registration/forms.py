@@ -72,8 +72,8 @@ class ConferenceEditForm(forms.ModelForm):
     class Meta():
         model = Event
         fields = ['number', 'title', 'city', 'date_begins', 'state_prov',
-                  'hotel', 'registrar', 'developer', 'company_brand',
-                  'gst_charged', 'hst_charged', 'qst_charged',
+                  'hotel', 'room_rate', 'registrar', 'developer',
+                  'company_brand', 'gst_charged', 'hst_charged', 'qst_charged',
                   'gst_rate', 'hst_rate', 'qst_rate', 'billing_currency',
                   'event_web_site', 'default_dept', 'default_cat1',
                   'default_cat2']
@@ -81,6 +81,7 @@ class ConferenceEditForm(forms.ModelForm):
             'number': _('Event Number'),
             'title': _('Event Title'),
             'date_begins': _('Event Start Date'),
+            'room_rate': _('Room Rate Info for Delegates'),
             'default_dept': _('Default Department for CRM'),
             'default_cat1': _('Default CRM Category(1)'),
             'default_cat2': _('Default CRM Category(2)'),
@@ -104,6 +105,10 @@ class ConferenceEditForm(forms.ModelForm):
             ),
             'hotel': forms.Select(
                 attrs={'class': 'form-control'}
+            ),
+            'room_rate': forms.Textarea(
+                attrs={'class': 'form-control',
+                       'rows': '3'}
             ),
             'registrar': forms.Select(
                 attrs={'class': 'form-control'}

@@ -992,8 +992,10 @@ class ProcessRegistration(RegistrationPermissionMixin,
                 crm_company_name = request.POST['name'].strip()
             if self.company:
                 crm_city = self.company.city
+            elif request.POST['city'] not in ('', None):
+                crm_city = request.POST['city']
             else:
-                crm_city = None
+                crm_city = ""
             self.crm_match = Person(
                 name=request.POST['first_name'].strip() + ' ' + \
                      request.POST['last_name'].strip(),

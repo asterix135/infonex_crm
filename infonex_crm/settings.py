@@ -37,6 +37,17 @@ ALLOWED_HOSTS = [  # local_ip,
                 'www.infonex-crm.com',
                 ]
 
+# Celery setup
+# Amazon creditials will be taken from environment variable
+CELERY_BROKER_URL = 'sqs://'
+
+CELERY_BROKER_TRANSPORT_OPTIONS = {'region': 'us-west-2',
+                                   'visibility_timeout': 3600,
+                                   'polling_interval': 10,
+                                   'queue_name_prefix': 'CRM-',
+                                   'CELERYD_PREFETCH_MULTIPLIER': 0,
+                                  }
+
 # Application definition
 
 INSTALLED_APPS = [

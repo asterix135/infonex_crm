@@ -35,6 +35,15 @@ from registration.mixins import RegistrationPermissionMixin
 from registration.models import *
 from registration.pdfs import *
 
+from registration.tasks import add
+from time import sleep
+
+
+def test(request):
+    foo = add.delay(2,3)
+    sleep(3)
+    return HttpResponse(f'<h1>{foo.get()}</h1>')
+
 
 ########################
 # HELPER FUNCTIONS

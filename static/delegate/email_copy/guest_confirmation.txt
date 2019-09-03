@@ -3,6 +3,7 @@ Dear {salutation}:
 I am pleased to confirm {whose_registration} registration {guest_status} at {event_name} which is to be held in {city}{venue_name}.
 For up-to-date information, please visit the event website: {event_url}.
 {venue_details}
+{room_rate}
 {who_is_registered} are registered for the following:
 
 {reg_options}

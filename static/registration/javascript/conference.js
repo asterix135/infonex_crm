@@ -299,6 +299,7 @@ $(document).ready(function() {
     var stateProv = $('#conference-edit-panel #id_state_prov').val();
     var eventUrl = $('#conference-edit-panel #id_event_web_site').val();
     var hotel = $('#conference-edit-panel #id_hotel').val();
+    var roomRate = $('#conference-edit-panel #id_room_rate').val();
     var registrar = $('#conference-edit-panel #id_registrar').val();
     var developer = $('#conference-edit-panel #id_developer').val();
     var companyBrand = $('#conference-edit-panel #id_company_brand').val();
@@ -312,6 +313,7 @@ $(document).ready(function() {
     var defaultDept = $('#id_default_dept').val();
     var defaultCat1 = $('#id_default_cat1').val();
     var defaultCat2 = $('#id_default_cat2').val();
+    console.log(roomRate);
     $.ajax({
       url: '/registration/save_conference_changes/',
       type: 'POST',
@@ -324,6 +326,7 @@ $(document).ready(function() {
         'event_web_site': eventUrl,
         'state_prov': stateProv,
         'hotel': hotel,
+        'room_rate': roomRate,
         'registrar': registrar,
         'developer': developer,
         'company_brand': companyBrand,

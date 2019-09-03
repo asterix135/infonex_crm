@@ -635,8 +635,10 @@ def mass_mail_details(request):
             booking_phone = hotel.phone
         if event.hotel.hotel_url:
             venue_details += '\nHotel Website: ' + hotel.hotel_url
-        if event.room_rate:
-            room_rate = event.room_rate
+    if event.room_rate:
+        room_rate = event.room_rate
+    else:
+        room_rate=''
 
     try:
         start_date = event.date_begins.strftime('%A, %-d %B, %Y')

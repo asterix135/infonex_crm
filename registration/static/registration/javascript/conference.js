@@ -313,7 +313,6 @@ $(document).ready(function() {
     var defaultDept = $('#id_default_dept').val();
     var defaultCat1 = $('#id_default_cat1').val();
     var defaultCat2 = $('#id_default_cat2').val();
-    console.log(roomRate);
     $.ajax({
       url: '/registration/save_conference_changes/',
       type: 'POST',

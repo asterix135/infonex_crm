@@ -88,7 +88,7 @@ class NewDelegateForm(forms.ModelForm):
 
 
 class CompanySelectForm(forms.ModelForm):
-    crm_company = forms.CharField(max_length=255)
+    crm_company = forms.CharField(max_length=255, required=False)
 
     class Meta():
         model = Company

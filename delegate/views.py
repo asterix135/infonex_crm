@@ -865,15 +865,15 @@ class ProcessRegistration(RegistrationPermissionMixin,
                 self.conference:
             return True
         else:
-            print('\n\ninvalid\n')
-            print('new_delegate_form: ', self.new_delegate_form.is_valid())
-            print('company_select_form: ', self.company_select_form.is_valid())
-            print('assistant: ', (not self.has_assistant_data or self.assistant_form.is_valid()))
-            print('reg_details: ', self.reg_details_form.is_valid())
-            print('company_error: ', self.company_error)
-            print('assistant_missing: ', self.assistant_missing)
-            print('option_selection_needed: ', self.option_selection_needed)
-            print('conference: ', self.conference is not None)
+            # print('\n\ninvalid\n')
+            # print('new_delegate_form: ', self.new_delegate_form.is_valid())
+            # print('company_select_form: ', self.company_select_form.is_valid())
+            # print('assistant: ', (not self.has_assistant_data or self.assistant_form.is_valid()))
+            # print('reg_details: ', self.reg_details_form.is_valid())
+            # print('company_error: ', self.company_error)
+            # print('assistant_missing: ', self.assistant_missing)
+            # print('option_selection_needed: ', self.option_selection_needed)
+            # print('conference: ', self.conference is not None)
             return False
 
     def _get_assistant_form(self, request):

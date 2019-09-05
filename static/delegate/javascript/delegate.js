@@ -395,9 +395,14 @@ $(document).ready(function(){
         success: function(data){
           $('#company-crm-modal').html(data);
           var haveSuggestions = $('#have-suggestions', data).val();
-          var bestGuessCrmId = $('input[name="crm-select"]:checked', data).val();
+          var bestGuessCrmId = $('input[name="company-select"]:checked', data).val();
           if (bestGuessCrmId == 'new') {
-            var bestGuessCrmName = companyName;
+            var crmCompanyName = $('#id_crm_company').val();
+            if (crmCompanyName != '') {
+              var bestGuessCrmName = crmCompanyName;
+            } else {
+              var bestGuessCrmName = companyName;
+            }
           } else {
             var bestGuessCrmName = $('#crm_saved_company_name_' + bestGuessCrmId, data).val();
           };

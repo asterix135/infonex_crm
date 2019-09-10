@@ -1085,8 +1085,8 @@ class ConferenceReportPdf:
     def _header(canvas, doc, event, report_title, confidential=True, offset=0):
         canvas.saveState()
         styles = getSampleStyleSheet()
-        canvas.drawImage(LOGO_PATH, 0.45 * inch, PAGE_HEIGHT - inch * 0.75,
-                         height=0.5*inch, width=1.875*inch)
+        canvas.drawImage(LOGO_PATH, 0.45 * inch, PAGE_HEIGHT - inch * 1.119,
+                         height=0.869*inch, width=1.875*inch)
         canvas.setFont('Helvetica-Bold', 18)
         y_coord = PAGE_HEIGHT - inch * 0.45 - offset * inch
         canvas.drawString(2.75 * inch, y_coord, report_title)
@@ -1113,8 +1113,8 @@ class ConferenceReportPdf:
     @staticmethod
     def _unpaid_list_header(canvas, doc, event):
         canvas.saveState()
-        canvas.drawImage(LOGO_PATH, 0.45 * inch, PAGE_HEIGHT - inch * 0.75,
-                         height=0.5 * inch, width=1.875*inch)
+        canvas.drawImage(LOGO_PATH, 0.45 * inch, PAGE_HEIGHT - inch * 1.119,
+                         height=0.869*inch, width=1.875*inch)
         canvas.setLineWidth(2)
         canvas.line(0.45 * inch, PAGE_HEIGHT - inch * 0.8,
                     PAGE_WIDTH - 0.45 * inch, PAGE_HEIGHT - inch * 0.8)
@@ -1151,8 +1151,8 @@ class ConferenceReportPdf:
     def _small_header(canvas, doc, event, report_title):
         canvas.saveState()
 
-        canvas.drawImage(LOGO_PATH, 0.45 * inch, PAGE_HEIGHT - inch * 0.75,
-                         height=0.5 * inch, width=1.875*inch)
+        canvas.drawImage(LOGO_PATH, 0.45 * inch, PAGE_HEIGHT - inch * 1.119,
+                         height=0.869*inch, width=1.875*inch)
         canvas.setFont('Helvetica-Bold', 16)
         canvas.drawString(inch * 2.6, PAGE_HEIGHT - inch * 0.42,
                           report_title)

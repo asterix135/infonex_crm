@@ -32,8 +32,8 @@ def generate_invoice(canv, reg_details, invoice):
     canv.line(0.45 * inch, 10.15 * inch, 8.2 * inch, 10.15 * inch)
     canv.setLineWidth(1)
     canv.line(0.45 * inch, 10.15 * inch - 3, 8.2 * inch, 10.15 * inch - 3)
-    canv.drawImage(logo_path, 0.45 * inch, 10.275 * inch,
-                          height=0.5*inch, width=1.875*inch)
+    canv.drawImage(logo_path, 0.35 * inch, 10.225 * inch,
+                   height=0.6*inch, width=1.4*inch)
 
     # Footer
     company_address = [
@@ -231,8 +231,8 @@ def generate_reg_note(canv, reg_details, invoice=None):
     canv.line(0.45 * inch, 10.15 * inch, 8.2 * inch, 10.15 * inch)
     canv.setLineWidth(1)
     canv.line(0.45 * inch, 10.15 * inch - 3, 8.2 * inch, 10.15 * inch - 3)
-    canv.drawImage(logo_path, 0.45 * inch, 10.275 * inch,
-                   height=0.5*inch, width=1.875*inch)
+    canv.drawImage(logo_path, 0.35 * inch, 10.225 * inch,
+                   height=0.6*inch, width=1.4*inch)
 
     # Status Box
     style_sheet = getSampleStyleSheet()

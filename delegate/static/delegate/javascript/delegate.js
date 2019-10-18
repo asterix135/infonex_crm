@@ -357,7 +357,8 @@ $(document).ready(function(){
 
 
   // Called when attempting to process registration
-  $('body').on('click', '#process-registration-button', function(){
+  $('body').on('click', '.submit-button', function(){
+    var clickedButton = $(this).attr('id');
     var crmMatchId = $('#crm-match-value').val();
     var companyMatchId = $('#company-match-value').val();
     var companyName = $('#id_company_name').val();
@@ -418,11 +419,13 @@ $(document).ready(function(){
             if (!$('#company-match-value').val()) {
               $('#company-match-value').val('new');
             }
+            $('#submission-type').val(clickedButton);
             $('#registration-form').submit();
           }
         }
       });
     } else {
+      $('#submission-type').val(clickedButton);
       $('#registration-form').submit();
     }
   });

@@ -1,0 +1,53 @@
+{% extends 'registration/base.html' %}
+{% load staticfiles %}
+
+{% block title %}Payment Details | {% endblock %}
+
+{% block script_includes %}
+<script type="text/javascript" src="{% static 'delegate/javascript/payment_details.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container fluid-fill" id="main">
+  <div id="stored-variables">
+    <input type="hidden" name="registrant_id" value="{{ registrant.id }}" />
+    <input type="hidden" name="current_registration_id" value="{{ current_registration.id }}" />
+    <input type="hidden" name="assistant_id" value="{{ assistant.id }}" />
+    <input type="hidden" id="registration-type" name="registration_type" value="{{ current_registration.registration_status }}" />
+    <input type="hidden" id="reg-action-type" value="{{ reg_action }}" />
+  </div>
+  <div class="row fill">
+    <div class="col-sm-12">
+      <div id="greeting">
+        <h1>Please Process Payment</h1>
+        <h3>You have succcesfully registered {{ registrant.first_name }} {{ registrant.last_name }} for {{ current_registration.conference }}</h3>
+        {% if current_registration.invoice %}
+          <h3>Invoice Number: {{ current_registration.invoice.pk }}</h3>
+        {% endif %}
+        <h3>Customer Number: {{ current_registration.company.pk }}</h3>
+      </div>
+
+      <div id="editFields">
+        <ol>
+          <li>
+            Run the credit card and take note of the authorization number.
+          </li>
+          <li>
+            If the credit card is authorized, please enter a note with the authorization number on the invoice.
+          </li>
+          <li>
+            If the credit card is declined, please change the payment status to Unpaid.
+          </li>
+          <li>
+            If needed, add any notes to the internal record sheet.
+          </li>
+          <li>
+            Press the "Complete Registration" button.
+          </li>
+        </ol>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

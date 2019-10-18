@@ -10,6 +10,8 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^confirmation_details/$', views.confirmation_details,
         name='confirmation_details'),
+    url(r'^payment_details/$', views.ProcessPayment.as_view(),
+        name='payment_details'),
 
     url(r'^process_registration/$',
         login_required(views.ProcessRegistration.as_view()),

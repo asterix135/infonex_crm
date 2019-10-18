@@ -40,7 +40,8 @@
     <input type="hidden" id="company-match-value" name="company_match_value" value="{{ company.id }}" />
     <input type="hidden" id="assistant-match-value" name="assistant_match_value" value="{{ assistant.id }}" />
     <input type="hidden" id="action-type" name="action_type" value="{{ action_type }}" />
-    <input type="hidden" id="invoice-number" value="{{ current_registration.invoice.pk }}" />
+    <input type="hidden" id="invoice-number" name="invoice-number" value="{{ current_registration.invoice.pk }}" />
+    <input type="hidden" id="submission-type" name="submission_type" value="" />
     {{ reg_details_form.revised_flag.as_hidden }}
     {% csrf_token %}
   </div>
@@ -329,12 +330,15 @@
         </div>
 
         <div id="process-registration-section">
-          <button type="button" class="btn btn-success col-sm-12" id="process-registration-button">
+          <button type="button" class="btn btn-success col-sm-6 submit-button" id="process-registration-button">
             {% if current_registration %}
             Update Registration details
             {% else %}
             Process registration
             {% endif %}
+          </button>
+          <button type="button" class="btn btn-warning col-sm-6 submit-button" id="process-payment-button">
+            Process Payment
           </button>
         </div>
 

@@ -818,6 +818,13 @@ def index(request):
     return render(request, 'delegate/index.html', context)
 
 
+class ProcessPayment(RegistrationPermissionMixin, FormView):
+    template_name = 'delegate/payment_details.html'
+    success_url = reverse_lazy('delegate:confirmation_details')
+    # http_method_names = ['post',]
+    form_class = RegDetailsForm
+
+
 class ProcessRegistration(RegistrationPermissionMixin,
                           ProcessCompleteRegistration, FormView):
     """
@@ -826,6 +833,7 @@ class ProcessRegistration(RegistrationPermissionMixin,
     """
     template_name = 'delegate/index.html'
     success_url = reverse_lazy('delegate:confirmation_details')
+    payment_success_url = reverse_lazy('delegate:payment_details')
     http_method_names = ['post',]
 
     def _check_assistant_missing(self, request):
@@ -1114,6 +1122,20 @@ class ProcessRegistration(RegistrationPermissionMixin,
         context['non_invoice_values'] = NON_INVOICE_VALUES
 
         return context
+
+    def get_success_url(self):
+        """
+        Override default method to deal with 2 different options
+        """
+        submit_type = self.request.POST['submission_type']
+        if submit_type == 'process-payment-button':
+            if not self.payment_success_url:
+                raise ImproperlyConfigured("No URL to redirect to.  Provide a payment_success_url.")
+            return str(self.payment_success_url)
+        if not self.success_url:
+            raise ImproperlyConfigured("No URL to redirect to. Provide a success_url.")
+        return str(self.success_url)  # success_url may be lazy
+
 
 
 #######################

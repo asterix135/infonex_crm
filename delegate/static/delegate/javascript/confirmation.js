@@ -9,6 +9,13 @@ $(document).ready(function(){
   </div>
   `
 
+  // disable back button (doesn't work)
+  // ##TODO: fix this if possible
+  window.history.pushState(null, "", window.location.href);
+  window.onpopstate = function() {
+    window.history.pushState(null, "", window.location.href);
+  };
+
   // Show email modal on page load
   var regStatus = $('#registration-type').val();
   var regAction = $('#reg-action-type').val();

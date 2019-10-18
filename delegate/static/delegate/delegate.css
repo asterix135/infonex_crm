@@ -37,3 +37,6 @@ body {
 #companyFieldCompareModal {
   overflow-y: scroll;
 }
+.finalButton {
+  margin-top: 50px;
+}

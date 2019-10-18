@@ -819,10 +819,39 @@ def index(request):
 
 
 class ProcessPayment(RegistrationPermissionMixin, FormView):
+    model = RegDetails
     template_name = 'delegate/payment_details.html'
     success_url = reverse_lazy('delegate:confirmation_details')
     # http_method_names = ['post',]
     form_class = RegDetailsForm
+    reg_details = None
+    invoice = None
+
+    def get(self, request, *args, **kwargs):
+        try:
+            self.reg_details = RegDetails.objects.get(
+                pk=request.session['current_registration']
+            )
+        except KeyError:
+            return redirect('/registration/')
+        try:
+            self.invoice = Invoice.objects.get(reg_details=self.reg_details)
+        except Invoice.DoesNotExist:
+            return HttpResponseRedirect(self.get_success_url())
+
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        """
+        overrides default
+        """
+        registrant = Registrants.objects.get(pk=self.request.session['registrant'])
+        context = super(ProcessPayment, self).get_context_data(**kwargs)
+        context['current_registration'] = self.reg_details
+        context['invoice'] = self.invoice
+        context['registrant'] = registrant
+        return context
 
 
 class ProcessRegistration(RegistrationPermissionMixin,

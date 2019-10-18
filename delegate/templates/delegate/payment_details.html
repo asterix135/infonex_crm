@@ -24,10 +24,10 @@
         {% if current_registration.invoice %}
           <h3>Invoice Number: {{ current_registration.invoice.pk }}</h3>
         {% endif %}
-        <h3>Customer Number: {{ current_registration.company.pk }}</h3>
+        <h3>Customer Number: {{ registrant.company_id }}</h3>
       </div>
 
-      <div id="editFields">
+      <div id="instructions">
         <ol>
           <li>
             Run the credit card and take note of the authorization number.
@@ -45,6 +45,61 @@
             Press the "Complete Registration" button.
           </li>
         </ol>
+      </div>
+
+      <div id="delegate-info" class="panel panel-primary">
+        <div class="panel-heading">
+          Payment and Invoice Information
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-sm-12">
+              {{ form.registration_status.label_tag }}
+              {{ form.registration_status.errors }}
+              {{ form.registration_status }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              {{ form.registration_notes.label_tag }}
+              {{ form.registration_notes.errors }}
+              {{ form.registration_notes }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              {{ form.payment_date.label_tag }}
+              {{ form.payment_date.errors }}
+              {{ form.payment_date }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              {{ form.invoice_notes.label_tag }}
+              {{ form.invoice_notes.errors }}
+              {{ form.invoice_notes }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              {{ form.payment_method.label_tag }}
+              {{ form.payment_method.errors }}
+              {{ form.payment_method }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              {{ form.pre_tax_price.label_tag }}
+              {{ form.pre_tax_price.errors }}
+              {{ form.pre_tax_price }}
+            </div>
+          </div>
+        </div>
+        <div class="finalButton">
+          <button type="button" class="btn btn-success col-sm-12" id="submit">
+            Finalize registration
+          </button>
+        </div>
       </div>
 
     </div>

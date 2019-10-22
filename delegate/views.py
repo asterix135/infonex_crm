@@ -826,6 +826,25 @@ class ProcessPayment(RegistrationPermissionMixin, FormView):
     form_class = RegDetailsForm
     reg_details = None
     invoice = None
+    event = None
+
+    def _calculate_total_invoice(self):
+        sub_total = self.invoice.pre_tax_price
+        if self.invoice.hst_rate != 0:
+            tax1 = sub_total * self.invoice.hst_rate
+            pst = 0
+            qst = 0
+        else:
+            tax1 = sub_total * self.invoice.gst_rate
+            if qst != 0:
+                qst = (sub_total + tax1) * self.invoice.qst_rate
+                pst = 0
+            else:
+                qst = 0
+                pst = sub_total * self.invoice.pst_rate
+        total = sub_total + tax1 + qst + pst
+        total = format(total, '.2f')
+        return total
 
     def get(self, request, *args, **kwargs):
         try:
@@ -838,8 +857,7 @@ class ProcessPayment(RegistrationPermissionMixin, FormView):
             self.invoice = Invoice.objects.get(reg_details=self.reg_details)
         except Invoice.DoesNotExist:
             return HttpResponseRedirect(self.get_success_url())
-
-
+        self.event = Event.objects.get(pk=self.reg_details.conference_id)
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -851,7 +869,37 @@ class ProcessPayment(RegistrationPermissionMixin, FormView):
         context['current_registration'] = self.reg_details
         context['invoice'] = self.invoice
         context['registrant'] = registrant
+        context['total_invoice_amount'] = self._calculate_total_invoice()
+        context['event'] = self.event
         return context
+
+    def get_form_kwargs(self):
+        """ Overrides default """
+        kwargs = {
+            'initial': self.get_initial(),
+            'prefix': self.get_prefix(),
+        }
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({
+                'data': self.request.POST,
+                'files': self.request.FILES,
+            })
+        else:
+            kwargs.update({
+                'data': {
+                    'registration_status': self.reg_details.registration_status,
+                    'registration_notes': self.reg_details.registration_notes,
+                    'payment_date': self.invoice.payment_date,
+                    'invoice_notes': self.invoice.invoice_notes,
+                    'payment_method': self.invoice.payment_method,
+                    'pre_tax_price': self.invoice.pre_tax_price,
+                    'gst_rate': self.invoice.gst_rate,
+                    'hst_rate': self.invoice.hst_rate,
+                    'qst_rate': self.invoice.qst_rate,
+                }
+            })
+        return kwargs
+
 
 
 class ProcessRegistration(RegistrationPermissionMixin,

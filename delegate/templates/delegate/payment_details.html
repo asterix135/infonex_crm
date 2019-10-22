@@ -4,7 +4,7 @@
 {% block title %}Payment Details | {% endblock %}
 
 {% block script_includes %}
-<script type="text/javascript" src="{% static 'delegate/javascript/payment_details.js' %}"></script>
+<script type="module" src="{% static 'delegate/javascript/payment_details.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -21,10 +21,12 @@
       <div id="greeting">
         <h1>Please Process Payment</h1>
         <h3>You have succcesfully registered {{ registrant.first_name }} {{ registrant.last_name }} for {{ current_registration.conference }}</h3>
+        <h4>Now please process and finalize payment details</h4>
         {% if current_registration.invoice %}
           <h3>Invoice Number: {{ current_registration.invoice.pk }}</h3>
         {% endif %}
         <h3>Customer Number: {{ registrant.company_id }}</h3>
+        <h3>Total Invoice Amount: <span id="total-invoice">${{ total_invoice_amount }}</span></h3>
       </div>
 
       <div id="instructions">
@@ -42,7 +44,7 @@
             If needed, add any notes to the internal record sheet.
           </li>
           <li>
-            Press the "Complete Registration" button.
+            Press the "Finalize Registration" button.
           </li>
         </ol>
       </div>
@@ -53,24 +55,53 @@
         </div>
         <div class="panel-body">
           <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-12 col-md-6">
+              {{ form.pre_tax_price.label_tag }}
+              {{ form.pre_tax_price.errors }}
+              <div class="input-group">
+                <span class="input-group-addon">$</span>
+                {{ form.pre_tax_price }}
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
               {{ form.registration_status.label_tag }}
               {{ form.registration_status.errors }}
               {{ form.registration_status }}
             </div>
           </div>
           <div class="row">
-            <div class="col-sm-12">
-              {{ form.registration_notes.label_tag }}
-              {{ form.registration_notes.errors }}
-              {{ form.registration_notes }}
+            {% if event.gst_charged %}
+            <div class="col-sm-6">
+              {{ form.gst_rate.label_tag }}
+              {{ form.gst_rate.errors }}
+              {{ form.gst_rate }}
             </div>
+            {% endif %}
+            {% if event.hst_charged %}
+            <div class="col-sm-6">
+              {{ form.hst_rate.label_tag }}
+              {{ form.hst_rate.errors }}
+              {{ form.hst_rate }}
+            </div>
+            {% endif %}
+            {% if event.qst_charged %}
+            <div class="col-sm-6">
+              {{ form.qst_rate.label_tag }}
+              {{ form.qst_rate.errors }}
+              {{ form.qst_rate }}
+            </div>
+            {% endif %}
           </div>
           <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-12 col-md-6">
               {{ form.payment_date.label_tag }}
               {{ form.payment_date.errors }}
               {{ form.payment_date }}
+            </div>
+            <div class="col-sm-12 col-md-6">
+              {{ form.payment_method.label_tag }}
+              {{ form.payment_method.errors }}
+              {{ form.payment_method }}
             </div>
           </div>
           <div class="row">
@@ -82,19 +113,15 @@
           </div>
           <div class="row">
             <div class="col-sm-12">
-              {{ form.payment_method.label_tag }}
-              {{ form.payment_method.errors }}
-              {{ form.payment_method }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              {{ form.pre_tax_price.label_tag }}
-              {{ form.pre_tax_price.errors }}
-              {{ form.pre_tax_price }}
+              {{ form.registration_notes.label_tag }}
+              {{ form.registration_notes.errors }}
+              {{ form.registration_notes }}
             </div>
           </div>
         </div>
+        <div class="row">
+        </div>
+
         <div class="finalButton">
           <button type="button" class="btn btn-success col-sm-12" id="submit">
             Finalize registration

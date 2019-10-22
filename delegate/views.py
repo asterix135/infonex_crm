@@ -900,6 +900,18 @@ class ProcessPayment(RegistrationPermissionMixin, FormView):
             })
         return kwargs
 
+    def post(self, request, *args, **kwargs):
+        self.reg_details = RegDetails.objects.get(
+            pk=request.POST['current_registration_id']
+        )
+        self.invoice = Invoice.objects.get(
+            pk=request.POST['invoice_number']
+        )
+        self.event = Event.objects.get(
+            pk=request.POST['event_id']
+        )
+        return super().post(request, *args, **kwargs)
+
 
 
 class ProcessRegistration(RegistrationPermissionMixin,

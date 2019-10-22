@@ -10,6 +10,7 @@ $(document).ready(function(){
   var matchedCompanyId = null;
   var nonInvoiceVals = ['G', 'K', 'KX', 'SD', 'SE', 'B', ''];
   var cxlVals = ['DX', 'SX', 'KX', 'B'];
+  var paidVals = ['DP', 'SP'];
   if ($.inArray($('#original-registrant-id').val(), [undefined, '']) == -1){
     var originalDelegate = $('#original-registrant-id').val();
   } else {
@@ -25,6 +26,8 @@ $(document).ready(function(){
   displayHideRegDetails();
   // Update display of tax and invoice
   updateTaxAndInvoice();
+  // show payment button if necessary
+  displayHidePaymentButton();
 
   // Activate datepicker
   $('#id_register_date').datepicker({
@@ -172,6 +175,21 @@ $(document).ready(function(){
   });
 
 
+  // function to hide/display Process Payment button
+  function displayHidePaymentButton(){
+    var regStatus = $('#id_registration_status').val();
+    if (jQuery.inArray(regStatus, paidVals) >=0) {
+      $('#process-payment-button').addClass('in');
+      $('#process-registration-button').removeClass('col-sm-12');
+      $('#process-registration-button').addClass('col-sm-6');
+    } else {
+      $('#process-payment-button').removeClass('in');
+      $('#process-registration-button').removeClass('col-sm-6');
+      $('#process-registration-button').addClass('col-sm-12');
+    };
+  };
+
+
   // function to ensure proper display/hide of reg details
   function displayHideRegDetails(){
     var regStatus = $('#id_registration_status').val();
@@ -211,6 +229,7 @@ $(document).ready(function(){
     }
 
     displayHideRegDetails();
+    displayHidePaymentButton();
     var newStatus = $(this).val();
     var currentRegDetailId = $('#current-regdetail-id').val();
     if (currentRegDetailId == '') {

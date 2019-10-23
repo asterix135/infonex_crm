@@ -195,6 +195,101 @@ class NewCompanyForm(CompanySelectForm):
                             'new_company_qst_examption_number')
 
 
+class PaymentForm(forms.ModelForm):
+    registration_status = forms.ChoiceField(
+        required=True,
+        choices=REG_STATUS_OPTIONS,
+        initial = '',
+        widget = forms.Select(
+            attrs={'class': 'form-control'}
+        )
+    )
+    registration_notes = forms.CharField(
+        required=False,
+        label = 'Registration Notes (Internal Use Only)',
+        widget = forms.Textarea(
+            attrs={'class': 'form-control',
+                   'rows': '4'}
+        )
+    )
+
+    class Meta():
+        model = Invoice
+        fields = [
+            'pre_tax_price',
+            'gst_rate',
+            'hst_rate',
+            'qst_rate',
+            'payment_date',
+            'payment_method',
+            'invoice_notes'
+        ]
+        labels = {
+            'invoice_notes': _('Comments to Appear on Invoice'),
+        }
+        widgets = {
+            'pre_tax_price': forms.NumberInput(
+                attrs={'class': 'cost-field form-control',
+                       'step': '1'}
+            ),
+            'gst_rate': forms.NumberInput(
+                attrs={'class': 'form-control cost-field',
+                       'step': '0.01'}
+            ),
+            'hst_rate': forms.NumberInput(
+                attrs={'class': 'form-control cost-field',
+                       'step': '0.01'}
+            ),
+            'qst_rate': forms.NumberInput(
+                attrs={'class': 'form-control cost-field',
+                       'step': '0.0001'}
+            ),
+            'payment_date': forms.DateInput(
+                attrs={'class': 'form-control',
+                       'placeholder': 'yyyy-mm-dd'}
+            ),
+            'payment_method': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'invoice_notes': forms.Textarea(
+                attrs={'class': 'form-control',
+                       'rows': '4'}
+            ),
+        }
+
+    def clean(self):
+        cleaned_data = super(PaymentForm, self).clean()
+
+        print(cleaned_data.get('gst_rate'))
+
+        reg_status = cleaned_data.get('registration_status')
+        pre_tax_price = cleaned_data.get('pre_tax_price')
+        payment_date = cleaned_data.get('payment_date')
+        payment_method = cleaned_data.get('payment_method')
+        if reg_status and reg_status in CXL_VALUES:
+            if not cxl_date:
+                self.add_error('cancellation_date',
+                               'Cancellation Date Required')
+        if reg_status and reg_status not in ZERO_INVOICE_OK:
+            if not pre_tax_price:
+                if reg_status in PAID_STATUS_VALUES:
+                    if payment_method and payment_method != 'N':
+                        self.add_error('pre_tax_price',
+                                       'You must indicate the registration fee')
+                else:
+                    self.add_error('pre_tax_price',
+                                   'You must indicate the registration fee')
+
+        if reg_status and reg_status in PAID_STATUS_VALUES:
+            if not payment_date:
+                self.add_error('payment_date',
+                               'You must indicate payment date')
+            if not payment_method:
+                self.add_error('payment_method',
+                               'You must indicate method of payment')
+        return cleaned_data
+
+
 class RegDetailsForm(forms.ModelForm):
     register_date = forms.DateField(
         initial = datetime.date.today,

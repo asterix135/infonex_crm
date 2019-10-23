@@ -823,7 +823,7 @@ class ProcessPayment(RegistrationPermissionMixin, FormView):
     template_name = 'delegate/payment_details.html'
     success_url = reverse_lazy('delegate:confirmation_details')
     # http_method_names = ['post',]
-    form_class = RegDetailsForm
+    form_class = PaymentForm
     reg_details = None
     invoice = None
     event = None
@@ -845,6 +845,15 @@ class ProcessPayment(RegistrationPermissionMixin, FormView):
         total = sub_total + tax1 + qst + pst
         total = format(total, '.2f')
         return total
+
+    def _set_empty_tax_rates(self):
+        if 'hst_rate' not in self.request.POST:
+            self.request.POST['hst_rate'] = 0
+        if 'gst_rate' not in self.request.POST:
+            self.request.POST['gst_rate'] = 0
+        if 'qst_rate' not in self.request.POST:
+            self.request.POST['qst_rate'] = 0
+
 
     def get(self, request, *args, **kwargs):
         try:
@@ -910,7 +919,17 @@ class ProcessPayment(RegistrationPermissionMixin, FormView):
         self.event = Event.objects.get(
             pk=request.POST['event_id']
         )
-        return super().post(request, *args, **kwargs)
+        self._set_empty_tax_rates()
+        form = self.get_form()
+        if form.is_valid():
+            print('\n\nvalid form\n\n')
+            return self.form_valid(form)
+        else:
+            print('\n\ninvalid form\n\n')
+            print(form.errors)
+            return self.form_invalid(form)
+
+        # return super().post(request, *args, **kwargs)
 
 
 

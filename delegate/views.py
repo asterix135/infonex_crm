@@ -846,14 +846,17 @@ class ProcessPayment(RegistrationPermissionMixin, FormView):
         total = format(total, '.2f')
         return total
 
-    def _set_empty_tax_rates(self):
-        if 'hst_rate' not in self.request.POST:
-            self.request.POST['hst_rate'] = 0
-        if 'gst_rate' not in self.request.POST:
-            self.request.POST['gst_rate'] = 0
-        if 'qst_rate' not in self.request.POST:
-            self.request.POST['qst_rate'] = 0
-
+    def _customize_post_data(self):
+        post_data = {}
+        for key in self.request.POST:
+            post_data[key] = self.request.POST[key]
+        if 'hst_rate' not in post_data:
+            post_data['hst_rate'] = 0
+        if 'gst_rate' not in post_data:
+            post_data['gst_rate'] = 0
+        if 'qst_rate' not in post_data:
+            post_data['qst_rate'] = 0
+        return post_data
 
     def get(self, request, *args, **kwargs):
         try:
@@ -889,8 +892,10 @@ class ProcessPayment(RegistrationPermissionMixin, FormView):
             'prefix': self.get_prefix(),
         }
         if self.request.method in ('POST', 'PUT'):
+            post_data = self._customize_post_data()
+
             kwargs.update({
-                'data': self.request.POST,
+                'data': post_data,
                 'files': self.request.FILES,
             })
         else:
@@ -919,7 +924,6 @@ class ProcessPayment(RegistrationPermissionMixin, FormView):
         self.event = Event.objects.get(
             pk=request.POST['event_id']
         )
-        self._set_empty_tax_rates()
         form = self.get_form()
         if form.is_valid():
             print('\n\nvalid form\n\n')

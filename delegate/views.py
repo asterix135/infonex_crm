@@ -858,6 +858,27 @@ class ProcessPayment(RegistrationPermissionMixin, FormView):
             post_data['qst_rate'] = 0
         return post_data
 
+    def form_valid(self, form):
+        """
+        Override base class with updating
+        """
+        # First get RegDetails object & save it
+        self.reg_details.registration_status = form.cleaned_data['registration_status']
+        self.reg_details.registration_notes = form.cleaned_data['registration_notes']
+        self.reg_details.save()
+        # Next get Invoice object and save it
+        self.invoice.payment_date = form.cleaned_data['payment_date']
+        self.invoice.invoice_notes = form.cleaned_data['invoice_notes']
+        self.invoice.payment_method = form.cleaned_data['payment_method']
+        self.invoice.pre_tax_price = form.cleaned_data['pre_tax_price']
+        self.invoice.gst_rate = form.cleaned_data['gst_rate']
+        self.invoice.hst_rate = form.cleaned_data['hst_rate']
+        self.invoice.qst_rate = form.cleaned_data['qst_rate']
+        self.invoice.save()
+        # defaut method follows
+        return super().form_valid(form)
+
+
     def get(self, request, *args, **kwargs):
         try:
             self.reg_details = RegDetails.objects.get(
@@ -924,17 +945,7 @@ class ProcessPayment(RegistrationPermissionMixin, FormView):
         self.event = Event.objects.get(
             pk=request.POST['event_id']
         )
-        form = self.get_form()
-        if form.is_valid():
-            print('\n\nvalid form\n\n')
-            return self.form_valid(form)
-        else:
-            print('\n\ninvalid form\n\n')
-            print(form.errors)
-            return self.form_invalid(form)
-
-        # return super().post(request, *args, **kwargs)
-
+        return super().post(request, *args, **kwargs)
 
 
 class ProcessRegistration(RegistrationPermissionMixin,

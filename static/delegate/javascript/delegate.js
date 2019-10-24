@@ -1,3 +1,5 @@
+import { updateTaxAndInvoice } from './updateTaxAndInvoice.js';
+
 $(document).ready(function(){
 
   // Global variables
@@ -8,6 +10,7 @@ $(document).ready(function(){
   var matchedCompanyId = null;
   var nonInvoiceVals = ['G', 'K', 'KX', 'SD', 'SE', 'B', ''];
   var cxlVals = ['DX', 'SX', 'KX', 'B'];
+  var paidVals = ['DP', 'SP'];
   if ($.inArray($('#original-registrant-id').val(), [undefined, '']) == -1){
     var originalDelegate = $('#original-registrant-id').val();
   } else {
@@ -23,6 +26,8 @@ $(document).ready(function(){
   displayHideRegDetails();
   // Update display of tax and invoice
   updateTaxAndInvoice();
+  // show payment button if necessary
+  displayHidePaymentButton();
 
   // Activate datepicker
   $('#id_register_date').datepicker({
@@ -170,6 +175,21 @@ $(document).ready(function(){
   });
 
 
+  // function to hide/display Process Payment button
+  function displayHidePaymentButton(){
+    var regStatus = $('#id_registration_status').val();
+    if (jQuery.inArray(regStatus, paidVals) >=0) {
+      $('#process-payment-button').addClass('in');
+      $('#process-registration-button').removeClass('col-sm-12');
+      $('#process-registration-button').addClass('col-sm-6');
+    } else {
+      $('#process-payment-button').removeClass('in');
+      $('#process-registration-button').removeClass('col-sm-6');
+      $('#process-registration-button').addClass('col-sm-12');
+    };
+  };
+
+
   // function to ensure proper display/hide of reg details
   function displayHideRegDetails(){
     var regStatus = $('#id_registration_status').val();
@@ -209,6 +229,7 @@ $(document).ready(function(){
     }
 
     displayHideRegDetails();
+    displayHidePaymentButton();
     var newStatus = $(this).val();
     var currentRegDetailId = $('#current-regdetail-id').val();
     if (currentRegDetailId == '') {
@@ -255,30 +276,30 @@ $(document).ready(function(){
 
 
   // function to update tax and invoice total on screen
-  function updateTaxAndInvoice() {
-    var preTaxPrice = $('#id_pre_tax_price').val();
-    if ($.inArray($('#id_gst_rate').val(), [undefined, '']) == -1){
-      var gstRate = parseFloat($('#id_gst_rate').val());
-    } else {
-      var gstRate = 0;
-    };
-    if ($.inArray($('#id_hst_rate').val(), [undefined, '']) == -1){
-      var hstRate = parseFloat($('#id_hst_rate').val());
-    } else {
-      var hstRate = 0;
-    };
-    if ($.inArray($('#id_qst_rate').val(), [undefined, '']) == -1) {
-      var qstRate = parseFloat($('#id_qst_rate').val());
-    } else {
-      var qstRate = 0;
-    };
-    var totalTax = (preTaxPrice * gstRate) + (preTaxPrice * hstRate) + (preTaxPrice * (1 + gstRate)) * qstRate
-    var taxAsCurrency = '$' + totalTax.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-    var totalInvoice = +(preTaxPrice) + totalTax;
-    var totalAsCurrency = '$' + totalInvoice.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-    $('#total-tax').text(taxAsCurrency);
-    $('#total-invoice').text(totalAsCurrency);
-  };
+  // function updateTaxAndInvoice() {
+  //   var preTaxPrice = $('#id_pre_tax_price').val();
+  //   if ($.inArray($('#id_gst_rate').val(), [undefined, '']) == -1){
+  //     var gstRate = parseFloat($('#id_gst_rate').val());
+  //   } else {
+  //     var gstRate = 0;
+  //   };
+  //   if ($.inArray($('#id_hst_rate').val(), [undefined, '']) == -1){
+  //     var hstRate = parseFloat($('#id_hst_rate').val());
+  //   } else {
+  //     var hstRate = 0;
+  //   };
+  //   if ($.inArray($('#id_qst_rate').val(), [undefined, '']) == -1) {
+  //     var qstRate = parseFloat($('#id_qst_rate').val());
+  //   } else {
+  //     var qstRate = 0;
+  //   };
+  //   var totalTax = (preTaxPrice * gstRate) + (preTaxPrice * hstRate) + (preTaxPrice * (1 + gstRate)) * qstRate
+  //   var taxAsCurrency = '$' + totalTax.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+  //   var totalInvoice = +(preTaxPrice) + totalTax;
+  //   var totalAsCurrency = '$' + totalInvoice.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+  //   $('#total-tax').text(taxAsCurrency);
+  //   $('#total-invoice').text(totalAsCurrency);
+  // };
 
 
   // Update tax and invoice total on changes to relevant fields
@@ -357,7 +378,8 @@ $(document).ready(function(){
 
 
   // Called when attempting to process registration
-  $('body').on('click', '#process-registration-button', function(){
+  $('body').on('click', '.submit-button', function(){
+    var clickedButton = $(this).attr('id');
     var crmMatchId = $('#crm-match-value').val();
     var companyMatchId = $('#company-match-value').val();
     var companyName = $('#id_company_name').val();
@@ -418,11 +440,13 @@ $(document).ready(function(){
             if (!$('#company-match-value').val()) {
               $('#company-match-value').val('new');
             }
+            $('#submission-type').val(clickedButton);
             $('#registration-form').submit();
           }
         }
       });
     } else {
+      $('#submission-type').val(clickedButton);
       $('#registration-form').submit();
     }
   });

@@ -230,7 +230,7 @@ class PaymentForm(forms.ModelForm):
         widgets = {
             'pre_tax_price': forms.NumberInput(
                 attrs={'class': 'cost-field form-control',
-                       'step': '1'}
+                       'step': '.01'}
             ),
             'gst_rate': forms.NumberInput(
                 attrs={'class': 'form-control cost-field',

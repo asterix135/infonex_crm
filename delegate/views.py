@@ -836,7 +836,7 @@ class ProcessPayment(RegistrationPermissionMixin, FormView):
             qst = 0
         else:
             tax1 = sub_total * self.invoice.gst_rate
-            if qst != 0:
+            if self.invoice.qst_rate != 0:
                 qst = (sub_total + tax1) * self.invoice.qst_rate
                 pst = 0
             else:

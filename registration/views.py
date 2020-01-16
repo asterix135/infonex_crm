@@ -659,14 +659,14 @@ def mass_mail_details(request):
 
     elif message == 'docs':
         detail_panel = 'registration/index_panels/mass_mail_docs.html'
-        download_link = 'http://www.infonex.ca/' + event.number + \
-            '/download.shtml'
+        download_link = 'https://www.infonex.com/' + event.number + \
+            '/presentation-downloads'
         form_data['download_link'] = download_link
 
     elif message == 'thanks':
         detail_panel = 'registration/index_panels/mass_mail_thanks.html'
-        download_link = 'http://www.infonex.ca/' + event.number + \
-            '/download.shtml'
+        download_link = 'https://www.infonex.com/' + event.number + \
+            '/presentation-downloads'
         form_data['download_link'] = download_link
 
     else:

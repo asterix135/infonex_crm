@@ -5,6 +5,7 @@ attrs==19.1.0
 awsebcli==3.15.2
 billiard==3.6.1.0
 blessed==1.15.0
+boto==2.49.0
 boto3==1.9.219
 botocore==1.12.219
 cached-property==1.5.1
@@ -16,6 +17,7 @@ colorama==0.3.9
 Django==2.2.4
 django-picklefield==2.0
 django-q==1.0.1
+django-ses==0.8.13
 docker==3.6.0
 docker-compose==1.23.2
 docker-pycreds==0.4.0

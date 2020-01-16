@@ -64,25 +64,19 @@ class MassMail():
 
         # if no options set for event, only return
         if not self._default_options:
-            password_text = 'USERNAME: ' + \
-                self._password_dict['all']['username'] + \
-                '<br/>PASSWORD: ' + \
+            password_text = 'PASSWORD: ' + \
                 self._password_dict['all']['password'] + '<br/><br/>'
         elif not options_set:
             event_defaults = self._event.eventoptions_set.filter(primary=True)
             for option in event_defaults:
                 password_text += '<em>' + option.name + '</em><br/>' + \
-                    'USERNAME: ' + \
-                    self._password_dict[str(option.pk)]['username'] + \
-                    '<br/>PASSWORD: ' + \
+                    'PASSWORD: ' + \
                     self._password_dict[str(option.pk)]['password'] + \
                     '<br/><br/>'
         else:
             for option in options_set:
                 password_text += '<em>' + option.option.name + '</em><br/>' + \
-                    'USERNAME: ' + \
-                    self._password_dict[str(option.option.pk)]['username'] + \
-                    '<br/>PASSWORD: ' + \
+                    'PASSWORD: ' + \
                     self._password_dict[str(option.option.pk)]['password'] + \
                     '<br/><br/>'
         msg_body = msg_body.replace(
@@ -107,20 +101,19 @@ class MassMail():
     def set_passwords(self, post_data):
         password_dict = {}
         for key in post_data:
-            if key[:8] == 'username':
-                option_id = key.partition('_')[2]
-                if option_id in password_dict:
-                    password_dict[option_id]['username'] = post_data[key]
-                else:
-                    password_dict[option_id] = {'username': post_data[key],
-                                                'password': None}
-            elif key[:8] == 'password':
+            # if key[:8] == 'username':
+            #     option_id = key.partition('_')[2]
+            #     if option_id in password_dict:
+            #         password_dict[option_id]['username'] = post_data[key]
+            #     else:
+            #         password_dict[option_id] = {'username': post_data[key],
+            #                                     'password': None}
+            if key[:8] == 'password':
                 option_id = key.partition('_')[2]
                 if option_id in password_dict:
                     password_dict[option_id]['password'] = post_data[key]
                 else:
-                    password_dict[option_id] = {'username': None,
-                                                'password': post_data[key]}
+                    password_dict[option_id] = {'password': post_data[key]}
         self._password_dict = password_dict
 
     def send_mail(self):

@@ -7,7 +7,7 @@ You can download presentations by using the following link:
 
 Login credentials are as follows:
 **!!DO NOT CHANGE THIS LINE!!**
-Both username and password are case sensitive
+The password is case sensitive
 
 Post-conference evaluation:
 

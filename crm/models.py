@@ -359,6 +359,7 @@ class MasterListSelections(models.Model):
     company = models.CharField(max_length=100, blank=True)
     industry = models.CharField(max_length=100, blank=True)
     dept = models.CharField(max_length=255, blank=True)
+    title = models.CharField(max_length=100, blank=True)
     include_exclude = models.CharField(max_length=7,
                                        choices=(('include', 'include'),
                                                 ('exclude', 'exclude')),

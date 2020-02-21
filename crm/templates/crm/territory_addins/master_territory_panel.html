@@ -12,6 +12,7 @@ AJAX call from add_master_list_select -->
         <th>Dept</th>
         <th>Industry</th>
         <th>Company Name</th>
+        <th>Title</th>
         <th>Save/Delete</th>
       </tr>
     </thead>
@@ -45,6 +46,10 @@ AJAX call from add_master_list_select -->
           {{ select_form.company.errors }}
           {{ select_form.company }}
         </td>
+        <td>
+          {{ select_form.title.errors }}
+          {{ select_form.title }}
+        </td>
         <td><button type="button" class="btn btn-primary" id="btn-add-new-select">Save</button></td>
       </tr>
       {% for select in list_selects %}
@@ -57,6 +62,7 @@ AJAX call from add_master_list_select -->
         <td>{{ select.dept }}</td>
         <td>{{ select.industry }}</td>
         <td>{{ select.company }}</td>
+        <td>{{ select.title }}</td>
         <td><button type="submit" class="btn btn-secondary btn-delete-master-select" select-value="{{ select.id }}">Delete</button></td>
       </tr>
       {% endfor %}

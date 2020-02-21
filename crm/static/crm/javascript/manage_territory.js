@@ -85,8 +85,9 @@ $(document).ready(function() {
     var industry = $('#master #id_industry').val();
     var company = $('#master #id_company').val();
     var dept = $('#master #id_dept').val();
+    var title = $('#master #id_title').val();
 
-    if (mainCategory || geo || industry || company || dept) {
+    if (mainCategory || geo || industry || company || dept || title) {
       $.ajax({
         url: '/crm/add_master_list_select/',
         type: 'POST',
@@ -99,6 +100,7 @@ $(document).ready(function() {
           'industry': industry,
           'company': company,
           'dept': dept,
+          'title': title,
         },
         success: function(data){
           $('#master').html(data);

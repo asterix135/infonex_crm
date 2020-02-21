@@ -135,7 +135,7 @@ def build_master_territory_list(list_select_queryset):
                   'industry': 'industry__icontains',
                   'company': 'company__icontains',
                   'dept': 'dept__icontains',
-                  # 'title': 'title__icontains',
+                  'title': 'title__icontains',
                   }
     num_conditions = list_select_queryset.count()
     if num_conditions == 0:

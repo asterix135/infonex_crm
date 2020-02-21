@@ -36,7 +36,7 @@ class MasterTerritoryForm(forms.ModelForm):
     class Meta:
         model = MasterListSelections
         fields = ('geo', 'main_category', 'main_category2', 'company',
-                  'industry', 'include_exclude', 'dept')
+                  'industry', 'include_exclude', 'dept', 'title')
         labels = {
             'dept': _('Department'),
             'geo': _('Geographic Group'),
@@ -60,6 +60,9 @@ class MasterTerritoryForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
             'industry': forms.TextInput(
+                attrs={'class': 'form-control'}
+            ),
+            'title': forms.TextInput(
                 attrs={'class': 'form-control'}
             ),
             'include_exclude': forms.Select(

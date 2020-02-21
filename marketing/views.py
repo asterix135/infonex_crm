@@ -318,6 +318,7 @@ class Add(MarketingPermissionMixin, TemplateView):
         self._person.date_modified = timezone.now()
         self._person.do_not_call = False
         self._person.do_not_email = False
+        self._person.email_alternate = ''
         self._person.save()
 
     def _new_person(self, request):

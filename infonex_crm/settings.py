@@ -174,3 +174,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'register@infonex.ca'
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_PW']
 DEFAULT_FROM_EMAIL = 'Infonex Event Registration <register@infonex.ca>'
+
+# Allow Same origin XFrames
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'

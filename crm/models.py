@@ -344,7 +344,7 @@ class MasterListSelections(models.Model):
     )
     event = models.ForeignKey(Event,
                               on_delete=models.CASCADE)
-    geo = models.CharField(max_length=10,
+    geo = models.CharField(max_length=20,
                            choices=GEO_CHOICES,
                            blank=True,
                            default='')
@@ -414,7 +414,7 @@ class PersonalListSelections(models.Model):
                                        default='filter')
     person = models.ForeignKey(Person, blank=True, null=True,
                                on_delete=models.SET_NULL)
-    geo = models.CharField(max_length=10,
+    geo = models.CharField(max_length=20,
                            choices=GEO_CHOICES,
                            blank=True,
                            default='')

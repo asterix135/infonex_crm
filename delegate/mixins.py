@@ -80,9 +80,10 @@ class ProcessCompleteRegistration(Substitution, ChangeRecord):
         self.crm_match.title = self.new_delegate_form.cleaned_data['title']
         if self.company_select_form.cleaned_data['crm_company'] not in ('', None):
             self.crm_match.company = \
-                    self.company_select_form.cleaned_data['crm_company']
+                self.company_select_form.cleaned_data['crm_company']
         else:
-            self.crm_match.company = self.crm_match.company
+            self.crm_match.company = \
+                self.company_select_form.cleaned_data['name']
         self.crm_match.phone = self.new_delegate_form.cleaned_data['phone1']
         self.crm_match.phone_alternate = \
                 self.new_delegate_form.cleaned_data['phone2']

@@ -7,7 +7,7 @@ You can download presentations by using the following link:
 
 Login credentials are as follows:
 **!!DO NOT CHANGE THIS LINE!!**
-Both username and password are case sensitive
+The password is case sensitive
 
 Please note: Infonex will not provide hard copies of these presentations at the conference.
 Some presentations are unavailable as they have yet to be provided to Infonex.

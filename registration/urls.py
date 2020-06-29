@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^send_mass_email/$', views.process_mass_email,
         name='send_mass_email'),
 
-    url(r'^test/$', views.test, name='test'),
+    # url(r'^test/$', views.test, name='test'),
 
     # AJAX Calls
 

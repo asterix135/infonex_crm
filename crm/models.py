@@ -396,6 +396,8 @@ class PersonalListSelections(models.Model):
         ('A2', '2 - Accounting'),
         ('A3', '3 - Accounting'),
         ('Aboriginal', 'Aboriginal'),
+        ('Indig1', 'Indigenous ON/BC'),
+        ('Indig2', 'Indigenous ROC'),
         ('FED 1', 'FED 1'),
         ('FED 2', 'FED 2'),
         ('FED 3', 'FED 3'),

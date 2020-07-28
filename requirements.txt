@@ -3,7 +3,7 @@ appdirs==1.4.3
 arrow==0.14.2
 asgiref==3.2.3
 attrs==19.1.0
-awsebcli==3.18.1
+awsebcli==3.18.2
 bcrypt==3.1.7
 billiard==3.6.1.0
 blessed==1.15.0

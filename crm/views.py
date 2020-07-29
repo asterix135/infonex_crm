@@ -282,6 +282,12 @@ def has_management_permission(user):
     return False
 
 
+def mark_update(request, person):
+    person.modified_by=request.user
+    person.date_modified = timezone.now()
+    person.save()
+
+
 ##################
 # MAIN FUNCTIONS
 ##################
@@ -1315,6 +1321,7 @@ def save_category_changes(request):
                                                      instance=person)
             if category_form.is_valid():
                 category_form.save()
+                mark_update(request, person)
                 updated_category_success = True
         except (Person.DoesNotExist, MultiValueDictKeyError):
             raise Http404('Sorry, this person seems to have been deleted ' \
@@ -1341,6 +1348,7 @@ def save_person_details(request):
                                                     instance=person)
             if person_details_form.is_valid():
                 person_details_form.save()
+                mark_update(request, person)
                 updated_details_success = True
         except (Person.DoesNotExist, MultiValueDictKeyError):
             raise Http404('Sorry, this person seems to have been deleted ' \

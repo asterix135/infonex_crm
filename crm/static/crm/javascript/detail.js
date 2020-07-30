@@ -11,6 +11,7 @@ $(document).ready(function() {
   var originalPhoneAlternate = $('#id_phone_alternate').val();
   var originalPhoneMain = $('#id_phone_main').val();
   var originalDoNotCall = $('#id_do_not_call').prop('checked');
+  var originalEmailBlocked = $('#id_email_blocked').prop('checked');
   var originalEmail = $('#id_email').val();
   var originalEmailAlternate = $('#id_email_alternate').val();
   var originalAssistantName = $('#id_assistant_name').val();
@@ -52,6 +53,7 @@ $(document).ready(function() {
     $('#id_email').val(originalEmail);
     $('#id_email_alternate').val(originalEmailAlternate);
     $('#id_do_not_email').prop('checked', originalDoNotEmail);
+    $('#id_email_blocked').prop('checked', originalEmailBlocked);
     $('#id_assistant_name').val(originalAssistantName);
     $('#id_assistant_email').val(originalAssistantEmail);
     $('#id_linkedin').val(originalLinkedIn);
@@ -68,6 +70,7 @@ $(document).ready(function() {
     const newAltEmail = $('#id_email_alternate', data).val();
     const newDoNotCall = $('#id_do_not_call', data).prop('checked');
     const newDoNotEmail = $('#id_do_not_email', data).prop('checked');
+    const newEmailBlocked = $('#id_email_blocked', data).prop('checked');
     const newAsstName = $('#id_assistant_name', data).val();
     const newAsstEmail = $('#id_assistant_email', data).val();
     if (newPhone !== originalPhone || newDoNotCall !== originalDoNotCall) {
@@ -95,11 +98,17 @@ $(document).ready(function() {
       };
       $('#display-phone-alternate').html(newAltPhoneHtml);
     };
-    if (newEmail !== originalEmail || newDoNotEmail !== originalDoNotEmail) {
+    if (newEmail !== originalEmail || newDoNotEmail !== originalDoNotEmail || newEmailBlocked !== originalEmailBlocked) {
       let newEmailHtml;
       if (newEmail) {
-        if (newDoNotEmail) {
-          newEmailHtml = newEmail + '&nbsp;&nbsp;<span style="color:red">(Do not email)</span>';
+        if (newDoNotEmail || newEmailBlocked) {
+          newEmailHtml = newEmail;
+          if (newDoNotEmail) {
+            newEmailHtml += '&nbsp;&nbsp;<span style="color:red">(Do not email)</span>';
+          };
+          if (newEmailBlocked) {
+            newEmailHtml += '&nbsp;<span style="color:crimson;">(Email Blocked)</span>';
+          }
         } else {
           newEmailHtml = '<a href="mailto:' + newEmail + '">' + newEmail + '</a>'
         }
@@ -154,6 +163,7 @@ $(document).ready(function() {
     var phoneAlternate = $('#id_phone_alternate').val();
     var phoneMain = $('#id_phone_main').val();
     var doNotCall = $('#id_do_not_call').prop('checked');
+    var emailBlocked = $('#id_email_blocked').prop('checked');
     var email = $('#id_email').val();
     var emailAlternate = $('#id_email_alternate').val();
     var assistantName = $('#id_assistant_name').val();
@@ -179,6 +189,7 @@ $(document).ready(function() {
         'email': email,
         'email_alternate': emailAlternate,
         'do_not_email': doNotEmail,
+        'email_blocked': emailBlocked,
         'assistant_name': assistantName,
         'assistant_email': assistantEmail,
         'linkedin': linkedIn,
@@ -202,6 +213,7 @@ $(document).ready(function() {
           originalEmail = $('#id_email', data).val();
           originalEmailAlternate = $('#id_email_alternate', data).val();
           originalDoNotEmail = $('#id_do_not_email', data).prop('checked');
+          originalEmailBlocked = $('#id_email_blocked', data).prop('checked');
           originalAssistantName = $('#id_assistant_name', data).val();
           originalAssistantEmail = $('#id_assistant_email', data).val();
           originalLinkedIn = $('#id_linkedin', data).val();

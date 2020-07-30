@@ -79,7 +79,7 @@ class Person(models.Model):
                                    default=1,
                                    related_name='person_created_by',
                                    on_delete=models.SET_DEFAULT)
-    date_modified = models.DateTimeField('date modified')
+    date_modified = models.DateTimeField('date modified', auto_now=True)
     modified_by = models.ForeignKey('auth.User',
                                     default=1,
                                     related_name='person_modifed_by',

@@ -29,6 +29,7 @@ class Person(models.Model):
     assistant_name = models.CharField(max_length=100, blank=True, default="")
     assistant_email = models.EmailField(blank=True, default="")
     do_not_email = models.BooleanField(default=False)
+    email_blocked = models.BooleanField(default=False)
     do_not_call = models.BooleanField(default=False)
     city = models.CharField(max_length=50, blank=True, default="")
     dept = models.CharField(max_length=50, blank=True, default="")  # General area of job
@@ -49,6 +50,30 @@ class Person(models.Model):
                                  choices=DIV_CHOICES,
                                  default='NA',
                                  blank=True)  # for splitting leads
+    fed_division1 = models.CharField(max_length=20,
+                                     choices=FED_DIVISIONS,
+                                     default='NA')
+    fed_division2 = models.CharField(max_length=20,
+                                     choices=FED_DIVISIONS,
+                                     default='NA',
+                                     blank=True)
+    fin_division1 = models.CharField(max_length=20,
+                                     choices=FIN_DIVISIONS,
+                                     default='NA')
+    fin_division2 = models.CharField(max_length=20,
+                                     choices=FIN_DIVISIONS,
+                                     default='NA',
+                                     blank=True)
+    misc_division1 = models.CharField(max_length=20,
+                                      choices=MISC_DIVISIONS,
+                                      default='NA')
+    misc_division2 = models.CharField(max_length=20,
+                                      choices=MISC_DIVISIONS,
+                                      default='NA',
+                                      blank=True)
+    indig_division = models.CharField(max_length=20,
+                                      choices=INDIGENOUS_DIVISIONS,
+                                      default='NA')
     date_created = models.DateTimeField('date created')
     created_by = models.ForeignKey('auth.User',
                                    default=1,

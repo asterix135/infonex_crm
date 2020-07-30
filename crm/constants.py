@@ -93,6 +93,36 @@ DIV_CHOICES = (
     ('NA', 'Not Determined'),
 )
 
+FED_DIVISIONS = (
+    ('FED 1', 'FED 1'),
+    ('FED 2', 'FED 2'),
+    ('FED 3', 'FED 3'),
+    ('FED 4', 'FED 4'),
+    ('NA', 'Not Determined'),
+)
+
+INDIGENOUS_DIVISIONS = (
+    ('Indig1', 'Indigenous ON/BC'),
+    ('Indig2', 'Indigenous ROC'),
+    ('NA', 'Not Determined'),
+)
+
+FIN_DIVISIONS = (
+    ('A1', 'FIN-1'),
+    ('A2', 'FIN-2'),
+    ('A3', 'FIN-3'),
+    ('A4', 'FIN-4'),
+    ('NA', 'Not Determined'),
+)
+
+MISC_DIVISIONS = (
+    ('Misc1', '1 - Misc'),
+    ('Misc2', '2 - Misc'),
+    ('Misc3', '3 - Misc'),
+    ('Misc4', '4 - Misc'),
+    ('NA', 'Not Determined'),
+)
+
 AC_DICT = {
     '201': 'NJ',
     '202': 'DC',

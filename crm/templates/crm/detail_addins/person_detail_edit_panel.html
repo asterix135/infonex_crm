@@ -98,12 +98,21 @@
         {{ person_details_form.email.errors }}
         {{ person_details_form.email }}
       </div>
-      <div class="col-sm-1">
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-offset-2 col-sm-1">
         {{ person_details_form.do_not_email.label_tag }}
       </div>
       <div class="col-sm-3">
         {{ person_details_form.do_not_email.errors }}
         {{ person_details_form.do_not_email }}
+      </div>
+      <div class="col-sm-1">
+        {{ person_details_form.email_blocked.label_tag}}
+      </div>
+      <div class="col-sm-3">
+        {{ person_details_form.email_blocked.errors }}
+        {{ person_details_form.email_blocked }}
       </div>
     </div>
     <div class="form-group row">

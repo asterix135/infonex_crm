@@ -197,10 +197,25 @@ class PersonDetailsForm(forms.ModelForm):
 
     class Meta:
         model = Person
-        fields = ('name', 'title', 'company', 'url', 'phone', 'phone_main',
-                  'do_not_call', 'email', 'do_not_email', 'industry',
-                  'city', 'linkedin', 'phone_alternate', 'email_alternate',
-                  'assistant_name', 'assistant_email')
+        fields = (
+            'name',
+            'title',
+            'company',
+            'url',
+            'phone',
+            'phone_main',
+            'do_not_call',
+            'email',
+            'do_not_email',
+            'email_blocked',
+            'industry',
+            'city',
+            'linkedin',
+            'phone_alternate',
+            'email_alternate',
+            'assistant_name',
+            'assistant_email'
+        )
         labels = {
             'url': _('Website'),
             'linkedin': _('LinkedIn Profile'),

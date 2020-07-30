@@ -50,13 +50,20 @@
 <h4>
   Email:
   <span id="display-email">
-    {% if person.email and not person.do_not_email %}
-    <a href="mailto:{{ person.email }}">{{ person.email }}</a>
-    {% elif person.email %}
-    {{ person.email }}
-    <span style="color:red;">(Do not email)</span>
+    {% if person.email %}
+      {% if person.do_not_email or person.email_blocked %}
+        {{ person.email }}
+        {% if person.do_not_email %}
+          <span style="color:red;">(Do not email)&nbsp;</span>
+        {% endif %}
+        {% if person.email_blocked %}
+          <span style="color:crimson;">(Email blocked)</span>
+        {% endif %}
+      {% else %}
+        <a href="mailto:{{ person.email }}">{{ person.email }}</a>
+      {% endif %}
     {% else %}
-    <span style="font-weight: 300; font-style: italic">Unknown</span>
+      <span style="font-weight: 300; font-style: italic">Unknown</span>
     {% endif %}
   </span>
 </h4>

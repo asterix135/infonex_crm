@@ -64,6 +64,9 @@ $(document).ready(function() {
 
   // submit changes to person details and update that portion of page
   function updateHeader(data) {
+    const newName = $('#id_name', data).val();
+    const newTitle = $('#id_title', data).val();
+    const newCompany = $('#id_company', data).val();
     const newPhone = $('#id_phone', data).val();
     const newAltPhone = $('#id_phone_alternate', data).val();
     const newEmail = $('#id_email', data).val();
@@ -73,6 +76,15 @@ $(document).ready(function() {
     const newEmailBlocked = $('#id_email_blocked', data).prop('checked');
     const newAsstName = $('#id_assistant_name', data).val();
     const newAsstEmail = $('#id_assistant_email', data).val();
+    if (newName != originalName) {
+      $('#display-name').html(newName);
+    }
+    if (newTitle != originalTitle) {
+      $('#display-title').html(newTitle);
+    }
+    if (newCompany != originalCompany) {
+      $('#display-company').html(newCompany);
+    }
     if (newPhone !== originalPhone || newDoNotCall !== originalDoNotCall) {
       let newPhoneHtml;
       if (newPhone) {

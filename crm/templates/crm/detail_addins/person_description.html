@@ -1,7 +1,8 @@
 {% load static %}
 
 <h1>
-  {{ person.name }}
+  <span id="display-name">{{ person.name }}</span>
+
   <span id="action-buttons">
     {% include 'crm/addins/detail_flag_toggle.html' %}
   </span>
@@ -18,10 +19,10 @@
   </span>
 </h1>
 {% if person.title %}
-<h3 class="title-and-company">{{ person.title }}</h3>
+<h3 class="title-and-company" id="display-title">{{ person.title }}</h3>
 {% endif %}
 {% if person.company %}
-<h3 class="title-and-company">{{ person.company }}</h3>
+<h3 class="title-and-company" id="display-company">{{ person.company }}</h3>
 {% endif %}
 <h4>
   Tel:

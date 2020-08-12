@@ -108,10 +108,10 @@ INDIGENOUS_DIVISIONS = (
 )
 
 FIN_DIVISIONS = (
-    ('A1', 'FIN-1'),
-    ('A2', 'FIN-2'),
-    ('A3', 'FIN-3'),
-    ('A4', 'FIN-4'),
+    ('A1', 'FIN 1'),
+    ('A2', 'FIN 2'),
+    ('A3', 'FIN 3'),
+    ('A4', 'FIN 4'),
     ('NA', 'Not Determined'),
 )
 

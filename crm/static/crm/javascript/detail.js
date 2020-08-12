@@ -27,6 +27,14 @@ $(document).ready(function() {
   var originalCatCat2 = $('#id_main_category2').val();
   var originalCatDiv1 = $('#id_division1').val();
   var originalCatDiv2 = $('#id_division2').val();
+  // new category values below
+  var originalCatFed1 = $('#id_fed_division1').val();
+  var originalCatFed2 = $('#id_fed_division2').val();
+  var originalCatFin1 = $('#id_fin_division1').val();
+  var originalCatFin2 = $('#id_fin_division2').val();
+  var originalCatMisc1 = $('#id_misc_division1').val();
+  var originalCatMisc2 = $('#id_misc_division2').val();
+  var originalCatIndig = $('#id_indig_division').val();
 
 
   // open person's website in new page
@@ -364,6 +372,14 @@ $(document).ready(function() {
     $('#id_main_category2').val(originalCatCat2);
     $('#id_division1').val(originalCatDiv1);
     $('#id_division2').val(originalCatDiv2);
+    // new values below
+    $('#id_fed_division1').val(originalCatFed1);
+    $('#id_fed_division2').val(originalCatFed2);
+    $('#id_fin_division1').val(originalCatFin1);
+    $('#id_fin_division2').val(originalCatFin2);
+    $('#id_misc_division1').val(originalCatMisc1);
+    $('#id_misc_division2').val(originalCatMisc2);
+    $('#id_indig_division').val(originalCatIndig);
   });
 
 
@@ -376,6 +392,17 @@ $(document).ready(function() {
     var mainCategory2 = $('#id_main_category2').val();
     var division1 = $('#id_division1').val();
     var division2 = $('#id_division2').val();
+
+    // New division data below
+    var fed1 = $('#id_fed_division1').val();
+    var fed2 = $('#id_fed_division2').val();
+    var fin1 = $('#id_fin_division1').val();
+    var fin2 = $('#id_fin_division2').val();
+    var misc1 = $('#id_misc_division1').val();
+    var misc2 = $('#id_misc_division2').val();
+    var indig = $('#id_indig_division').val();
+
+
     $.ajax({
       url: '/crm/save_category_changes/',
       type: 'POST',
@@ -387,6 +414,14 @@ $(document).ready(function() {
         'main_category2': mainCategory2,
         'division1': division1,
         'division2': division2,
+        // new category values below
+        'fed_division1': fed1,
+        'fed_division2': fed2,
+        'fin_division1': fin1,
+        'fin_division2': fin2,
+        'misc_division1': misc1,
+        'misc_division2': misc2,
+        'indig_division': indig,
       },
       success: function(data){
         $('#person-category-panel').html(data);
@@ -398,6 +433,14 @@ $(document).ready(function() {
           originalCatCat2 = $('#id_main_category2', data).val();
           originalCatDiv1 = $('#id_division1', data).val();
           originalCatDiv2 = $('#id_division2', data).val();
+          // new categories below
+          originalCatFed1 = $('#id_fed_division1', data).val();
+          originalCatFed2 = $('#id_fed_division2', data).val();
+          originalCatFin1 = $('#id_fin_division1', data).val();
+          originalCatFin2 = $('#id_fin_division2', data).val();
+          originalCatMisc1 = $('#id_misc_division1', data).val();
+          originalCatMisc2 = $('#id_misc_division2', data).val();
+          originalCatIndig = $('#id_indig_division', data).val();
         }
       }
     });
@@ -485,6 +528,8 @@ $(document).ready(function() {
                    '<input type="hidden" name="main_category2" value="' + originalCatCat2 + '"/>' +
                    '<input type="hidden" name="division1" value="' + originalCatDiv1 + '"/>' +
                    '<input type="hidden" name="division2" value="' + originalCatDiv2 + '"/>' +
+                   // new category values below
+                   
                    '<input type="hidden" name="dupe_creation" value=""/>' +
                    '</form>';
     $(formHtml).appendTo('body').submit();

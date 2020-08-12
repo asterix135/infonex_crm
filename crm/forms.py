@@ -277,8 +277,21 @@ class PersonCategoryUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Person
-        fields = ('dept', 'geo', 'main_category', 'main_category2',
-                  'division1', 'division2',)
+        fields = (
+            'dept',
+            'geo',
+            'main_category',
+            'main_category2',
+            'division1',
+            'division2',
+            'fed_division1',
+            'fed_division2',
+            'fin_division1',
+            'fin_division2',
+            'misc_division1',
+            'misc_division2',
+            'indig_division',
+        )
         labels = {
             'dept': _('Department'),
             'geo': _('Geographic Group'),
@@ -286,6 +299,7 @@ class PersonCategoryUpdateForm(forms.ModelForm):
             'main_category2': _('Secondary Category'),
             'division1': _('Main Sales Division'),
             'division2': _('Secondary Sales Division'),
+            'indig_division': _('Indigenous Division'),
         }
         widgets = {
             'dept': forms.TextInput(
@@ -304,6 +318,27 @@ class PersonCategoryUpdateForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
             'division2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'fed_division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'fed_division2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'fin_division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'fin_division2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'misc_division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'misc_division2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'indig_division': forms.Select(
                 attrs={'class': 'form-control'}
             ),
         }

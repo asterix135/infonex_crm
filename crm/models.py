@@ -152,6 +152,13 @@ class Person(models.Model):
         return '<a href="%s">%s</a>' % (self.url, self.url)
     show_person_url.allow_tags = True
 
+    def ok_to_contact(self):
+        if self.do_not_call and self.do_not_email:
+            return False
+        if self.do_not_call and self.email_blocked:
+            return False
+        return True
+
 
 class Changes(models.Model):
     """

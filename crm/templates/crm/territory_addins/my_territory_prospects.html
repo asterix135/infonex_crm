@@ -82,9 +82,15 @@
           </label>
         </td>
         <td>
-          <a href = "{% url 'crm:detail' person.id %}">
+          {% if person.ok_to_contact %}
+            <a href = "{% url 'crm:detail' person.id %}">
+              {{ person.name }}
+            </a>
+          {% else %}
+          <a href = "{% url 'crm:detail' person.id %}" style="color:gray">
             {{ person.name }}
           </a>
+          {% endif %}
         </td>
         <td>{{ person.title }}</td>
         <td>{{ person.company}}</td>

@@ -529,7 +529,14 @@ $(document).ready(function() {
                    '<input type="hidden" name="division1" value="' + originalCatDiv1 + '"/>' +
                    '<input type="hidden" name="division2" value="' + originalCatDiv2 + '"/>' +
                    // new category values below
-                   
+                   '<input type="hidden" name="fed_division1" value="' + originalCatFed1 + '"/>' +
+                   '<input type="hidden" name="fed_division2" value="' + originalCatFed2 + '"/>' +
+                   '<input type="hidden" name="fin_division1" value="' + originalCatFed1 + '"/>' +
+                   '<input type="hidden" name="fin_division2" value="' + originalCatFed2 + '"/>' +
+                   '<input type="hidden" name="misc_division2" value="' + originalCatMisc1 + '"/>' +
+                   '<input type="hidden" name="misc_division2" value="' + originalCatMisc2 + '"/>' +
+                   '<input type="hidden" name="indig_division" value="' + originalCatIndig + '"/>' +
+
                    '<input type="hidden" name="dupe_creation" value=""/>' +
                    '</form>';
     $(formHtml).appendTo('body').submit();

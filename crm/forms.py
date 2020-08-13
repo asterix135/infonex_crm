@@ -75,12 +75,37 @@ class NewPersonForm(forms.ModelForm):
 
     class Meta:
         model = Person
-        fields = ('name', 'title', 'company', 'url', 'linkedin', 'phone',
-                  'phone_main', 'email', 'do_not_call', 'do_not_email',
-                  'city', 'dept', 'industry', 'geo', 'main_category',
-                  'main_category2', 'division1', 'division2',
-                  'phone_alternate', 'email_alternate',
-                  'assistant_name', 'assistant_email')
+        fields = (
+            'name',
+            'title',
+            'company',
+            'url',
+            'linkedin',
+            'phone',
+            'phone_main',
+            'email',
+            'do_not_call',
+            'do_not_email',
+            'city',
+            'dept',
+            'industry',
+            'geo',
+            'main_category',
+            'main_category2',
+            'division1',
+            'division2',
+            'phone_alternate',
+            'email_alternate',
+            'assistant_name',
+            'assistant_email',
+            'fed_division1',
+            'fed_division2',
+            'fin_division1',
+            'fin_division2',
+            'misc_division1',
+            'misc_division2',
+            'indig_division',
+        )
         labels = {
             'url': _('Website'),
             'linkedin': _('LinkedIn Profile'),
@@ -93,6 +118,7 @@ class NewPersonForm(forms.ModelForm):
             'division2': _('Secondary Sales Division'),
             'phone_alternate': _('Alternate Phone Number'),
             'email_alternate': _('Alternate Email'),
+            'indig_division': _('Indigenous Division'),
         }
         widgets = {
             'name': forms.TextInput(
@@ -163,6 +189,27 @@ class NewPersonForm(forms.ModelForm):
                 attrs={'class': 'form-control'}
             ),
             'division2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'fed_division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'fed_division2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'fin_division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'fin_division2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'misc_division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'misc_division2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'indig_division': forms.Select(
                 attrs={'class': 'form-control'}
             ),
         }

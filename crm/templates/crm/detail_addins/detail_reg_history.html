@@ -20,7 +20,11 @@
       {% for registration in reg_list %}
       <tr>
         <td>{{ registration.register_date }}</td>
-        <td>{{ registration.get_registration_status_display }}</td>
+        <td>{{ registration.get_registration_status_display }}
+          {% if registration.invoice %}
+           - ${{ registration.invoice.pre_tax_price }}
+          {% endif %}
+        </td>
         <td>{{ registration.conference }}</td>
       </tr>
       {% endfor %}

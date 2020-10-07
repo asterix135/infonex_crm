@@ -13,10 +13,24 @@ class ChangesDetailForm(forms.ModelForm):
 
     class Meta:
         model = Changes
-        fields = ('name', 'title', 'company', 'phone',
-                  'phone_main', 'email', 'do_not_call', 'do_not_email',
-                  'city', 'dept', 'industry', 'geo', 'main_category',
-                  'main_category2', 'division1', 'division2',)
+        fields = (
+            'name',
+            'title',
+            'company',
+            'phone',
+            'phone_main',
+            'email',
+            'do_not_call',
+            'do_not_email',
+            'city',
+            'dept',
+            'industry',
+            'geo',
+            'main_category',
+            'main_category2',
+            'division1',
+            'division2',
+        )
         labels = {
             'industry': _('Industry Description'),
             'dept': _('Department'),
@@ -127,10 +141,31 @@ class PersonDetailForm(forms.ModelForm):
 
     class Meta:
         model = Person
-        fields = ('name', 'title', 'company', 'phone',
-                  'phone_main', 'email', 'do_not_call', 'do_not_email',
-                  'city', 'dept', 'industry', 'geo', 'main_category',
-                  'main_category2', 'division1', 'division2',)
+        fields = (
+            'name',
+            'title',
+            'company',
+            'phone',
+            'phone_main',
+            'email',
+            'do_not_call',
+            'do_not_email',
+            'city',
+            'dept',
+            'industry',
+            'geo',
+            'main_category',
+            'main_category2',
+            'division1',
+            'division2',
+            'fed_division1',
+            'fed_division2',
+            'fin_division1',
+            'fin_division2',
+            'misc_division1',
+            'misc_division2',
+            'indig_division',
+        )
         labels = {
             'industry': _('Industry Description'),
             'dept': _('Department'),
@@ -146,50 +181,71 @@ class PersonDetailForm(forms.ModelForm):
             ),
             'title': forms.TextInput(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
             'company': forms.TextInput(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
             'phone': forms.TextInput(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
             'phone_main': forms.TextInput(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
             'email': forms.TextInput(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
             'do_not_call': forms.CheckboxInput(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
             'do_not_email': forms.CheckboxInput(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
             'city': forms.TextInput(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
             'dept': forms.TextInput(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
             'industry': forms.Textarea(
                 attrs={'class': 'form-control',
                        'rows': '3'}
-            ), #
+            ),
             'geo': forms.Select(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
             'main_category': forms.Select(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
             'main_category2': forms.Select(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
             'division1': forms.Select(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
             'division2': forms.Select(
                 attrs={'class': 'form-control'}
-            ), #
+            ),
+            'fed_division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'fed_division2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'fin_division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'fin_division2': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'misc_division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'misc_division1': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'indig_division': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
         }
 
 

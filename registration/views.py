@@ -1197,7 +1197,8 @@ def get_admin_reports(request):
                 registration_status__in=CXL_VALUES
             ).order_by(*sort_orders[sort])
             writer = csv.writer(response)
-            writer.writerow(['name', 'title', 'company', 'email', 'phone',
+            writer.writerow(['name', 'first_name', 'last_name', 'title',
+                             'company', 'email', 'phone',
                              'city', 'stateProv', 'nameForLetters'])
             for record in registration_qs:
                 registrant = record.registrant
@@ -1209,6 +1210,8 @@ def get_admin_reports(request):
                 letter_name += registrant.last_name
                 writer.writerow([
                     registrant.first_name + ' ' + registrant.last_name,
+                    registrant.first_name,
+                    registrant.last_name,
                     registrant.title,
                     registrant.company.name,
                     registrant.email1,
@@ -1363,7 +1366,8 @@ def get_admin_reports(request):
             ).exclude(
                 registration_status__in=CXL_VALUES
             ).order_by(*sort_orders[sort])
-            ws.append(['name', 'title', 'company', 'email', 'phone', 'city',
+            ws.append(['name', 'first_name', 'last_name', 'title', 'company',
+                       'email', 'phone', 'city',
                        'stateProv', 'nameForLetters'])
             for record in registration_qs:
                 registrant = record.registrant
@@ -1376,6 +1380,8 @@ def get_admin_reports(request):
                 ws.append([
                     (registrant.first_name or '') + ' ' \
                         + (registrant.last_name or ''),
+                    registrant.first_name,
+                    registrant.last_name,
                     registrant.title,
                     registrant.company.name,
                     registrant.email1,

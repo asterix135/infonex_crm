@@ -414,7 +414,7 @@ def index(request):
     territory_form.fields['event_assignment'].queryset = EventAssignment.objects.filter(
         user=request.user
     ).filter(event__date_begins__gte=timezone.now()-datetime.timedelta(weeks=4)
-            ).order_by('-event__date_begins', 'event__number')
+            ).order_by('-event__date_begins', 'event__number').exclude(role='NA')
 
     # check for permission to view all records
     edit_permission_ok = has_management_permission(request.user)

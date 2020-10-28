@@ -448,7 +448,7 @@ class PersonalListSelections(models.Model):
                                                ),
                                        default='filter')
     person = models.ForeignKey(Person, blank=True, null=True,
-                               on_delete=models.SET_NULL)
+                               on_delete=models.CASCADE)
     geo = models.CharField(max_length=20,
                            choices=GEO_CHOICES,
                            blank=True,

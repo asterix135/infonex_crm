@@ -8,13 +8,14 @@ from django.utils import timezone
 
 from crm.models import Contact
 from registration.models import RegDetails, Invoice
+from .mixins import CurrentRegistrationCounts
 from . import charts
 
 
 #############################
 # primary page views
 #############################
-class Index(TemplateView):
+class Index(TemplateView, CurrentRegistrationCounts):
     template_name = 'home/index.html'
 
     def _get_sales_data(self):
@@ -94,6 +95,7 @@ class Index(TemplateView):
             user.is_superuser:
             context['month_reg_list'] = self._get_month_regs()
             context['month_payment_list'] = self._get_month_payments()
+        context['registration_count_list'] = self.get_current_reg_counts()
         return context
 
 

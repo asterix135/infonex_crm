@@ -1,0 +1,71 @@
+<!-- home/templates/home/home_addins/registration_counts.html -->
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="panel-title h2">
+          Current Event Registration Counts
+          <span id="btn-toggle-registration-counts" class="float-right glyphicon glyphicon-chevron-down glyph-button" toggle-obj="#registration-counts"></span>
+        </h2>
+      </div>
+      <div class="panel-body collapse" id="registration-counts">
+        <table class="table">
+          <thead class="thead-inverse">
+            <tr>
+              <th>
+                Event
+              </th>
+              <th>
+                Start Date
+              </th>
+              <th>
+                Delegates-paid
+              </th>
+              <th>
+                Delegates - unpaid
+              </th>
+              <th>
+                Delegates - free/guest
+              </th>
+              <th>
+                Total delegates
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if registration_count_list %}
+              {% for event in registration_count_list %}
+                <tr>
+                  <td>
+                    {{ event.event }}
+                  </td>
+                  <td>
+                    {{ event.start_date }}
+                  </td>
+                  <td>
+                    {{ event.paid_count }}
+                  </td>
+                  <td>
+                    {{ event.unpaid_count }}
+                  </td>
+                  <td>
+                    {{ event.free_count }}
+                  </td>
+                  <td>
+                    <strong>{{ event.total_count }}</strong>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="6">
+                  <h3>No events to report on</h3>
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -9,11 +9,13 @@ urlpatterns = [
     # MAIN PAGES
     ################
     url(r'^$', views.index, name='index'),
+
     url(r'^delete/$', views.delete, name='delete'),
 
     url(r'^detail/(?P<pk>[0-9]+)/$',
         login_required(views.Detail.as_view()),
         name='detail'),
+
     url(r'^manage_territory/$',
         login_required(views.ManageTerritory.as_view()),
         name='manage_territory'),
@@ -23,6 +25,7 @@ urlpatterns = [
     url(r'^search/$',
         login_required(views.Search.as_view()),
         name='search'),
+
     url(r'^territory/$',
         login_required(views.Territory.as_view()),
         name='territory'),

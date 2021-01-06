@@ -1,4 +1,5 @@
 import datetime
+from calendar import monthrange
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum
@@ -99,6 +100,53 @@ class Index(TemplateView, CurrentRegistrationCounts):
         return context
 
 
+class SalesSheetView(TemplateView):
+    template_name = 'home/sales_sheet.html'
+
+    def _n_years_ago(self, date, years_ago):
+
+
+    def _last_day_of_month(self, date):
+        return monthrange(date.year, date.month)[1]
+
+    def _total_sales_for_period(self, start_date, end_date):
+        return Invoice.objects.filter(
+            reg_details__register_date__gte = start_date,
+            reg_details__register_date__lte = end_date
+        ).aggregate(Sum('pre_tax_price'))['pre_tax_price__sum']
+
+    def _current_month_sales(self):
+        today = datetime.date.today()
+        return {
+            'current_month_current_year': self._total_sales_for_period(
+                start_date=today.replace(day=1),
+                end_date = today.replace(
+                    day=self._last_day_of_month(today)
+                )
+            ),
+            'current_month_one_year_ago': self._total_sales_for_period(
+                start_date = self._n_years_ago(today.replace(day=1), 1),
+                end_date = datetime.datetime.today().replace(
+                    day=self._last_day_of_month(datetime.datetime.today())
+                )
+            ),
+        }
+        current_month_current_year = self._total_sales_for_period(
+            start_date=datetime.datetime.today().replace(day=1),
+            end_date = datetime.datetime.today().replace(
+                day=self._last_day_of_month(datetime.datetime.today())
+            )
+        )
+
+
+
+    def get_context_data(self, **kwargs):
+        context=super(SalesSheetView, self).get_context_data(**kwargs)
+        context['test'] = 'foo'
+        context['current_month_sales'] = self._current_month_sales()
+        return context
+
+
 ###########################
 # Page elements
 ###########################
@@ -141,3 +189,8 @@ def recent_contact_chart(request):
 
     chart_object = contact_chart.asString('png')
     return HttpResponse(chart_object, 'image/png')
+
+
+###########################
+# AJAX exlements
+###########################

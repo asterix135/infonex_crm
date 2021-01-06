@@ -1,0 +1,26 @@
+{% extends 'crm/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block script_includes %}
+{% endblock %}
+
+{% block content %}
+<h1>sales sheet</h1>
+<ul>
+  <li>
+    Summary
+  </li>
+  <li>
+    Total Sales By Month
+  </li>
+  <li>
+    Individual Sales
+  </li>
+  <li>
+    {{ test }}
+  </li>
+</ul>
+<h2>Current month sales are ${{ current_month_sales.current_month_current_year|floatformat:'2'|intcomma }}</h2>
+<h3>This month one year ago: ${{ current_month_sales.current_month_one_year_ago|floatformat:'2'|intcomma }}</h3>
+{% endblock %}
